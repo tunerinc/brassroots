@@ -1,2 +1,2 @@
-# ultrasound
-The Ultrasound mobile app
+# brassroots
+The Brassroots mobile app
