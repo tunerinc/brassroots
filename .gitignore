@@ -37,6 +37,7 @@ npm-debug.log
 yarn-error.log
 
 # BUCK
+#
 buck-out/
 \.buckd/
 *.keystore
@@ -47,27 +48,35 @@ buck-out/
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/
-
+#
 */fastlane/report.xml
 */fastlane/Preview.html
 */fastlane/screenshots
 
 # Bundle artifact
+#
 *.jsbundle
 
 # Environment variables
+#
 .env
+env.json
 
 # Firebase
+#
 database.rules.json
 
 # Cocoapods
+#
 ios/Pods
 ios/Index
 
+# data structures
+#
 app/state.js
 firestore.db.json
 
-# Text Editor
-.vs
-.vscode
+# Editor
+#
+.vs/
+.vscode/

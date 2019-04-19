@@ -1,12 +1,9 @@
 'use strict';
 
-module.exports = function (api) {
+module.exports = function(api) {
   api.cache.never();
 
-  const presets = [
-    'module:metro-react-native-babel-preset',
-  ];
-  
+  const presets = ['module:metro-react-native-babel-preset'];
   const plugins = [
     '@babel/plugin-transform-flow-strip-types',
     ['@babel/plugin-proposal-decorators', {'legacy': true, decoratorsBeforeExpore: true}],
@@ -34,4 +31,4 @@ module.exports = function (api) {
     plugins,
     sourceMaps: true,
   };
-}
+};
