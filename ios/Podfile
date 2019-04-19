@@ -8,12 +8,11 @@ target 'brassroots' do
   # Pods for brassroots
 
   # Firebase
-  # pod 'Firebase/Core'
-  # pod 'Firebase/Database'
-  # pod 'Firebase/Firestore'
-  # pod 'Firebase/Functions'
-  # pod 'Firebase/Messaging'
-  # pod 'Firebase/Storage'
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Functions'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/Storage'
 
   # React Native
   pod 'React', :path => '../node_modules/react-native', :subspecs => [
@@ -41,20 +40,24 @@ target 'brassroots' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  # React Native Permissions
+  pod 'ReactNativePermissions', :path=> '../node_modules/react-native-permissions'
+
   # React Native Interactable
-  # pod 'Interactable', :path => '../node_modules/react-native-interactable'
+  pod 'Interactable', :path => '../node_modules/react-native-interactable'
 
   # Background Timer
-  # pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
+  pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
 
   # Vector Icons
-  # pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   # Image Pickers
-  # pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+  pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
 
   # Gradient
-  # pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
   target 'brassrootsTests' do
     inherit! :search_paths

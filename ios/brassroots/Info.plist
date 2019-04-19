@@ -20,6 +20,19 @@
 	<string>0.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.brassroots</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>brassroots</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -37,10 +50,55 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>We never ask to use the user's Apple Music data.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>We ask to change music playback from the phone to a bluetooth connected device.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>We never ask to use the user's calendar data.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The user is able to take a photo and upload it as their profile or cover image.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The user is able to find nearby users who are listening live on the app.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>The user receives location based updates when not inside the app.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>The user is able to find nearby users who are listening live on the app.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>We never ask for this permission.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>The user is able to store a cropped version of their profile or cover image.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The user is able to add and edit a profile photo as well as a cover photo from their camera roll.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We never ask for this permission.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>fontello.ttf</string>
+		<string>Muli-Bold.ttf</string>
+		<string>Muli-Italic.ttf</string>
+		<string>Muli-SemiBold.ttf</string>
+		<string>Muli.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Zocial.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>fetch</string>
+		<string>location</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

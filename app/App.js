@@ -7,8 +7,20 @@
 
 import React from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+import configureStore from './store/configureStore';
+
+const store = configureStore();
 
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    // @see: https://github.com/facebook/react-native/issues/9599
+    if (typeof global.self === 'undefined') {
+      global.self = global;
+    };
+  };
+
   render() {
     return (
       <View style={styles.container}>

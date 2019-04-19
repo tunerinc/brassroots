@@ -53,7 +53,6 @@ cd brassroots && npm i
 With all the npm packages downloaded, let's automatically link the packages we aren't going to be using Cocoapods to manage:
 
 ```zsh
-react-native link react-native-config
 react-native link rn-spotify-sdk
 react-native link react-native-events
 ```
