@@ -1,6 +1,6 @@
-# Brassroots
+# Brassroots ![Build status](https://build.appcenter.ms/v0.1/apps/0f594e53-1296-4118-a663-c0cf0196439f/branches/transfer-app/badge) [![codebeat badge](https://codebeat.co/badges/d7fc1269-3cad-416f-924f-37a878496261)](https://codebeat.co/projects/github-com-therealaldo-brassroots-transfer-app)
 
-The Brassroots mobile app
+The Brassroots iOS/Android app
 
 ## Installation Guide
 
