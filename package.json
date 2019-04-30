@@ -10,7 +10,9 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "test:watch": "npm test -- --watch"
+    "test:watch": "npm test -- --watch",
+    "flow": "flow",
+    "flow-stop": "flow stop"
   },
   "bugs": {
     "url": "https://github.com/therealaldo/brassroots/issues"
@@ -93,9 +95,11 @@
     "babel-eslint": "10.0.1",
     "babel-jest": "24.7.1",
     "babel-plugin-rewrite-require": "1.14.5",
+    "babel-preset-flow": "^6.23.0",
     "babel-preset-react-native": "4.0.1",
     "dotenv": "7.0.0",
     "faker": "4.1.0",
+    "flow-bin": "^0.92.0",
     "jest": "24.7.1",
     "metro-react-native-babel-preset": "0.53.1",
     "react-test-renderer": "16.8.3",
