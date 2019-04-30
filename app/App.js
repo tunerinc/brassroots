@@ -5,31 +5,18 @@
  * @flow
  */
 
+ // React
 import React from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import PropTypes from 'prop-types'
+import {StyleSheet, StatusBar, View, Text} from 'react-native';
+import {Router, Scene, Stack, Tabs, Modal} from 'react-native-router-flux';
+
+// Store w/ Redux
+import {Provider, connect} from 'react-redux';
 import configureStore from './store/configureStore';
 
+const RouterWithRedux = connect()(Router);
 const store = configureStore();
-
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-
-    // @see: https://github.com/facebook/react-native/issues/9599
-    if (typeof global.self === 'undefined') {
-      global.self = global;
-    };
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to Brassroots!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -49,3 +36,33 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+type Props = {};
+
+export default class App extends React.Component<Props> {
+  constructor(props: {}) {
+    super(props);
+
+    // @see: https://github.com/facebook/react-native/issues/9599
+    if (typeof global.self === 'undefined') {
+      global.self = global;
+    };
+  };
+
+  render() {
+    StatusBar.setBarStyle('light-content', true);
+
+    return (
+      <Provider store={store}>
+        <RouterWithRedux>
+          <Modal>
+            <View style={styles.container}>
+              <Text style={styles.welcome}>Welcome to Brassroots!</Text>
+              <Text style={styles.instructions}>To get started, edit App.js</Text>
+            </View>
+          </Modal>
+        </RouterWithRedux>
+      </Provider>
+    );
+  };
+};
