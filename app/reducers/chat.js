@@ -12,7 +12,7 @@ import * as types from '../actions/chat/types';
 
 const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-type ChatMessage = {
+export type ChatMessage = {
   +id: ?string,
   +text: ?string,
   +userID: ?string,
@@ -20,7 +20,7 @@ type ChatMessage = {
   +error: ?Error | SpotifyError,
 };
 
-type State = {
+export type State = {
   +lastUpdated: string,
   +message: string,
   +currentChat: Array<string>,
