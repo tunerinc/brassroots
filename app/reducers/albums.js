@@ -16,7 +16,7 @@ type Artist = {
   +name: string,
 };
 
-type Album = {
+export type Album = {
   +lastUpdated: string,
   +id:
     | string
@@ -43,7 +43,7 @@ type Album = {
   +topTracks: Array<string>,
 };
 
-type State = {
+export type State = {
   +lastUpdated: string,
   +userAlbums: Array<string>,
   +albumsByID: {
