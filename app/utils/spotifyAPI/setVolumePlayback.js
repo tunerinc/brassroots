@@ -46,7 +46,7 @@ async function setVolumePlayback(
     return await Spotify.sendRequest(url, 'PUT', options, false);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = setVolumePlayback;

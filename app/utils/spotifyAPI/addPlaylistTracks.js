@@ -48,7 +48,7 @@ async function addPlaylistTracks(
     return await Spotify.sendRequest(url, 'POST', options, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = addPlaylistTracks;

@@ -40,7 +40,7 @@ async function unfollowPlaylist(
     return await Spotify.sendRequest(url, 'DELETE', {}, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = unfollowPlaylist;

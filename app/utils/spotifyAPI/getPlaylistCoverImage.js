@@ -40,7 +40,7 @@ async function getPlaylistCoverImage(
     return await Spotify.sendRequest(url, 'GET', {}, false);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = getPlaylistCoverImage;

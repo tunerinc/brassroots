@@ -46,8 +46,8 @@ export default class App extends React.Component<Props> {
     // @see: https://github.com/facebook/react-native/issues/9599
     if (typeof global.self === 'undefined') {
       global.self = global;
-    };
-  };
+    }
+  }
 
   render() {
     StatusBar.setBarStyle('light-content', true);
@@ -64,5 +64,5 @@ export default class App extends React.Component<Props> {
         </RouterWithRedux>
       </Provider>
     );
-  };
-};
+  }
+}

@@ -52,7 +52,7 @@ async function changePlaylistDetails(
     return await Spotify.sendRequest(url, 'PUT', playlist, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = changePlaylistDetails;

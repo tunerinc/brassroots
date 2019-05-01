@@ -27,10 +27,10 @@ function findObjectValueKey(obj: Obj, value: Value) {
   for (let key in obj) {
     if (obj.hasOwnProperty(key) && obj[key] === value) {
       return key;
-    };
-  };
+    }
+  }
 
   return null;
-};
+}
 
 module.exports = findObjectValueKey;

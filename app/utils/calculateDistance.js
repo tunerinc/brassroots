@@ -42,10 +42,10 @@ function calculateDistance(
   distance = distance * 180 / Math.PI;
   distance = distance * 60 * 1.1515;
 
-  if (unit === 'K') {distance = distance * 1.609344};
-  if (unit === 'N') {distance = distance * 0.8684};
+  if (unit === 'K') {distance = distance * 1.609344}
+  if (unit === 'N') {distance = distance * 0.8684}
 
   return distance;
-};
+}
 
 module.exports = calculateDistance;

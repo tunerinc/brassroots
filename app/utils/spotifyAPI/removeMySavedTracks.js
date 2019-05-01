@@ -44,7 +44,7 @@ async function removeMySavedTracks(
     return await Spotify.sendRequest(url, 'DELETE', options, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = removeMySavedTracks;

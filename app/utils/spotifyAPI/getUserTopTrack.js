@@ -41,7 +41,7 @@ async function getUserTopTrack(): Promise<Response> {
     return await Spotify.sendRequest(url, 'GET', options, false);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = getUserTopTrack;

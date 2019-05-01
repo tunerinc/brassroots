@@ -50,7 +50,7 @@ async function getCategoryPlaylists(
     return await Spotify.sendRequest(url, 'GET', options, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = getCategoryPlaylists;

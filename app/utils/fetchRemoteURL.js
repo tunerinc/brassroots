@@ -27,11 +27,11 @@ function fetchRemoteURL(url, type) {
     xhr.onreadystatechange = () => {
       if (xhr.readyState == 4 && xhr.status === 200) {
         resolve(xhr.response);
-      };
+      }
     };
 
     xhr.send();
   });
-};
+}
 
 module.exports = fetchRemoteURL;

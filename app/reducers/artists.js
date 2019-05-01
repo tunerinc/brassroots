@@ -126,8 +126,8 @@ function singleArtist(
   switch (action.type) {
     default:
       return state;
-  };
-};
+  }
+}
 
 export default function reducer(
   state: State = initialState,
@@ -136,5 +136,5 @@ export default function reducer(
   switch (action.type) {
     default:
       return state;
-  };
-};
+  }
+}

@@ -15,6 +15,6 @@ function getUserLocation() {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
-};
+}
 
 module.exports = getUserLocation;

@@ -51,6 +51,5 @@ const createStoreWithMiddleware = compose(
 
 export default function configureStore(initialState) {
   const store = createStoreWithMiddleware(reducers, initialState);
-
   return store;
 }

@@ -52,7 +52,7 @@ async function createPlaylist(
     return await Spotify.sendRequest(url, 'POST', playlist, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = createPlaylist;

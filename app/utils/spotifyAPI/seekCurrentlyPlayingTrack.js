@@ -46,7 +46,7 @@ async function seekCurrentlyPlayingTrack(
     return await Spotify.sendRequest(url, 'PUT', options, false);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = seekCurrentlyPlayingTrack;

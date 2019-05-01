@@ -30,6 +30,6 @@ function updateObject(
   newValues: NewValues,
 ): Response {
   return {...oldObject, ...newValues};
-};
+}
 
 export default updateObject;

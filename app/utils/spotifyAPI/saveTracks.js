@@ -44,7 +44,7 @@ async function saveTracks(
     return await Spotify.sendRequest(url, 'PUT', options, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = saveTracks;

@@ -36,7 +36,7 @@ async function getMyAvailableDevices(): Promise<Response> {
     return await Spotify.sendRequest(url, 'GET', {}, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = getMyAvailableDevices;

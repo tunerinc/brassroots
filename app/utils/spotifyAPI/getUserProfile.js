@@ -40,7 +40,7 @@ async function getUserProfile(
     return await Spotify.sendRequest(url, 'GET', {}, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = getUserProfile;

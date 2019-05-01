@@ -42,7 +42,7 @@ async function uploadCustomPlaylistCoverImage(
     return await Spotify.sendRequest(url, 'PUT', image, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = uploadCustomPlaylistCoverImage;

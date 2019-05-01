@@ -42,7 +42,7 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
     tracks = tracksToAdd.items;
   } else {
     tracks = tracksToAdd;
-  };
+  }
 
   for (let item of tracks) {
     let track = {};
@@ -51,7 +51,7 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
       track = item.track;
     } else {
       track = item;      
-    };
+    }
     
     const album = track.album;
     const {images, small, medium, large} = album;
@@ -59,7 +59,7 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
 
     if (music.sortedTracks) {
       music = updateObject(music, {sortedTracks: music.sortedTracks.concat(track.id)});
-    };
+    }
     
     musicTracks = updateObject(musicTracks, {
       [track.id]: {
@@ -119,10 +119,10 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
           },
         });
       });
-    };
-  };
+    }
+  }
 
   return updateObject(music, {tracks: musicTracks, albums: musicAlbums, artists: musicArtists});
-};
+}
 
 module.exports = addMusicItems;

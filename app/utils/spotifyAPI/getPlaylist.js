@@ -48,7 +48,7 @@ async function getPlaylist(
     return await Spotify.sendRequest(url, 'GET', options, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = getPlaylist;

@@ -31,6 +31,6 @@ function isURL(url: string): boolean {
   const re = new RegExp(strRegex);
   
   return re.test(url);
-};
+}
 
 module.exports = isURL;

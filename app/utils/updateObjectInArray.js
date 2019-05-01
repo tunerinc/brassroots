@@ -44,6 +44,6 @@ function updateObjectInArray(
   });
 
   return updatedItems;
-};
+}
 
 export default updateObjectInArray;

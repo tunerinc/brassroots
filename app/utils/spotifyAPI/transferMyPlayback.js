@@ -46,7 +46,7 @@ async function transferMyPlayback(
     return await Spotify.sendRequest(url, 'PUT', options, true);
   } catch (err) {
     return err;
-  };
-};
+  }
+}
 
 module.exports = transferMyPlayback;
