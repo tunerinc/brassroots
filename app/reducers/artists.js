@@ -7,27 +7,18 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import type {SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/artists/types';
 
 const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 export type Artist = {
   +lastUpdated: string,
-  +id:
-    | string
-    | null,
-  +name:
-    | string
-    | null,
-  +small:
-    | string
-    | null,
-  +medium:
-    | string
-    | null,
-  +large:
-    | string
-    | null,
+  +id: ?string,
+  +name: ?string,
+  +small: ?string,
+  +medium: ?string,
+  +large: ?string,
   +albums: Array<string>,
   +totalPlays: number,
   +userPlays: number,
@@ -41,13 +32,9 @@ export type Artist = {
 export type State = {
   +lastUpdated: string,
   +userArtists: Array<string>,
-  +artistsByID: {
-    +[key: string]: Artist,
-  },
+  +artistsByID: {+[key: string]: Artist},
   +totalArtists: number,
-  +selectedArtist:
-    | string
-    | null,
+  +selectedArtist: ?string,
   +searchingArtists: boolean,
   +fetchingAlbums: boolean,
   +fetchingArtists: boolean,
@@ -55,9 +42,7 @@ export type State = {
   +fetchingPlaylists: boolean,
   +fetchingTracks: boolean,
   +incrementingCount: boolean,
-  +error:
-    | {}
-    | null,
+  +error: ?Error | SpotifyError,
 };
 
 /**
