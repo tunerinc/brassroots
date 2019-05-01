@@ -12,14 +12,11 @@
 import Spotify from "rn-spotify-sdk";
 import type {Category, SpotifyError} from './types';
 
+type Response = Category | SpotifyError;
 type Options = {
-  country?: string,
-  locale?: string,
+  +country?: string,
+  +locale?: string,
 };
-
-type Response =
-  | Category
-  | SpotifyError;
 
 /**
  * Get a single category used to tag items in Spotify

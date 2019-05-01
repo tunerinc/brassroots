@@ -10,9 +10,7 @@
  */
 
 type Value = string | number | {};
-type Obj = {
-  [key: string]: Value,
-};
+type Obj = {+[key: string]: Value};
 
 /**
  * Finds the key of a value if it exists in an object

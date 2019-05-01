@@ -12,16 +12,12 @@
 import Spotify from "rn-spotify-sdk";
 import type {CursorPaging, SpotifyError} from './types';
 
+type Response = {artists: CursorPaging} | SpotifyError;
 type Options = {
-  type: string,
-  limit?: number,
-  after?: string,
+  +type: string,
+  +limit?: number,
+  +after?: string,
 };
-
-type Response =
-  | {artists: CursorPaging}
-  | SpotifyError;
-
 
 /**
  * Get the current user’s followed artists.

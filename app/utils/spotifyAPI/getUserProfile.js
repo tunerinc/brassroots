@@ -12,9 +12,7 @@
 import Spotify from "rn-spotify-sdk";
 import type {PublicUser, SpotifyError} from './types';
 
-type Response =
-  | PublicUser
-  | SpotifyError;
+type Response = PublicUser | SpotifyError;
 
 /**
  * Get public profile information about a Spotify user.

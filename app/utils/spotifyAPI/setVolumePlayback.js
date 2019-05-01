@@ -12,14 +12,11 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Options = {
-  volume_percent: number,
-  device_id?: string,
+  +volume_percent: number,
+  +device_id?: string,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Set the volume for the user’s current playback device.

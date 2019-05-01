@@ -12,15 +12,11 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = {snapshot_id: string} | SpotifyError;
 type Options = {
-  uris: Array<string>,
-  position?: number,
+  +uris: Array<string>,
+  +position?: number,
 };
-
-type Response =
-  | {snapshot_id: string}
-  | SpotifyError;
-
 
 /**
  * Add one or more tracks to a user’s playlist.

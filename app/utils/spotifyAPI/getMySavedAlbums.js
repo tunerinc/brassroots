@@ -12,15 +12,12 @@
 import Spotify from "rn-spotify-sdk";
 import type {Paging, SpotifyError} from './types';
 
+type Response = Paging | SpotifyError;
 type Options = {
-  limit?: number,
-  offset?: number,
-  market?: string,
+  +limit?: number,
+  +offset?: number,
+  +market?: string,
 };
-
-type Response =
-  | Paging
-  | SpotifyError;
 
 /**
  * Get a list of the albums saved in the current Spotify user’s “Your Music” library.

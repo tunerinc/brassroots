@@ -12,16 +12,13 @@
 import Spotify from "rn-spotify-sdk";
 import type {Paging, SpotifyError} from './types';
 
+type Response = Paging | SpotifyError;
 type Options = {
-  fields?: string,
-  limit?: number,
-  offset?: number,
-  market?: string,
+  +fields?: string,
+  +limit?: number,
+  +offset?: number,
+  +market?: string,
 };
-
-type Response =
-  | Paging
-  | SpotifyError;
 
 /**
  * Get full details of the tracks of a playlist owned by a Spotify user.

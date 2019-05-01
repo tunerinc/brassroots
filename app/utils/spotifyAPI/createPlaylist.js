@@ -12,16 +12,13 @@
 import Spotify from "rn-spotify-sdk";
 import type {FullPlaylist, SpotifyError} from './types';
 
+type Response = FullPlaylist | SpotifyError;
 type NewPlaylist = {
-  name: string,
-  public: boolean,
-  collaborative: boolean,
-  description: string,
+  +name: string,
+  +public: boolean,
+  +collaborative: boolean,
+  +description: string,
 };
-
-type Response =
-  | FullPlaylist
-  | SpotifyError;
 
 /**
  * Create a playlist for a Spotify user.

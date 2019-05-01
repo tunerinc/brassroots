@@ -12,23 +12,19 @@
 import Spotify from "rn-spotify-sdk";
 import type {Paging, SpotifyError} from './types';
 
+type Response = Playlists | SpotifyError;
 type Options = {
-  locale?: string,
-  country?: string,
-  timestamp?: string,
-  limit?: number,
-  offset?: number,
+  +locale?: string,
+  +country?: string,
+  +timestamp?: string,
+  +limit?: number,
+  +offset?: number,
 };
 
 type Playlists = {
-  message: string,
-  playlists: Paging,
+  +message: string,
+  +playlists: Paging,
 };
-
-type Response =
-  | Playlists
-  | SpotifyError;
-
 
 /**
  * Get a list of Spotify featured playlists.

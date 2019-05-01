@@ -12,16 +12,13 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = {snapshot_id: string} | SpotifyError;
 type Options = {
-  range_start: number,
-  range_length?: number,
-  insert_before?: number,
-  snapshot_id?: string,
+  +range_start: number,
+  +range_length?: number,
+  +insert_before?: number,
+  +snapshot_id?: string,
 };
-
-type Response =
-  | {snapshot_id: string}
-  | SpotifyError;
 
 /**
  * Reorder a track or a group of tracks in a playlist.

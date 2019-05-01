@@ -12,16 +12,13 @@
 import Spotify from "rn-spotify-sdk";
 import type {Paging, SpotifyError} from './types';
 
+type Response = Paging | SpotifyError;
 type Options = {
-  country?: string,
-  locale?: string,
-  limit?: number,
-  offset?: number,
+  +country?: string,
+  +locale?: string,
+  +limit?: number,
+  +offset?: number,
 };
-
-type Response =
-  | Paging
-  | SpotifyError;
 
 /**
  * Get a list of categories used to tag items in Spotify

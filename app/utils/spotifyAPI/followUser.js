@@ -12,13 +12,10 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Options = {
-  ids: Array<string>,
+  +ids: Array<string>,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Add the current user as a follower of one or more other Spotify users

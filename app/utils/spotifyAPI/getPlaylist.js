@@ -12,14 +12,11 @@
 import Spotify from "rn-spotify-sdk";
 import type {FullPlaylist, SpotifyError} from './types';
 
+type Response = FullPlaylist | SpotifyError;
 type Options = {
-  fields?: string,
-  market?: string,
+  +fields?: string,
+  +market?: string,
 };
-
-type Response =
-  | FullPlaylist
-  | SpotifyError;
 
 /**
  * Get a playlist owned by a Spotify user.

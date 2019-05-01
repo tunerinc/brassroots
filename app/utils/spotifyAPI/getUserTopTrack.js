@@ -12,14 +12,11 @@
 import Spotify from "rn-spotify-sdk";
 import type {Paging, SpotifyError} from './types';
 
+type Response = Paging | SpotifyError;
 type Options = {
-  time_range: string,
-  limit: number,
+  +time_range: string,
+  +limit: number,
 };
-
-type Response =
-  | Paging
-  | SpotifyError;
 
 /**
  * Gets the top track for the current user from Spotify

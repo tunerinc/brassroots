@@ -12,9 +12,7 @@
 import Spotify from "rn-spotify-sdk";
 import type {Devices, SpotifyError} from './types';
 
-type Response = 
-  | Devices
-  | SpotifyError;
+type Response =  Devices | SpotifyError;
 
 /**
  * Get information about a user’s available devices.

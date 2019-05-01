@@ -12,9 +12,7 @@
 import Spotify from "rn-spotify-sdk";
 import type {Image, SpotifyError} from './types';
 
-type Response =
-  | Array<Image>
-  | SpotifyError;
+type Response = Array<Image> | SpotifyError;
 
 /**
  * Get the current image associated with a specific playlist

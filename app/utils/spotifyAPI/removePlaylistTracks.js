@@ -12,18 +12,15 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = {snapshot_id: string} | SpotifyError;
 type TrackToRemove = {
-  uri: string,
-  position: number,
+  +uri: string,
+  +position: number,
 };
 
 type Options = {
-  tracks: Array<TrackToRemove>,
+  +tracks: Array<TrackToRemove>,
 };
-
-type Response =
-  | {snapshot_id: string}
-  | SpotifyError;
 
 /**
  * Remove one or more tracks from a user’s playlist.

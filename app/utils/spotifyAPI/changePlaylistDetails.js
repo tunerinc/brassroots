@@ -12,16 +12,13 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Playlist = {
-  name: string,
-  public: boolean,
-  collaborative: boolean,
-  description: string,
+  +name: string,
+  +public: boolean,
+  +collaborative: boolean,
+  +description: string,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Change a playlist’s name and public/private state.

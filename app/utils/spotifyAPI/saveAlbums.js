@@ -12,13 +12,10 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Options = {
-  ids: Array<string>,
+  +ids: Array<string>,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Save one or more albums to the current user’s “Your Music” library.

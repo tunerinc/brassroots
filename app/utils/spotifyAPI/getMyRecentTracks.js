@@ -12,15 +12,12 @@
 import Spotify from "rn-spotify-sdk";
 import type {CursorPaging, SpotifyError} from './types';
 
+type Response = CursorPaging | SpotifyError;
 type Options = {
-  limit?: number,
-  after?: string,
-  before?: string,
+  +limit?: number,
+  +after?: string,
+  +before?: string,
 };
-
-type Response =
-  | CursorPaging
-  | SpotifyError;
 
 /**
  * Returns the most recent tracks played by the current user. Note that a track currently playing will not be visible in play history until it has completed. A track must be played for more than 30 seconds to be included in play history.

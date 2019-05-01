@@ -12,13 +12,10 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Options = {
   ids: Array<string>,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Remove one or more tracks from the current user’s “Your Music” library.

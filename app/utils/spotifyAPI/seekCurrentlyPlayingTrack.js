@@ -12,14 +12,11 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Options = {
-  position_ms: number,
-  device_id?: string,
+  +position_ms: number,
+  +device_id?: string,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Seeks to the given position in the user’s currently playing track.

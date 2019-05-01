@@ -12,20 +12,17 @@
 import Spotify from "rn-spotify-sdk";
 import type {Paging, SpotifyError} from './types';
 
+type Response = AlbumReleases | SpotifyError;
 type Options = {
-  country: string,
-  limit?: number,
-  offset?: number,
+  +country: string,
+  +limit?: number,
+  +offset?: number,
 };
 
 type AlbumReleases = {
-  message: string,
-  albums: Paging,
+  +message: string,
+  +albums: Paging,
 };
-
-type Response =
-  | AlbumReleases
-  | SpotifyError;
 
 /**
  * Get a list of new album releases featured in Spotify.

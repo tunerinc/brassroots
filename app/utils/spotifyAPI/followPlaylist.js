@@ -12,13 +12,10 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Options = {
-  public: boolean,
+  +public: boolean,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Follows a Spotify playlist for the current user.

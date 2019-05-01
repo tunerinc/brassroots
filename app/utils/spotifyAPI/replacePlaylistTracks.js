@@ -12,13 +12,10 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Options = {
-  uris: Array<string>,
+  +uris: Array<string>,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Replace all the tracks in a playlist, overwriting its existing tracks. This powerful request can be useful for replacing tracks, re-ordering existing tracks, or clearing the playlist.

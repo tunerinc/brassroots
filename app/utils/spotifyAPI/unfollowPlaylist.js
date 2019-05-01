@@ -12,9 +12,7 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
-type Response =
-  | empty
-  | SpotifyError;
+type Response = empty | SpotifyError;
 
 /**
  * Unfollows a Spotify playlist for the current user.

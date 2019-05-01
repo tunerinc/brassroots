@@ -12,87 +12,84 @@
 import Spotify from "rn-spotify-sdk";
 import type {Recommendations, SpotifyError} from './types';
 
+type Response = Recommendations | SpotifyError;
 type Options = {
-  seed_artists: Array<string>,
-  seed_genres: Array<string>,
-  seed_tracks: Array<string>,
-  limit?: number,
-  market?: string,
+  +seed_artists: Array<string>,
+  +seed_genres: Array<string>,
+  +seed_tracks: Array<string>,
+  +limit?: number,
+  +market?: string,
 
   // acousticness
-  max_acousticness?: number,
-  min_acousticness?: number,
-  target_acousticness?: number,
+  +max_acousticness?: number,
+  +min_acousticness?: number,
+  +target_acousticness?: number,
 
   // danceability
-  max_danceability?: number,
-  min_danceability?: number,
-  target_danceability?: number,
+  +max_danceability?: number,
+  +min_danceability?: number,
+  +target_danceability?: number,
 
   // duration_ms
-  max_duration_ms?: number,
-  min_duration_ms?: number,
-  target_duration_ms?: number,
+  +max_duration_ms?: number,
+  +min_duration_ms?: number,
+  +target_duration_ms?: number,
 
   // energy
-  max_energy?: number,
-  min_energy?: number,
-  target_energy?: number,
+  +max_energy?: number,
+  +min_energy?: number,
+  +target_energy?: number,
 
   // instrumentalness
-  max_instrumentalness?: number,
-  min_instrumentalness?: number,
-  target_instrumentalness?: number,
+  +max_instrumentalness?: number,
+  +min_instrumentalness?: number,
+  +target_instrumentalness?: number,
 
   // key
-  max_key?: number,
-  min_key?: number,
-  target_key?: number,
+  +max_key?: number,
+  +min_key?: number,
+  +target_key?: number,
 
   // liveness
-  max_liveness?: number,
-  min_liveness?: number,
-  target_liveness?: number,
+  +max_liveness?: number,
+  +min_liveness?: number,
+  +target_liveness?: number,
 
   // loudness
-  max_loudness?: number,
-  min_loudness?: number,
-  target_loudness?: number,
+  +max_loudness?: number,
+  +min_loudness?: number,
+  +target_loudness?: number,
 
   // mode
-  max_mode?: number,
-  min_mode?: number,
-  target_mode?: number,
+  +max_mode?: number,
+  +min_mode?: number,
+  +target_mode?: number,
 
   // popularity
-  max_popularity?: number,
-  min_popularity?: number,
-  target_popularity?: number,
+  +max_popularity?: number,
+  +min_popularity?: number,
+  +target_popularity?: number,
 
   // speechiness
-  max_speechiness?: number,
-  min_speechiness?: number,
-  target_speechiness?: number,
+  +max_speechiness?: number,
+  +min_speechiness?: number,
+  +target_speechiness?: number,
 
   // tempo
-  max_tempo?: number,
-  min_tempo?: number,
-  target_tempo?: number,
+  +max_tempo?: number,
+  +min_tempo?: number,
+  +target_tempo?: number,
 
   // time_signature
-  max_time_signature?: number,
-  min_time_signature?: number,
-  target_time_signature?: number,
+  +max_time_signature?: number,
+  +min_time_signature?: number,
+  +target_time_signature?: number,
 
   // valence
-  max_valence?: number,
-  min_valence?: number,
-  target_valence?: number,
+  +max_valence?: number,
+  +min_valence?: number,
+  +target_valence?: number,
 };
-
-type Response =
-  | Recommendations
-  | SpotifyError;
 
 /**
  * Create a playlist-style listening experience based on seed artists, tracks and genres.

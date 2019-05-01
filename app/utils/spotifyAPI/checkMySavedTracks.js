@@ -12,13 +12,10 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = Array<boolean> | SpotifyError;
 type Options = {
-  ids: Array<string>,
+  +ids: Array<string>,
 };
-
-type Response =
-  | Array<boolean>
-  | SpotifyError;
 
 /**
  * Check if one or more tracks is already saved in the current Spotify user’s “Your Music” library.

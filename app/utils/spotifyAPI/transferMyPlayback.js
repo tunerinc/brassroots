@@ -12,14 +12,11 @@
 import Spotify from "rn-spotify-sdk";
 import type {SpotifyError} from './types';
 
+type Response = empty | SpotifyError;
 type Options = {
-  device_ids: Array<string>,
-  play?: boolean,
+  +device_ids: Array<string>,
+  +play?: boolean,
 };
-
-type Response =
-  | empty
-  | SpotifyError;
 
 /**
  * Transfer playback to a new device and determine if it should start playing.
