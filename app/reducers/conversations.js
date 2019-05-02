@@ -44,11 +44,11 @@ export type State = {
   +totalConversations: number,
   +messagesByID: {+[key: string]: SingleMessage},
   +totalMessages: number,
-  selectedConversation: ?string,
-  searchingConversations: boolean,
-  fetchingConversations: boolean,
-  error: ?Error | SpotifyError,
-  newConversation: {
+  +selectedConversation: ?string,
+  +searchingConversations: boolean,
+  +fetchingConversations: boolean,
+  +error: ?Error | SpotifyError,
+  +newConversation: {
     +recipients: Array<string>,
     +message: string,
   },
