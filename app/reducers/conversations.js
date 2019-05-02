@@ -69,7 +69,7 @@ export type State = {
  * @property {string}   mediaType=null       The type of media in the message
  * @property {boolean}  fetchingMedia=false  Whether the current user is fetching the message media
  */
-const singleMessageState = {
+const singleMessageState: SingleMessage = {
   lastUpdated,
   id: null,
   text: null,
@@ -96,7 +96,7 @@ const singleMessageState = {
  * @property {string[]} sharedMusic            The ids of the shared music in a single conversation
  * @property {boolean}  fetchingMusic=false    Whether the current user is fetching shared music of a single conversation
  */
-const singleConversationState = {
+const singleConversationState: SingleConversation = {
   lastUpdated,
   id: null,
   name: null,
@@ -127,7 +127,7 @@ const singleConversationState = {
  * @property {string[]} newConversation.recipients   The Brassroots ids of the recipients for the new conversation
  * @property {string}   newConversation.message      The message to be sent with the new conversation
  */
-export const initialState = {
+export const initialState: State = {
   lastUpdated,
   userConversations: [],
   conversationsByID: {},

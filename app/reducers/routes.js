@@ -18,7 +18,7 @@ export type State = {
  * 
  * @property {object} scene The current scene based on the route stack
  */
-export const initialState = {scene: {}};
+export const initialState: State = {scene: {}};
 
 export default function reducer(
   state: State = initialState,

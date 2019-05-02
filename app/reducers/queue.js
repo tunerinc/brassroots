@@ -57,7 +57,7 @@ export type State = {
  * @property {number}  totalLikes=0 The total amount of likes the queue track has
  * @property {boolean} liked=false  Whether the current user has liked the queue track
  */
-const singleState = {
+const singleState: QueueTrack = {
   id: null,
   trackID: null,
   userID: null,
@@ -90,7 +90,7 @@ const singleState = {
  * @property {string}          context.username      The username of the current context
  * @property {(number|string)} context.position=0    The position/cursor in the context the current track is located
  */
-export const initialState = {
+export const initialState: State = {
   lastUpdated,
   userQueue: [],
   contextQueue: [],

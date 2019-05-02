@@ -26,7 +26,7 @@ export type State = {
  * @property {boolean} profileCreated=false   Whether the current user's profile was created
  * @property {Error}   error=null             The error related to onboarding actions
  */
-export const initialState = {
+export const initialState: State = {
   onboarding: false,
   creatingUser: false,
   profileCreated: false,

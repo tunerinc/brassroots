@@ -46,7 +46,7 @@ export type State = {
  * @property {boolean} terms.refreshingTerms=false     Whether the current user is refreshing the terms of service
  * @property {Error}   terms.error=null                The error related to the terms of service actions
  */
-export const initialState = {
+export const initialState: State = {
   privacy: {
     lastUpdated,
     text: '',

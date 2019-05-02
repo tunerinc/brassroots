@@ -35,7 +35,7 @@ export type State = {
  * @property {string}   lastUpdated                 The date/time the notifications were last updated
  * @property {Error}    error=null                  The error related to notifications actions
  */
-export const initialState = {
+export const initialState: State = {
   userNotifications: [],
   notificationsByID: {},
   totalNotifications: 0,

@@ -55,7 +55,7 @@ export type State = {
  * @property {string}   lastUpdated            The date/time the searches were last updated
  * @property {Error}    error=null             The error related to search actions
  */
-export const initialState = {
+export const initialState: State = {
   recentSearches: [],
   nearbySearches: [],
   trendingSearches: [],

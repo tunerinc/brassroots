@@ -76,7 +76,7 @@ export type State = {
  * @property {number} totalPlays=0         The total amount of plays the track within a playlist has
  * @property {number} userPlays=0          The amount of plays the current user has on the playlist track
  */
-const singleTrackState = {
+const singleTrackState: PlaylistTrack = {
   playlistTrackID: null,
   trackID: null,
   userID: null,
@@ -105,7 +105,7 @@ const singleTrackState = {
  * @property {number}   totalPlays=0   The total amount of playlist the single playlist has
  * @property {number}   userPlays=0    The amount of plays the current user has on the playlist
  */
-const singlePlaylistState = {
+const singlePlaylistState: Playlist = {
   lastUpdated,
   id: null,
   name: null,
@@ -152,7 +152,7 @@ const singlePlaylistState = {
  * @property {string}   newPlaylist.image          The image url of the new playlist
  * @property {string}   newPlaylist.mode           The mode to create the new playlist in
  */
-export const initialState = {
+export const initialState: State = {
   lastUpdated,
   userPlaylists: [],
   playlistsByID: {},

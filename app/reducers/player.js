@@ -68,7 +68,7 @@ export type State = {
  * @property {boolean} muting=false           Whether the player is muting
  * @property {number}  volume=0               The current volume of the player
  */
-export const initialState = {
+export const initialState: State = {
   lastUpdated,
   attemptingToPlay: false,
   timeLastPlayed: lastUpdated,
