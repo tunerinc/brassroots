@@ -1,17 +1,8 @@
 'use strict';
 
 /**
- * @format
- * @flow
- */
-
-/**
  * @module UpdateObject
  */
-
-type OldObject = {};
-type NewValues = {};
-type Response = {...OldObject, ...NewValues};
 
 /**
  * Updates an object with new values
@@ -25,10 +16,7 @@ type Response = {...OldObject, ...NewValues};
  * 
  * @returns {object}           The newly updated object containing the new values
  */
-function updateObject(
-  oldObject: OldObject,
-  newValues: NewValues,
-): Response {
+function updateObject(oldObject, newValues) {
   return {...oldObject, ...newValues};
 }
 

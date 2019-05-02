@@ -11,26 +11,33 @@ import * as types from '../actions/events/types';
 
 const lastTimeSent: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
+export type Action = {
+  +type?: string,
+  +event?: Event,
+};
+
 export type Event = {
-  +eventTime: number,
-  +localTime: number,
-  +locationLatitude: string,
-  +locationLongitude: string,
-  +userId: string,
-  +trackID: ?string,
-  +sourceType: ?string,
-  +sourceId: ?string,
-  +destinationType: ?string,
-  +destinationId: ?string,
-  +hyperlink: ?string,
-  +oldMode: ?string,
-  +newMode: ?string,
-  +sourceMusicType: ?string,
-  +sourceMusicId: ?string,
-  +listenType: ?string,
-  +message: ?string,
-  +skippedStartSeconds: ?number,
-  +skippedEndSeconds: ?number,
+  +eventTime?: number,
+  +localTime?: number,
+  +locationLatitude?: string,
+  +locationLongitude?: string,
+  +userId?: string,
+  +trackID?: ?string,
+  +sourceType?: ?string,
+  +sourceId?: ?string,
+  +destinationType?: ?string,
+  +destinationId?: ?string,
+  +hyperlink?: ?string,
+  +oldMode?: ?string,
+  +newMode?: ?string,
+  +sourceMusicType?: ?string,
+  +sourceMusicId?: ?string,
+  +listenType?: ?string,
+  +message?: ?string,
+  +skippedStartSeconds?: ?number,
+  +skippedEndSeconds?: ?number,
+  +eventVersion?: ?string,
+  +eventType?: ?string,
 };
 
 export type State = {
@@ -76,12 +83,60 @@ export const initialState: State = {
   error: null,
 };
 
+/**
+ * Add an event to the batch
+ * 
+ * @function addEvent
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state                       The Redux state
+ * @param   {object} action                      The Redux action
+ * @param   {string} action.type                 The type of Redux action
+ * @param   {object} event                       The event being added to the batch
+ * @param   {number} event.eventTime             The time the event took place in UTC
+ * @param   {number} event.localTime             The local time the event took place
+ * @param   {string} event.locationLatitude      The latitude value of the current user's location
+ * @param   {string} event.locationLongitude     The longitude value of the current user's location
+ * @param   {string} event.userId                The id of the current user
+ * @param   {string} [event.trackId]             The Spotify id of the track
+ * @param   {string} [event.sourceType]          The type of item the source is
+ * @param   {string} [event.sourceId]            The id of the source item
+ * @param   {string} [event.destinationType]     The type of destination the current user is targeting
+ * @param   {string} [event.destinationId]       The id of the destination target for the current user
+ * @param   {string} [event.hyperlink]           The hyperlink the current user has navigated to
+ * @param   {string} [event.oldMode]             The old mode the current user is switching from in a playlist
+ * @param   {string} [event.newMode]             The new mode the current user has selected for a playlist
+ * @param   {string} [event.sourceMusicType]     The type of source music
+ * @param   {string} [event.sourceMusicId]       The id of the source music
+ * @param   {string} [event.listenType]          The type of listen the current user registered in a session
+ * @param   {string} [event.message]             The message the current user has sent
+ * @param   {number} [event.skippedStartSeconds] The time where the current user started to seek from
+ * @param   {number} [event.skippedEndSeconds]   The time where the current user ended seeking
+ * 
+ * @returns {object}                             The state with the new event added
+ */
+function addEvent(
+  state: State,
+  action: Action,
+): State {
+  const {batch} = state;
+  const {event} = action;
+  return updateObject(state, {batch: [...batch, ...(event && event.eventType ? [event] : [])]});
+};
+
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADDED_TRACK:
+        return addEvent(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
