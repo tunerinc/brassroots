@@ -37,15 +37,15 @@ export type User = {
 };
 
 export type State = {
-  lastUpdated: string,
-  currentUserID: ?string,
-  usersByID: {+[key: string]: User},
-  totalUsers: number,
-  searchingUsers: boolean,
-  fetchingUsers: boolean,
-  savingUser: boolean,
-  changingImage: ?string,
-  error: ?Error | SpotifyError,
+  +lastUpdated: string,
+  +currentUserID: ?string,
+  +usersByID: {+[key: string]: User},
+  +totalUsers: number,
+  +searchingUsers: boolean,
+  +fetchingUsers: boolean,
+  +savingUser: boolean,
+  +changingImage: ?string,
+  +error: ?Error | SpotifyError,
 };
 
 /**
