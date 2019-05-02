@@ -10,3 +10,78 @@ import updateObject from '../utils/updateObject';
 import * as types from '../actions/events/types';
 
 const lastTimeSent: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
+
+export type Event = {
+  +eventTime: number,
+  +localTime: number,
+  +locationLatitude: string,
+  +locationLongitude: string,
+  +userId: string,
+  +trackID: ?string,
+  +sourceType: ?string,
+  +sourceId: ?string,
+  +destinationType: ?string,
+  +destinationId: ?string,
+  +hyperlink: ?string,
+  +oldMode: ?string,
+  +newMode: ?string,
+  +sourceMusicType: ?string,
+  +sourceMusicId: ?string,
+  +listenType: ?string,
+  +message: ?string,
+  +skippedStartSeconds: ?number,
+  +skippedEndSeconds: ?number,
+};
+
+export type State = {
+  +lastTimeSent: string,
+  +batch: Array<Event>,
+  +uploading: boolean,
+  +error: ?Error,
+};
+
+/**
+ * @constant
+ * @alias eventsState
+ * @type {object}
+ * 
+ * @property {string}   lastTimeSent                  The date/time the batch events were last sent
+ * @property {object[]} batch                         The batch of events
+ * @property {number}   batch[].eventTime             The time the event took place in UTC
+ * @property {number}   batch[].localTime             The local time the event took place
+ * @property {string}   batch[].locationLatitude      The latitude value of the current user's location
+ * @property {string}   batch[].locationLongitude     The longitude value of the current user's location
+ * @property {string}   batch[].userId                The id of the current user
+ * @property {string}   [batch[].trackId]             The Spotify id of the track
+ * @property {string}   [batch[].sourceType]          The type of item the source is
+ * @property {string}   [batch[].sourceId]            The id of the source item
+ * @property {string}   [batch[].destinationType]     The type of destination the current user is targeting
+ * @property {string}   [batch[].destinationId]       The id of the destination target for the current user
+ * @property {string}   [batch[].hyperlink]           The hyperlink the current user has navigated to
+ * @property {string}   [batch[].oldMode]             The old mode the current user is switching from in a playlist
+ * @property {string}   [batch[].newMode]             The new mode the current user has selected for a playlist
+ * @property {string}   [batch[].sourceMusicType]     The type of source music
+ * @property {string}   [batch[].sourceMusicId]       The id of the source music
+ * @property {string}   [batch[].listenType]          The type of listen the current user registered in a session
+ * @property {string}   [batch[].message]             The message the current user has sent
+ * @property {number}   [batch[].skippedStartSeconds] The time where the current user started to seek from
+ * @property {number}   [batch[].skippedEndSeconds]   The time where the current user ended seeking
+ * @property {boolean}  uploading=false               Whether the events batch is uploading
+ * @property {Error}    error=null                    The error related to events actions
+ */
+export const initialState: State = {
+  lastTimeSent,
+  batch: [],
+  uploading: false,
+  error: null,
+};
+
+export default function reducer(
+  state: State = initialState,
+  action: {type: string} = {},
+): State {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
