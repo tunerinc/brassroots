@@ -5,12 +5,12 @@
  * @flow
  */
 
-import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
-
 /**
  * @module AddedTrack
  */
+
+import * as types from '../types';
+import type {Action, Event} from '../../../reducers/events';
 
 /**
  * Adds an event for an added track to a session's queue
@@ -48,4 +48,4 @@ export function addedTrack(
       )
     },
   };
-};
+}

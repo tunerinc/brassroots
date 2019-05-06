@@ -7,10 +7,11 @@
 
 import * as actions from '../AddedTrack';
 import * as types from '../types';
+import type {Action, Event} from '../../../reducers/events';
 
 describe('added track action creator', () => {
   it('creates action for an added track event type', () => {
-    const event = {
+    const event: Event = {
       eventTime: 1539013155533,
       localTime: 1539013155533,
       trackId: '6be86adcbf6a',
@@ -22,7 +23,7 @@ describe('added track action creator', () => {
       destinationType: 'PLAYLIST',
       destinationId: '6be86adc-bf6a-4ada-971b-4388decc7a1',
     };
-    const expectedAction = {
+    const expectedAction: Action = {
       type: types.ADDED_TRACK,
       event: {
         ...event,
