@@ -8,13 +8,9 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/events/types';
+import * as sendEventsBatch from '../actions/events/SendEventsBatch/reducers';
 
-const lastTimeSent: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
-
-export type Action = {
-  +type?: string,
-  +event?: Event,
-};
+export const lastTimeSent: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
 export type Event = {
   +eventTime?: number,
@@ -38,6 +34,12 @@ export type Event = {
   +skippedEndSeconds?: ?number,
   +eventVersion?: ?string,
   +eventType?: ?string,
+};
+
+export type Action = {
+  +type?: string,
+  +event?: Event,
+  +error?: Error,
 };
 
 export type State = {
@@ -132,7 +134,21 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.ADDED_TRACK:
+      case types.CLICKED_USERS_HYPERLINK:
+      case types.EDITED_PLAYLIST_SETTINGS:
+      case types.PLAYED_MUSIC_TRACKS:
+      case types.PLAYED_TRACK:
+      case types.REMOVED_TRACK:
+      case types.SENT_CHAT_MESSAGE:
+      case types.SKIPPED_TRACK:
+      case types.VIEWED_MUSIC_INFO:
         return addEvent(state, action);
+      case types.SEND_EVENTS_BATCH_REQUEST:
+        return sendEventsBatch.request(state);
+      case types.SEND_EVENTS_BATCH_SUCCESS:
+        return sendEventsBatch.success();
+      case types.SEND_EVENTS_BATCH_FAILURE:
+        return sendEventsBatch.failure(state, action);
       default:
         return state;
     }
