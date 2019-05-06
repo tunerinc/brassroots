@@ -8,6 +8,8 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/events/types';
+
+// Case Functions
 import * as sendEventsBatch from '../actions/events/SendEventsBatch/reducers';
 
 export const lastTimeSent: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
