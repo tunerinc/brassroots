@@ -12,8 +12,9 @@ import type {SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
 import {addSettings} from '../actions/settings/AddSettings/reducers';
+import * as authorizeUser from '../actions/settings/AuthUser/reducers';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 export type Settings = {
   +language: string,
@@ -136,6 +137,12 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_SETTINGS:
         return addSettings(state, action);
+      case types.AUTHORIZE_USER_REQUEST:
+        return authorizeUser.request(state);
+      case types.AUTHORIZE_USER_SUCCESS:
+        return authorizeUser.success(state);
+      case types.AUTHORIZE_USER_FAILURE:
+        return authorizeUser.failure(state, action);
       default:
         return state;
     }

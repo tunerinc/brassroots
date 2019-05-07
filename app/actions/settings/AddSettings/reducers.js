@@ -73,7 +73,6 @@ export function addSettings(
     const {settings} = action;
     const notify: Notify = updateObject(state.notify, settings.notify);
     const preference: Preference = updateObject(state.preference, settings.preference);
-
     return updateObject(state, {...settings, notify, preference});
   }
 
