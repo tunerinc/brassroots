@@ -10,23 +10,17 @@ import updateObject from '../utils/updateObject';
 import * as types from '../actions/settings/types';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 
+// Case Functions
+import {addSettings} from '../actions/settings/AddSettings/reducers';
+
 const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-export type State = {
-  +lastUpdated: string,
-  +version: string,
-  +initializing: boolean,
-  +loggingIn: boolean,
-  +loggedIn: boolean,
-  +loggingOut: boolean,
-  +soundEffects: boolean,
-  +theme: string,
+export type Settings = {
   +language: string,
   +region: string,
-  +saving: Array<string>,
-  +failed: Array<string>,
-  +fetchingSettings: boolean,
-  +error: ?Error | SpotifyError,
+  +soundEffects: boolean,
+  +theme: string,
+  +version: string,
   +notify: {
     +session: string,
     +chat: string,
@@ -46,25 +40,44 @@ export type State = {
   },
 };
 
+export type Action = {
+  +type?: string,
+  +error?: Error,
+  +settings?: Settings,
+};
+
+export type State = {
+  ...Settings,
+  +lastUpdated?: string,
+  +initializing?: boolean,
+  +loggingIn?: boolean,
+  +loggedIn?: boolean,
+  +loggingOut?: boolean,
+  +saving?: Array<string>,
+  +failed?: Array<string>,
+  +fetchingSettings?: boolean,
+  +error?: ?Error | SpotifyError,
+};
+
 /**
  * @constant
  * @alias settingsState
  * @type {object}
  * 
  * @property {string}   lastUpdated                   The date/time the settings were last updated
- * @property {string}   version                       The current version of the Brassroots app
  * @property {boolean}  initializing=false            Whether the Spotify module is initializing
  * @property {boolean}  loggingIn=false               Whether the current user is logging in
  * @property {boolean}  loggedIn=false                Whether the current user is logged in
  * @property {boolean}  loggingOUt=false              Whether the current user is logging out
- * @property {boolean}  soundEffects=true             Whether the current user has sound effects enabled
- * @property {string}   theme=dark                    The selected theme color by the current user
- * @property {string}   language=english              The language the current user has set for the app
- * @property {string}   region=us                     The region the current user is in
  * @property {string[]} saving                        The settings which are being saved
  * @property {string[]} failed                        The settings which failed to change
  * @property {boolean}  fetchingSettings=false        Whether the current user is fetching settings
  * @property {Error}    error=null                    The error related to settings actions
+ * @property {string}   version                       The current version of the Brassroots app
+ * @property {boolean}  soundEffects=true             Whether the current user has sound effects enabled
+ * @property {string}   theme=dark                    The selected theme color by the current user
+ * @property {string}   language=english              The language the current user has set for the app
+ * @property {string}   region=us                     The region the current user is in
  * @property {object}   notify                        The notification settings for the current user
  * @property {string}   notify.session=following      The notification status for live sessions
  * @property {string}   notify.chat=mentions          The notification status for a session's chat
@@ -117,10 +130,16 @@ export const initialState: State = {
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_SETTINGS:
+        return addSettings(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
