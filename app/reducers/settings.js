@@ -17,6 +17,7 @@ import * as changeDirectMessageNotification from '../actions/settings/ChangeDire
 import * as changeGroupDirectMessageNotification from '../actions/settings/ChangeGroupDirectMessageNotification/reducers';
 import * as changeLikeTrackNotification from '../actions/settings/ChangeLikeTrackNotification/reducers';
 import * as changeMessagePreference from '../actions/settings/ChangeMessagePreference/reducers';
+import * as changeNearbySessionNotification from '../actions/settings/ChangeNearbySessionNotification/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -176,6 +177,12 @@ export default function reducer(
         return changeMessagePreference.success(state, action);
       case types.CHANGE_MESSAGE_PREFERENCE_FAILURE:
         return changeMessagePreference.failure(state, action);
+      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_REQUEST:
+        return changeNearbySessionNotification.request(state);
+      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_SUCCESS:
+        return changeNearbySessionNotification.success(state, action);
+      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_FAILURE:
+        return changeNearbySessionNotification.failure(state, action);
       default:
         return state;
     }
