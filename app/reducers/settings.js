@@ -14,6 +14,7 @@ import type {SpotifyError} from '../utils/spotifyAPI/types';
 import {addSettings} from '../actions/settings/AddSettings/reducers';
 import * as authorizeUser from '../actions/settings/AuthUser/reducers';
 import * as changeDirectMessageNotification from '../actions/settings/ChangeDirectMessageNotification/reducers';
+import * as changeGroupDirectMessageNotification from '../actions/settings/ChangeGroupDirectMessageNotification/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -155,6 +156,12 @@ export default function reducer(
         return changeDirectMessageNotification.success(state, action);
       case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
         return changeDirectMessageNotification.failure(state, action);
+      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST:
+        return changeGroupDirectMessageNotification.request(state);
+      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS:
+        return changeGroupDirectMessageNotification.success(state, action);
+      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
+        return changeGroupDirectMessageNotification.failure(state, action);
       default:
         return state;
     }
