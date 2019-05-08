@@ -6,7 +6,7 @@
  */
 
 /**
- * @module ChangeGroupDirectMessageNotificationReducers
+ * @module ChangeLikeTrackNotificationReducers
  */
 
 import updateObject from '../../../utils/updateObject';
@@ -14,7 +14,7 @@ import {lastUpdated} from '../../../reducers/settings';
 import type {Action, State} from '../../../reducers/settings';
 
 /**
- * Starts the request to change the group direct message notification
+ * Starts the request to change the like track notification
  * 
  * @function request
  * 
@@ -30,47 +30,47 @@ export function request(
   const {saving, failed} = state;
   const updates = Array.isArray(saving) && Array.isArray(failed)
     ? {
-      saving: saving.concat('group message'),
-      failed: failed.filter(s => typeof s === 'string' && s !== 'group message'),
+      saving: saving.concat('liked track'),
+      failed: failed.filter(s => typeof s === 'string' && s !== 'liked track'),
     }
     : {};
 
   return updateObject(state, updates);
-}
+};
 
 /**
- * Confirm the success of changing the group direct message notiifcation
+ * Confirm the success of changing the like track notification
  * 
  * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state         The Redux state
- * @param   {object} action        The Redux action
- * @param   {string} action.type   The type of Redux action
- * @param   {string} action.status The new status for group direct message notifications
+ * @param   {object}  state         The Redux state
+ * @param   {object}  action        The Redux action
+ * @param   {string}  action.type   The type of Redux action
+ * @param   {boolean} action.status The new status for like track notifications
  * 
- * @returns {object}               The state with the new notification setting updated
+ * @returns {object}                The state with the notification setting updated
  */
 export function success(
   state: State,
   action: Action,
 ): State {
   const {saving, notify} = state;
-  const {status: groupMessage} = action;
+  const {status: likedTrack} = action;
   const updates = Array.isArray(saving)
     ? {
       lastUpdated,
-      saving: saving.filter(s => typeof s === 'string' && s !== 'group message'),
-      notify: updateObject(notify, {groupMessage}),
+      saving: saving.filter(s => typeof s === 'string' && s !== 'liked track'),
+      notify: updateObject(notify, {likedTrack}),
     }
     : {};
 
   return updateObject(state, updates);
-}
+};
 
 /**
- * Adds the error which caused the change group direct messsage notification failure
+ * Adds the error which caused the change like track notification failure
  * 
  * @function failure
  * 
@@ -92,10 +92,10 @@ export function failure(
   const updates = Array.isArray(saving) && Array.isArray(failed)
     ? {
       error,
-      saving: saving.filter(s => typeof s === 'string' && s !== 'group message'),
-      failed: failed.concat('group message'),
+      saving: saving.filter(s => typeof s === 'string' && s !== 'liked track'),
+      failed: failed.concat('liked track'),
     }
     : {};
 
   return updateObject(state, updates);
-}
+};

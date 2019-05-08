@@ -15,6 +15,7 @@ import {addSettings} from '../actions/settings/AddSettings/reducers';
 import * as authorizeUser from '../actions/settings/AuthUser/reducers';
 import * as changeDirectMessageNotification from '../actions/settings/ChangeDirectMessageNotification/reducers';
 import * as changeGroupDirectMessageNotification from '../actions/settings/ChangeGroupDirectMessageNotification/reducers';
+import * as changeLikeTrackNotification from '../actions/settings/ChangeLikeTrackNotification/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -162,6 +163,12 @@ export default function reducer(
         return changeGroupDirectMessageNotification.success(state, action);
       case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
         return changeGroupDirectMessageNotification.failure(state, action);
+      case types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST:
+        return changeLikeTrackNotification.request(state);
+      case types.CHANGE_LIKE_TRACK_NOTIFICATION_SUCCESS:
+        return changeLikeTrackNotification.success(state, action);
+      case types.CHANGE_LIKE_TRACK_NOTIFICATION_FAILURE:
+        return changeLikeTrackNotification.failure(state, action);
       default:
         return state;
     }
