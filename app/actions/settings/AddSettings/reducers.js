@@ -10,26 +10,7 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Settings, Action, State} from '../../../reducers/settings';
-
-type Notify = {
-  +session: string,
-  +chat: string,
-  +message: boolean,
-  +groupMessage: string,
-  +nearbySession: string,
-  +playlistChange: boolean,
-  +playlistJoin: boolean,
-  +likedTrack: boolean,
-  +newFollower: boolean,
-};
-
-type Preference = {
-  +playlist: string,
-  +session: string,
-  +message: string,
-  +muteNearby: boolean,
-};
+import type {Notify, Preference, Settings, Action, State} from '../../../reducers/settings';
 
 /**
  * Adds the settings of the current user retrieved from Firestore
@@ -69,12 +50,14 @@ export function addSettings(
   state: State,
   action: Action,
 ): State {
-  if (typeof action.settings === 'object') {
-    const {settings} = action;
-    const notify: Notify = updateObject(state.notify, settings.notify);
-    const preference: Preference = updateObject(state.preference, settings.preference);
-    return updateObject(state, {...settings, notify, preference});
-  }
-
-  return state;
+  const {settings} = action;
+  const updates: {} = typeof settings === 'object'
+    ? {
+      ...settings,
+      notify: updateObject(state.notify, settings.notify),
+      preferece: updateObject(state.preference, settings.preference),
+    }
+    : {};
+  
+  return updateObject(state, updates);
 }

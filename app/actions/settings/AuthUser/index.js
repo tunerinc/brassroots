@@ -23,7 +23,7 @@ import type {
   BrassrootsUser,
   FirestoreInstance,
   FirestoreRef,
-  UserDocs,
+  FirestoreDocs,
 } from '../../../utils/firebaseTypes';
 
 type GetState = () => State;
@@ -58,7 +58,7 @@ export function authorizeUser(): ThunkAction {
 
       const spotifyUser: PrivateUser = await Spotify.getMe();
       const usersRef: FirestoreRef = firestore.collection('users');
-      const userDocs: UserDocs = await usersRef.where('id', '==', spotifyUser.id).get();
+      const userDocs: FirestoreDocs = await usersRef.where('id', '==', spotifyUser.id).get();
 
       if (userDocs.empty) {
         dispatch(actions.authorizeUserSuccess());

@@ -13,38 +13,44 @@ import type {SpotifyError} from '../utils/spotifyAPI/types';
 // Case Functions
 import {addSettings} from '../actions/settings/AddSettings/reducers';
 import * as authorizeUser from '../actions/settings/AuthUser/reducers';
+import * as changeDirectMessageNotification from '../actions/settings/ChangeDirectMessageNotification/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+export type Notify = {
+  +session: string,
+  +chat: string,
+  +message: boolean,
+  +groupMessage: string,
+  +nearbySession: string,
+  +playlistChange: boolean,
+  +playlistJoin: boolean,
+  +likedTrack: boolean,
+  +newFollower: boolean,
+};
+
+export type Preference = {
+  +playlist: string,
+  +session: string,
+  +message: string,
+  +muteNearby: boolean,
+};
+
 export type Settings = {
-  +language: string,
-  +region: string,
-  +soundEffects: boolean,
-  +theme: string,
-  +version: string,
-  +notify: {
-    +session: string,
-    +chat: string,
-    +message: boolean,
-    +groupMessage: string,
-    +nearbySession: string,
-    +playlistChange: boolean,
-    +playlistJoin: boolean,
-    +likedTrack: boolean,
-    +newFollower: boolean,
-  },
-  +preference: {
-    +playlist: string,
-    +session: string,
-    +message: string,
-    +muteNearby: boolean,
-  },
+  +language?: string,
+  +region?: string,
+  +soundEffects?: boolean,
+  +theme?: string,
+  +version?: string,
+  +notify?: Notify,
+  +preference?: Preference,
 };
 
 export type Action = {
   +type?: string,
   +error?: Error,
   +settings?: Settings,
+  +status?: string | boolean,
 };
 
 export type State = {
@@ -54,8 +60,8 @@ export type State = {
   +loggingIn?: boolean,
   +loggedIn?: boolean,
   +loggingOut?: boolean,
-  +saving?: Array<string>,
-  +failed?: Array<string>,
+  +saving?: Array<mixed>,
+  +failed?: Array<mixed>,
   +fetchingSettings?: boolean,
   +error?: ?Error | SpotifyError,
 };
@@ -143,6 +149,12 @@ export default function reducer(
         return authorizeUser.success(state);
       case types.AUTHORIZE_USER_FAILURE:
         return authorizeUser.failure(state, action);
+      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST:
+        return changeDirectMessageNotification.request(state);
+      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS:
+        return changeDirectMessageNotification.success(state, action);
+      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
+        return changeDirectMessageNotification.failure(state, action);
       default:
         return state;
     }

@@ -21,21 +21,23 @@ export type BrassrootsUser = {
   },
 };
 
-export type UserDoc = {
+export type FirestoreDoc = {
   data: () => BrassrootsUser,
+  update: ({[key: string]: string | boolean}) => void,
 };
 
-export type UserDocs = {
+export type FirestoreDocs = {
   empty: boolean,
-  docs: Array<UserDoc>,
+  docs: Array<FirestoreDoc>,
 };
 
 export type FirestoreQuery = {
-  get: () => UserDocs,
+  get: () => FirestoreDocs,
 };
 
 export type FirestoreRef = {
   where: (string, string, string) => FirestoreQuery,
+  doc: (string) => FirestoreDoc,
 };
 
 export type FirestoreInstance = {
