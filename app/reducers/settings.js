@@ -19,6 +19,7 @@ import * as changeLikeTrackNotification from '../actions/settings/ChangeLikeTrac
 import * as changeMessagePreference from '../actions/settings/ChangeMessagePreference/reducers';
 import * as changeNearbySessionNotification from '../actions/settings/ChangeNearbySessionNotification/reducers';
 import * as changeNewFollowerNotification from '../actions/settings/ChangeNewFollowerNotification/reducers';
+import * as changePlaylistChangeNotification from '../actions/settings/ChangePlaylistChangeNotification/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -190,6 +191,12 @@ export default function reducer(
         return changeNewFollowerNotification.success(state, action);
       case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_FAILURE:
         return changeNewFollowerNotification.failure(state, action);
+      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_REQUEST:
+        return changePlaylistChangeNotification.request(state);
+      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_SUCCESS:
+        return changePlaylistChangeNotification.success(state, action);
+      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_FAILURE:
+        return changePlaylistChangeNotification.failure(state, action);
       default:
         return state;
     }
