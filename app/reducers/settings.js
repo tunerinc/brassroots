@@ -21,6 +21,7 @@ import * as changeNearbySessionNotification from '../actions/settings/ChangeNear
 import * as changeNewFollowerNotification from '../actions/settings/ChangeNewFollowerNotification/reducers';
 import * as changePlaylistChangeNotification from '../actions/settings/ChangePlaylistChangeNotification/reducers';
 import * as changePlaylistJoinNotification from '../actions/settings/ChangePlaylistJoinNotification/reducers';
+import * as changePlaylistPreference from '../actions/settings/ChangePlaylistPreference/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -204,6 +205,12 @@ export default function reducer(
         return changePlaylistJoinNotification.success(state, action);
       case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_FAILURE:
         return changePlaylistJoinNotification.failure(state, action);
+      case types.CHANGE_PLAYLIST_PREFERENCE_REQUEST:
+        return changePlaylistPreference.request(state);
+      case types.CHANGE_PLAYLIST_PREFERENCE_SUCCESS:
+        return changePlaylistPreference.success(state, action);
+      case types.CHANGE_PLAYLIST_PREFERENCE_FAILURE:
+        return changePlaylistPreference.failure(state, action);
       default:
         return state;
     }
