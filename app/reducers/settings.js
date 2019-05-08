@@ -18,6 +18,7 @@ import * as changeGroupDirectMessageNotification from '../actions/settings/Chang
 import * as changeLikeTrackNotification from '../actions/settings/ChangeLikeTrackNotification/reducers';
 import * as changeMessagePreference from '../actions/settings/ChangeMessagePreference/reducers';
 import * as changeNearbySessionNotification from '../actions/settings/ChangeNearbySessionNotification/reducers';
+import * as changeNewFollowerNotification from '../actions/settings/ChangeNewFollowerNotification/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -183,6 +184,12 @@ export default function reducer(
         return changeNearbySessionNotification.success(state, action);
       case types.CHANGE_NEARBY_SESSION_NOTIFICATION_FAILURE:
         return changeNearbySessionNotification.failure(state, action);
+      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST:
+        return changeNewFollowerNotification.request(state);
+      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS:
+        return changeNewFollowerNotification.success(state, action);
+      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_FAILURE:
+        return changeNewFollowerNotification.failure(state, action);
       default:
         return state;
     }
