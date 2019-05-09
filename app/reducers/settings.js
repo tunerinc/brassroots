@@ -26,6 +26,7 @@ import * as changeSessionChatNotification from '../actions/settings/ChangeSessio
 import * as changeSessionPreference from '../actions/settings/ChangeSessionPreference/reducers';
 import * as changeSessionsNotification from '../actions/settings/ChangeSessionsNotification/reducers';
 import * as changeSoundEffects from '../actions/settings/ChangeSoundEffects/reducers';
+import * as changeThemeColor from '../actions/settings/ChangeThemeColor/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -63,6 +64,7 @@ export type Action = {
   +error?: Error,
   +settings?: Settings,
   +status?: string | boolean,
+  +theme?: string,
 };
 
 export type State = {
@@ -238,7 +240,13 @@ export default function reducer(
       case types.CHANGE_SOUND_EFFECTS_SUCCESS:
         return changeSoundEffects.success(state, action);
       case types.CHANGE_SOUND_EFFECTS_FAILURE:
-        return changeSoundEffects.failure(state, action);npm 
+        return changeSoundEffects.failure(state, action);
+      case types.CHANGE_THEME_COLOR_REQUEST:
+        return changeThemeColor.request(state);
+      case types.CHANGE_THEME_COLOR_SUCCESS:
+        return changeThemeColor.success(state, action);
+      case types.CHANGE_THEME_COLOR_FAILURE:
+        return changeThemeColor.failure(state, action);
       default:
         return state;
     }
