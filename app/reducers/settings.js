@@ -22,6 +22,7 @@ import * as changeNewFollowerNotification from '../actions/settings/ChangeNewFol
 import * as changePlaylistChangeNotification from '../actions/settings/ChangePlaylistChangeNotification/reducers';
 import * as changePlaylistJoinNotification from '../actions/settings/ChangePlaylistJoinNotification/reducers';
 import * as changePlaylistPreference from '../actions/settings/ChangePlaylistPreference/reducers';
+import * as changeSessionChatNotification from '../actions/settings/ChangeSessionChatNotification/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -211,6 +212,12 @@ export default function reducer(
         return changePlaylistPreference.success(state, action);
       case types.CHANGE_PLAYLIST_PREFERENCE_FAILURE:
         return changePlaylistPreference.failure(state, action);
+      case types.CHANGE_SESSION_CHAT_NOTIFICATION_REQUEST:
+        return changeSessionChatNotification.request(state);
+      case types.CHANGE_SESSION_CHAT_NOTIFICATION_SUCCESS:
+        return changeSessionChatNotification.success(state, action);
+      case types.CHANGE_SESSION_CHAT_NOTIFICATION_FAILURE:
+        return changeSessionChatNotification.failure(state, action);
       default:
         return state;
     }
