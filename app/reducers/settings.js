@@ -24,6 +24,7 @@ import * as changePlaylistJoinNotification from '../actions/settings/ChangePlayl
 import * as changePlaylistPreference from '../actions/settings/ChangePlaylistPreference/reducers';
 import * as changeSessionChatNotification from '../actions/settings/ChangeSessionChatNotification/reducers';
 import * as changeSessionPreference from '../actions/settings/ChangeSessionPreference/reducers';
+import * as changeSessionsNotification from '../actions/settings/ChangeSessionsNotification/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -225,6 +226,12 @@ export default function reducer(
         return changeSessionPreference.success(state, action);
       case types.CHANGE_SESSION_PREFERENCE_FAILURE:
         return changeSessionPreference.failure(state, action);
+      case types.CHANGE_SESSIONS_NOTIFICATION_REQUEST:
+        return changeSessionsNotification.request(state);
+      case types.CHANGE_SESSIONS_NOTIFICATION_SUCCESS:
+        return changeSessionsNotification.success(state, action);
+      case types.CHANGE_SESSIONS_NOTIFICATION_FAILURE:
+        return changeSessionsNotification.failure(state, action);
       default:
         return state;
     }
