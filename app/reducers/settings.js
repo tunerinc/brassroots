@@ -28,6 +28,7 @@ import * as changeSessionsNotification from '../actions/settings/ChangeSessionsN
 import * as changeSoundEffects from '../actions/settings/ChangeSoundEffects/reducers';
 import * as changeThemeColor from '../actions/settings/ChangeThemeColor/reducers';
 import * as getUserSettings from '../actions/settings/GetUserSettings/reducers';
+import * as initializeSpotify from '../actions/settings/InitializeSpotify/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -67,6 +68,7 @@ export type Action = {
   +settings?: Settings,
   +status?: string | boolean,
   +theme?: string,
+  +loggedIn?: boolean,
 };
 
 export type State = {
@@ -255,6 +257,12 @@ export default function reducer(
         return getUserSettings.success(state);
       case types.GET_USER_SETTINGS_FAILURE:
         return getUserSettings.failure(state, action);
+      case types.INITIALIZE_SPOTIFY_REQUEST:
+        return initializeSpotify.request(state);
+      case types.INITIALIZE_SPOTIFY_SUCCESS:
+        return initializeSpotify.success(state, action);
+      case types.INITIALIZE_SPOTIFY_FAILURE:
+        return initializeSpotify.failure(state, action);
       default:
         return state;
     }

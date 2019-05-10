@@ -11,7 +11,7 @@ export type FirestoreDoc = {
   exists: boolean,
   get: () => any,
   data: () => any,
-  update: ({[key: string]: string | boolean}) => void,
+  update: ({[key: string]: string | boolean}) => Promise<void>,
 };
 
 export type FirestoreDocs = {
@@ -20,7 +20,7 @@ export type FirestoreDocs = {
 };
 
 export type FirestoreQuery = {
-  get: () => FirestoreDocs,
+  get: () => Promise<FirestoreDocs>,
 };
 
 export type FirestoreRef = {
