@@ -27,6 +27,7 @@ import * as changeSessionPreference from '../actions/settings/ChangeSessionPrefe
 import * as changeSessionsNotification from '../actions/settings/ChangeSessionsNotification/reducers';
 import * as changeSoundEffects from '../actions/settings/ChangeSoundEffects/reducers';
 import * as changeThemeColor from '../actions/settings/ChangeThemeColor/reducers';
+import * as getUserSettings from '../actions/settings/GetUserSettings/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -50,6 +51,7 @@ export type Preference = {
 };
 
 export type Settings = {
+  +id?: string,
   +language?: string,
   +region?: string,
   +soundEffects?: boolean,
@@ -122,14 +124,14 @@ export const initialState: State = {
   loggingIn: false,
   loggedIn: false,
   loggingOut: false,
-  soundEffects: true,
-  theme: 'dark',
-  language: 'english',
-  region: 'us',
   saving: [],
   failed: [],
   fetchingSettings: false,
   error: null,
+  soundEffects: true,
+  theme: 'dark',
+  language: 'english',
+  region: 'us',
   notify: {
     session: 'following',
     chat: 'mentions',
@@ -247,6 +249,12 @@ export default function reducer(
         return changeThemeColor.success(state, action);
       case types.CHANGE_THEME_COLOR_FAILURE:
         return changeThemeColor.failure(state, action);
+      case types.GET_USER_SETTINGS_REQUEST:
+        return getUserSettings.request(state);
+      case types.GET_USER_SETTINGS_SUCCESS:
+        return getUserSettings.success(state);
+      case types.GET_USER_SETTINGS_FAILURE:
+        return getUserSettings.failure(state, action);
       default:
         return state;
     }

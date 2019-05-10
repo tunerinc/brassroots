@@ -20,7 +20,6 @@ import type {Action, State} from '../../../reducers/settings';
 import type {PrivateUser} from '../../../utils/spotifyAPI/types';
 import type {
   Firebase,
-  BrassrootsUser,
   FirestoreInstance,
   FirestoreRef,
   FirestoreDocs,
