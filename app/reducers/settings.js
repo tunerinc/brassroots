@@ -270,6 +270,8 @@ export default function reducer(
         return logOut.success();
       case types.LOG_OUT_FAILURE:
         return logOut.failure(state, action);
+      case types.RESET_SETTINGS:
+        return initialState;
       default:
         return state;
     }
