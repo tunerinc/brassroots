@@ -29,6 +29,7 @@ import * as changeSoundEffects from '../actions/settings/ChangeSoundEffects/redu
 import * as changeThemeColor from '../actions/settings/ChangeThemeColor/reducers';
 import * as getUserSettings from '../actions/settings/GetUserSettings/reducers';
 import * as initializeSpotify from '../actions/settings/InitializeSpotify/reducers';
+import * as logOut from '../actions/settings/LogOut/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -263,6 +264,12 @@ export default function reducer(
         return initializeSpotify.success(state, action);
       case types.INITIALIZE_SPOTIFY_FAILURE:
         return initializeSpotify.failure(state, action);
+      case types.LOG_OUT_REQUEST:
+        return logOut.request(state);
+      case types.LOG_OUT_SUCCESS:
+        return logOut.success();
+      case types.LOG_OUT_FAILURE:
+        return logOut.failure(state, action);
       default:
         return state;
     }
