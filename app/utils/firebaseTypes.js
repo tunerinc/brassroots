@@ -5,8 +5,6 @@
  * @flow
  */
 
-import type {Settings} from '../reducers/settings';
-
 export type FirestoreDoc = {
   exists: boolean,
   get: () => any,
