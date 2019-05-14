@@ -15,6 +15,7 @@ import {addConversationRecipient} from '../actions/conversations/AddConversation
 import {clearNewConversation} from '../actions/conversations/ClearNewConversation/reducers';
 import {removeConversationRecipient} from '../actions/conversations/RemoveConversationRecipient/reducers';
 import {setMessage, setConversationMessage} from '../actions/conversations/SetConversationMessage/reducers';
+import {setNewConversationMessage} from '../actions/conversations/SetNewConversationMessage/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
@@ -197,6 +198,8 @@ export default function reducer(
         return removeConversationRecipient(state, action);
       case types.SET_CONVERSATION_MESSAGE:
         return setConversationMessage(state, action);
+      case types.SET_NEW_CONVERSATION_MESSAGE:
+        return setNewConversationMessage(state, action);
       default:
         return state;
     }
