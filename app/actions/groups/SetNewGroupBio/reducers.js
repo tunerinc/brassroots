@@ -26,7 +26,7 @@ import type {Action, State} from '../../../reducers/groups';
  * 
  * @returns {object}             The state with the bio set for the new group
  */
-export function setNewBio(
+export function setNewGroupBio(
   state: State,
   action: Action,
 ): State {

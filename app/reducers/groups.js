@@ -10,7 +10,8 @@ import updateObject from '../utils/updateObject';
 import * as types from '../actions/groups/types';
 
 // Case Functions
-import {setNewBio} from '../actions/groups/SetNewGroupBio/reducers';
+import {setNewGroupBio} from '../actions/groups/SetNewGroupBio/reducers';
+import {setNewGroupLocation} from '../actions/groups/SetNewGroupLocation/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -40,6 +41,7 @@ export type Action = {
   +type?: string,
   +error?: Error,
   +bio?: string,
+  +location?: string,
 };
 
 export type State = {
@@ -167,7 +169,9 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.SET_NEW_GROUP_BIO:
-        return setNewBio(state, action);
+        return setNewGroupBio(state, action);
+      case types.SET_NEW_GROUP_LOCATION:
+        return setNewGroupLocation(state, action);
       default:
         return state;
     }
