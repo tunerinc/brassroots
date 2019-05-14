@@ -13,6 +13,7 @@ import * as types from '../actions/conversations/types';
 // Case Functions
 import {addConversationRecipient} from '../actions/conversations/AddConversationRecipient/reducers';
 import {clearNewConversation} from '../actions/conversations/ClearNewConversation/reducers';
+import {removeConversationRecipient} from '../actions/conversations/RemoveConversationRecipient/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
@@ -187,6 +188,8 @@ export default function reducer(
         return addConversationRecipient(state, action);
       case types.CLEAR_NEW_CONVERSATION:
         return clearNewConversation(state);
+      case types.REMOVE_CONVERSATION_RECIPIENT:
+        return removeConversationRecipient(state, action);
       default:
         return state;
     }
