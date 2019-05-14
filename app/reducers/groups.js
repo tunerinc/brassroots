@@ -12,6 +12,7 @@ import * as types from '../actions/groups/types';
 // Case Functions
 import {setNewGroupBio} from '../actions/groups/SetNewGroupBio/reducers';
 import {setNewGroupLocation} from '../actions/groups/SetNewGroupLocation/reducers';
+import {setNewGroupName} from '../actions/groups/SetNewGroupName/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -42,6 +43,7 @@ export type Action = {
   +error?: Error,
   +bio?: string,
   +location?: string,
+  +name?: string,
 };
 
 export type State = {
@@ -172,6 +174,8 @@ export default function reducer(
         return setNewGroupBio(state, action);
       case types.SET_NEW_GROUP_LOCATION:
         return setNewGroupLocation(state, action);
+      case types.SET_NEW_GROUP_NAME:
+        return setNewGroupName(state, action);
       default:
         return state;
     }
