@@ -14,38 +14,41 @@ import * as types from '../actions/conversations/types';
 import {addConversationRecipient} from '../actions/conversations/AddConversationRecipient/reducers';
 import {clearNewConversation} from '../actions/conversations/ClearNewConversation/reducers';
 import {removeConversationRecipient} from '../actions/conversations/RemoveConversationRecipient/reducers';
+import {setMessage, setConversationMessage} from '../actions/conversations/SetConversationMessage/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
 export type SingleMessage = {
-  +lastUpdated: string,
-  +id: ?string,
-  +text: ?string,
-  +sender: ?string,
-  +fetchingSender: boolean,
-  +read: Array<string>,
-  +timestamp: ?string,
-  +mediaID: ?string,
-  +mediaType: ?string,
-  +fetchingMedia: boolean,
+  +lastUpdated?: string,
+  +id?: ?string,
+  +text?: ?string,
+  +sender?: ?string,
+  +fetchingSender?: boolean,
+  +read?: Array<string>,
+  +timestamp?: ?string,
+  +mediaID?: ?string,
+  +mediaType?: ?string,
+  +fetchingMedia?: boolean,
 };
 
 export type SingleConversation = {
-  +lastUpdated: string,
-  +id: ?string,
-  +name: ?string,
-  +members: Array<string>,
-  +fetchingMembers: boolean,
-  +messages: Array<string>,
-  +fetchingMessages: boolean,
-  +sharedMusic: Array<string>,
-  +fetchingMusic: boolean,
+  +lastUpdated?: string,
+  +id?: ?string,
+  +name?: ?string,
+  +members?: Array<string>,
+  +fetchingMembers?: boolean,
+  +messages?: Array<string>,
+  +fetchingMessages?: boolean,
+  +sharedMusic?: Array<string>,
+  +fetchingMusic?: boolean,
 };
 
 export type Action = {
-  type?: string,
-  error?: Error,
-  recipientID?: string,
+  +type?: string,
+  +error?: Error,
+  +recipientID?: string,
+  +conversationID?: string,
+  +message?: string,
 };
 
 export type State = {
@@ -158,7 +161,7 @@ export const initialState: State = {
   },
 };
 
-function singleMessage(
+export function singleMessage(
   state: SingleMessage = singleMessageState,
   action: Action,
 ): SingleMessage {
@@ -168,11 +171,13 @@ function singleMessage(
   }
 }
 
-function singleConversation(
+export function singleConversation(
   state: SingleConversation = singleConversationState,
   action: Action,
 ): SingleConversation {
   switch (action.type) {
+    case types.SET_CONVERSATION_MESSAGE:
+      return setMessage(state, action);
     default:
       return state;
   }
@@ -190,6 +195,8 @@ export default function reducer(
         return clearNewConversation(state);
       case types.REMOVE_CONVERSATION_RECIPIENT:
         return removeConversationRecipient(state, action);
+      case types.SET_CONVERSATION_MESSAGE:
+        return setConversationMessage(state, action);
       default:
         return state;
     }

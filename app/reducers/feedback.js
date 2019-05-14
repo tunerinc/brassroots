@@ -14,19 +14,19 @@ import {removeReportCategory} from '../actions/feedback/RemoveReportCategory/red
 import {setReportMessage} from '../actions/feedback/SetReportMessage/reducers';
 
 export type Action = {
-  type?: string,
-  error?: Error,
-  category?: string,
-  message?: string,
+  +type?: string,
+  +error?: Error,
+  +category?: string,
+  +message?: string,
 };
 
 export type State = {
-  types?: Array<string>,
-  message?: string,
-  userID?: ?string,
-  reportedUser?: ?string,
-  sending?: boolean,
-  error?: ?Error,
+  +types?: Array<string>,
+  +message?: string,
+  +userID?: ?string,
+  +reportedUser?: ?string,
+  +sending?: boolean,
+  +error?: ?Error,
 };
 
 /**
