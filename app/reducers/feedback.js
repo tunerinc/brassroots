@@ -22,6 +22,7 @@ export type State = {
   types?: Array<string>,
   message?: string,
   userID?: ?string,
+  reportedUser?: ?string,
   sending?: boolean,
   error?: ?Error,
 };
@@ -95,10 +96,13 @@ export default function reducer(
       case types.REMOVE_REPORT_CATEGORY:
         return removeReportCategory(state, action);
       case types.REPORT_PROBLEM_REQUEST:
+      case types.REPORT_USER_REQUEST:
         return reportRequest(state);
       case types.REPORT_PROBLEM_SUCCESS:
+      case types.REPORT_USER_SUCCESS:
         return initialState;
       case types.REPORT_PROBLEM_FAILURE:
+      case types.REPORT_USER_FAILURE:
         return reportFailure(state, action);
       default:
         return state;
