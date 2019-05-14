@@ -45,6 +45,45 @@ export const initialState = {
   error: null,
 };
 
+/**
+ * Starts the request to send the report
+ * 
+ * @function reportRequest
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state The Redux state
+ * 
+ * @returns {object}       The state with the sending prop updated
+ */
+function reportRequest(
+  state: State,
+): State {
+  return updateObject(state, {sending: true, error: null});
+}
+
+/**
+ * Adds the error which caused the report failure
+ * 
+ * @function reportFailure
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state        The Redux state
+ * @param   {object} action       The Redux action
+ * @param   {string} action.type  The type of Redux action
+ * @param   {Error}  action.error The error which caused the report failure
+ * 
+ * @returns {object}              The state with the error prop updated
+ */
+function reportFailure(
+  state: State,
+  action: Action,
+): State {
+  const {error} = action;
+  return updateObject(state, {error, sending: false});
+}
+
 export default function reducer(
   state: State = initialState,
   action: Action = {},
@@ -55,6 +94,12 @@ export default function reducer(
         return addReportCategory(state, action);
       case types.REMOVE_REPORT_CATEGORY:
         return removeReportCategory(state, action);
+      case types.REPORT_PROBLEM_REQUEST:
+        return reportRequest(state);
+      case types.REPORT_PROBLEM_SUCCESS:
+        return initialState;
+      case types.REPORT_PROBLEM_FAILURE:
+        return reportFailure(state, action);
       default:
         return state;
     }
