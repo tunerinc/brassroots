@@ -13,6 +13,7 @@ import * as types from '../actions/groups/types';
 import {setNewGroupBio} from '../actions/groups/SetNewGroupBio/reducers';
 import {setNewGroupLocation} from '../actions/groups/SetNewGroupLocation/reducers';
 import {setNewGroupName} from '../actions/groups/SetNewGroupName/reducers';
+import {setNewGroupPermissions} from '../actions/groups/SetNewGroupPermissions/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -44,6 +45,7 @@ export type Action = {
   +bio?: string,
   +location?: string,
   +name?: string,
+  +permission?: string,
 };
 
 export type State = {
@@ -176,6 +178,8 @@ export default function reducer(
         return setNewGroupLocation(state, action);
       case types.SET_NEW_GROUP_NAME:
         return setNewGroupName(state, action);
+      case types.SET_NEW_GROUP_PERMISSIONS:
+        return setNewGroupPermissions(state, action);
       default:
         return state;
     }

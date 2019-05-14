@@ -15,7 +15,7 @@ import type {Action, State} from '../../../reducers/groups';
 /**
  * Sets the bio for the new group
  * 
- * @function setNewBio
+ * @function setNewGroupBio
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 

@@ -15,7 +15,7 @@ import type {Action, State} from '../../../reducers/groups';
 /**
  * Sets the name for the new group
  * 
- * @function setNewName
+ * @function setNewGroupName
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 

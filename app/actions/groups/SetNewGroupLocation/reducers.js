@@ -15,7 +15,7 @@ import type {Action, State} from '../../../reducers/groups';
 /**
  * Sets the location for the new group
  * 
- * @function setNewLocation
+ * @function setNewGroupLocation
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
