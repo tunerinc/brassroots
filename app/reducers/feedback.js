@@ -11,11 +11,13 @@ import * as types from '../actions/feedback/types';
 // Case Functions
 import {addReportCategory} from '../actions/feedback/AddReportCategory/reducers';
 import {removeReportCategory} from '../actions/feedback/RemoveReportCategory/reducers';
+import {setReportMessage} from '../actions/feedback/SetReportMessage/reducers';
 
 export type Action = {
   type?: string,
   error?: Error,
   category?: string,
+  message?: string,
 };
 
 export type State = {
@@ -105,6 +107,8 @@ export default function reducer(
       case types.REPORT_PROBLEM_FAILURE:
       case types.REPORT_USER_FAILURE:
         return reportFailure(state, action);
+      case types.SET_REPORT_MESSAGE:
+        return setReportMessage(state, action);
       default:
         return state;
     }
