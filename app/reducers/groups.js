@@ -9,7 +9,10 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/groups/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+import {setNewBio} from '../actions/groups/SetNewGroupBio/reducers';
+
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 export type Group = {
   +lastUpdated: string,
@@ -31,6 +34,12 @@ export type Group = {
   +featuredType: ?string,
   +permissionJoin: ?string,
   +error: ?Error,
+};
+
+export type Action = {
+  +type?: string,
+  +error?: Error,
+  +bio?: string,
 };
 
 export type State = {
@@ -143,7 +152,7 @@ export const initialState: State = {
 
 function singleGroup(
   state: Group = singleState,
-  action: {type: string},
+  action: Action,
 ): Group {
   switch (action.type) {
     default:
@@ -153,10 +162,16 @@ function singleGroup(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.SET_NEW_GROUP_BIO:
+        return setNewBio(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
