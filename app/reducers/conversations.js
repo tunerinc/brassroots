@@ -8,9 +8,12 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
-import * as types from '../actions/events/types';
+import * as types from '../actions/conversations/types';
 
-const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
+// Case Functions
+import {addConversationRecipient} from '../actions/conversations/AddConversationRecipient/reducers';
+
+export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
 export type SingleMessage = {
   +lastUpdated: string,
@@ -35,6 +38,12 @@ export type SingleConversation = {
   +fetchingMessages: boolean,
   +sharedMusic: Array<string>,
   +fetchingMusic: boolean,
+};
+
+export type Action = {
+  type?: string,
+  error?: Error,
+  recipientID?: string,
 };
 
 export type State = {
@@ -146,7 +155,7 @@ export const initialState: State = {
 
 function singleMessage(
   state: SingleMessage = singleMessageState,
-  action: {type: string},
+  action: Action,
 ): SingleMessage {
   switch (action.type) {
     default:
@@ -156,7 +165,7 @@ function singleMessage(
 
 function singleConversation(
   state: SingleConversation = singleConversationState,
-  action: {type: string},
+  action: Action,
 ): SingleConversation {
   switch (action.type) {
     default:
@@ -166,10 +175,16 @@ function singleConversation(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_CONVERSATION_RECIPIENT:
+        return addConversationRecipient(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
