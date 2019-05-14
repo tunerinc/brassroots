@@ -100,6 +100,7 @@ export default function reducer(
         return reportRequest(state);
       case types.REPORT_PROBLEM_SUCCESS:
       case types.REPORT_USER_SUCCESS:
+      case types.RESET_FEEDBACK:
         return initialState;
       case types.REPORT_PROBLEM_FAILURE:
       case types.REPORT_USER_FAILURE:
