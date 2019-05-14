@@ -12,6 +12,7 @@ import * as types from '../actions/conversations/types';
 
 // Case Functions
 import {addConversationRecipient} from '../actions/conversations/AddConversationRecipient/reducers';
+import {clearNewConversation} from '../actions/conversations/ClearNewConversation/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
@@ -47,17 +48,18 @@ export type Action = {
 };
 
 export type State = {
-  +lastUpdated: string,
-  +userConversations: Array<string>,
-  +conversationsByID: {+[key: string]: SingleConversation},
-  +totalConversations: number,
-  +messagesByID: {+[key: string]: SingleMessage},
-  +totalMessages: number,
-  +selectedConversation: ?string,
-  +searchingConversations: boolean,
-  +fetchingConversations: boolean,
-  +error: ?Error | SpotifyError,
-  +newConversation: {
+  +lastUpdated?: string,
+  +userConversations?: Array<string>,
+  +conversationsByID?: {+[key: string]: SingleConversation},
+  +totalConversations?: number,
+  +messagesByID?: {+[key: string]: SingleMessage},
+  +totalMessages?: number,
+  +selectedConversation?: ?string,
+  +searchingConversations?: boolean,
+  +fetchingConversations?: boolean,
+  +isCreating?: boolean,
+  +error?: ?Error | SpotifyError,
+  +newConversation?: {
     +recipients: Array<string>,
     +message: string,
   },
@@ -131,6 +133,7 @@ const singleConversationState: SingleConversation = {
  * @property {string}   selectedConversation=null    The selected conversation to view
  * @property {boolean}  searchingConversations=false Whether the current user is searching conversations
  * @property {boolean}  fetchingConversations=false  Whether the current user is fetching conversations
+ * @property {boolean}  isCreating=false             Whether the current user is creating a new conversation
  * @property {Error}    error=null                   The error related to conversations actions
  * @property {object}   newConversation              The new conversation the current user is creating
  * @property {string[]} newConversation.recipients   The Brassroots ids of the recipients for the new conversation
@@ -146,6 +149,7 @@ export const initialState: State = {
   selectedConversation: null,
   searchingConversations: false,
   fetchingConversations: false,
+  isCreating: false,
   error: null,
   newConversation: {
     recipients: [],
@@ -181,6 +185,8 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_CONVERSATION_RECIPIENT:
         return addConversationRecipient(state, action);
+      case types.CLEAR_NEW_CONVERSATION:
+        return clearNewConversation(state);
       default:
         return state;
     }
