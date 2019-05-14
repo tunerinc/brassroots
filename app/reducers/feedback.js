@@ -10,6 +10,7 @@ import * as types from '../actions/feedback/types';
 
 // Case Functions
 import {addReportCategory} from '../actions/feedback/AddReportCategory/reducers';
+import {removeReportCategory} from '../actions/feedback/RemoveReportCategory/reducers';
 
 export type Action = {
   type?: string,
@@ -52,6 +53,8 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_REPORT_CATEGORY:
         return addReportCategory(state, action);
+      case types.REMOVE_REPORT_CATEGORY:
+        return removeReportCategory(state, action);
       default:
         return state;
     }
