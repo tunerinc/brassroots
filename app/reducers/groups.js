@@ -14,6 +14,7 @@ import {setNewGroupBio} from '../actions/groups/SetNewGroupBio/reducers';
 import {setNewGroupLocation} from '../actions/groups/SetNewGroupLocation/reducers';
 import {setNewGroupName} from '../actions/groups/SetNewGroupName/reducers';
 import {setNewGroupPermissions} from '../actions/groups/SetNewGroupPermissions/reducers';
+import {setNewGroupWebsite} from '../actions/groups/SetNewGroupWebsite/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -46,6 +47,8 @@ export type Action = {
   +location?: string,
   +name?: string,
   +permission?: string,
+  +websiteValid?: boolean,
+  +website?: string,
 };
 
 export type State = {
@@ -56,6 +59,7 @@ export type State = {
   +selectedGroup: ?string,
   +fetchingGroups: boolean,
   +searchingGroups: boolean,
+  +websiteValid?: boolean,
   +error: ?Error,
   +newGroup: {
     +members: Array<string>,
@@ -126,6 +130,7 @@ const singleState: Group = {
  * @property {string}   selectedGroup=null    The selected group to view
  * @property {boolean}  fetchingGroups=false  Whether the current user is fetching groups
  * @property {boolean}  searchingGroups=false Whether the current user is searching groups
+ * @property {boolean}  websiteValid=true     Whether the group website the current user has entered is a valid URL
  * @property {Error}    error=null            The error related to groups actions
  * @property {object}   newGroup              The new group the current user is creating
  * @property {string[]} newGroup.members      The Brassroots ids of the members to create the group with
@@ -144,6 +149,7 @@ export const initialState: State = {
   selectedGroup: null,
   fetchingGroups: false,
   searchingGroups: false,
+  websiteValid: true,
   error: null,
   newGroup: {
     members: [],
@@ -180,6 +186,8 @@ export default function reducer(
         return setNewGroupName(state, action);
       case types.SET_NEW_GROUP_PERMISSIONS:
         return setNewGroupPermissions(state, action);
+      case types.SET_NEW_GROUP_WEBSITE:
+        return setNewGroupWebsite(state, action);
       default:
         return state;
     }
