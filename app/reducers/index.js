@@ -12,6 +12,7 @@ import artists from './artists';
 import chat from './chat';
 import conversations from './conversations';
 import events from './events';
+import feedback from './feedback';
 import groups from './groups';
 import legal from './legal';
 import notifications from './notifications';
@@ -34,6 +35,7 @@ export default combineReducers({
   chat,
   conversations,
   events,
+  feedback,
   groups,
   legal,
   notifications,

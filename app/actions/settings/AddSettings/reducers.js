@@ -55,7 +55,7 @@ export function addSettings(
     ? {
       ...settings,
       notify: updateObject(state.notify, settings.notify),
-      preferece: updateObject(state.preference, settings.preference),
+      preference: updateObject(state.preference, settings.preference),
     }
     : {};
   
