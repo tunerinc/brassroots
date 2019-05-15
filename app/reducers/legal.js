@@ -9,22 +9,32 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/legal/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+import * as getPolicy from '../actions/legal/GetPolicy/reducers';
+
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+export type Action = {
+  +type?: string,
+  +error?: Error,
+  +refreshing?: boolean,
+  +text?: string,
+};
 
 export type State = {
-  +privacy: {
-    +lastUpdated: string,
-    +text: string,
-    +fetchingPrivacy: boolean,
-    +refreshingPrivacy: boolean,
-    +error: ?Error,
+  +privacy?: {
+    +lastUpdated?: string,
+    +text?: string,
+    +fetchingPrivacy?: boolean,
+    +refreshingPrivacy?: boolean,
+    +error?: ?Error,
   },
-  +terms: {
-    +lastUpdated: string,
-    +text: string,
-    +fetchingTerms: boolean,
-    +refreshingTerms: boolean,
-    +error: ?Error,
+  +terms?: {
+    +lastUpdated?: string,
+    +text?: string,
+    +fetchingTerms?: boolean,
+    +refreshingTerms?: boolean,
+    +error?: ?Error,
   },
 };
 
@@ -65,10 +75,20 @@ export const initialState: State = {
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.GET_POLICY_REQUEST:
+        return getPolicy.request(state, action);
+      case types.GET_POLICY_SUCCESS:
+        return getPolicy.success(state, action);
+      case types.GET_POLICY_FAILURE:
+        return getPolicy.failure(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
