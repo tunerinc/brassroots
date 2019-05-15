@@ -11,6 +11,7 @@ import * as types from '../actions/legal/types';
 
 // Case Functions
 import * as getPolicy from '../actions/legal/GetPolicy/reducers';
+import * as getTerms from '../actions/legal/GetTerms/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -85,6 +86,12 @@ export default function reducer(
         return getPolicy.success(state, action);
       case types.GET_POLICY_FAILURE:
         return getPolicy.failure(state, action);
+      case types.GET_TERMS_REQUEST:
+        return getTerms.request(state, action);
+      case types.GET_TERMS_SUCCESS:
+        return getTerms.success(state, action);
+      case types.GET_TERMS_FAILURE:
+        return getTerms.failure(state, action);
       default:
         return state;
     }

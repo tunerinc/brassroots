@@ -11,7 +11,7 @@
 
 import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import * as actions from './actions';
-import type {Action, State} from '../../../reducers/legal';
+import type {Action} from '../../../reducers/legal';
 
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch) => any;
