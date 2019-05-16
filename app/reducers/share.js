@@ -9,19 +9,35 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/share/types';
 
+// Case Functions
+import {addSharedItems} from '../actions/share/AddSharedItems/reducers';
+
 const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+export type SharedItems = {
+  +[key: string]: {
+    +id: string,
+    +type: string,
+  }
+};
+
+export type Action = {
+  +type?: string,
+  +error?: Error,
+  +items?: SharedItems,
+};
+
 export type State = {
-  +lastUpdated: string,
-  +sharedItem: {
+  +lastUpdated?: string,
+  +sharedItem?: {
     +id: string,
     +type: string,
   },
-  +message: string,
-  +recipients: Array<string>,
-  +searching: boolean,
-  +sharing: boolean,
-  +error: ?Error,
+  +message?: string,
+  +recipients?: Array<string>,
+  +searching?: boolean,
+  +sharing?: boolean,
+  +error?: ?Error,
 };
 
 /**
@@ -54,10 +70,16 @@ export const initialState: State = {
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_SHARED_ITEMS:
+        return addSharedItems(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
