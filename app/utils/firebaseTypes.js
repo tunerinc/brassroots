@@ -5,6 +5,8 @@
  * @flow
  */
 
+import type {BRUser} from './brassrootsTypes';
+
 export type FirestoreDoc = {
   exists: boolean,
   id: string,
@@ -28,11 +30,39 @@ export type FirestoreRef = {
   doc: (?string) => FirestoreDoc,
 };
 
-export type FirestoreInstance = {
-  collection: (string) => FirestoreRef,
+export type FirestoreBatch = {
+  set: (FirestoreDoc, BRUser) => Promise<void>,
+  commit: () => Promise<void>,
 };
 
-export type FirebaseInstance = {};
+export type FirestoreInstance = {
+  collection: (string) => FirestoreRef,
+  batch: () => FirestoreBatch,
+};
+
+export type StorageUploadTask = {
+  snapshot: {
+    ref: {
+      getDownloadURL: () => any;
+    },
+  },
+};
+
+export type StorageChild = {
+  put: (any) => StorageUploadTask,
+};
+
+export type StorageRef = {
+  child: (string) => StorageChild,
+};
+
+export type StorageInstance = {
+  ref: () => StorageRef,
+};
+
+export type FirebaseInstance = {
+  storage: () => StorageInstance,
+};
 
 export type Firebase = {
   getFirestore: () => FirestoreInstance,

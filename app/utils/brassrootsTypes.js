@@ -5,6 +5,12 @@
  * @flow
  */
 
+// Blob
+export type Blob = {
+  +size: number,
+  +type: string,
+  +slice: () => Blob,
+};
 
 // Albums
 export type BRAlbum = {
@@ -479,20 +485,20 @@ export type BRTrackUser = {
 
 // Users
 export type BRUser = {
-  id: string,
-  favoriteTrackID: string,
-  bio: string,
-  birthdate: string,
-  coverImage: string,
-  country: string,
-  email: string,
-  location: string,
-  online: boolean,
-  profileImage: string,
-  spotifyAccountStatus: string,
-  displayName: string,
-  website: string,
-  currentSession: {
+  +id?: string,
+  +favoriteTrackID?: ?string,
+  +bio?: ?string,
+  +birthdate?: string,
+  +coverImage?: ?string,
+  +country?: string,
+  +email?: string,
+  +location?: ?string,
+  +online?: boolean,
+  +profileImage?: string,
+  +spotifyAccountStatus?: string,
+  +displayName?: string,
+  +website?: ?string,
+  +currentSession?: ?{
     id: string,
     currentTrackID: string,
     totalListeners: number,
@@ -506,7 +512,7 @@ export type BRUser = {
       image: string,
     },
   },
-  totals: {
+  +totals?: {
     blocked: number,
     conversations: number,
     feedback: number,
@@ -517,40 +523,40 @@ export type BRUser = {
     recentlyPlayed: number,
     searches: number,
   },
-  albums?: {
+  +albums?: {
     [key: string]: BRUserAlbum,
   },
-  artists?: {
+  +artists?: {
     [key: string]: BRUserArtist,
   },
-  blockedUsers?: {
+  +blockedUsers?: {
     [key: string]: BRUserBlockedUser,
   },
-  conversations?: {
+  +conversations?: {
     [key: string]: BRUserConversation,
   },
-  followers?: {
+  +followers?: {
     [key: string]: BRUserFollower,
   },
-  following?: {
+  +following?: {
     [key: string]: BRUserFollowing,
   },
-  groups?: {
+  +groups?: {
     [key: string]: BRUserGroup,
   },
-  playlists?: {
+  +playlists?: {
     [key: string]: BRUserPlaylist,
   },
-  recentlyPlayed?: {
+  +recentlyPlayed?: {
     [key: string]: BRUserRecent,
   },
-  searches?: {
+  +searches?: {
     [key: string]: BRUserSearch,
   },
-  sessions?: {
+  +sessions?: {
     [key: string]: BRUserSession,
   },
-  tracks?: {
+  +tracks?: {
     [key: string]: BRUserTrack,
   },
 };

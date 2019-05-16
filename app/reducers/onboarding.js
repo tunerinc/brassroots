@@ -9,6 +9,14 @@ import updateObject from '../utils/updateObject';
 import * as types from '../actions/onboarding/types';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 
+// Case Functions
+import * as createProfile from '../actions/onboarding/CreateProfile/reducers';
+
+export type Action = {
+  +type?: string,
+  +error?: Error,
+};
+
 export type State = {
   +onboarding: boolean,
   +creatingUser: boolean,
@@ -35,10 +43,20 @@ export const initialState: State = {
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.CREATE_PROFILE_REQUEST:
+        return createProfile.request(state);
+      case types.CREATE_PROFILE_SUCCESS:
+        return createProfile.success(state);
+      case types.CREATE_PROFILE_FAILURE:
+        return createProfile.failure(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
