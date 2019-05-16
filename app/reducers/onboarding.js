@@ -11,10 +11,12 @@ import type {SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
 import * as createProfile from '../actions/onboarding/CreateProfile/reducers';
+import {setOnboarding} from '../actions/onboarding/SetOnboarding/reducers';
 
 export type Action = {
   +type?: string,
   +error?: Error,
+  +status?: boolean,
 };
 
 export type State = {
@@ -55,6 +57,8 @@ export default function reducer(
         return createProfile.failure(state, action);
       case types.RESET_ONBOARDING:
         return initialState;
+      case types.SET_ONBOARDING:
+        return setOnboarding(state, action);
       default:
         return state;
     }
