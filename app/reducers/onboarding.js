@@ -53,6 +53,8 @@ export default function reducer(
         return createProfile.success(state);
       case types.CREATE_PROFILE_FAILURE:
         return createProfile.failure(state, action);
+      case types.RESET_ONBOARDING:
+        return initialState;
       default:
         return state;
     }
