@@ -80,6 +80,8 @@ export default function reducer(
         return addSharedItems(state, action);
       case types.ADD_SHARE_RECIPIENT:
         return addShareRecipient(state, action);
+      case types.CLEAR_SHARE:
+        return initialState;
       default:
         return state;
     }
