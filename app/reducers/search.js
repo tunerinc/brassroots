@@ -10,26 +10,34 @@ import updateObject from '../utils/updateObject';
 import * as types from '../actions/search/types';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 
+// Case Functions
+import {clearSearchQuery} from '../actions/search/ClearSearchQuery/reducers';
+
 const currentDate: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+export type Action = {
+  +type?: string,
+  +error?: Error,
+};
+
 export type State = {
-  +recentSearches: Array<string>,
-  +nearbySearches: Array<string>,
-  +trendingSearches: Array<string>,
-  +userResults: Array<string>,
-  +trackResults: Array<string>,
-  +playlistResults: Array<string>,
-  +albumResults: Array<string>,
-  +artistResults: Array<string>,
-  +groupResults: Array<string>,
-  +query: string,
-  +fetchingRecent: boolean,
-  +fetchingTrending: boolean,
-  +fetchingNearby: boolean,
-  +searching: boolean,
-  +deleting: boolean,
-  +lastUpdated: string,
-  +error: ?Error | SpotifyError,
+  +recentSearches?: Array<string>,
+  +nearbySearches?: Array<string>,
+  +trendingSearches?: Array<string>,
+  +userResults?: Array<string>,
+  +trackResults?: Array<string>,
+  +playlistResults?: Array<string>,
+  +albumResults?: Array<string>,
+  +artistResults?: Array<string>,
+  +groupResults?: Array<string>,
+  +query?: string,
+  +fetchingRecent?: boolean,
+  +fetchingTrending?: boolean,
+  +fetchingNearby?: boolean,
+  +searching?: boolean,
+  +deleting?: boolean,
+  +lastUpdated?: string,
+  +error?: ?Error | SpotifyError,
 };
 
 /**
@@ -77,10 +85,16 @@ export const initialState: State = {
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.CLEAR_SEARCH_QUERY:
+        return clearSearchQuery(state);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
