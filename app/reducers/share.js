@@ -11,6 +11,7 @@ import * as types from '../actions/share/types';
 
 // Case Functions
 import {addSharedItems} from '../actions/share/AddSharedItems/reducers';
+import {addShareRecipient} from '../actions/share/AddShareRecipient/reducers';
 
 const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -25,6 +26,7 @@ export type Action = {
   +type?: string,
   +error?: Error,
   +items?: SharedItems,
+  +recipientID?: string,
 };
 
 export type State = {
@@ -76,6 +78,8 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_SHARED_ITEMS:
         return addSharedItems(state, action);
+      case types.ADD_SHARE_RECIPIENT:
+        return addShareRecipient(state, action);
       default:
         return state;
     }
