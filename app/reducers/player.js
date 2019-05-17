@@ -13,6 +13,7 @@ import * as types from '../actions/player/types';
 
 import * as nextTrack from '../actions/player/NextTrack/reducers';
 import * as pausePlayer from '../actions/player/PausePlayer/reducers';
+import * as playTrack from '../actions/player/PlayTrack/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -129,6 +130,12 @@ export default function reducer(
         return pausePlayer.success(state);
       case types.PAUSE_PLAYER_FAILURE:
         return pausePlayer.failure(state, action);
+      case types.PLAY_TRACK_REQUEST:
+        return playTrack.request(state);
+      case types.PLAY_TRACK_SUCCESS:
+        return playTrack.success(state, action);
+      case types.PLAY_TRACK_FAILURE:
+        return playTrack.failure(state, action);
       default:
         return state;
     }

@@ -5,15 +5,13 @@
  * @flow
  */
 
-import type {BRUser} from './brassrootsTypes';
-
 export type FirestoreDoc = {
   exists: boolean,
   id: string,
   get: () => any,
   data: () => any,
   update: ({[key: string]: string | boolean | number}) => Promise<void>,
-  set: ({[key: string]: string | boolean | Array<string>}) => Promise<void>,
+  set: ({[key: string]: ?string | boolean | Array<string>}) => Promise<void>,
   collection: (string) => FirestoreDoc,
   doc: (?string) => FirestoreDoc,
 };
@@ -35,7 +33,7 @@ export type FirestoreRef = {
 export type FirestoreBatch = {
   update: (FirestoreDoc, {[key: string]: ?string | number | boolean}) => void,
   delete: (FirestoreDoc) => void,
-  set: (FirestoreDoc, BRUser) => Promise<void>,
+  set: (FirestoreDoc, any) => Promise<void>,
   commit: () => Promise<void>,
 };
 
