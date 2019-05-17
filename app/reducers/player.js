@@ -21,6 +21,7 @@ import * as startPlayer from '../actions/player/StartPlayer/reducers';
 import * as stopPlayer from '../actions/player/StopPlayer/reducers';
 import * as toggleMute from '../actions/player/ToggleMute/reducers';
 import * as togglePause from '../actions/player/TogglePause/reducers';
+import * as toggleRepeat from '../actions/player/ToggleRepeat/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -185,6 +186,12 @@ export default function reducer(
         return togglePause.success(state, action);
       case types.TOGGLE_PAUSE_FAILURE:
         return togglePause.failure(state, action);
+      case types.TOGGLE_REPEAT_REQUEST:
+        return toggleRepeat.request(state);
+      case types.TOGGLE_REPEAT_SUCCESS:
+        return toggleRepeat.success(state, action);
+      case types.TOGGLE_REPEAT_FAILURE:
+        return toggleRepeat.failure(state, action);
       default:
         return state;
     }
