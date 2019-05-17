@@ -12,7 +12,7 @@ export type FirestoreDoc = {
   id: string,
   get: () => any,
   data: () => any,
-  update: ({[key: string]: string | boolean}) => Promise<void>,
+  update: ({[key: string]: string | boolean | number}) => Promise<void>,
   set: ({[key: string]: string | boolean | Array<string>}) => Promise<void>,
   collection: (string) => FirestoreDoc,
   doc: (?string) => FirestoreDoc,
