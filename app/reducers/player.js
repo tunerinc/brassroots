@@ -22,6 +22,7 @@ import * as stopPlayer from '../actions/player/StopPlayer/reducers';
 import * as toggleMute from '../actions/player/ToggleMute/reducers';
 import * as togglePause from '../actions/player/TogglePause/reducers';
 import * as toggleRepeat from '../actions/player/ToggleRepeat/reducers';
+import * as toggleShuffle from '../actions/player/ToggleShuffle/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -192,6 +193,12 @@ export default function reducer(
         return toggleRepeat.success(state, action);
       case types.TOGGLE_REPEAT_FAILURE:
         return toggleRepeat.failure(state, action);
+      case types.TOGGLE_SHUFFLE_REQUEST:
+        return toggleShuffle.request(state);
+      case types.TOGGLE_SHUFFLE_SUCCESS:
+        return toggleShuffle.success(state, action);
+      case types.TOGGLE_SHUFFLE_FAILURE:
+        return toggleShuffle.failure(state, action);
       default:
         return state;
     }
