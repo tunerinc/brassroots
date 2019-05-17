@@ -9,33 +9,47 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/player/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+
+import * as nextTrack from '../actions/player/NextTrack/reducers';
+
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+export type Action = {
+  +type?: string,
+  +error?: Error,
+  +currentQueueID?: ?string,
+  +currentTrackID?: ?string,
+  +durationMS?: ?number,
+  +nextQueueID?: ?string,
+  +nextTrackID?: ?string,
+};
 
 export type State = {
-  +lastUpdated: string,
-  +attemptingToPlay: boolean,
-  +timeLastPlayed: ?string,
-  +prevTrackID: ?string,
-  +prevQueueID: ?string,
-  +currentTrackID: ?string,
-  +currentQueueID: ?string,
-  +nextTrackID: ?string,
-  +nextQueueID: ?string,
-  +fetchingProgress: boolean,
-  +skippingNext: boolean,
-  +skippingPrev: boolean,
-  +durationMS: number,
-  +progress: number,
-  +paused: boolean,
-  +pausing: boolean,
-  +repeat: boolean,
-  +repeating: boolean,
-  +seeking: boolean,
-  +shuffle: boolean,
-  +shuffling: boolean,
-  +muted: boolean,
-  +muting: boolean,
-  +volume: number,
+  +lastUpdated?: string,
+  +attemptingToPlay?: boolean,
+  +timeLastPlayed?: ?string,
+  +prevTrackID?: ?string,
+  +prevQueueID?: ?string,
+  +currentTrackID?: ?string,
+  +currentQueueID?: ?string,
+  +nextTrackID?: ?string,
+  +nextQueueID?: ?string,
+  +fetchingProgress?: boolean,
+  +skippingNext?: boolean,
+  +skippingPrev?: boolean,
+  +durationMS?: number,
+  +progress?: number,
+  +paused?: boolean,
+  +pausing?: boolean,
+  +repeat?: boolean,
+  +repeating?: boolean,
+  +seeking?: boolean,
+  +shuffle?: boolean,
+  +shuffling?: boolean,
+  +muted?: boolean,
+  +muting?: boolean,
+  +volume?: number,
 };
 
 /**
@@ -98,10 +112,20 @@ export const initialState: State = {
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.NEXT_TRACK_REQUEST:
+        return nextTrack.request(state);
+      case types.NEXT_TRACK_SUCCESS:
+        return nextTrack.success(state, action);
+      case types.NEXT_TRACK_FAILURE:
+        return nextTrack.failure(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }

@@ -14,6 +14,8 @@ export type FirestoreDoc = {
   data: () => any,
   update: ({[key: string]: string | boolean}) => Promise<void>,
   set: ({[key: string]: string | boolean | Array<string>}) => Promise<void>,
+  collection: (string) => FirestoreDoc,
+  doc: (?string) => FirestoreDoc,
 };
 
 export type FirestoreDocs = {
@@ -31,6 +33,8 @@ export type FirestoreRef = {
 };
 
 export type FirestoreBatch = {
+  update: (FirestoreDoc, {[key: string]: ?string | number | boolean}) => void,
+  delete: (FirestoreDoc) => void,
   set: (FirestoreDoc, BRUser) => Promise<void>,
   commit: () => Promise<void>,
 };
@@ -38,6 +42,7 @@ export type FirestoreBatch = {
 export type FirestoreInstance = {
   collection: (string) => FirestoreRef,
   batch: () => FirestoreBatch,
+  GeoPoint: (number, number) => any,
 };
 
 export type StorageUploadTask = {
