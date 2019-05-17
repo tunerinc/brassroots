@@ -16,6 +16,7 @@ import * as pausePlayer from '../actions/player/PausePlayer/reducers';
 import * as playTrack from '../actions/player/PlayTrack/reducers';
 import * as previousTrack from '../actions/player/PreviousTrack/reducers';
 import * as seekPosition from '../actions/player/SeekPosition/reducers';
+import {setProgress} from '../actions/player/SetProgress/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -29,6 +30,7 @@ export type Action = {
   +nextTrackID?: ?string,
   +prevQueueID?: ?string,
   +prevTrackID?: ?string,
+  +progress?: number,
 };
 
 export type State = {
@@ -152,6 +154,8 @@ export default function reducer(
         return seekPosition.success(state);
       case types.SEEK_POSITION_FAILURE:
         return seekPosition.failure(state, action);
+      case types.SET_PROGRESS:
+        return setProgress(state, action);
       default:
         return state;
     }
