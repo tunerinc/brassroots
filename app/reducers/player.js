@@ -14,6 +14,7 @@ import * as types from '../actions/player/types';
 import * as nextTrack from '../actions/player/NextTrack/reducers';
 import * as pausePlayer from '../actions/player/PausePlayer/reducers';
 import * as playTrack from '../actions/player/PlayTrack/reducers';
+import * as previousTrack from '../actions/player/PreviousTrack/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -25,6 +26,8 @@ export type Action = {
   +durationMS?: ?number,
   +nextQueueID?: ?string,
   +nextTrackID?: ?string,
+  +prevQueueID?: ?string,
+  +prevTrackID?: ?string,
 };
 
 export type State = {
@@ -136,6 +139,12 @@ export default function reducer(
         return playTrack.success(state, action);
       case types.PLAY_TRACK_FAILURE:
         return playTrack.failure(state, action);
+      case types.PREVIOUS_TRACK_REQUEST:
+        return previousTrack.request(state);
+      case types.PREVIOUS_TRACK_SUCCESS:
+        return previousTrack.success(state, action);
+      case types.PREVIOUS_TRACK_FAILURE:
+        return previousTrack.failure(state, action);
       default:
         return state;
     }
