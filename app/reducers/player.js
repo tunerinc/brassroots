@@ -20,6 +20,7 @@ import {setProgress} from '../actions/player/SetProgress/reducers';
 import * as startPlayer from '../actions/player/StartPlayer/reducers';
 import * as stopPlayer from '../actions/player/StopPlayer/reducers';
 import * as toggleMute from '../actions/player/ToggleMute/reducers';
+import * as togglePause from '../actions/player/TogglePause/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -178,6 +179,12 @@ export default function reducer(
         return toggleMute.success(state, action);
       case types.TOGGLE_MUTE_FAILURE:
         return toggleMute.failure(state, action);
+      case types.TOGGLE_PAUSE_REQUEST:
+        return togglePause.request(state);
+      case types.TOGGLE_PAUSE_SUCCESS:
+        return togglePause.success(state, action);
+      case types.TOGGLE_PAUSE_FAILURE:
+        return togglePause.failure(state, action);
       default:
         return state;
     }
