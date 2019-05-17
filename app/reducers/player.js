@@ -19,6 +19,7 @@ import * as seekPosition from '../actions/player/SeekPosition/reducers';
 import {setProgress} from '../actions/player/SetProgress/reducers';
 import * as startPlayer from '../actions/player/StartPlayer/reducers';
 import * as stopPlayer from '../actions/player/StopPlayer/reducers';
+import * as toggleMute from '../actions/player/ToggleMute/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -33,6 +34,7 @@ export type Action = {
   +prevQueueID?: ?string,
   +prevTrackID?: ?string,
   +progress?: number,
+  +status?: boolean,
 };
 
 export type State = {
@@ -170,6 +172,12 @@ export default function reducer(
         return stopPlayer.success(state);
       case types.STOP_PLAYER_FAILURE:
         return stopPlayer.failure(state, action);
+      case types.TOGGLE_MUTE_REQUEST:
+        return toggleMute.request(state);
+      case types.TOGGLE_MUTE_SUCCESS:
+        return toggleMute.success(state, action);
+      case types.TOGGLE_MUTE_FAILURE:
+        return toggleMute.failure(state, action);
       default:
         return state;
     }

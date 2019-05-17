@@ -11,7 +11,7 @@
 
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
-// import {setProgress} from '../SetProgress';
+import {setProgress} from '../SetProgress';
 import * as actions from './actions';
 import type {Action, State} from '../../../reducers/player';
 import type {
@@ -69,7 +69,7 @@ export function seekPosition(
       ];
 
       await Promise.all(promises);
-      // dispatch(setProgress(progress));
+      dispatch(setProgress(seekTime));
       dispatch(actions.seekPositionSuccess());
     } catch (err) {
       dispatch(actions.seekPositionFailure(err));
