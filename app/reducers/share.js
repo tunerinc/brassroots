@@ -12,6 +12,7 @@ import * as types from '../actions/share/types';
 // Case Functions
 import {addSharedItems} from '../actions/share/AddSharedItems/reducers';
 import {addShareRecipient} from '../actions/share/AddShareRecipient/reducers';
+import {removeShareRecipient} from '../actions/share/RemoveShareRecipient/reducers';
 
 const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -82,6 +83,8 @@ export default function reducer(
         return addShareRecipient(state, action);
       case types.CLEAR_SHARE:
         return initialState;
+      case types.REMOVE_SHARE_RECIPIENT:
+        return removeShareRecipient(state, action);
       default:
         return state;
     }
