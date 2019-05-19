@@ -80,3 +80,7 @@ firestore.db.json
 #
 .vs/
 .vscode/
+
+# Flow
+#
+flow-typed/
