@@ -10,45 +10,55 @@ import updateObject from '../utils/updateObject';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/albums/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+import {addSingleAlbum, addAlbums} from '../actions/albums/AddAlbums/reducers';
 
-type Artist = {
-  +id: string,
-  +name: string,
-};
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+type Artist = {|
+  +id?: string,
+  +name?: string,
+|};
 
 export type Album = {
-  +lastUpdated: string,
-  +id: ?string,
-  +name: ?string,
-  +small: ?string,
-  +medium: ?string,
-  +large: ?string,
-  +artists: Array<Artist>,
-  +tracks: Array<string>,
-  +totalPlays: number,
-  +userPlays: number,
-  +userTracks: Array<string>,
-  +topListeners: Array<string>,
-  +topPlaylists: Array<string>,
-  +topTracks: Array<string>,
+  +lastUpdated?: string,
+  +id?: ?string,
+  +name?: ?string,
+  +small?: ?string,
+  +medium?: ?string,
+  +large?: ?string,
+  +artists?: Array<Artist>,
+  +tracks?: Array<string>,
+  +totalPlays?: number,
+  +userPlays?: number,
+  +userTracks?: Array<string>,
+  +topListeners?: Array<string>,
+  +topPlaylists?: Array<string>,
+  +topTracks?: Array<string>,
+};
+
+export type Action = {
+  +type?: string,
+  +error?: Error,
+  +albums?: {+[key: string]: Album},
+  +album?: ?Album,
 };
 
 export type State = {
-  +lastUpdated: string,
-  +userAlbums: Array<string>,
-  +albumsByID: {+[key: string]: Album},
-  +totalAlbums: number,
-  +selectedAlbum: ?string,
-  +searchingAlbums: boolean,
-  +refreshingAlbums: boolean,
-  +fetchingAlbums: boolean,
-  +fetchingArtists: boolean,
-  +fetchingListeners: boolean,
-  +fetchingPlaylists: boolean,
-  +fetchingTracks: boolean,
-  +incrementingCount: boolean,
-  +error: ?Error | SpotifyError,
+  +lastUpdated?: string,
+  +userAlbums?: Array<string>,
+  +albumsByID?: {[key: string]: Album},
+  +totalAlbums?: number,
+  +selectedAlbum?: ?string,
+  +searchingAlbums?: boolean,
+  +refreshingAlbums?: boolean,
+  +fetchingAlbums?: boolean,
+  +fetchingArtists?: boolean,
+  +fetchingListeners?: boolean,
+  +fetchingPlaylists?: boolean,
+  +fetchingTracks?: boolean,
+  +incrementingCount?: boolean,
+  +error?: ?Error | SpotifyError,
 };
 
 /**
@@ -125,11 +135,13 @@ export const initialState: State = {
   error: null,
 };
 
-function singleAlbum(
+export function singleAlbum(
   state: Album = singleState,
-  action: {type: string},
+  action: Action,
 ): Album {
   switch (action.type) {
+    case types.ADD_ALBUMS:
+        return addSingleAlbum(state, action);
     default:
       return state;
   }
@@ -137,10 +149,16 @@ function singleAlbum(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_ALBUMS:
+        return addAlbums(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
