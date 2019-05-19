@@ -7,7 +7,7 @@ import Spotify from "rn-spotify-sdk";
  * @flow
  */
 
-export type FullAlbum = {
+type FullAlbum = {
   +album_type: string,
   +artists: Array<SimpleArtist>,
   +available_markets: Array<string>,
@@ -29,7 +29,7 @@ export type FullAlbum = {
   +uri: string,
 };
 
-export type SimpleAlbum = {
+type SimpleAlbum = {
   +album_group?: string,
   +album_type: string,
   +artists: Array<SimpleArtist>,
@@ -46,11 +46,11 @@ export type SimpleAlbum = {
   +uri: string,
 };
 
-export type Restrictions = {
+type Restrictions = {
   +reason: string,
 };
 
-export type FullArtist = {
+type FullArtist = {
   +external_urls: ExternalURL,
   +followers: Followers,
   +genres: Array<string>,
@@ -63,7 +63,7 @@ export type FullArtist = {
   +uri: string,
 };
 
-export type SimpleArtist = {
+type SimpleArtist = {
   +external_urls: ExternalURL,
   +href: string,
   +id: string,
@@ -72,7 +72,7 @@ export type SimpleArtist = {
   +uri: string,
 };
 
-export type AudioFeatures = {
+type AudioFeatures = {
   +acousticness: number,
   +analysis_url: string,
   +danceability: number,
@@ -93,30 +93,30 @@ export type AudioFeatures = {
   +valence: number,
 };
 
-export type Category = {
+type Category = {
   +href: string,
   +icons: Array<Image>,
   +id: string,
   +name: string,
 };
 
-export type Context = {
+type Context = {
   +type: string,
   +href: string,
   +external_urls: ExternalURL,
   +uri: string,
 };
 
-export type Copyright = {
+type Copyright = {
   +text: string,
   +type: string,
 };
 
-export type Cursor = {
+type Cursor = {
   +after: string,
 };
 
-export type Disallows = {
+type Disallows = {
   +interrupting_playback?: boolean | void,
   +pausing?: boolean | void,
   +playing?: boolean | void,
@@ -131,38 +131,38 @@ export type Disallows = {
   +transferring_playback?: boolean | void,
 };
 
-export type SpotifyError = {
+type SpotifyError = {
   +error: {
     +status: number,
     +message: string,
   },
 };
 
-export type PlayerError = {
+type PlayerError = {
   ...SpotifyError,
   +reason: string,
 };
 
-export type ExternalID = {
+type ExternalID = {
   +[key: string]: string,
 };
 
-export type ExternalURL = {
+type ExternalURL = {
   +[key: string]: string
 };
 
-export type Followers = {
+type Followers = {
   +href: ?string,
   +total: number,
 };
 
-export type Image = {
+type Image = {
   +height: number,
   +url: string,
   +width: number,
 };
 
-export type Paging = {
+type Paging = {
   +href: string,
   +limit: number,
   +next: ?string,
@@ -182,11 +182,11 @@ export type Paging = {
     | Category
     | PlayHistory
     | SavedTrack
-    | SavedAlbums
+    | SavedAlbum
   >,
 };
 
-export type CursorPaging = {
+type CursorPaging = {
   +href: string,
   +limit: number,
   +next: ?string,
@@ -205,17 +205,17 @@ export type CursorPaging = {
     | Category
     | PlayHistory
     | SavedTrack
-    | SavedAlbums
+    | SavedAlbum
   >,
 };
 
-export type PlayHistory = {
+type PlayHistory = {
   +track: SimpleTrack,
   +played_at: string,
   +context: Context,
 };
 
-export type FullPlaylist = {
+type FullPlaylist = {
   +collaborative: boolean,
   +description: string,
   +external_urls: ExternalURL,
@@ -232,7 +232,7 @@ export type FullPlaylist = {
   +uri: string,
 };
 
-export type SimplePlaylist = {
+type SimplePlaylist = {
   +collaborative: boolean,
   +external_urls: ExternalURL,
   +href: string,
@@ -247,19 +247,19 @@ export type SimplePlaylist = {
   +uri: string,
 };
 
-export type PlaylistTrack = {
+type PlaylistTrack = {
   +added_at: string,
   +added_by: ?PublicUser,
   +is_local: boolean,
   +track: FullTrack,
 };
 
-export type Recommendations = {
+type Recommendations = {
   +seeds: Array<RecommendationSeed>,
   +tracks: Array<SimpleTrack>,
 };
 
-export type RecommendationSeed = {
+type RecommendationSeed = {
   +afterFilteringSize: number,
   +afterRelinkingSize: number,
   +href: ?string,
@@ -268,17 +268,17 @@ export type RecommendationSeed = {
   +type: string,
 };
 
-export type SavedTrack = {
+type SavedTrack = {
   +added_at: string,
   +track: FullTrack,
 };
 
-export type SavedAlbum = {
+type SavedAlbum = {
   +added_at: string,
   +album: FullAlbum,
 };
 
-export type FullTrack = {
+type FullTrack = {
   +album: SimpleAlbum,
   +artists: Array<SimpleArtist>,
   +available_markets: Array<string>,
@@ -301,7 +301,7 @@ export type FullTrack = {
   +is_local: boolean,
 };
 
-export type SimpleTrack = {
+type SimpleTrack = {
   +artists: Array<SimpleArtist>,
   +available_markets: Array<string>,
   +disc_number: number,
@@ -321,7 +321,7 @@ export type SimpleTrack = {
   +is_local: boolean,
 };
 
-export type LinkedTrack = {
+type LinkedTrack = {
   +external_urls: ExternalURL,
   +href: string,
   +id: string,
@@ -329,7 +329,7 @@ export type LinkedTrack = {
   +uri: string,
 };
 
-export type PrivateUser = {
+type PrivateUser = {
   +birthdate: string,
   +country: string,
   +display_name: string,
@@ -344,7 +344,7 @@ export type PrivateUser = {
   +uri: string,
 };
 
-export type PublicUser = {
+type PublicUser = {
   +display_name: string,
   +external_urls: ExternalURL,
   +followers: Followers,
@@ -355,7 +355,7 @@ export type PublicUser = {
   +uri: string,
 };
 
-export type CurrentlyPlaying = {
+type CurrentlyPlaying = {
   +context: Context,
   +timestamp: number,
   +progress_ms: number,
@@ -364,7 +364,7 @@ export type CurrentlyPlaying = {
   +currently_playing_tyoe: string,
 };
 
-export type Device = {
+type Device = {
   +id: ?string,
   +is_active: boolean,
   +is_private_session: boolean,
@@ -374,11 +374,11 @@ export type Device = {
   +volume_percent: ?number,
 };
 
-export type Devices = {
+type Devices = {
   +devices: Array<Device>,
 };
 
-export type TuneableTrack = {
+type TuneableTrack = {
   +acousticness: number,
   +danceability: number,
   +duration_ms: number,
@@ -393,4 +393,43 @@ export type TuneableTrack = {
   +tempo: number,
   +time_signature: number,
   +valence: number,
+};
+
+export type {
+  FullAlbum,
+  SimpleAlbum,
+  Restrictions,
+  FullArtist,
+  SimpleArtist,
+  AudioFeatures,
+  Category,
+  Context,
+  Copyright,
+  Cursor,
+  Disallows,
+  SpotifyError,
+  PlayerError,
+  ExternalID,
+  ExternalURL,
+  Followers,
+  Image,
+  Paging,
+  CursorPaging,
+  PlayHistory,
+  FullPlaylist,
+  SimplePlaylist,
+  PlaylistTrack,
+  Recommendations,
+  RecommendationSeed,
+  SavedTrack,
+  SavedAlbum,
+  FullTrack,
+  SimpleTrack,
+  LinkedTrack,
+  PrivateUser,
+  PublicUser,
+  CurrentlyPlaying,
+  Device,
+  Devices,
+  TuneableTrack,
 };

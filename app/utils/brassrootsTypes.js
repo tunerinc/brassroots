@@ -6,14 +6,14 @@
  */
 
 // Blob
-export type Blob = {
+type Blob = {
   +size: number,
   +type: string,
   +slice: () => Blob,
 };
 
 // Albums
-export type BRAlbum = {
+type BRAlbum = {
   id: string,
   plays: number,
   conversations?: {
@@ -30,12 +30,12 @@ export type BRAlbum = {
   },
 };
 
-export type BRAlbumConversation = {
+type BRAlbumConversation = {
   id: string,
   plays: number,
 };
 
-export type BRAlbumPlaylist = {
+type BRAlbumPlaylist = {
   id: string,
   plays: number,
   owner: {
@@ -44,18 +44,18 @@ export type BRAlbumPlaylist = {
   },
 };
 
-export type BRAlbumTrack = {
+type BRAlbumTrack = {
   id: string,
   plays: number,
 };
 
-export type BRAlbumUser = {
+type BRAlbumUser = {
   id: string,
   plays: number,
 };
 
 // Artists
-export type BRArtist = {
+type BRArtist = {
   id: string,
   plays: number,
   albums?: {
@@ -75,17 +75,17 @@ export type BRArtist = {
   },
 };
 
-export type BRArtistAlbum = {
+type BRArtistAlbum = {
   id: string,
   plays: number,
 };
 
-export type BRArtistConversation = {
+type BRArtistConversation = {
   id: string,
   plays: number,
 };
 
-export type BRArtistPlaylist = {
+type BRArtistPlaylist = {
   id: string,
   plays: number,
   owner: {
@@ -94,18 +94,18 @@ export type BRArtistPlaylist = {
   },
 };
 
-export type BRArtistTrack = {
+type BRArtistTrack = {
   id: string,
   plays: number,
 };
 
-export type BRArtistUser = {
+type BRArtistUser = {
   id: string,
   plays: number,
 };
 
 // Conversations
-export type BRConversation = {
+type BRConversation = {
   id: string,
   name: string,
   lastSentTrack: string,
@@ -125,7 +125,7 @@ export type BRConversation = {
   },
 };
 
-export type BRConversationAttachment = {
+type BRConversationAttachment = {
   id: string,
   trackID: string,
   type: string,
@@ -137,7 +137,7 @@ export type BRConversationAttachment = {
   listened: Array<string>,
 };
 
-export type BRConversationMessage = {
+type BRConversationMessage = {
   id: string,
   owner: string,
   text: string,
@@ -152,7 +152,7 @@ export type BRConversationMessage = {
   },
 };
 
-export type BRConversationUser = {
+type BRConversationUser = {
   id: string,
   displayName: string,
   image: string,
@@ -161,7 +161,7 @@ export type BRConversationUser = {
 };
 
 // Credits
-export type BRCredit = {
+type BRCredit = {
   name: string,
   id: string,
   photoURL: string,
@@ -171,7 +171,7 @@ export type BRCredit = {
 };
 
 // Feedback
-export type BRFeedback = {
+type BRFeedback = {
   id: string,
   categories: Array<string>,
   message: string,
@@ -181,7 +181,7 @@ export type BRFeedback = {
 };
 
 // Geo
-export type BRGeoItem = {
+type BRGeoItem = {
   id: string,
   type: string,
   coords: {},
@@ -197,7 +197,7 @@ export type BRGeoItem = {
 };
 
 // Groups
-export type BRGroup = {
+type BRGroup = {
   id: string,
   bio: string,
   conversationID: string,
@@ -227,7 +227,7 @@ export type BRGroup = {
   },
 };
 
-export type BRGroupFeature = {
+type BRGroupFeature = {
   id: string,
   name: string,
   image: string,
@@ -238,18 +238,18 @@ export type BRGroupFeature = {
   },
 };
 
-export type BRGroupPlaylist = {
+type BRGroupPlaylist = {
   id: string,
   userID: string,
 };
 
-export type BRGroupRecent = {
+type BRGroupRecent = {
   id: string,
   trackID: string,
   userID: string,
 };
 
-export type BRGroupUser = {
+type BRGroupUser = {
   id: string,
   displayName: string,
   image: string,
@@ -259,7 +259,7 @@ export type BRGroupUser = {
 };
 
 // Playlists
-export type BRPlaylist = {
+type BRPlaylist = {
   id: string,
   image: string,
   mode: string,
@@ -281,19 +281,19 @@ export type BRPlaylist = {
   },
 };
 
-export type BRPlaylistTrack = {
+type BRPlaylistTrack = {
   id: string,
   plays: number,
 };
 
-export type BRPlaylistUser = {
+type BRPlaylistUser = {
   id: string,
   member: boolean,
   plays: number,
 };
 
 // Searches
-export type BRSearch = {
+type BRSearch = {
   id: string,
   timestamp: string,
   query: string,
@@ -304,7 +304,7 @@ export type BRSearch = {
 };
 
 // Sessions
-export type BRSession = {
+type BRSession = {
   id: string,
   progress: number,
   currentTrackID: string,
@@ -357,7 +357,7 @@ export type BRSession = {
   },
 };
 
-export type BRSessionMessage = {
+type BRSessionMessage = {
   id: string,
   text: string,
   owner: string,
@@ -365,7 +365,7 @@ export type BRSessionMessage = {
   read: Array<string>,
 };
 
-export type BRSessionPrevious = {
+type BRSessionPrevious = {
   id: string,
   trackID: string,
   userID: string,
@@ -374,7 +374,7 @@ export type BRSessionPrevious = {
   nextQueueID: string,
 };
 
-export type BRSessionQueueTrack = {
+type BRSessionQueueTrack = {
   id: string,
   timeAdded: string,
   added: boolean,
@@ -409,12 +409,12 @@ export type BRSessionQueueTrack = {
   },
 };
 
-export type BRSessionQueueTrackLike = {
+type BRSessionQueueTrackLike = {
   id: string,
   timeLiked: string,
 };
 
-export type BRSessionUser = {
+type BRSessionUser = {
   id: string,
   displayName: string,
   profileImage: string,
@@ -428,7 +428,7 @@ export type BRSessionUser = {
 };
 
 // Settings
-export type BRSessionSetting = {
+type BRSessionSetting = {
   id: string,
   soundEffects: boolean,
   theme: string,
@@ -454,7 +454,7 @@ export type BRSessionSetting = {
 };
 
 // Tracks
-export type BRTrack = {
+type BRTrack = {
   id: string,
   plays: number,
   conversations?: {
@@ -468,23 +468,23 @@ export type BRTrack = {
   },
 };
 
-export type BRTrackConversation = {
+type BRTrackConversation = {
   id: string,
   plays: number,
 };
 
-export type BRTrackPlaylist = {
+type BRTrackPlaylist = {
   id: string,
   plays: number,
 };
 
-export type BRTrackUser = {
+type BRTrackUser = {
   id: string,
   plays: number,
 };
 
 // Users
-export type BRUser = {
+type BRUser = {
   +id?: string,
   +favoriteTrackID?: ?string,
   +bio?: ?string,
@@ -561,34 +561,34 @@ export type BRUser = {
   },
 };
 
-export type BRUserAlbum = {
+type BRUserAlbum = {
   id: string,
   plays: number,
 };
 
-export type BRUserArtist = {
+type BRUserArtist = {
   id: string,
   plays: number,
 };
 
-export type BRUserBlockedUser = {
+type BRUserBlockedUser = {
   id: string,
   timeBlocked: string,
 };
 
-export type BRUserConversation = {
+type BRUserConversation = {
   id: string,
   plays: number,
 };
 
-export type BRUserFollower = {
+type BRUserFollower = {
   id: string,
   displayName: string,
   profileImage: string,
   notify: boolean,
 };
 
-export type BRUserFollowing = {
+type BRUserFollowing = {
   id: string,
   displayName: string,
   profileImage: string,
@@ -597,13 +597,13 @@ export type BRUserFollowing = {
   currentSessionID: string,
 };
 
-export type BRUserGroup = {
+type BRUserGroup = {
   id: string,
   admin: boolean,
   member: boolean,
 };
 
-export type BRUserPlaylist = {
+type BRUserPlaylist = {
   id: string,
   plays: number,
   member: boolean,
@@ -612,12 +612,12 @@ export type BRUserPlaylist = {
   },
 };
 
-export type BRUserPlaylistTrack = {
+type BRUserPlaylistTrack = {
   id: string,
   plays: number,
 };
 
-export type BRUserRecent = {
+type BRUserRecent = {
   id: string,
   trackID: string,
   timeAdded: string,
@@ -645,19 +645,75 @@ export type BRUserRecent = {
   >,
 };
 
-export type BRUserSearch = {
+type BRUserSearch = {
   id: string,
   query: string,
   timestamp: string,
 };
 
-export type BRUserSession = {
+type BRUserSession = {
   id: string,
   timeJoined: string,
   timeLeft: string,
 };
 
-export type BRUserTrack = {
+type BRUserTrack = {
   id: string,
   plays: number,
+};
+
+export type {
+  Blob,
+  BRAlbum,
+  BRAlbumConversation,
+  BRAlbumPlaylist,
+  BRAlbumTrack,
+  BRAlbumUser,
+  BRArtist,
+  BRArtistAlbum,
+  BRArtistConversation,
+  BRArtistPlaylist,
+  BRArtistTrack,
+  BRArtistUser,
+  BRConversation,
+  BRConversationAttachment,
+  BRConversationMessage,
+  BRConversationUser,
+  BRCredit,
+  BRFeedback,
+  BRGeoItem,
+  BRGroup,
+  BRGroupFeature,
+  BRGroupPlaylist,
+  BRGroupRecent,
+  BRGroupUser,
+  BRPlaylist,
+  BRPlaylistTrack,
+  BRPlaylistUser,
+  BRSearch,
+  BRSession,
+  BRSessionMessage,
+  BRSessionPrevious,
+  BRSessionQueueTrack,
+  BRSessionQueueTrackLike,
+  BRSessionSetting,
+  BRSessionUser,
+  BRTrack,
+  BRTrackConversation,
+  BRTrackPlaylist,
+  BRTrackUser,
+  BRUser,
+  BRUserAlbum,
+  BRUserArtist,
+  BRUserBlockedUser,
+  BRUserConversation,
+  BRUserFollower,
+  BRUserFollowing,
+  BRUserGroup,
+  BRUserPlaylist,
+  BRUserPlaylistTrack,
+  BRUserRecent,
+  BRUserSearch,
+  BRUserSession,
+  BRUserTrack,
 };

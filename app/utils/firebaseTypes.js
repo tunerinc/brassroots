@@ -5,7 +5,7 @@
  * @flow
  */
 
-export type FirestoreDoc = {
+type FirestoreDoc = {
   exists: boolean,
   id: string,
   get: () => any,
@@ -16,34 +16,34 @@ export type FirestoreDoc = {
   doc: (?string) => FirestoreDoc,
 };
 
-export type FirestoreDocs = {
+type FirestoreDocs = {
   empty: boolean,
   docs: Array<FirestoreDoc>,
 };
 
-export type FirestoreQuery = {
+type FirestoreQuery = {
   get: () => Promise<FirestoreDocs>,
 };
 
-export type FirestoreRef = {
+type FirestoreRef = {
   where: (string, string, string) => FirestoreQuery,
   doc: (?string) => FirestoreDoc,
 };
 
-export type FirestoreBatch = {
+type FirestoreBatch = {
   update: (FirestoreDoc, {[key: string]: ?string | number | boolean}) => void,
   delete: (FirestoreDoc) => void,
   set: (FirestoreDoc, any) => Promise<void>,
   commit: () => Promise<void>,
 };
 
-export type FirestoreInstance = {
+type FirestoreInstance = {
   collection: (string) => FirestoreRef,
   batch: () => FirestoreBatch,
   GeoPoint: (number, number) => any,
 };
 
-export type StorageUploadTask = {
+type StorageUploadTask = {
   snapshot: {
     ref: {
       getDownloadURL: () => any;
@@ -51,23 +51,38 @@ export type StorageUploadTask = {
   },
 };
 
-export type StorageChild = {
+type StorageChild = {
   put: (any) => StorageUploadTask,
 };
 
-export type StorageRef = {
+type StorageRef = {
   child: (string) => StorageChild,
 };
 
-export type StorageInstance = {
+type StorageInstance = {
   ref: () => StorageRef,
 };
 
-export type FirebaseInstance = {
+type FirebaseInstance = {
   storage: () => StorageInstance,
 };
 
-export type Firebase = {
+type Firebase = {
   getFirestore: () => FirestoreInstance,
   getFirebase: () => FirebaseInstance,
+};
+
+export type {
+  FirestoreDoc,
+  FirestoreDocs,
+  FirestoreQuery,
+  FirestoreRef,
+  FirestoreBatch,
+  FirestoreInstance,
+  StorageUploadTask,
+  StorageChild,
+  StorageRef,
+  StorageInstance,
+  FirebaseInstance,
+  Firebase,
 };
