@@ -7,20 +7,27 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import type {Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/albums/types';
 
 // Case Functions
 import {addSingleAlbum, addAlbums} from '../actions/albums/AddAlbums/reducers';
+import * as getAlbums from '../actions/albums/GetAlbums/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type Artist = {|
   +id?: string,
   +name?: string,
 |};
 
-export type Album = {
+type Album = {
   +lastUpdated?: string,
   +id?: ?string,
   +name?: ?string,
@@ -37,14 +44,15 @@ export type Album = {
   +topTracks?: Array<string>,
 };
 
-export type Action = {
+type Action = {
   +type?: string,
   +error?: Error,
-  +albums?: {+[key: string]: Album},
+  +albums?: {+[key: string]: Album} | Array<string>,
   +album?: ?Album,
+  +refreshing?: boolean,
 };
 
-export type State = {
+type State = {
   +lastUpdated?: string,
   +userAlbums?: Array<string>,
   +albumsByID?: {[key: string]: Album},
@@ -59,6 +67,17 @@ export type State = {
   +fetchingTracks?: boolean,
   +incrementingCount?: boolean,
   +error?: ?Error | SpotifyError,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Artist,
+  Album,
+  Action,
+  State,
 };
 
 /**
@@ -155,6 +174,12 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_ALBUMS:
         return addAlbums(state, action);
+      case types.GET_ALBUMS_REQUEST:
+        return getAlbums.request(state, action);
+      case types.GET_ALBUMS_SUCCESS:
+        return getAlbums.success(state, action);
+      case types.GET_ALBUMS_FAILURE:
+        return getAlbums.failure(state, action);
       default:
         return state;
     }
