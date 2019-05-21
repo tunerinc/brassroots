@@ -38,7 +38,11 @@ export function addListeners(
   action: Action,
 ): Album {
   const {listeners: topListeners} = action;
-  return updateObject(state, {topListeners, lastUpdated});
+  const updates = Array.isArray(topListeners)
+    ? {topListeners, lastUpdated}
+    : {};
+
+  return updateObject(state, updates);
 }
 
 /**
