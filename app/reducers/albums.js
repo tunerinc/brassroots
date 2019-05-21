@@ -14,6 +14,7 @@ import * as types from '../actions/albums/types';
 // Case Functions
 import {addSingleAlbum, addAlbums} from '../actions/albums/AddAlbums/reducers';
 import * as getAlbums from '../actions/albums/GetAlbums/reducers';
+import * as getAlbumTopListeners from '../actions/albums/GetAlbumTopListeners/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -50,6 +51,8 @@ type Action = {
   +albums?: {+[key: string]: Album} | Array<string>,
   +album?: ?Album,
   +refreshing?: boolean,
+  +albumID?: string,
+  +listeners?: Array<string>,
 };
 
 type State = {
@@ -160,7 +163,9 @@ export function singleAlbum(
 ): Album {
   switch (action.type) {
     case types.ADD_ALBUMS:
-        return addSingleAlbum(state, action);
+      return addSingleAlbum(state, action);
+    case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
+      return getAlbumTopListeners.addListeners(state, action);
     default:
       return state;
   }
@@ -180,6 +185,12 @@ export default function reducer(
         return getAlbums.success(state, action);
       case types.GET_ALBUMS_FAILURE:
         return getAlbums.failure(state, action);
+      case types.GET_ALBUM_TOP_LISTENERS_REQUEST:
+        return getAlbumTopListeners.request(state);
+      case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
+        return getAlbumTopListeners.success(state, action);
+      case types.GET_ALBUM_TOP_LISTENERS_FAILURE:
+        return getAlbumTopListeners.failure(state, action);
       default:
         return state;
     }

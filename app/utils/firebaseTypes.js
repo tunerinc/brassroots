@@ -12,22 +12,29 @@ type FirestoreDoc = {
   data: () => any,
   update: ({[key: string]: string | boolean | number}) => Promise<void>,
   set: ({[key: string]: ?string | boolean | Array<string>}) => Promise<void>,
-  collection: (string) => FirestoreDoc,
+  collection: (string) => FirestoreDocs,
   doc: (?string) => FirestoreDoc,
 };
 
 type FirestoreDocs = {
   empty: boolean,
   docs: Array<FirestoreDoc>,
+  orderBy: (string, ?string) => FirestoreQuery,
+  limit: (number) => FirestoreQuery,
+  get: () => any,
+  doc: (?string) => FirestoreDoc,
 };
 
 type FirestoreQuery = {
   get: () => Promise<FirestoreDocs>,
+  limit: (number) => FirestoreDocs,
 };
 
 type FirestoreRef = {
   where: (string, string, string) => FirestoreQuery,
   doc: (?string) => FirestoreDoc,
+  orderBy: (string, ?string) => FirestoreQuery,
+  limit: (number) => FirestoreDocs,
 };
 
 type FirestoreBatch = {

@@ -21,10 +21,10 @@ import {
   type ThunkAction,
 } from '../../../reducers/player';
 import {
-  type Firebase,
   type FirestoreInstance,
   type FirestoreRef,
   type FirestoreDoc,
+  type FirestoreDocs,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
 
@@ -172,8 +172,8 @@ export function nextTrack(
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
-    const sessionPrevRef: FirestoreDoc = sessionRef.collection('previouslyPlayed');
-    const sessionQueueRef: FirestoreDoc = sessionRef.collection('queue');
+    const sessionPrevRef: FirestoreDocs = sessionRef.collection('previouslyPlayed');
+    const sessionQueueRef: FirestoreDocs = sessionRef.collection('queue');
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(user.id);
     const geoRef: FirestoreRef = firestore.collection('geo');
     const geoFirestore = new GeoFirestore(geoRef);
