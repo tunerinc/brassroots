@@ -10,11 +10,7 @@
  */
 
 import * as actions from './actions';
-import {
-  type Action,
-  type State,
-  type ThunkAction,
-} from '../../../reducers/settings';
+import {type ThunkAction} from '../../../reducers/settings';
 import {
   type FirestoreInstance,
   type FirestoreRef,

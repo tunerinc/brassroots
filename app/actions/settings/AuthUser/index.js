@@ -16,11 +16,7 @@ import {Actions, ActionConst} from 'react-native-router-flux';
 // import {createProfile} from '../../onboarding/CreateProfile';
 // import {addCurrentUser} from '../../users/AddCurrentUser';
 import * as actions from './actions';
-import {
-  type Action,
-  type State,
-  type ThunkAction,
-} from '../../../reducers/settings';
+import {type ThunkAction} from '../../../reducers/settings';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
 import {
   type FirestoreInstance,

@@ -14,11 +14,7 @@
 import getPlaylist from '../../../utils/spotifyAPI/getPlaylist';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {
-  type Action,
-  type State,
-  type ThunkAction,
-} from '../../../reducers/albums';
+import {type ThunkAction} from '../../../reducers/albums';
 import {
   type FirestoreInstance,
   type FirestoreDocs,

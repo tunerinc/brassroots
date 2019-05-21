@@ -17,11 +17,7 @@ import {authorizeUserSuccess} from '../AuthUser/actions';
 import {getUserSettings} from '../GetUserSettings';
 import * as actions from './actions';
 import envConfig from '../../../../env.json';
-import {
-  type Action,
-  type State,
-  type ThunkAction,
-} from '../../../reducers/settings';
+import {type ThunkAction} from '../../../reducers/settings';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
 import {
   type FirestoreInstance,

@@ -17,8 +17,6 @@ import {addAlbums} from '../AddAlbums';
 import * as actions from './actions';
 import {
   lastUpdated,
-  type Action,
-  type State,
   type ThunkAction,
   type Album,
   type Artist,

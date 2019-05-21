@@ -15,11 +15,7 @@ import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import {Actions} from 'react-native-router-flux';
 // import {addCurrentUser} from '../../users/AddCurrentUser';
 import * as actions from './actions';
-import {
-  type Action,
-  type State,
-  type ThunkAction,
-} from '../../../reducers/onboarding';
+import {type ThunkAction} from '../../../reducers/onboarding';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
 import {
   type Blob,

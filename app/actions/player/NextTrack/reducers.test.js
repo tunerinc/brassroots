@@ -5,12 +5,12 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/player';
-import * as actions from './actions';
-import {
+import reducer, {
+  initialState,
   type Action,
   type State,
 } from '../../../reducers/player';
+import * as actions from './actions';
 
 describe('next track reducer', () => {
   it('should return initial state', () => {

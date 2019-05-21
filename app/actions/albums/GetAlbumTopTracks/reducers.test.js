@@ -5,9 +5,11 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/albums';
+import reducer, {
+  initialState,
+  type Album,
+} from '../../../reducers/albums';
 import * as actions from './actions';
-import {type Album} from '../../../reducers/albums';
 
 describe('get album top tracks reducer', () => {
   it('should return initial state', () => {

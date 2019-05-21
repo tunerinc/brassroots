@@ -11,7 +11,6 @@
 
 import * as actions from './actions';
 import {
-  type Action,
   type Event,
   type ThunkAction,
 } from '../../../reducers/events';

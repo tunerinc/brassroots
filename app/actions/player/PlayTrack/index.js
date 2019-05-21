@@ -15,11 +15,7 @@ import GeoFirestore from 'geofirestore';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 // import {addRecentTrack} from '../../tracks/AddRecentTrack';
-import {
-  type Action,
-  type State,
-  type ThunkAction,
-} from '../../../reducers/player';
+import {type ThunkAction} from '../../../reducers/player';
 import {
   type FirestoreInstance,
   type FirestoreRef,

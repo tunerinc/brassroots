@@ -10,11 +10,7 @@ import Spotify from 'rn-spotify-sdk';
 // import {addTracks} from '../../tracks/AddTracks';
 import addMusicItems from '../../../utils/addMusicItems';
 import * as actions from './actions';
-import {
-  type Action,
-  type State,
-  type ThunkAction,
-} from '../../../reducers/albums';
+import {type ThunkAction} from '../../../reducers/albums';
 import {
   type FirestoreInstance,
   type FirestoreDocs,

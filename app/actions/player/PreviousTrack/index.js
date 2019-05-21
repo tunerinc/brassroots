@@ -14,11 +14,7 @@ import Spotify from 'rn-spotify-sdk';
 import {GeoFirestore} from 'geofirestore';
 // import {addRecentTrack} from '../../tracks/AddRecentTrack';
 import * as actions from './actions';
-import {
-  type Action,
-  type State,
-  type ThunkAction,
-} from '../../../reducers/player';
+import {type ThunkAction} from '../../../reducers/player';
 import {
   type FirestoreInstance,
   type FirestoreRef,
