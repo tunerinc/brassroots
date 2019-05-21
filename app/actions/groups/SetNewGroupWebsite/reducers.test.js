@@ -6,7 +6,7 @@
  */
 
 import isURL from '../../../utils/isURL';
-import reducer, { initialState } from '../../../reducers/groups';
+import reducer, {initialState} from '../../../reducers/groups';
 import * as actions from '../SetNewGroupWebsite';
 import * as types from '../types';
 

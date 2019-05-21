@@ -5,9 +5,12 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/events';
+import reducer, {
+  initialState,
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 import * as actions from '../ViewedMusicInfo';
-import type {Action, Event} from '../../../reducers/events';
 
 describe('viewed music info reducer', () => {
   it('should return initial state', () => {

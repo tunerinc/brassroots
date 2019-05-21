@@ -7,7 +7,7 @@
 
 import * as actions from '../SetProgress';
 import * as types from '../types';
-import type {Action} from '../../../reducers/player';
+import {type Action} from '../../../reducers/player';
 
 describe('set progress synchronous action creator', () => {
   it('creates action to set the progress of the player', () => {

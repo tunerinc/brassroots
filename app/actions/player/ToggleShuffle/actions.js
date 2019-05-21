@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/player';
+import {type Action} from '../../../reducers/player';
 
 /**
  * Notify the app of a toggle shuffle request

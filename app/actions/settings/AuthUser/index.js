@@ -16,19 +16,18 @@ import {Actions, ActionConst} from 'react-native-router-flux';
 // import {createProfile} from '../../onboarding/CreateProfile';
 // import {addCurrentUser} from '../../users/AddCurrentUser';
 import * as actions from './actions';
-import type {Action, State} from '../../../reducers/settings';
-import type {PrivateUser} from '../../../utils/spotifyAPI/types';
-import type {
-  Firebase,
-  FirestoreInstance,
-  FirestoreRef,
-  FirestoreDocs,
+import {
+  type Action,
+  type State,
+  type ThunkAction,
+} from '../../../reducers/settings';
+import {type PrivateUser} from '../../../utils/spotifyAPI/types';
+import {
+  type Firebase,
+  type FirestoreInstance,
+  type FirestoreRef,
+  type FirestoreDocs,
 } from '../../../utils/firebaseTypes';
-
-type GetState = () => State;
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;
 
 /**
  * Async function which authorizes Spotify for the current user

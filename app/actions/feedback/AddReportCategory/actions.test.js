@@ -7,7 +7,7 @@
 
 import * as actions from '../AddReportCategory';
 import * as types from '../types';
-import type {Action} from '../../../reducers/feedback';
+import {type Action} from '../../../reducers/feedback';
 
 describe('add report category action creator', () => {
   it('creates action adding a category to the report from the current user', () => {

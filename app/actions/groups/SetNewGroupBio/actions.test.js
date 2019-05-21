@@ -7,7 +7,7 @@
 
 import * as actions from '../SetNewGroupBio';
 import * as types from '../types';
-import type {Action} from '../../../reducers/groups';
+import {type Action} from '../../../reducers/groups';
 
 describe('set new group bio action creator', () => {
   it('creates action setting the bio for a new group', () => {

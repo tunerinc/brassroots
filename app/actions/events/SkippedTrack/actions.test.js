@@ -7,7 +7,10 @@
 
 import * as actions from '../SkippedTrack';
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 describe('skipped track action creator', () => {
   it('creates action for a skipped track event type', () => {

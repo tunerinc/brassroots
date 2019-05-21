@@ -8,7 +8,8 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/settings/types';
-import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Firebase} from '../utils/firebaseTypes';
+import {type SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
 import {addSettings} from '../actions/settings/AddSettings/reducers';
@@ -33,7 +34,12 @@ import * as logOut from '../actions/settings/LogOut/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-export type Notify = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Notify = {
   +session: string,
   +chat: string,
   +message: boolean,
@@ -45,14 +51,14 @@ export type Notify = {
   +newFollower: boolean,
 };
 
-export type Preference = {
+type Preference = {
   +playlist: string,
   +session: string,
   +message: string,
   +muteNearby: boolean,
 };
 
-export type Settings = {
+type Settings = {
   +id?: string,
   +language?: string,
   +region?: string,
@@ -63,7 +69,7 @@ export type Settings = {
   +preference?: Preference,
 };
 
-export type Action = {
+type Action = {
   +type?: string,
   +error?: Error,
   +settings?: Settings,
@@ -72,7 +78,7 @@ export type Action = {
   +loggedIn?: boolean,
 };
 
-export type State = {
+type State = {
   ...Settings,
   +lastUpdated?: string,
   +initializing?: boolean,
@@ -83,6 +89,18 @@ export type State = {
   +failed?: Array<mixed>,
   +fetchingSettings?: boolean,
   +error?: ?Error | SpotifyError,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Notify,
+  Preference,
+  Settings,
+  Action,
+  State,
 };
 
 /**

@@ -10,8 +10,11 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {initialState} from '../../../reducers/settings';
-import type {Action, State} from '../../../reducers/settings';
+import {
+  initialState,
+  type Action,
+  type State,
+} from '../../../reducers/settings';
 
 /**
  * Starts the request to log the current user out of Spotify / Brassroots

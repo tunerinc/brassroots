@@ -10,8 +10,11 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {lastUpdated} from '../../../reducers/player';
-import type {Action, State} from '../../../reducers/player';
+import {
+  lastUpdated,
+  type Action,
+  type State,
+} from '../../../reducers/player';
 
 /**
  * Starts the request to play the next track available

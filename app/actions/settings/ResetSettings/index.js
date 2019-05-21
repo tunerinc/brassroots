@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/settings';
+import {type Action} from '../../../reducers/settings';
 
 /**
  * Resets the redux settings state object

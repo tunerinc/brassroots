@@ -7,7 +7,7 @@
 
 import * as actions from '../AddConversationRecipient';
 import * as types from '../types';
-import type {Action} from '../../../reducers/conversations';
+import {type Action} from '../../../reducers/conversations';
 
 describe('add conversation recipient action creator', () => {
   it('creates action to add a recipient to a new conversation', () => {

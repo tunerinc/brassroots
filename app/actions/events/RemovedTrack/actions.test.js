@@ -7,7 +7,10 @@
 
 import * as actions from '../RemovedTrack';
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 describe('removed track action creator', () => {
   it('creates action for a removed track event type', () => {

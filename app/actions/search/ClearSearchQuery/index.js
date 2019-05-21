@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/search';
+import {type Action} from '../../../reducers/search';
 
 /**
  * Clears the search query

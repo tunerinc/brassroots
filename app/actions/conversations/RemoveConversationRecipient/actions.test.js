@@ -7,7 +7,7 @@
 
 import * as actions from '../RemoveConversationRecipient';
 import * as types from '../types';
-import type {Action} from '../../../reducers/conversations';
+import {type Action} from '../../../reducers/conversations';
 
 describe('remove conversation recipient action creator', () => {
   it('creates action to remove a recipient from a new conversation', () => {

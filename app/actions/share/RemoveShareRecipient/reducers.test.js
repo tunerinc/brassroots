@@ -25,7 +25,7 @@ describe('remove share recipient reducer', () => {
           recipients: [recipientIDOne, recipientIDTwo],
         },
         actions.removeShareRecipient(recipientIDOne)
-      )
+      ),
     )
       .toEqual(
         {

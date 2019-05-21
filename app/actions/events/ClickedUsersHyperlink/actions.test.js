@@ -7,7 +7,10 @@
 
 import * as actions from '../ClickedUsersHyperlink';
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 describe('clicked users hyperlink action creator', () => {
   it('creates action for a clicked users hyperlink event type', () => {

@@ -10,23 +10,22 @@
  */
 
 import * as actions from './actions';
-import type {Action, State} from '../../../reducers/feedback';
-import type {
-  Firebase,
-  FirestoreInstance,
-  FirestoreRef,
-  FirestoreDoc
+import {
+  type Action,
+  type State,
+  type ThunkAction,
+} from '../../../reducers/feedback';
+import {
+  type Firebase,
+  type FirestoreInstance,
+  type FirestoreRef,
+  type FirestoreDoc
 } from '../../../utils/firebaseTypes';
 
 type Problem = {
   categories: Array<string>,
   message: string,
 };
-
-type GetState = () => State;
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
 /**
  * Async function which reports a problem from the current user

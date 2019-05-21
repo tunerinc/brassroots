@@ -7,7 +7,7 @@
 
 import * as actions from './actions';
 import * as types from '../types';
-import type {Action} from '../../../reducers/settings';
+import {type Action} from '../../../reducers/settings';
 
 describe('change message preference synchronous action creators', () => {
   it('creates change message preference request action', () => {

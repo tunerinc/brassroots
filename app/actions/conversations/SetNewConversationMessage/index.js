@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/conversations';
+import {type Action} from '../../../reducers/conversations';
 
 /**
  * Sets the message for the new conversation being created by the current user

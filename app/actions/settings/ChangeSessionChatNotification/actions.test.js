@@ -7,7 +7,7 @@
 
 import * as actions from './actions';
 import * as types from '../types';
-import type {Action} from '../../../reducers/settings';
+import {type Action} from '../../../reducers/settings';
 
 describe('change session chat notification synchronous action creators', () => {
   it('creates change session chat notification request action', () => {

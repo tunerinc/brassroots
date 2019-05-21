@@ -7,7 +7,10 @@
 
 import reducer, {initialState} from '../../../reducers/player';
 import * as actions from './actions';
-import type {Action, State} from '../../../reducers/player';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/player';
 
 describe('next track reducer', () => {
   it('should return initial state', () => {

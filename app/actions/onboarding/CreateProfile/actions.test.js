@@ -7,7 +7,7 @@
 
 import * as actions from './actions';
 import * as types from '../types';
-import type {Action} from '../../../reducers/onboarding';
+import {type Action} from '../../../reducers/onboarding';
 
 describe('create profile synchronous action creators', () => {
   it('creates create profile request action', () => {

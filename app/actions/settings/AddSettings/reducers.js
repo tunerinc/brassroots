@@ -10,7 +10,13 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Notify, Preference, Settings, Action, State} from '../../../reducers/settings';
+import {
+  type Notify,
+  type Preference,
+  type Settings,
+  type Action,
+  type State,
+} from '../../../reducers/settings';
 
 /**
  * Adds the settings of the current user retrieved from Firestore

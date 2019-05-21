@@ -1,8 +1,10 @@
 'use strict';
 
 import updateObject from '../../../utils/updateObject';
-import {initialState} from '../../../reducers/conversations';
-import type {State} from '../../../reducers/conversations';
+import {
+  initialState,
+  type State,
+} from '../../../reducers/conversations';
 
 /**
  * Clears the new conversation

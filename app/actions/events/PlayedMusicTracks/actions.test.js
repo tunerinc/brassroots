@@ -7,7 +7,10 @@
 
 import * as actions from '../PlayedMusicTracks';
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 describe('played music tracks action creator', () => {
   it('creates action for a played music tracks event type', () => {

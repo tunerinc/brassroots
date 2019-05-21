@@ -10,7 +10,10 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Action, State} from '../../../reducers/conversations';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/conversations';
 
 /**
  * Adds a recipient to the new conversation

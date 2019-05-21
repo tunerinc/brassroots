@@ -5,9 +5,11 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/events';
+import reducer, {
+  initialState,
+  type Event,
+} from '../../../reducers/events';
 import * as actions from '../AddedTrack';
-import type {Event} from '../../../reducers/events';
 
 describe('added track reducer', () => {
   it('should return initial state', () => {

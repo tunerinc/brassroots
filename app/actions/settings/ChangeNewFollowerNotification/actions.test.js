@@ -7,7 +7,7 @@
 
 import * as actions from './actions';
 import * as types from '../types';
-import type {Action} from '../../../reducers/settings';
+import {type Action} from '../../../reducers/settings';
 
 describe('change new follower notification synchronous action creators', () => {
   it('creates change new follower notification request action', () => {

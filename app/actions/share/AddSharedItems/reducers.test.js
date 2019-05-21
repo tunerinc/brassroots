@@ -5,9 +5,11 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/share';
+import reducer, {
+  initialState,
+  type SharedItems,
+} from '../../../reducers/share';
 import * as actions from '../AddSharedItems';
-import type {SharedItems} from '../../../reducers/share';
 
 describe('add shared items reducer', () => {
   it('should return initial state', () => {

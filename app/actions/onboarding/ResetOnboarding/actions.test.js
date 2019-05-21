@@ -7,7 +7,7 @@
 
 import * as actions from '../ResetOnboarding';
 import * as types from '../types';
-import type {Action} from '../../../reducers/onboarding';
+import {type Action} from '../../../reducers/onboarding';
 
 describe('reset onboarding action creator', () => {
   it('creates action to reset the redux onboarding state object', () => {

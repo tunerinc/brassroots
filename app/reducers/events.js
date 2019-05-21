@@ -7,6 +7,7 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/events/types';
 
 // Case Functions
@@ -14,7 +15,12 @@ import * as sendEventsBatch from '../actions/events/SendEventsBatch/reducers';
 
 export const lastTimeSent: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
-export type Event = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Event = {
   +eventTime?: number,
   +localTime?: number,
   +locationLatitude?: string,
@@ -38,17 +44,27 @@ export type Event = {
   +eventType?: ?string,
 };
 
-export type Action = {
+type Action = {
   +type?: string,
   +event?: Event,
   +error?: Error,
 };
 
-export type State = {
+type State = {
   +lastTimeSent: string,
   +batch: Array<Event>,
   +uploading: boolean,
   +error: ?Error,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Event,
+  Action,
+  State,
 };
 
 /**

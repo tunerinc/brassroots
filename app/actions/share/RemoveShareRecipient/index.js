@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/share';
+import {type Action} from '../../../reducers/share';
 
 /**
  * Removes a recipient from the current user's shared item

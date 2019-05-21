@@ -7,7 +7,7 @@
 
 import * as actions from './actions';
 import * as types from '../types';
-import type {Action} from '../../../reducers/feedback';
+import {type Action} from '../../../reducers/feedback';
 
 describe('report problem synchronous action creators', () => {
   it('creates report problem request action', () => {

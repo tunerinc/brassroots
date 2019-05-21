@@ -7,7 +7,10 @@
 
 import * as actions from '../EditedPlaylistSettings';
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 describe('edited playlist settings action creator', () => {
   it('creates action for an edited playlist settings event type', () => {

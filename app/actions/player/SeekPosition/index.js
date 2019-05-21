@@ -13,18 +13,17 @@ import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
 import {setProgress} from '../SetProgress';
 import * as actions from './actions';
-import type {Action, State} from '../../../reducers/player';
-import type {
-  Firebase,
-  FirestoreInstance,
-  FirestoreDoc,
-  FirestoreBatch,
+import {
+  type Action,
+  type State,
+  type ThunkAction,
+} from '../../../reducers/player';
+import {
+  type Firebase,
+  type FirestoreInstance,
+  type FirestoreDoc,
+  type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
-
-type GetState = () => State;
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
 /**
  * Async function that seeks a session to a new position

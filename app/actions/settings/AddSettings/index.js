@@ -6,7 +6,10 @@
  */
 
 import * as types from '../types';
-import type {Settings, Action} from '../../../reducers/settings';
+import {
+  type Settings,
+  type Action,
+} from '../../../reducers/settings';
 
 /**
  * @module AddSettings

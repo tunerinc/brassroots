@@ -7,6 +7,7 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/player/types';
 
 // Case Functions
@@ -26,7 +27,12 @@ import * as toggleShuffle from '../actions/player/ToggleShuffle/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-export type Action = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Action = {
   +type?: string,
   +error?: Error,
   +currentQueueID?: ?string,
@@ -40,7 +46,7 @@ export type Action = {
   +status?: boolean,
 };
 
-export type State = {
+type State = {
   +lastUpdated?: string,
   +attemptingToPlay?: boolean,
   +timeLastPlayed?: ?string,
@@ -65,6 +71,15 @@ export type State = {
   +muted?: boolean,
   +muting?: boolean,
   +volume?: number,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Action,
+  State,
 };
 
 /**

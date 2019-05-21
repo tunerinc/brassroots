@@ -7,23 +7,38 @@
 
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/onboarding/types';
-import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Firebase} from '../utils/firebaseTypes';
+import {type SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
 import * as createProfile from '../actions/onboarding/CreateProfile/reducers';
 import {setOnboarding} from '../actions/onboarding/SetOnboarding/reducers';
 
-export type Action = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Action = {
   +type?: string,
   +error?: Error,
   +status?: boolean,
 };
 
-export type State = {
+type State = {
   +onboarding: boolean,
   +creatingUser: boolean,
   +profileCreated: boolean,
   +error: ?Error | SpotifyError,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Action,
+  State,
 };
 
 /**

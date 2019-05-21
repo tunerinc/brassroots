@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/conversations';
+import {type Action} from '../../../reducers/conversations';
 
 /**
  * Sets the message the user is typing in a conversation

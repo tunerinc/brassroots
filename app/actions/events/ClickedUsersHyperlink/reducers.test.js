@@ -5,9 +5,11 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/events';
+import reducer, {
+  initialState,
+  type Event,
+} from '../../../reducers/events';
 import * as actions from '../ClickedUsersHyperlink';
-import type {Event} from '../../../reducers/events';
 
 describe('clicked users hyperlink reducer', () => {
   it('should return initial state', () => {

@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @format
+ * @flow
+ */
+
 import reducer, {initialState} from '../../../reducers/player';
 import * as actions from './actions';
 

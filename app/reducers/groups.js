@@ -7,6 +7,7 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/groups/types';
 
 // Case Functions
@@ -18,7 +19,12 @@ import {setNewGroupWebsite} from '../actions/groups/SetNewGroupWebsite/reducers'
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-export type Group = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Group = {
   +lastUpdated: string,
   +id: ?string,
   +name: ?string,
@@ -40,7 +46,7 @@ export type Group = {
   +error: ?Error,
 };
 
-export type Action = {
+type Action = {
   +type?: string,
   +error?: Error,
   +bio?: string,
@@ -51,7 +57,7 @@ export type Action = {
   +website?: string,
 };
 
-export type State = {
+type State = {
   +lastUpdated: string,
   +userGroups: Array<string>,
   +groupsByID: {+[key: string]: Group},
@@ -70,6 +76,16 @@ export type State = {
     +image: string,
     +join: string,
   },
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Group,
+  Action,
+  State,
 };
 
 /**

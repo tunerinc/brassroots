@@ -10,11 +10,11 @@
  */
 
 import * as actions from './actions';
-import type {Action, Event} from '../../../reducers/events';
-
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch) => any;
-type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;
+import {
+  type Action,
+  type Event,
+  type ThunkAction,
+} from '../../../reducers/events';
 
 /**
  * Async function that sends the events batch, if available

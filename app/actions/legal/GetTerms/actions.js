@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/legal';
+import {type Action} from '../../../reducers/legal';
 
 /**
  * Notify the app of a get terms request

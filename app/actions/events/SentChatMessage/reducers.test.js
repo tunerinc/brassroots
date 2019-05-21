@@ -1,8 +1,15 @@
 'use strict';
 
-import reducer, { initialState } from '../../../reducers/events';
+/**
+ * @format
+ * @flow
+ */
+
+import reducer, {
+  initialState,
+  type Event,
+} from '../../../reducers/events';
 import * as actions from '../SentChatMessage';
-import type {Event} from '../../../reducers/events';
 
 describe('sent chat message reducer', () => {
   it('should return initial state', () => {

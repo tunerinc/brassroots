@@ -7,7 +7,7 @@
 
 import * as actions from './actions';
 import * as types from '../types';
-import type {Action} from '../../../reducers/player';
+import {type Action} from '../../../reducers/player';
 
 describe('toggle shuffle synchronous action creators', () => {
   it('creates toggle shuffle request action', () => {

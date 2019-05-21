@@ -15,22 +15,24 @@ import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import {Actions} from 'react-native-router-flux';
 // import {addCurrentUser} from '../../users/AddCurrentUser';
 import * as actions from './actions';
-import type {Action, State} from '../../../reducers/onboarding';
-import type {PrivateUser} from '../../../utils/spotifyAPI/types';
-import type {Blob, BRUser} from '../../../utils/brassrootsTypes';
-import type {
-  Firebase,
-  FirebaseInstance,
-  FirestoreInstance,
-  FirestoreRef,
-  StorageRef,
-  StorageUploadTask
+import {
+  type Action,
+  type State,
+  type ThunkAction,
+} from '../../../reducers/onboarding';
+import {type PrivateUser} from '../../../utils/spotifyAPI/types';
+import {
+  type Blob,
+  type BRUser,
+} from '../../../utils/brassrootsTypes';
+import {
+  type Firebase,
+  type FirebaseInstance,
+  type FirestoreInstance,
+  type FirestoreRef,
+  type StorageRef,
+  type StorageUploadTask
 } from '../../../utils/firebaseTypes';
-
-type GetState = () => State;
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
 /**
  * Async function that creates a profile on Ultrasound for the current user

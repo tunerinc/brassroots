@@ -24,11 +24,11 @@ import {Actions, ActionConst} from 'react-native-router-flux';
 // import {resetTracks} from '../../tracks/ResetTracks';
 // import {resetUsers} from '../../users/ResetUsers';
 import * as actions from './actions';
-import type {Action, State} from '../../../reducers/settings';
-
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+import {
+  type Action,
+  type State,
+  type ThunkAction,
+} from '../../../reducers/settings';
 
 /**
  * Async function that logs the current user out of Ultrasound

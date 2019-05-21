@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/feedback';
+import {type Action} from '../../../reducers/feedback';
 
 /**
  * Removes a category to a report from the current user

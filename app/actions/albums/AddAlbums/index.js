@@ -10,7 +10,10 @@
  */
 
 import * as types from '../types';
-import type {Action, Album} from '../../../reducers/albums';
+import {
+  type Action,
+  type Album,
+} from '../../../reducers/albums';
 
 /**
  * Add albums retrieved from Ultrasound

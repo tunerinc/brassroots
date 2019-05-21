@@ -10,7 +10,10 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Action, State} from '../../../reducers/share';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/share';
 
 /**
  * Adds a recipient for the current user to share with

@@ -7,7 +7,7 @@
 
 import * as actions from '../RemoveReportCategory';
 import * as types from '../types';
-import type {Action} from '../../../reducers/feedback';
+import {type Action} from '../../../reducers/feedback';
 
 describe('remove report category action creator', () => {
   it('creates action removing a category from the report from the current user', () => {

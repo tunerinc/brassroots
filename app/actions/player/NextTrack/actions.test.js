@@ -7,7 +7,7 @@
 
 import * as actions from '../NextTrack/actions';
 import * as types from '../types';
-import type {Action} from '../../../reducers/player';
+import {type Action} from '../../../reducers/player';
 
 describe('next track synchronous action creators', () => {
   it('creates next track request action', () => {

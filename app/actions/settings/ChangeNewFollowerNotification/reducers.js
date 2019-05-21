@@ -10,8 +10,11 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {lastUpdated} from '../../../reducers/settings';
-import type {Action, State} from '../../../reducers/settings';
+import {
+  lastUpdated,
+  type Action,
+  type State,
+} from '../../../reducers/settings';
 
 /**
  * Starts the request to change the new follower notification

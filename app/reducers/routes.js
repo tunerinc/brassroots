@@ -6,19 +6,35 @@
  */
 
 import updateObject from '../utils/updateObject';
+import {type Firebase} from '../utils/firebaseTypes';
 
-export type Scene = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Scene = {
   +children?: ?[],
   +index?: ?number,
 };
 
-export type Action = {
+type Action = {
   +type?: string,
   +scene?: Scene,
 };
 
-export type State = {
+type State = {
   +scene: {},
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Scene,
+  Action,
+  State,
 };
 
 /**

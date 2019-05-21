@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/settings';
+import {type Action} from '../../../reducers/settings';
 
 /**
  * Notify the app of a change new follower notification request

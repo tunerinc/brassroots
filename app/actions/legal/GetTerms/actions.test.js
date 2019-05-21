@@ -7,7 +7,7 @@
 
 import * as actions from './actions';
 import * as types from '../types';
-import type {Action} from '../../../reducers/legal';
+import {type Action} from '../../../reducers/legal';
 
 describe('get terms synchronous action creators', () => {
   it('creates get terms request action', () => {

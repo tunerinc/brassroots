@@ -7,7 +7,10 @@
 
 import * as actions from '../AddedTrack';
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 describe('added track action creator', () => {
   it('creates action for an added track event type', () => {

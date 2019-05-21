@@ -7,7 +7,10 @@
 
 import * as actions from '../AddSettings';
 import * as types from '../types';
-import type {Settings, Action} from '../../../reducers/settings';
+import {
+  type Settings,
+  type Action,
+} from '../../../reducers/settings';
 
 describe('add settings action creator', () => {
   it('creates action to add the current user\'s settings object', () => {

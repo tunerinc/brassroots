@@ -7,6 +7,7 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/share/types';
 
 // Case Functions
@@ -16,21 +17,26 @@ import {removeShareRecipient} from '../actions/share/RemoveShareRecipient/reduce
 
 const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-export type SharedItems = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type SharedItems = {
   +[key: string]: {
     +id: string,
     +type: string,
   }
 };
 
-export type Action = {
+type Action = {
   +type?: string,
   +error?: Error,
   +items?: SharedItems,
   +recipientID?: string,
 };
 
-export type State = {
+type State = {
   +lastUpdated?: string,
   +sharedItem?: {
     +id: string,
@@ -41,6 +47,16 @@ export type State = {
   +searching?: boolean,
   +sharing?: boolean,
   +error?: ?Error,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  SharedItems,
+  Action,
+  State,
 };
 
 /**

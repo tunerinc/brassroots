@@ -10,7 +10,7 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {State} from '../../../reducers/search';
+import {type State} from '../../../reducers/search';
 
 /**
  * Clears the search query

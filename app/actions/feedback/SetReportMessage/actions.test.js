@@ -7,7 +7,7 @@
 
 import * as actions from '../SetReportMessage';
 import * as types from '../types';
-import type {Action} from '../../../reducers/feedback';
+import {type Action} from '../../../reducers/feedback';
 
 describe('set report message action creator', () => {
   it('creates action setting the message for the report from the current user', () => {

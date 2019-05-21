@@ -7,7 +7,7 @@
 
 import * as actions from '../ClearShare';
 import * as types from '../types';
-import type {Action} from '../../../reducers/share';
+import {type Action} from '../../../reducers/share';
 
 describe('clear share action creator', () => {
   it('creates action clearing the share', () => {

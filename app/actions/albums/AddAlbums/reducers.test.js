@@ -5,10 +5,9 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/albums';
+import reducer, {initialState, type Album} from '../../../reducers/albums';
 import updateObject from '../../../utils/updateObject';
 import * as actions from '../AddAlbums';
-import type {Album} from '../../../reducers/albums';
 
 describe('add albums reducer', () => {
   it('should return the initial state', () => {

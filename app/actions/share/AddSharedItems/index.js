@@ -10,7 +10,10 @@
  */
 
 import * as types from '../types';
-import type {Action, SharedItems} from '../../../reducers/share';
+import {
+  type Action,
+  type SharedItems,
+} from '../../../reducers/share';
 
 /**
  * Adds shared music items for the current user to share

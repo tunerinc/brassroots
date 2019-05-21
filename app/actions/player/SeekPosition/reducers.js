@@ -10,7 +10,10 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Action, State} from '../../../reducers/player';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/player';
 
 /**
  * Starts the request to seek to a new position in the currently playing track

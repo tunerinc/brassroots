@@ -5,9 +5,11 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type Settings,
+} from '../../../reducers/settings';
 import * as actions from '../AddSettings';
-import type {Settings} from '../../../reducers/settings';
 
 describe('add settings reducer', () => {
   it('should return initial state', () => {

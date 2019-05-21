@@ -10,7 +10,10 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Action, State} from '../../../reducers/onboarding';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/onboarding';
 
 /**
  * Sets the onboarding status for the current user

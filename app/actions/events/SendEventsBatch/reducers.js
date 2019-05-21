@@ -10,8 +10,12 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {initialState, lastTimeSent} from '../../../reducers/events';
-import type {Action, State} from '../../../reducers/events';
+import {
+  initialState,
+  lastTimeSent,
+  type Action,
+  type State,
+} from '../../../reducers/events';
 
 /**
  * Starts the request to send the events batch to ES/EC

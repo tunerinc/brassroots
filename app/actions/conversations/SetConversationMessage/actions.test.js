@@ -7,7 +7,7 @@
 
 import * as actions from '../SetConversationMessage';
 import * as types from '../types';
-import type {Action} from '../../../reducers/conversations';
+import {type Action} from '../../../reducers/conversations';
 
 describe('set conversation message action creator', () => {
   it('creates action to set the message for a conversation', () => {

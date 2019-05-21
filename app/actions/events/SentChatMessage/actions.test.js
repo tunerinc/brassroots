@@ -7,7 +7,10 @@
 
 import * as actions from '../SentChatMessage';
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 describe('sent chat message action creator', () => {
   it('creates action for a sent chat message event type', () => {

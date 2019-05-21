@@ -10,7 +10,10 @@
  */
 
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 /**
  * Adds an event for an added track to a session's queue

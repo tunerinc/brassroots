@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/onboarding';
+import {type Action} from '../../../reducers/onboarding';
 
 /**
  * Notify the app of a create profile request

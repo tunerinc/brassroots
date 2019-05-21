@@ -10,7 +10,10 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Action, State} from '../../../reducers/player';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/player';
 
 /**
  * Starts the request to play a track in the current session

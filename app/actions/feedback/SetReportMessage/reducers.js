@@ -10,7 +10,10 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Action, State} from '../../../reducers/feedback';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/feedback';
 
 /**
  * Sets the message for the report

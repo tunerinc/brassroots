@@ -7,7 +7,8 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
-import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Firebase} from '../utils/firebaseTypes';
+import {type SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/conversations/types';
 
 // Case Functions
@@ -19,7 +20,12 @@ import {setNewConversationMessage} from '../actions/conversations/SetNewConversa
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
-export type SingleMessage = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type SingleMessage = {
   +lastUpdated?: string,
   +id?: ?string,
   +text?: ?string,
@@ -32,7 +38,7 @@ export type SingleMessage = {
   +fetchingMedia?: boolean,
 };
 
-export type SingleConversation = {
+type SingleConversation = {
   +lastUpdated?: string,
   +id?: ?string,
   +name?: ?string,
@@ -44,7 +50,7 @@ export type SingleConversation = {
   +fetchingMusic?: boolean,
 };
 
-export type Action = {
+type Action = {
   +type?: string,
   +error?: Error,
   +recipientID?: string,
@@ -52,7 +58,7 @@ export type Action = {
   +message?: string,
 };
 
-export type State = {
+type State = {
   +lastUpdated?: string,
   +userConversations?: Array<string>,
   +conversationsByID?: {+[key: string]: SingleConversation},
@@ -68,6 +74,17 @@ export type State = {
     +recipients: Array<string>,
     +message: string,
   },
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  SingleMessage,
+  SingleConversation,
+  Action,
+  State,
 };
 
 /**

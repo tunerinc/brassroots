@@ -10,8 +10,11 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {lastUpdated} from '../../../reducers/legal';
-import type {Action, State} from '../../../reducers/legal';
+import {
+  lastUpdated,
+  type Action,
+  type State,
+} from '../../../reducers/legal';
 
 /**
  * Starts the request to get the terms of service from PS

@@ -10,8 +10,12 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {singleConversation} from '../../../reducers/conversations';
-import type {Action, State, SingleConversation} from '../../../reducers/conversations';
+import {
+  singleConversation,
+  type Action,
+  type State,
+  type SingleConversation,
+} from '../../../reducers/conversations';
 
 /**
  * Sets the message for a single conversation

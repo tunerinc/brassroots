@@ -10,7 +10,10 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Action, State} from '../../../reducers/player';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/player';
 
 /**
  * Sets the progress of the currently playing track

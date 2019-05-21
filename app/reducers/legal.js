@@ -7,6 +7,7 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/legal/types';
 
 // Case Functions
@@ -15,14 +16,19 @@ import * as getTerms from '../actions/legal/GetTerms/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-export type Action = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Action = {
   +type?: string,
   +error?: Error,
   +refreshing?: boolean,
   +text?: string,
 };
 
-export type State = {
+type State = {
   +privacy?: {
     +lastUpdated?: string,
     +text?: string,
@@ -37,6 +43,15 @@ export type State = {
     +refreshingTerms?: boolean,
     +error?: ?Error,
   },
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Action,
+  State,
 };
 
 /**

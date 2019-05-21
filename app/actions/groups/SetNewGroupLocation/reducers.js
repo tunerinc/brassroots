@@ -10,7 +10,10 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import type {Action, State} from '../../../reducers/groups';
+import {
+  type Action,
+  type State,
+} from '../../../reducers/groups';
 
 /**
  * Sets the location for the new group

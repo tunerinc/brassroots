@@ -7,7 +7,10 @@
 
 import * as actions from '../AddSharedItems';
 import * as types from '../types';
-import type {Action, SharedItems} from '../../../reducers/share';
+import {
+  type Action,
+  type SharedItems,
+} from '../../../reducers/share';
 
 describe('add shared items action creator', () => {
   it('creates actiona dding the items that are being shared from the current user', () => {

@@ -6,6 +6,7 @@
  */
 
 import updateObject from '../utils/updateObject';
+import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/feedback/types';
 
 // Case Functions
@@ -13,20 +14,34 @@ import {addReportCategory} from '../actions/feedback/AddReportCategory/reducers'
 import {removeReportCategory} from '../actions/feedback/RemoveReportCategory/reducers';
 import {setReportMessage} from '../actions/feedback/SetReportMessage/reducers';
 
-export type Action = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Action = {
   +type?: string,
   +error?: Error,
   +category?: string,
   +message?: string,
 };
 
-export type State = {
+type State = {
   +types?: Array<string>,
   +message?: string,
   +userID?: ?string,
   +reportedUser?: ?string,
   +sending?: boolean,
   +error?: ?Error,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Action,
+  State,
 };
 
 /**

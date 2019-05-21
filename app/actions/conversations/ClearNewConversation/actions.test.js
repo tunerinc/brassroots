@@ -7,7 +7,7 @@
 
 import * as actions from '../ClearNewConversation';
 import * as types from '../types';
-import type {Action} from '../../../reducers/conversations';
+import {type Action} from '../../../reducers/conversations';
 
 describe('clear new conversation action creator', () => {
   it('creates action to clear the new conversation for the current user', () => {

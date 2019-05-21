@@ -7,8 +7,8 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
-import type {Firebase} from '../utils/firebaseTypes';
-import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Firebase} from '../utils/firebaseTypes';
+import {type SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/albums/types';
 
 // Case Functions

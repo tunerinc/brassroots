@@ -11,7 +11,7 @@
 
 import isURL from '../../../utils/isURL';
 import * as types from '../types';
-import type {Action} from '../../../reducers/groups';
+import {type Action} from '../../../reducers/groups';
 
 /**
  * Sets the website for the new group being created by the current user

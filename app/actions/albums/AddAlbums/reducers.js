@@ -5,8 +5,13 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {singleAlbum, lastUpdated} from '../../../reducers/albums';
-import type {Action, State, Album} from '../../../reducers/albums';
+import {
+  singleAlbum,
+  lastUpdated,
+  type Action,
+  type State,
+  type Album,
+} from '../../../reducers/albums';
 
 /**
  * Adds a single album to the Redux state

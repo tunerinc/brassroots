@@ -7,7 +7,10 @@
 
 import * as actions from '../AddAlbums';
 import * as types from '../types';
-import type {Action, Album} from '../../../reducers/albums';
+import {
+  type Action,
+  type Album,
+} from '../../../reducers/albums';
 
 describe('add albums action creator', () => {
   it('creates action to add albums', () => {

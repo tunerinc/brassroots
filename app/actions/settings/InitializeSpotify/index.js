@@ -17,19 +17,18 @@ import {authorizeUserSuccess} from '../AuthUser/actions';
 import {getUserSettings} from '../GetUserSettings';
 import * as actions from './actions';
 import envConfig from '../../../../env.json';
-import type {Action, State} from '../../../reducers/settings';
-import type {PrivateUser} from '../../../utils/spotifyAPI/types';
-import type {
-  Firebase,
-  FirestoreInstance,
-  FirestoreRef,
-  FirestoreDocs
+import {
+  type Action,
+  type State,
+  type ThunkAction,
+} from '../../../reducers/settings';
+import {type PrivateUser} from '../../../utils/spotifyAPI/types';
+import {
+  type Firebase,
+  type FirestoreInstance,
+  type FirestoreRef,
+  type FirestoreDocs
 } from '../../../utils/firebaseTypes';
-
-type GetState = () => State;
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
 /**
  * Async function that initializes Spotify for Ultrasound

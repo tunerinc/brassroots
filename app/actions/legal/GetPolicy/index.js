@@ -11,11 +11,10 @@
 
 import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import * as actions from './actions';
-import type {Action} from '../../../reducers/legal';
-
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+import {
+  type Action,
+  type ThunkAction,
+} from '../../../reducers/legal';
 
 /**
  * Async function that gets the most recent privacy policy from Ultrasound

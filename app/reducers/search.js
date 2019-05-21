@@ -8,19 +8,25 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/search/types';
-import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Firebase} from '../utils/firebaseTypes';
+import {type SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
 import {clearSearchQuery} from '../actions/search/ClearSearchQuery/reducers';
 
 const currentDate: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-export type Action = {
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Action = {
   +type?: string,
   +error?: Error,
 };
 
-export type State = {
+type State = {
   +recentSearches?: Array<string>,
   +nearbySearches?: Array<string>,
   +trendingSearches?: Array<string>,
@@ -38,6 +44,15 @@ export type State = {
   +deleting?: boolean,
   +lastUpdated?: string,
   +error?: ?Error | SpotifyError,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Action,
+  State,
 };
 
 /**

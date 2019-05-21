@@ -10,7 +10,7 @@
  */
 
 import * as types from '../types';
-import type {Action} from '../../../reducers/groups';
+import {type Action} from '../../../reducers/groups';
 
 /**
  * Sets the bio for a new group being created by the current user

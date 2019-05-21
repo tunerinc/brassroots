@@ -15,12 +15,16 @@ import GeoFirestore from 'geofirestore';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 // import {addRecentTrack} from '../../tracks/AddRecentTrack';
-import type {Action, State} from '../../../reducers/player';
-import type {
-  Firebase,
-  FirestoreInstance,
-  FirestoreRef,
-  FirestoreDoc,
+import {
+  type Action,
+  type State,
+  type ThunkAction,
+} from '../../../reducers/player';
+import {
+  type Firebase,
+  type FirestoreInstance,
+  type FirestoreRef,
+  type FirestoreDoc,
 } from '../../../utils/firebaseTypes';
 
 type User = {
@@ -95,11 +99,6 @@ type Context = {
   position: number,
   total: number,
 };
-
-type GetState = () => State;
-type PromiseAction = Promise<Action>;
-type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
 /**
  * Async function that plays a track the current user has selected

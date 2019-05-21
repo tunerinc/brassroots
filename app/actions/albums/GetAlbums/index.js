@@ -5,6 +5,10 @@
  * @flow
  */
 
+/**
+ * @module GetAlbums
+ */
+
 import getMySavedAlbums from "../../../utils/spotifyAPI/getMySavedAlbums";
 import updateObject from '../../../utils/updateObject';
 import {addAlbums} from '../AddAlbums';
@@ -25,10 +29,6 @@ import {
   type FullAlbum,
   type SimpleAlbum,
 } from '../../../utils/spotifyAPI/types';
-
-/**
- * @module GetAlbums
- */
 
 type AlbumsFromSpotify = Array<SavedAlbum | FullAlbum | SimpleAlbum>;
 type Albums = {+[id: string]: Album};

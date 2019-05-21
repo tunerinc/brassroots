@@ -7,7 +7,10 @@
 
 import * as actions from '../ViewedMusicInfo';
 import * as types from '../types';
-import type {Action, Event} from '../../../reducers/events';
+import {
+  type Action,
+  type Event,
+} from '../../../reducers/events';
 
 describe('viewed music info action creator', () => {
   it('creates action for a viewed music info event type', () => {

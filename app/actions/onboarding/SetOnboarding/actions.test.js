@@ -7,7 +7,7 @@
 
 import * as actions from '../SetOnboarding';
 import * as types from '../types';
-import type {Action} from '../../../reducers/onboarding';
+import {type Action} from '../../../reducers/onboarding';
 
 describe('set onboarding action creator', () => {
   it('creates action setting the onboarding status of the current user', () => {
