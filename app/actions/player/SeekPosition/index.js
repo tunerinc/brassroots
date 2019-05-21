@@ -19,7 +19,6 @@ import {
   type ThunkAction,
 } from '../../../reducers/player';
 import {
-  type Firebase,
   type FirestoreInstance,
   type FirestoreDoc,
   type FirestoreBatch,

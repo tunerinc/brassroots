@@ -16,7 +16,6 @@ import {
   type ThunkAction,
 } from '../../../reducers/settings';
 import {
-  type Firebase,
   type FirestoreInstance,
   type FirestoreRef,
 } from '../../../utils/firebaseTypes';

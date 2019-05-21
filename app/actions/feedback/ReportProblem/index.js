@@ -16,7 +16,6 @@ import {
   type ThunkAction,
 } from '../../../reducers/feedback';
 import {
-  type Firebase,
   type FirestoreInstance,
   type FirestoreRef,
   type FirestoreDoc

@@ -23,7 +23,6 @@ import {
 } from '../../../reducers/settings';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
 import {
-  type Firebase,
   type FirestoreInstance,
   type FirestoreRef,
   type FirestoreDocs,

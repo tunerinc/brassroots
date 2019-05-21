@@ -26,7 +26,6 @@ import {
   type BRUser,
 } from '../../../utils/brassrootsTypes';
 import {
-  type Firebase,
   type FirebaseInstance,
   type FirestoreInstance,
   type FirestoreRef,
