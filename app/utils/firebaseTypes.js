@@ -48,6 +48,7 @@ type FirestoreInstance = {
   collection: (string) => FirestoreRef,
   batch: () => FirestoreBatch,
   GeoPoint: (number, number) => any,
+  runTransaction: (any) => Promise<any>,
 };
 
 type StorageUploadTask = {
