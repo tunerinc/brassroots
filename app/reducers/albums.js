@@ -221,6 +221,8 @@ export default function reducer(
         return incrementAlbumPlays.success(state, action);
       case types.INCREMENT_ALBUM_PLAYS_FAILURE:
         return incrementAlbumPlays.failure(state, action);
+      case types.RESET_ALBUMS:
+        return initialState;
       default:
         return state;
     }
