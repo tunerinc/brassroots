@@ -16,6 +16,7 @@ import {addSingleAlbum, addAlbums} from '../actions/albums/AddAlbums/reducers';
 import * as getAlbums from '../actions/albums/GetAlbums/reducers';
 import * as getAlbumTopListeners from '../actions/albums/GetAlbumTopListeners/reducers';
 import * as getAlbumTopPlaylists from '../actions/albums/GetAlbumTopPlaylists/reducers';
+import * as getAlbumTopTracks from '../actions/albums/GetAlbumTopTracks/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -55,6 +56,7 @@ type Action = {
   +albumID?: string,
   +listeners?: Array<string>,
   +playlistIDs?: Array<string>,
+  +trackIDs?: Array<string>,
 };
 
 type State = {
@@ -170,6 +172,8 @@ export function singleAlbum(
       return getAlbumTopListeners.addListeners(state, action);
     case types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS:
       return getAlbumTopPlaylists.addPlaylists(state, action);
+    case types.GET_ALBUM_TOP_TRACKS_SUCCESS:
+      return getAlbumTopTracks.addTracks(state, action);
     default:
       return state;
   }
@@ -201,6 +205,12 @@ export default function reducer(
         return getAlbumTopPlaylists.success(state, action);
       case types.GET_ALBUM_TOP_PLAYLISTS_FAILURE:
         return getAlbumTopPlaylists.failure(state, action);
+      case types.GET_ALBUM_TOP_TRACKS_REQUEST:
+        return getAlbumTopTracks.request(state);
+      case types.GET_ALBUM_TOP_TRACKS_SUCCESS:
+        return getAlbumTopTracks.success(state, action);
+      case types.GET_ALBUM_TOP_TRACKS_FAILURE:
+        return getAlbumTopTracks.failure(state, action);
       default:
         return state;
     }
