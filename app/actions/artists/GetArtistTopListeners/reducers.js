@@ -6,7 +6,7 @@
  */
 
 /**
- * @module GetArtistTopAlbumsReducers
+ * @module GetArtistTopListenersReducers
  */
 
 import updateObject from '../../../utils/updateObject';
@@ -19,9 +19,9 @@ import {
 } from '../../../reducers/artists';
 
 /**
- * Confirms the success of getting the top albums of a single artist
+ * Confirms the success of getting the top listeners of a single artist
  * 
- * @function addAlbums
+ * @function addListeners
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -29,24 +29,24 @@ import {
  * @param   {object}   action           The Redux action
  * @param   {string}   action.type      The type of Redux action
  * @param   {string}   action.artistID  The Spotify id of the artist
- * @param   {string[]} action.topAlbums The top albums of the artist and their Spotify ids
+ * @param   {string[]} action.listeners The top listeners of the artist and their user ids
  * 
- * @returns {object}                    The state of the single artist with the top albums updated
+ * @returns {object}                    The state of the single artist with the top listeners updated
  */
-export function addAlbums(
+export function addListeners(
   state: Artist,
   action: Action,
 ): Artist {
-  const {topAlbums} = action;
-  const updates = Array.isArray(topAlbums)
-    ? {topAlbums, lastUpdated}
+  const {listeners: topListeners} = action;
+  const updates = Array.isArray(topListeners)
+    ? {topListeners, lastUpdated}
     : {};
 
   return updateObject(state, updates);
 }
 
 /**
- * Starts the request to get the top albums of a single artist
+ * Starts the request to get the top listeners of a single artist
  * 
  * @function request
  * 
@@ -54,16 +54,16 @@ export function addAlbums(
  * 
  * @param   {object} state The Redux state
  * 
- * @returns {object}       The state with the fetchingAlbums prop updated
+ * @returns {object}       The state with the fetchingListeners prop updated
  */
 export function request(
   state: State,
 ): State {
-  return updateObject(state, {fetchingAlbums: true, error: null});
+  return updateObject(state, {fetchingListeners: true, error: null});
 }
 
 /**
- * Confirms the success of getting the top albums of a single artist
+ * Confirms the success of getting the top listeners of a single artist
  * 
  * @function success
  * 
@@ -73,9 +73,9 @@ export function request(
  * @param   {object}   action           The Redux action
  * @param   {string}   action.type      The type of Redux action
  * @param   {string}   action.artistID  The Spotify id of the artist
- * @param   {string[]} action.topAlbums The top albums of the artist and their Spotify ids
+ * @param   {string[]} action.listeners The top listeners of the artist and their user ids
  * 
- * @returns {object}                    The state with the artist's top albums updated
+ * @returns {object}                    The state with the artist's top listeners updated
  */
 export function success(
   state: State,
@@ -85,7 +85,7 @@ export function success(
   const {artistID} = action;
   const updates = typeof artistID === 'string' && typeof oldArtists === 'object'
     ? {
-      fetchingAlbums: false,
+      fetchingListeners: false,
       error: null,
       artistsByID: updateObject(oldArtists, {
         [artistID]: singleArtist(oldArtists[artistID], action),
@@ -97,7 +97,7 @@ export function success(
 }
 
 /**
- * Adds the error which caused the get artist top albums failure
+ * Adds the error which caused the get artist top listeners failure
  * 
  * @function failure
  * 
@@ -106,7 +106,7 @@ export function success(
  * @param   {object} state        The Redux state
  * @param   {object} action       The Redux action
  * @param   {string} action.type  The type of Redux action
- * @param   {Error}  action.error The error which caused the get artist top albums failure
+ * @param   {Error}  action.error The error which caused the get artist top listeners failure
  * 
  * @returns {object}              The state with the error prop updated
  */
@@ -115,5 +115,5 @@ export function failure(
   action: Action,
 ): State {
   const {error} = action;
-  return updateObject(state, {error, fetchingAlbums: false});
+  return updateObject(state, {error, fetchingListeners: false});
 }

@@ -6,7 +6,7 @@
  */
 
 /**
- * @module GetAlbumTopListenersReducers
+ * @module GetAlbumTopPlaylistsReducers
  */
 
 import updateObject from '../../../utils/updateObject';
