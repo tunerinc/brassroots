@@ -7,19 +7,21 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import {type Action as AlbumAction} from './albums';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/artists/types';
 
 // Case Functions
 import {addSingleArtist, addArtists} from '../actions/artists/AddArtists/reducers';
+import * as getArtistTopAlbums from '../actions/artists/GetArtistTopAlbums/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: Action | AlbumAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type Artist = {
   +lastUpdated?: string,
@@ -42,6 +44,8 @@ type Action = {
   +type?: string,
   +error?: Error,
   +artists?: {+[id: string]: Artist},
+  +artistID?: string,
+  +topAlbums?: Array<string>,
 };
 
 type State = {
@@ -151,6 +155,8 @@ export function singleArtist(
   switch (action.type) {
     case types.ADD_ARTISTS:
       return addSingleArtist(state, action);
+    case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:
+      return getArtistTopAlbums.addAlbums(state, action);
     default:
       return state;
   }
@@ -164,6 +170,12 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_ARTISTS:
         return addArtists(state, action);
+      case types.GET_ARTIST_TOP_ALBUMS_REQUEST:
+        return getArtistTopAlbums.request(state);
+      case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:
+        return getArtistTopAlbums.success(state, action);
+      case types.GET_ARTIST_TOP_ALBUMS_FAILURE:
+        return getArtistTopAlbums.failure(state, action);
       default:
         return state;
     }
