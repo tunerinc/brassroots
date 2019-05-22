@@ -5,9 +5,11 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/artists';
+import reducer, {
+  initialState,
+  type Artist,
+} from '../../../reducers/artists';
 import * as actions from './actions';
-import {type Artist} from '../../../reducers/artists';
 
 describe('get artist top listeners reducer', () => {
   it('should return initial state', () => {
