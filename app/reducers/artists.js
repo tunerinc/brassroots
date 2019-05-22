@@ -7,42 +7,67 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
-import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Firebase} from '../utils/firebaseTypes';
+import {type SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/artists/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+import {addSingleArtist, addArtists} from '../actions/artists/AddArtists/reducers';
 
-export type Artist = {
-  +lastUpdated: string,
-  +id: ?string,
-  +name: ?string,
-  +small: ?string,
-  +medium: ?string,
-  +large: ?string,
-  +albums: Array<string>,
-  +totalPlays: number,
-  +userPlays: number,
-  +userTracks: Array<string>,
-  +topAlbums: Array<string>,
-  +topListeners: Array<string>,
-  +topPlaylists: Array<string>,
-  +topTracks: Array<string>,
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Artist = {
+  +lastUpdated?: string,
+  +id?: ?string,
+  +name?: ?string,
+  +small?: ?string,
+  +medium?: ?string,
+  +large?: ?string,
+  +albums?: Array<string>,
+  +totalPlays?: number,
+  +userPlays?: number,
+  +userTracks?: Array<string>,
+  +topAlbums?: Array<string>,
+  +topListeners?: Array<string>,
+  +topPlaylists?: Array<string>,
+  +topTracks?: Array<string>,
 };
 
-export type State = {
-  +lastUpdated: string,
-  +userArtists: Array<string>,
-  +artistsByID: {+[key: string]: Artist},
-  +totalArtists: number,
-  +selectedArtist: ?string,
-  +searchingArtists: boolean,
-  +fetchingAlbums: boolean,
-  +fetchingArtists: boolean,
-  +fetchingListeners: boolean,
-  +fetchingPlaylists: boolean,
-  +fetchingTracks: boolean,
-  +incrementingCount: boolean,
-  +error: ?Error | SpotifyError,
+type Action = {
+  +type?: string,
+  +error?: Error,
+  +artists?: {+[id: string]: Artist},
+};
+
+type State = {
+  +lastUpdated?: string,
+  +userArtists?: Array<string>,
+  +artistsByID?: {+[key: string]: Artist},
+  +totalArtists?: number,
+  +selectedArtist?: ?string,
+  +searchingArtists?: boolean,
+  +fetchingAlbums?: boolean,
+  +fetchingArtists?: boolean,
+  +fetchingListeners?: boolean,
+  +fetchingPlaylists?: boolean,
+  +fetchingTracks?: boolean,
+  +incrementingCount?: boolean,
+  +error?: ?Error | SpotifyError,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Artist,
+  Action,
+  State,
 };
 
 /**
@@ -119,11 +144,13 @@ export const initialState: State = {
   error: null,
 };
 
-function singleArtist(
+export function singleArtist(
   state: Artist = singleState,
-  action: {type: string},
+  action: Action,
 ): Artist {
   switch (action.type) {
+    case types.ADD_ARTISTS:
+      return addSingleArtist(state, action);
     default:
       return state;
   }
@@ -131,10 +158,16 @@ function singleArtist(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_ARTISTS:
+        return addArtists(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
