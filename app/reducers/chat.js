@@ -13,6 +13,7 @@ import * as types from '../actions/chat/types';
 
 // Case Functions
 import {addSingleMessage, addMessages} from '../actions/chat/AddChatMessages/reducers';
+import * as getChat from '../actions/chat/GetChat/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -32,7 +33,8 @@ type ChatMessage = {
 type Action = {
   +type?: string,
   +error?: Error,
-  +messages?: {[id: string]: ChatMessage},
+  +messages?: {[id: string]: ChatMessage} | Array<string>,
+  +unsubscribe?: () => void,
   +message?: {
     +id?: ?string,
     +text?: ?string,
@@ -132,6 +134,12 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_CHAT_MESSAGES:
         return addMessages(state, action);
+      case types.GET_CHAT_REQUEST:
+        return getChat.request(state);
+      case types.GET_CHAT_SUCCESS:
+        return getChat.success(state, action);
+      case types.GET_CHAT_FAILURE:
+        return getChat.failure(state, action);
       default:
         return state;
     }

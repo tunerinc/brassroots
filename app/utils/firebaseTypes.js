@@ -73,6 +73,7 @@ type StorageInstance = {
 
 type FirebaseInstance = {
   storage: () => StorageInstance,
+  database: () => any,
 };
 
 type Firebase = {
