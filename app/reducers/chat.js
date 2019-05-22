@@ -7,29 +7,60 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/chat/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+import {addSingleMessage, addMessages} from '../actions/chat/AddChatMessages/reducers';
 
-export type ChatMessage = {
-  +id: ?string,
-  +text: ?string,
-  +userID: ?string,
-  +timestamp: ?string,
-  +error: ?Error | SpotifyError,
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type ChatMessage = {
+  +id?: ?string,
+  +text?: ?string,
+  +userID?: ?string,
+  +timestamp?: ?string,
+  +error?: ?Error | SpotifyError,
 };
 
-export type State = {
-  +lastUpdated: string,
-  +message: string,
-  +currentChat: Array<string>,
-  +chatByID: {+[key: string]: ChatMessage},
-  +totalChatMessages: number,
-  +sendingMessage: boolean,
-  +fetchingChat: boolean,
-  +chatUnsubscribe: ?() => void,
-  +error: ?Error | SpotifyError,
+type Action = {
+  +type?: string,
+  +error?: Error,
+  +messages?: {[id: string]: ChatMessage},
+  +message?: {
+    +id?: ?string,
+    +text?: ?string,
+    +userID?: ?string,
+    +timestamp?: ?string,
+  },
+};
+
+type State = {
+  +lastUpdated?: string,
+  +message?: string,
+  +currentChat?: Array<string>,
+  +chatByID?: {+[key: string]: ChatMessage},
+  +totalChatMessages?: number,
+  +sendingMessage?: boolean,
+  +fetchingChat?: boolean,
+  +chatUnsubscribe?: ?() => void,
+  +error?: ?Error | SpotifyError,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  ChatMessage,
+  Action,
+  State,
 };
 
 /**
@@ -47,7 +78,7 @@ export type State = {
  * @property {string} timestamp=null The date/time the chat message was sent
  * @property {Error}  error=null     The error related to the chat message actions
  */
-const singleState: ChatMessage = {
+export const singleState: ChatMessage = {
   id: null,
   text: null,
   userID: null,
@@ -81,11 +112,13 @@ export const initialState: State = {
   error: null,
 };
 
-function singleChat(
+export function singleChat(
   state: ChatMessage = singleState,
-  action: {type: string},
+  action: Action,
 ): ChatMessage {
   switch (action.type) {
+    case types.ADD_CHAT_MESSAGES:
+      return addSingleMessage(state, action);
     default:
       return state;
   }
@@ -93,10 +126,16 @@ function singleChat(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_CHAT_MESSAGES:
+        return addMessages(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
