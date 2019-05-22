@@ -217,6 +217,8 @@ export default function reducer(
         return incrementArtistPlays.success(state, action);
       case types.INCREMENT_ARTIST_PLAYS_FAILURE:
         return incrementArtistPlays.failure(state, action);
+      case types.RESET_ARTISTS:
+        return initialState;
       default:
         return state;
     }
