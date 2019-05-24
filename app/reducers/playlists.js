@@ -16,6 +16,7 @@ import {addNewPlaylistUser} from '../actions/playlists/AddNewPlaylistUser/reduce
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
 import {clearNewPlaylist} from '../actions/playlists/ClearNewPlaylist/reducers';
+import * as getPlaylists from '../actions/playlists/GetPlaylists/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -24,7 +25,7 @@ type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
-export type PlaylistTrack = {
+type PlaylistTrack = {
   +playlistTrackID?: ?string,
   +trackID?: ?string,
   +userID?: ?string,
@@ -32,7 +33,7 @@ export type PlaylistTrack = {
   +userPlays?: number,
 };
 
-export type Playlist = {
+type Playlist = {
   +lastUpdated?: string,
   +id?: ?string,
   +name?: ?string,
@@ -50,12 +51,13 @@ export type Playlist = {
   +userPlays?: number,
 };
 
-export type Action = {
+type Action = {
   +type?: string,
   +error?: Error,
   +userID?: string,
-  +playlists?: {[id: string]: Playlist},
+  +playlists?: {[id: string]: Playlist} | Array<string>,
   +playlistID?: string,
+  +refreshing?: boolean,
   +track?: {
     +trackID?: string,
     +userID?: string,
@@ -68,7 +70,7 @@ export type Action = {
   >,
 };
 
-export type State = {
+type State = {
   +lastUpdated?: string,
   +userPlaylists?: Array<string>,
   +playlistsByID?: {+[key: string]: Playlist},
@@ -93,6 +95,17 @@ export type State = {
     +image?: string,
     +mode?: string,
   },
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  PlaylistTrack,
+  Playlist,
+  Action,
+  State,
 };
 
 /**
@@ -247,6 +260,12 @@ export default function reducer(
         return addPlaylistTracks(state, action);
       case types.CLEAR_NEW_PLAYLIST:
         return clearNewPlaylist(state);
+      case types.GET_PLAYLISTS_REQUEST:
+        return getPlaylists.request(state, action);
+      case types.GET_PLAYLISTS_SUCCESS:
+        return getPlaylists.success(state, action);
+      case types.GET_PLAYLISTS_FAILURE:
+        return getPlaylists.failure(state, action);
       default:
         return state;
     }
