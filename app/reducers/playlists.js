@@ -14,6 +14,7 @@ import type {SpotifyError} from '../utils/spotifyAPI/types';
 // Case Functions
 import {addNewPlaylistUser} from '../actions/playlists/AddNewPlaylistUser/reducers';
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
+import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -54,6 +55,16 @@ export type Action = {
   +userID?: string,
   +playlists?: {[id: string]: Playlist},
   +playlistID?: string,
+  +track?: {
+    +trackID?: string,
+    +userID?: string,
+  },
+  +tracks?: Array<
+    {
+      trackID: string,
+      userID: string,
+    }
+  >,
 };
 
 export type State = {
@@ -202,6 +213,8 @@ export function singleTrack(
   action: Action,
 ): PlaylistTrack {
   switch (action.type) {
+    case types.ADD_PLAYLIST_TRACKS:
+      return addSinglePlaylistTrack(state, action);
     default:
       return state;
   }
@@ -229,6 +242,8 @@ export default function reducer(
         return addNewPlaylistUser(state, action);
       case types.ADD_PLAYLISTS:
         return addPlaylists(state, action);
+      case types.ADD_PLAYLIST_TRACKS:
+        return addPlaylistTracks(state, action);
       default:
         return state;
     }
