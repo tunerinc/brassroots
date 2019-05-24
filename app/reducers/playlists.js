@@ -15,6 +15,7 @@ import type {SpotifyError} from '../utils/spotifyAPI/types';
 import {addNewPlaylistUser} from '../actions/playlists/AddNewPlaylistUser/reducers';
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
+import {clearNewPlaylist} from '../actions/playlists/ClearNewPlaylist/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -204,7 +205,7 @@ export const initialState: State = {
     members: [],
     name: '',
     image: '',
-    mode: '',
+    mode: 'limitless',
   },
 };
 
@@ -244,6 +245,8 @@ export default function reducer(
         return addPlaylists(state, action);
       case types.ADD_PLAYLIST_TRACKS:
         return addPlaylistTracks(state, action);
+      case types.CLEAR_NEW_PLAYLIST:
+        return clearNewPlaylist(state);
       default:
         return state;
     }
