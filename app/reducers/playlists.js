@@ -8,60 +8,75 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/playlists/types';
+import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+import {addNewPlaylistUser} from '../actions/playlists/AddNewPlaylistUser/reducers';
+
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
 export type PlaylistTrack = {
-  +playlistTrackID: ?string,
-  +trackID: ?string,
-  +userID: ?string,
-  +totalPlays: number,
-  +userPlays: number,
+  +playlistTrackID?: ?string,
+  +trackID?: ?string,
+  +userID?: ?string,
+  +totalPlays?: number,
+  +userPlays?: number,
 };
 
 export type Playlist = {
-  +lastUpdated: string,
-  +id: ?string,
-  +name: ?string,
-  +ownerID: ?string,
-  +ownerType: ?string,
-  +small: ?string,
-  +medium: ?string,
-  +large: ?string,
-  +mode: ?string,
-  +public: boolean,
-  +members: Array<string>,
-  +tracks: Array<string>,
-  +topTracks: Array<string>,
-  +totalPlays: number,
-  +userPlays: number,
+  +lastUpdated?: string,
+  +id?: ?string,
+  +name?: ?string,
+  +ownerID?: ?string,
+  +ownerType?: ?string,
+  +small?: ?string,
+  +medium?: ?string,
+  +large?: ?string,
+  +mode?: ?string,
+  +public?: boolean,
+  +members?: Array<string>,
+  +tracks?: Array<string>,
+  +topTracks?: Array<string>,
+  +totalPlays?: number,
+  +userPlays?: number,
+};
+
+export type Action = {
+  +type?: string,
+  +error?: Error,
+  +userID?: string,
 };
 
 export type State = {
-  +lastUpdated: string,
-  +userPlaylists: Array<string>,
-  +playlistsByID: {+[key: string]: Playlist},
-  +totalPlaylists: number,
-  +playlistTracksByID: {+[key: string]: PlaylistTrack},
-  +totalPlaylistTracks: number,
-  +selectedPlaylist: ?string,
-  +canPaginate: boolean,
-  +fetchingMembers: boolean,
-  +refreshingPlaylists: boolean,
-  +fetchingPlaylists: boolean,
-  +fetchingTopPlaylists: boolean,
-  +fetchingTopTracks: boolean,
-  +fetchingTracks: boolean,
-  +searchingPlaylists: boolean,
-  +creatingPlaylist: boolean,
-  +incrementingCount: boolean,
-  +error: ?Error | SpotifyError,
-  +newPlaylist: {
-    +members: Array<string>,
-    +name: string,
-    +image: string,
-    +mode: string,
+  +lastUpdated?: string,
+  +userPlaylists?: Array<string>,
+  +playlistsByID?: {+[key: string]: Playlist},
+  +totalPlaylists?: number,
+  +playlistTracksByID?: {+[key: string]: PlaylistTrack},
+  +totalPlaylistTracks?: number,
+  +selectedPlaylist?: ?string,
+  +canPaginate?: boolean,
+  +fetchingMembers?: boolean,
+  +refreshingPlaylists?: boolean,
+  +fetchingPlaylists?: boolean,
+  +fetchingTopPlaylists?: boolean,
+  +fetchingTopTracks?: boolean,
+  +fetchingTracks?: boolean,
+  +searchingPlaylists?: boolean,
+  +creatingPlaylist?: boolean,
+  +incrementingCount?: boolean,
+  +error?: ?Error | SpotifyError,
+  +newPlaylist?: {
+    +members?: Array<string>,
+    +name?: string,
+    +image?: string,
+    +mode?: string,
   },
 };
 
@@ -179,9 +194,9 @@ export const initialState: State = {
   },
 };
 
-function singleTrack(
+export function singleTrack(
   state: PlaylistTrack = singleTrackState,
-  action: {type: string},
+  action: Action,
 ): PlaylistTrack {
   switch (action.type) {
     default:
@@ -189,9 +204,9 @@ function singleTrack(
   }
 }
 
-function singlePlaylist(
+export function singlePlaylist(
   state: Playlist = singlePlaylistState,
-  action: {type: string},
+  action: Action,
 ): Playlist {
   switch (action.type) {
     default:
@@ -201,10 +216,16 @@ function singlePlaylist(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_NEW_PLAYLIST_USER:
+        return addNewPlaylistUser(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
