@@ -144,6 +144,8 @@ export default function reducer(
         return getChat.failure(state, action);
       case types.REMOVE_CHAT_MESSAGE:
         return removeChatMessage(state, action);
+      case types.RESET_CHAT:
+        return initialState;
       default:
         return state;
     }
