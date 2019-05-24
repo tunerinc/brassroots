@@ -18,6 +18,7 @@ import {removeChatMessage} from '../actions/chat/RemoveChatMessage/reducers';
 import * as sendChatMessage from '../actions/chat/SendChatMessage/reducers';
 import {setChatMessage} from '../actions/chat/SetChatMessage/reducers';
 import * as stopChatListener from '../actions/chat/StopChatListener/reducers';
+import {updateSingleMessage, updateChatMessage} from '../actions/chat/UpdateChatMessage/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -40,6 +41,9 @@ type Action = {
   +messages?: {[id: string]: ChatMessage} | Array<string>,
   +unsubscribe?: () => void,
   +chatID?: string,
+  +updates?: {
+    +text?: string,
+  },
   +message?:
     | string
     | {
@@ -128,6 +132,8 @@ export function singleChat(
   switch (action.type) {
     case types.ADD_CHAT_MESSAGES:
       return addSingleMessage(state, action);
+    case types.UPDATE_CHAT_MESSAGE:
+      return updateSingleMessage(state, action);
     default:
       return state;
   }
@@ -165,6 +171,8 @@ export default function reducer(
         return stopChatListener.success(state);
       case types.STOP_CHAT_LISTENER_FAILURE:
         return stopChatListener.failure(state, action);
+      case types.UPDATE_CHAT_MESSAGE:
+        return updateChatMessage(state, action);
       default:
         return state;
     }
