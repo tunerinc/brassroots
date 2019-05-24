@@ -14,6 +14,7 @@ import * as types from '../actions/chat/types';
 // Case Functions
 import {addSingleMessage, addMessages} from '../actions/chat/AddChatMessages/reducers';
 import * as getChat from '../actions/chat/GetChat/reducers';
+import {removeChatMessage} from '../actions/chat/RemoveChatMessage/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -35,6 +36,7 @@ type Action = {
   +error?: Error,
   +messages?: {[id: string]: ChatMessage} | Array<string>,
   +unsubscribe?: () => void,
+  +chatID?: string,
   +message?: {
     +id?: ?string,
     +text?: ?string,
@@ -140,6 +142,8 @@ export default function reducer(
         return getChat.success(state, action);
       case types.GET_CHAT_FAILURE:
         return getChat.failure(state, action);
+      case types.REMOVE_CHAT_MESSAGE:
+        return removeChatMessage(state, action);
       default:
         return state;
     }
