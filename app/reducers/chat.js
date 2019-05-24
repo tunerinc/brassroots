@@ -15,6 +15,7 @@ import * as types from '../actions/chat/types';
 import {addSingleMessage, addMessages} from '../actions/chat/AddChatMessages/reducers';
 import * as getChat from '../actions/chat/GetChat/reducers';
 import {removeChatMessage} from '../actions/chat/RemoveChatMessage/reducers';
+import * as sendChatMessage from '../actions/chat/SendChatMessage/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -146,6 +147,12 @@ export default function reducer(
         return removeChatMessage(state, action);
       case types.RESET_CHAT:
         return initialState;
+      case types.SEND_CHAT_MESSAGE_REQUEST:
+        return sendChatMessage.request(state);
+      case types.SEND_CHAT_MESSAGE_SUCCESS:
+        return sendChatMessage.success(state);
+      case types.SEND_CHAT_MESSAGE_FAILURE:
+        return sendChatMessage.failure(state, action);
       default:
         return state;
     }
