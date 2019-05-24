@@ -16,6 +16,7 @@ import {addSingleMessage, addMessages} from '../actions/chat/AddChatMessages/red
 import * as getChat from '../actions/chat/GetChat/reducers';
 import {removeChatMessage} from '../actions/chat/RemoveChatMessage/reducers';
 import * as sendChatMessage from '../actions/chat/SendChatMessage/reducers';
+import {setChatMessage} from '../actions/chat/SetChatMessage/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -38,7 +39,9 @@ type Action = {
   +messages?: {[id: string]: ChatMessage} | Array<string>,
   +unsubscribe?: () => void,
   +chatID?: string,
-  +message?: {
+  +message?:
+    | string
+    | {
     +id?: ?string,
     +text?: ?string,
     +userID?: ?string,
@@ -153,6 +156,8 @@ export default function reducer(
         return sendChatMessage.success(state);
       case types.SEND_CHAT_MESSAGE_FAILURE:
         return sendChatMessage.failure(state, action);
+      case types.SET_CHAT_MESSAGE:
+        return setChatMessage(state, action);
       default:
         return state;
     }
