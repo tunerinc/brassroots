@@ -21,6 +21,7 @@ import * as getPlaylistTopMembers from '../actions/playlists/GetPlaylistTopMembe
 import * as getPlaylistTopTracks from '../actions/playlists/GetPlaylistTopTracks/reducers';
 import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
 import * as incrementPlaylistPlays from '../actions/playlists/IncrementPlaylistPlays/reducers';
+import {removeNewPlaylistUser} from '../actions/playlists/RemoveNewPlaylistUser/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -308,6 +309,8 @@ export default function reducer(
         return incrementPlaylistPlays.success(state, action);
       case types.INCREMENT_PLAYLIST_PLAYS_FAILURE:
         return incrementPlaylistPlays.failure(state, action);
+      case types.REMOVE_NEW_PLAYLIST_USER:
+        return removeNewPlaylistUser(state, action);
       default:
         return state;
     }
