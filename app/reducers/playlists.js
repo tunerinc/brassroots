@@ -19,6 +19,7 @@ import {clearNewPlaylist} from '../actions/playlists/ClearNewPlaylist/reducers';
 import * as getPlaylists from '../actions/playlists/GetPlaylists/reducers';
 import * as getPlaylistTopMembers from '../actions/playlists/GetPlaylistTopMembers/reducers';
 import * as getPlaylistTopTracks from '../actions/playlists/GetPlaylistTopTracks/reducers';
+import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -286,6 +287,12 @@ export default function reducer(
         return getPlaylistTopTracks.success(state, action);
       case types.GET_PLAYLIST_TOP_TRACKS_FAILURE:
         return getPlaylistTopTracks.failure(state, action);
+      case types.GET_TOP_PLAYLISTS_REQUEST:
+        return getTopPlaylists.request(state);
+      case types.GET_TOP_PLAYLISTS_SUCCESS:
+        return getTopPlaylists.success(state);
+      case types.GET_TOP_PLAYLISTS_FAILURE:
+        return getTopPlaylists.failure(state, action);
       default:
         return state;
     }
