@@ -20,6 +20,7 @@ import * as getPlaylists from '../actions/playlists/GetPlaylists/reducers';
 import * as getPlaylistTopMembers from '../actions/playlists/GetPlaylistTopMembers/reducers';
 import * as getPlaylistTopTracks from '../actions/playlists/GetPlaylistTopTracks/reducers';
 import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
+import * as incrementPlaylistPlays from '../actions/playlists/IncrementPlaylistPlays/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -34,6 +35,7 @@ type PlaylistTrack = {
   +userID?: ?string,
   +totalPlays?: number,
   +userPlays?: number,
+  +lastUpdated?: string,
 };
 
 type Playlist = {
@@ -63,6 +65,9 @@ type Action = {
   +refreshing?: boolean,
   +members?: Array<string>,
   +topTracks?: Array<string>,
+  +playlistCount?: number,
+  +trackID?: string,
+  +trackCount?: number,
   +track?: {
     +trackID?: string,
     +userID?: string,
@@ -234,6 +239,8 @@ export function singleTrack(
   switch (action.type) {
     case types.ADD_PLAYLIST_TRACKS:
       return addSinglePlaylistTrack(state, action);
+    case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
+      return incrementPlaylistPlays.incrementTrack(state, action);
     default:
       return state;
   }
@@ -250,6 +257,8 @@ export function singlePlaylist(
       return getPlaylistTopMembers.addMembers(state, action);
     case types.GET_PLAYLIST_TOP_TRACKS_SUCCESS:
       return getPlaylistTopTracks.addTracks(state, action);
+    case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
+      return incrementPlaylistPlays.incrementPlaylist(state, action);
     default:
       return state;
   }
@@ -293,6 +302,12 @@ export default function reducer(
         return getTopPlaylists.success(state);
       case types.GET_TOP_PLAYLISTS_FAILURE:
         return getTopPlaylists.failure(state, action);
+      case types.INCREMENT_PLAYLIST_PLAYS_REQUEST:
+        return incrementPlaylistPlays.request(state);
+      case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
+        return incrementPlaylistPlays.success(state, action);
+      case types.INCREMENT_PLAYLIST_PLAYS_FAILURE:
+        return incrementPlaylistPlays.failure(state, action);
       default:
         return state;
     }
