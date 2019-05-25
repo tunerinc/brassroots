@@ -23,6 +23,7 @@ import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers'
 import * as incrementPlaylistPlays from '../actions/playlists/IncrementPlaylistPlays/reducers';
 import {removeNewPlaylistUser} from '../actions/playlists/RemoveNewPlaylistUser/reducers';
 import {setNewPlaylistMode} from '../actions/playlists/SetNewPlaylistMode/reducers';
+import {setNewPlaylistName} from '../actions/playlists/SetNewPlaylistName/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -71,6 +72,7 @@ type Action = {
   +trackID?: string,
   +trackCount?: number,
   +mode?: string,
+  +name?: string,
   +track?: {
     +trackID?: string,
     +userID?: string,
@@ -315,6 +317,8 @@ export default function reducer(
         return removeNewPlaylistUser(state, action);
       case types.SET_NEW_PLAYLIST_MODE:
         return setNewPlaylistMode(state, action);
+      case types.SET_NEW_PLAYLIST_NAME:
+        return setNewPlaylistName(state, action);
       default:
         return state;
     }
