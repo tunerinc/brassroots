@@ -58,7 +58,7 @@ type FirestoreInstance = {
 type StorageUploadTask = {
   snapshot: {
     ref: {
-      getDownloadURL: () => any;
+      getDownloadURL: () => string;
     },
   },
 };
