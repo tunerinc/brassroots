@@ -21,6 +21,7 @@ import * as getFavoriteTrack from '../actions/tracks/GetFavoriteTrack/reducers';
 import * as getMostPlayedSpotifyTrack from '../actions/tracks/GetMostPlayedSpotifyTrack/reducers';
 import * as getMostPlayedTracks from '../actions/tracks/GetMostPlayedTracks/reducers';
 import * as getRecentTracks from '../actions/tracks/GetRecentTracks/reducers';
+import * as getTracks from '../actions/tracks/GetTracks/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
@@ -48,8 +49,9 @@ type Track = {
 type Action = {
   +type?: string,
   +error?: Error,
-  +tracks?: {[id: string]: Track},
+  +tracks?: {[id: string]: Track} | Array<string>,
   +track?: Track,
+  +refreshing?: boolean,
 };
 
 type State = {
@@ -203,6 +205,12 @@ export default function reducer(
           return getRecentTracks.success(state);
         case types.GET_RECENT_TRACKS_FAILURE:
           return getRecentTracks.failure(state, action);
+        case types.GET_TRACKS_REQUEST:
+          return getTracks.request(state, action);
+        case types.GET_TRACKS_SUCCESS:
+          return getTracks.success(state, action);
+        case types.GET_TRACKS_FAILURE:
+          return getTracks.failure(state, action);
       default:
         return state;
     }
