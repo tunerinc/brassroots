@@ -10,18 +10,21 @@ import updateObject from '../utils/updateObject';
 import * as types from "../actions/tracks/types";
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
+import {type Action as AlbumAction} from './albums';
+import {type Action as ArtistAction} from './artists';
 
 // Case Functions
 import * as addRecentTrack from '../actions/tracks/AddRecentTrack/reducers';
 import {addSingleTrack, addTracks} from '../actions/tracks/AddTracks/reducers';
 import * as changeFavoriteTrack from '../actions/tracks/ChangeFavoriteTrack/reducers';
+import * as getFavoriteTrack from '../actions/tracks/GetFavoriteTrack/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: Action | AlbumAction | ArtistAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type TrackArtist = {
   +id: string,
@@ -173,6 +176,12 @@ export default function reducer(
           return changeFavoriteTrack.success(state);
         case types.CHANGE_FAVORITE_TRACK_FAILURE:
           return changeFavoriteTrack.failure(state, action);
+        case types.GET_FAVORITE_TRACK_REQUEST:
+          return getFavoriteTrack.request(state);
+        case types.GET_FAVORITE_TRACK_SUCCESS:
+          return getFavoriteTrack.success(state);
+        case types.GET_FAVORITE_TRACK_FAILURE:
+          return getFavoriteTrack.failure(state, action);
       default:
         return state;
     }
