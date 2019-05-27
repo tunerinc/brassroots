@@ -223,6 +223,8 @@ export default function reducer(
           return incrementTrackPlays.success(state, action);
         case types.INCREMENT_TRACK_PLAYS_FAILURE:
           return incrementTrackPlays.failure(state, action);
+        case types.RESET_TRACKS:
+          return initialState;
       default:
         return state;
     }
