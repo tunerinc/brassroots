@@ -20,6 +20,7 @@ import * as changeFavoriteTrack from '../actions/tracks/ChangeFavoriteTrack/redu
 import * as getFavoriteTrack from '../actions/tracks/GetFavoriteTrack/reducers';
 import * as getMostPlayedSpotifyTrack from '../actions/tracks/GetMostPlayedSpotifyTrack/reducers';
 import * as getMostPlayedTracks from '../actions/tracks/GetMostPlayedTracks/reducers';
+import * as getRecentTracks from '../actions/tracks/GetRecentTracks/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
@@ -196,6 +197,12 @@ export default function reducer(
           return getMostPlayedTracks.success(state);
         case types.GET_MOST_PLAYED_TRACKS_FAILURE:
           return getMostPlayedTracks.failure(state, action);
+        case types.GET_RECENT_TRACKS_REQUEST:
+          return getRecentTracks.request(state);
+        case types.GET_RECENT_TRACKS_SUCCESS:
+          return getRecentTracks.success(state);
+        case types.GET_RECENT_TRACKS_FAILURE:
+          return getRecentTracks.failure(state, action);
       default:
         return state;
     }
