@@ -23,6 +23,7 @@ type FirestoreDocs = {
   limit: (number) => FirestoreQuery,
   get: () => any,
   doc: (?string) => FirestoreDoc,
+  where: (string, string, string) => FirestoreQuery,
 };
 
 type FirestoreQuery = {
@@ -49,6 +50,9 @@ type FirestoreInstance = {
   batch: () => FirestoreBatch,
   GeoPoint: (number, number) => any,
   runTransaction: (any) => Promise<any>,
+  FieldValue: {
+    serverTimestamp: () => string | number,
+  },
 };
 
 type StorageUploadTask = {

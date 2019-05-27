@@ -8,16 +8,25 @@
 import moment from "moment";
 import updateObject from '../utils/updateObject';
 import * as types from "../actions/tracks/types";
-import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Firebase} from '../utils/firebaseTypes';
+import {type SpotifyError} from '../utils/spotifyAPI/types';
 
-const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
+// Case Functions
+import * as addRecentTrack from '../actions/tracks/AddRecentTrack/reducers';
 
-export type TrackArtist = {
+export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
+
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type TrackArtist = {
   +id: string,
   +name: string,
 };
 
-export type Track = {
+type Track = {
   +id: ?string,
   +name: ?string,
   +albumID: ?string,
@@ -28,22 +37,38 @@ export type Track = {
   +userPlays: number,
 };
 
-export type State = {
-  lastUpdated: string,
-  userTracks: Array<string>,
-  tracksByID: {+[key: string]: Track},
-  totalTracks: number,
-  selectedTrack: ?string,
-  searchingTracks: boolean,
-  fetchingTracks: boolean,
-  refreshingTracks: boolean,
-  changingFavoriteTrack: boolean,
-  fetchingFavoriteTrack: boolean,
-  fetchingMostPlayed: boolean,
-  fetchingRecent: boolean,
-  addingRecent: boolean,
-  incrementingCount: boolean,
-  error: ?Error | SpotifyError,
+type Action = {
+  +type?: string,
+  +error?: Error,
+};
+
+type State = {
+  lastUpdated?: string,
+  userTracks?: Array<string>,
+  tracksByID?: {+[key: string]: Track},
+  totalTracks?: number,
+  selectedTrack?: ?string,
+  searchingTracks?: boolean,
+  fetchingTracks?: boolean,
+  refreshingTracks?: boolean,
+  changingFavoriteTrack?: boolean,
+  fetchingFavoriteTrack?: boolean,
+  fetchingMostPlayed?: boolean,
+  fetchingRecent?: boolean,
+  addingRecent?: boolean,
+  incrementingCount?: boolean,
+  error?: ?Error | SpotifyError,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  TrackArtist,
+  Track,
+  Action,
+  State,
 };
 
 /**
@@ -112,9 +137,9 @@ export const initialState: State = {
   error: null,
 };
 
-function singleTrack(
+export function singleTrack(
   state: Track = singleState,
-  action: {type: string},
+  action: Action,
 ): Track {
   switch (action.type) {
     default:
@@ -124,10 +149,20 @@ function singleTrack(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_RECENT_TRACK_REQUEST:
+        return addRecentTrack.request(state);
+      case types.ADD_RECENT_TRACK_SUCCESS:
+        return addRecentTrack.success(state);
+      case types.ADD_RECENT_TRACK_FAILURE:
+        return addRecentTrack.failure(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
