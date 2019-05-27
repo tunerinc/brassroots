@@ -22,6 +22,7 @@ import * as getMostPlayedSpotifyTrack from '../actions/tracks/GetMostPlayedSpoti
 import * as getMostPlayedTracks from '../actions/tracks/GetMostPlayedTracks/reducers';
 import * as getRecentTracks from '../actions/tracks/GetRecentTracks/reducers';
 import * as getTracks from '../actions/tracks/GetTracks/reducers';
+import * as incrementTrackPlays from '../actions/tracks/IncrementTrackPlays/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
@@ -36,6 +37,7 @@ type TrackArtist = {
 };
 
 type Track = {
+  +lastUpdated?: string,
   +id?: ?string,
   +name?: ?string,
   +albumID?: ?string,
@@ -52,24 +54,26 @@ type Action = {
   +tracks?: {[id: string]: Track} | Array<string>,
   +track?: Track,
   +refreshing?: boolean,
+  +trackID?: string,
+  +trackCount?: number,
 };
 
 type State = {
-  lastUpdated?: string,
-  userTracks?: Array<string>,
-  tracksByID?: {+[key: string]: Track},
-  totalTracks?: number,
-  selectedTrack?: ?string,
-  searchingTracks?: boolean,
-  fetchingTracks?: boolean,
-  refreshingTracks?: boolean,
-  changingFavoriteTrack?: boolean,
-  fetchingFavoriteTrack?: boolean,
-  fetchingMostPlayed?: boolean,
-  fetchingRecent?: boolean,
-  addingRecent?: boolean,
-  incrementingCount?: boolean,
-  error?: ?Error | SpotifyError,
+  +lastUpdated?: string,
+  +userTracks?: Array<string>,
+  +tracksByID?: {+[key: string]: Track},
+  +totalTracks?: number,
+  +selectedTrack?: ?string,
+  +searchingTracks?: boolean,
+  +fetchingTracks?: boolean,
+  +refreshingTracks?: boolean,
+  +changingFavoriteTrack?: boolean,
+  +fetchingFavoriteTrack?: boolean,
+  +fetchingMostPlayed?: boolean,
+  +fetchingRecent?: boolean,
+  +addingRecent?: boolean,
+  +incrementingCount?: boolean,
+  +error?: ?Error | SpotifyError,
 };
 
 export type {
@@ -156,6 +160,8 @@ export function singleTrack(
   switch (action.type) {
     case types.ADD_TRACKS:
       return addSingleTrack(state, action);
+    case types.INCREMENT_TRACK_PLAYS_SUCCESS:
+      return incrementTrackPlays.increment(state, action);
     default:
       return state;
   }
@@ -211,6 +217,12 @@ export default function reducer(
           return getTracks.success(state, action);
         case types.GET_TRACKS_FAILURE:
           return getTracks.failure(state, action);
+        case types.INCREMENT_TRACK_PLAYS_REQUEST:
+          return incrementTrackPlays.request(state);
+        case types.INCREMENT_TRACK_PLAYS_SUCCESS:
+          return incrementTrackPlays.success(state, action);
+        case types.INCREMENT_TRACK_PLAYS_FAILURE:
+          return incrementTrackPlays.failure(state, action);
       default:
         return state;
     }
