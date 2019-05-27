@@ -14,6 +14,7 @@ import {type SpotifyError} from '../utils/spotifyAPI/types';
 // Case Functions
 import * as addRecentTrack from '../actions/tracks/AddRecentTrack/reducers';
 import {addSingleTrack, addTracks} from '../actions/tracks/AddTracks/reducers';
+import * as changeFavoriteTrack from '../actions/tracks/ChangeFavoriteTrack/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
@@ -164,8 +165,14 @@ export default function reducer(
         return addRecentTrack.success(state);
       case types.ADD_RECENT_TRACK_FAILURE:
         return addRecentTrack.failure(state, action);
-      case types.ADD_TRACKS:
-        return addTracks(state, action);
+        case types.ADD_TRACKS:
+          return addTracks(state, action);
+        case types.CHANGE_FAVORITE_TRACK_REQUEST:
+          return changeFavoriteTrack.request(state);
+        case types.CHANGE_FAVORITE_TRACK_SUCCESS:
+          return changeFavoriteTrack.success(state);
+        case types.CHANGE_FAVORITE_TRACK_FAILURE:
+          return changeFavoriteTrack.failure(state, action);
       default:
         return state;
     }
