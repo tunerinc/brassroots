@@ -22,7 +22,7 @@ type FirestoreDocs = {
   orderBy: (string, ?string) => FirestoreQuery,
   limit: (number) => FirestoreQuery,
   get: () => any,
-  doc: (?string) => FirestoreDoc,
+  doc: (?string | ?number) => FirestoreDoc,
   where: (string, string, string) => FirestoreQuery,
 };
 
