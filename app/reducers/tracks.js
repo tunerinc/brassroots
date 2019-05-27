@@ -13,6 +13,7 @@ import {type SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
 import * as addRecentTrack from '../actions/tracks/AddRecentTrack/reducers';
+import {addSingleTrack, addTracks} from '../actions/tracks/AddTracks/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
@@ -27,19 +28,21 @@ type TrackArtist = {
 };
 
 type Track = {
-  +id: ?string,
-  +name: ?string,
-  +albumID: ?string,
-  +artists: Array<TrackArtist>,
-  +trackNumber: number,
-  +durationMS: number,
-  +totalPlays: number,
-  +userPlays: number,
+  +id?: ?string,
+  +name?: ?string,
+  +albumID?: ?string,
+  +artists?: Array<TrackArtist>,
+  +trackNumber?: number,
+  +durationMS?: number,
+  +totalPlays?: number,
+  +userPlays?: number,
 };
 
 type Action = {
   +type?: string,
   +error?: Error,
+  +tracks?: {[id: string]: Track},
+  +track?: Track,
 };
 
 type State = {
@@ -142,6 +145,8 @@ export function singleTrack(
   action: Action,
 ): Track {
   switch (action.type) {
+    case types.ADD_TRACKS:
+      return addSingleTrack(state, action);
     default:
       return state;
   }
@@ -159,6 +164,8 @@ export default function reducer(
         return addRecentTrack.success(state);
       case types.ADD_RECENT_TRACK_FAILURE:
         return addRecentTrack.failure(state, action);
+      case types.ADD_TRACKS:
+        return addTracks(state, action);
       default:
         return state;
     }
