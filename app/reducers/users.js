@@ -16,6 +16,7 @@ import {addSingleCoverImage, addCoverImage} from '../actions/users/AddCoverImage
 import {addSingleLocation, addCurrentLocation} from '../actions/users/AddCurrentLocation/reducers';
 import {addSingleCurrentUser, addCurrentUser} from '../actions/users/AddCurrentUser/reducers';
 import {addFavoriteTrack} from '../actions/users/AddFavoriteTrack/reducers';
+import {addSinglePeople, addPeople} from '../actions/users/AddPeople/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -58,6 +59,7 @@ type Action = {
   +mostPlayed?: Array<string>,
   +recentlyPlayed?: Array<string>,
   +topPlaylists?: Array<string>,
+  +people?: {+[id: string]: User},
   +location?: {
     latitude: number,
     longitude: number,
@@ -214,6 +216,8 @@ export function singleUser(
       return addSingleCurrentUser(state, action);
     case types.ADD_FAVORITE_TRACK:
       return addSingleUserMusic(state, action);
+    case types.ADD_PEOPLE:
+      return addSinglePeople(state, action);
     default:
       return state;
   }
@@ -233,6 +237,8 @@ export default function reducer(
         return addCurrentUser(state, action);
       case types.ADD_FAVORITE_TRACK:
         return addFavoriteTrack(state, action);
+      case types.ADD_PEOPLE:
+        return addPeople(state, action);
       default:
         return state;
     }
