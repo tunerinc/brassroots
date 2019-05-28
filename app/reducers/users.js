@@ -19,6 +19,7 @@ import {addFavoriteTrack} from '../actions/users/AddFavoriteTrack/reducers';
 import {addSinglePeople, addPeople} from '../actions/users/AddPeople/reducers';
 import {addUserMostPlayed} from '../actions/users/AddUserMostPlayed/reducers';
 import {addUserRecentlyPlayed} from '../actions/users/AddUserRecentlyPlayed/reducers';
+import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUserRecentTrack/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -63,6 +64,7 @@ type Action = {
   +topPlaylists?: Array<string>,
   +people?: {+[id: string]: User},
   +userID?: string,
+  +trackID?: string,
   +location?: {
     latitude: number,
     longitude: number,
@@ -225,6 +227,8 @@ export function singleUser(
       return addSingleUserMusic(state, action);
     case types.ADD_USER_RECENTLY_PLAYED:
       return addSingleUserMusic(state, action);
+    case types.ADD_USER_RECENT_TRACK:
+      return addSingleRecentTrack(state, action);
     default:
       return state;
   }
@@ -250,6 +254,8 @@ export default function reducer(
         return addUserMostPlayed(state, action);
       case types.ADD_USER_RECENTLY_PLAYED:
         return addUserRecentlyPlayed(state, action);
+      case types.ADD_USER_RECENT_TRACK:
+        return addUserRecentTrack(state, action);
       default:
         return state;
     }
