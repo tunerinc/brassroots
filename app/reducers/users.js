@@ -18,6 +18,7 @@ import {addSingleCurrentUser, addCurrentUser} from '../actions/users/AddCurrentU
 import {addFavoriteTrack} from '../actions/users/AddFavoriteTrack/reducers';
 import {addSinglePeople, addPeople} from '../actions/users/AddPeople/reducers';
 import {addUserMostPlayed} from '../actions/users/AddUserMostPlayed/reducers';
+import {addUserRecentlyPlayed} from '../actions/users/AddUserRecentlyPlayed/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -222,6 +223,8 @@ export function singleUser(
       return addSinglePeople(state, action);
     case types.ADD_USER_MOST_PLAYED:
       return addSingleUserMusic(state, action);
+    case types.ADD_USER_RECENTLY_PLAYED:
+      return addSingleUserMusic(state, action);
     default:
       return state;
   }
@@ -245,6 +248,8 @@ export default function reducer(
         return addPeople(state, action);
       case types.ADD_USER_MOST_PLAYED:
         return addUserMostPlayed(state, action);
+      case types.ADD_USER_RECENTLY_PLAYED:
+        return addUserRecentlyPlayed(state, action);
       default:
         return state;
     }
