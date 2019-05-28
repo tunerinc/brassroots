@@ -10,6 +10,7 @@ import updateObject from '../utils/updateObject';
 import * as types from '../actions/users/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
+import {type Action as OnboardingAction} from './onboarding';
 
 // Case Functions
 import {addSingleCoverImage, addCoverImage} from '../actions/users/AddCoverImage/reducers';
@@ -23,13 +24,14 @@ import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUser
 import {addUserTopPlaylists} from '../actions/users/AddUserTopPlaylists/reducers';
 import * as changeCoverPhoto from '../actions/users/ChangeCoverPhoto/reducers';
 import * as changeProfilePhoto from '../actions/users/ChangeProfilePhoto/reducers';
+import * as saveProfile from '../actions/users/SaveProfile/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: Action | OnboardingAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type User = {
   +lastUpdated?: string,
@@ -60,7 +62,6 @@ type Action = {
   +type?: string,
   +error?: Error,
   +photo?: ?string,
-  +user?: User,
   +favoriteTrackID?: string,
   +mostPlayed?: Array<string>,
   +recentlyPlayed?: Array<string>,
@@ -72,6 +73,14 @@ type Action = {
     latitude: number,
     longitude: number,
   },
+  +user?:
+    | User
+    | {
+      +id: string,
+      +bio?: string,
+      +location?: string,
+      +website?: string,
+    },
 };
 
 type State = {
@@ -238,6 +247,8 @@ export function singleUser(
       return changeCoverPhoto.addImage(state, action);
     case types.CHANGE_PROFILE_PHOTO_SUCCESS:
       return changeProfilePhoto.addImage(state, action);
+    case types.SAVE_PROFILE_SUCCESS:
+      return saveProfile.save(state, action);
     default:
       return state;
   }
@@ -281,6 +292,12 @@ export default function reducer(
         return changeProfilePhoto.failure(state, action);
       case types.RESET_USERS:
         return initialState;
+      case types.SAVE_PROFILE_REQUEST:
+        return saveProfile.request(state);
+      case types.SAVE_PROFILE_SUCCESS:
+        return saveProfile.success(state, action);
+      case types.SAVE_PROFILE_FAILURE:
+        return saveProfile.failure(state, action);
       default:
         return state;
     }
