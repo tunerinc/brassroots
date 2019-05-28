@@ -25,6 +25,7 @@ import {addUserTopPlaylists} from '../actions/users/AddUserTopPlaylists/reducers
 import * as changeCoverPhoto from '../actions/users/ChangeCoverPhoto/reducers';
 import * as changeProfilePhoto from '../actions/users/ChangeProfilePhoto/reducers';
 import * as saveProfile from '../actions/users/SaveProfile/reducers';
+import {setCameraRollPhotoIndex} from '../actions/users/SetCameraRollPhotoIndex/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -69,6 +70,7 @@ type Action = {
   +people?: {+[id: string]: User},
   +userID?: string,
   +trackID?: string,
+  +index?: number,
   +location?: {
     latitude: number,
     longitude: number,
@@ -298,6 +300,8 @@ export default function reducer(
         return saveProfile.success(state, action);
       case types.SAVE_PROFILE_FAILURE:
         return saveProfile.failure(state, action);
+      case types.SET_CAMERA_ROLL_PHOTO_INDEX:
+        return setCameraRollPhotoIndex(state, action);
       default:
         return state;
     }
