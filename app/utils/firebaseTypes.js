@@ -65,6 +65,7 @@ type StorageUploadTask = {
 
 type StorageChild = {
   put: (any) => StorageUploadTask,
+  delete: () => Promise<void>,
 };
 
 type StorageRef = {

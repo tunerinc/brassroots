@@ -21,6 +21,7 @@ import {addUserMostPlayed} from '../actions/users/AddUserMostPlayed/reducers';
 import {addUserRecentlyPlayed} from '../actions/users/AddUserRecentlyPlayed/reducers';
 import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUserRecentTrack/reducers';
 import {addUserTopPlaylists} from '../actions/users/AddUserTopPlaylists/reducers';
+import * as changeCoverPhoto from '../actions/users/ChangeCoverPhoto/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -57,7 +58,7 @@ type User = {
 type Action = {
   +type?: string,
   +error?: Error,
-  +photo?: string,
+  +photo?: ?string,
   +user?: User,
   +favoriteTrackID?: string,
   +mostPlayed?: Array<string>,
@@ -232,6 +233,8 @@ export function singleUser(
       return addSingleRecentTrack(state, action);
     case types.ADD_USER_TOP_PLAYLISTS:
       return addSingleUserMusic(state, action);
+    case types.CHANGE_COVER_PHOTO_SUCCESS:
+      return changeCoverPhoto.addImage(state, action);
     default:
       return state;
   }
@@ -261,6 +264,12 @@ export default function reducer(
         return addUserRecentTrack(state, action);
       case types.ADD_USER_TOP_PLAYLISTS:
         return addUserTopPlaylists(state, action);
+      case types.CHANGE_COVER_PHOTO_REQUEST:
+        return changeCoverPhoto.request(state);
+      case types.CHANGE_COVER_PHOTO_SUCCESS:
+        return changeCoverPhoto.success(state, action);
+      case types.CHANGE_COVER_PHOTO_FAILURE:
+        return changeCoverPhoto.failure(state, action);
       default:
         return state;
     }
