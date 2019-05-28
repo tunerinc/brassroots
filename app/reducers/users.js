@@ -15,6 +15,7 @@ import {type SpotifyError} from '../utils/spotifyAPI/types';
 import {addSingleCoverImage, addCoverImage} from '../actions/users/AddCoverImage/reducers';
 import {addSingleLocation, addCurrentLocation} from '../actions/users/AddCurrentLocation/reducers';
 import {addSingleCurrentUser, addCurrentUser} from '../actions/users/AddCurrentUser/reducers';
+import {addFavoriteTrack} from '../actions/users/AddFavoriteTrack/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -53,6 +54,10 @@ type Action = {
   +error?: Error,
   +photo?: string,
   +user?: User,
+  +favoriteTrackID?: string,
+  +mostPlayed?: Array<string>,
+  +recentlyPlayed?: Array<string>,
+  +topPlaylists?: Array<string>,
   +location?: {
     latitude: number,
     longitude: number,
@@ -157,6 +162,45 @@ export const initialState: State = {
   error: null,
 };
 
+/**
+ * Adds the music of a single user
+ * 
+ * @function addSingleUserMusic
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}   state                    The Redux state
+ * @param   {object}   action                   The Redux action
+ * @param   {string}   action.type              The type of Redux action
+ * @param   {string}   [action.userID]          The Brassroots id of the single user
+ * @param   {string[]} [action.mostPlayed]      The Spotify ids of the single user's most played tracks to add
+ * @param   {string[]} [action.recentlyPlayed]  The Spotify ids of the single user's recently played tracks to add
+ * @param   {string[]} [action.topPlaylists]    The SPotify ids of the single user's top playlists to add
+ * @param   {string}   [action.favoriteTrackID] The Spotify id of the single user's favorite track to add
+ * 
+ * @returns {object}                            The state of the single user with the new music added
+ */
+function addSingleUserMusic(
+  state: User,
+  action: Action,
+): User {
+  const {mostPlayed, recentlyPlayed, topPlaylists, favoriteTrackID} = action;
+  const {
+    mostPlayed: oldMost,
+    recentlyPlayed: oldRecent,
+    topPlaylists: oldTop,
+    favoriteTrackID: oldFavorite,
+  } = state;
+
+
+  return updateObject(state, {
+    mostPlayed: mostPlayed || oldMost,
+    recentlyPlayed: recentlyPlayed || oldRecent,
+    topPlaylists: topPlaylists || oldTop,
+    favoriteTrackID: favoriteTrackID || oldFavorite,
+  });
+};
+
 export function singleUser(
   state: User = singleState,
   action: Action,
@@ -168,6 +212,8 @@ export function singleUser(
       return addSingleLocation(state, action);
     case types.ADD_CURRENT_USER:
       return addSingleCurrentUser(state, action);
+    case types.ADD_FAVORITE_TRACK:
+      return addSingleUserMusic(state, action);
     default:
       return state;
   }
@@ -185,6 +231,8 @@ export default function reducer(
         return addCurrentLocation(state, action);
       case types.ADD_CURRENT_USER:
         return addCurrentUser(state, action);
+      case types.ADD_FAVORITE_TRACK:
+        return addFavoriteTrack(state, action);
       default:
         return state;
     }
