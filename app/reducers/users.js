@@ -22,6 +22,7 @@ import {addUserRecentlyPlayed} from '../actions/users/AddUserRecentlyPlayed/redu
 import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUserRecentTrack/reducers';
 import {addUserTopPlaylists} from '../actions/users/AddUserTopPlaylists/reducers';
 import * as changeCoverPhoto from '../actions/users/ChangeCoverPhoto/reducers';
+import * as changeProfilePhoto from '../actions/users/ChangeProfilePhoto/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -235,6 +236,8 @@ export function singleUser(
       return addSingleUserMusic(state, action);
     case types.CHANGE_COVER_PHOTO_SUCCESS:
       return changeCoverPhoto.addImage(state, action);
+    case types.CHANGE_PROFILE_PHOTO_SUCCESS:
+      return changeProfilePhoto.addImage(state, action);
     default:
       return state;
   }
@@ -270,6 +273,12 @@ export default function reducer(
         return changeCoverPhoto.success(state, action);
       case types.CHANGE_COVER_PHOTO_FAILURE:
         return changeCoverPhoto.failure(state, action);
+      case types.CHANGE_PROFILE_PHOTO_REQUEST:
+        return changeProfilePhoto.request(state);
+      case types.CHANGE_PROFILE_PHOTO_SUCCESS:
+        return changeProfilePhoto.success(state, action);
+      case types.CHANGE_PROFILE_PHOTO_FAILURE:
+        return changeProfilePhoto.failure(state, action);
       default:
         return state;
     }
