@@ -279,6 +279,8 @@ export default function reducer(
         return changeProfilePhoto.success(state, action);
       case types.CHANGE_PROFILE_PHOTO_FAILURE:
         return changeProfilePhoto.failure(state, action);
+      case types.RESET_USERS:
+        return initialState;
       default:
         return state;
     }
