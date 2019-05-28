@@ -13,6 +13,7 @@ import {type SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
 import {addSingleCoverImage, addCoverImage} from '../actions/users/AddCoverImage/reducers';
+import {addSingleLocation, addCurrentLocation} from '../actions/users/AddCurrentLocation/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -49,6 +50,10 @@ type Action = {
   +type?: string,
   +error?: Error,
   +photo?: string,
+  +location?: {
+    latitude: number,
+    longitude: number,
+  },
 };
 
 type State = {
@@ -154,6 +159,8 @@ export function singleUser(
   switch (action.type) {
     case types.ADD_COVER_IMAGE:
       return addSingleCoverImage(state, action);
+    case types.ADD_CURRENT_LOCATION:
+      return addSingleLocation(state, action);
     default:
       return state;
   }
@@ -167,6 +174,8 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_COVER_IMAGE:
         return addCoverImage(state, action);
+      case types.ADD_CURRENT_LOCATION:
+        return addCurrentLocation(state, action);
       default:
         return state;
     }
