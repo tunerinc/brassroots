@@ -8,44 +8,69 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/users/types';
-import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Firebase} from '../utils/firebaseTypes';
+import {type SpotifyError} from '../utils/spotifyAPI/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+import {addSingleCoverImage, addCoverImage} from '../actions/users/AddCoverImage/reducers';
 
-export type User = {
-  +lastUpdated: string,
-  +id: ?string,
-  +displayName: ?string,
-  +profileImage: ?string,
-  +coverImage: ?string,
-  +bio: ?string,
-  +location: ?string,
-  +website: ?string,
-  +coords: ?{
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type User = {
+  +lastUpdated?: string,
+  +id?: ?string,
+  +displayName?: ?string,
+  +profileImage?: ?string,
+  +coverImage?: ?string,
+  +bio?: ?string,
+  +location?: ?string,
+  +website?: ?string,
+  +coords?: ?{
     +lat: number,
     +lon: number,
   },
-  +currentSessionID: ?string,
-  +favoriteTrackID: ?string,
-  +topPlaylists: Array<string>,
-  +recentlyPlayed: Array<string>,
-  +mostPlayed: Array<string>,
-  +followers: Array<string>,
-  +totalFollowers: number,
-  +following: Array<string>,
-  +totalFollowing: number,
+  +currentSessionID?: ?string,
+  +favoriteTrackID?: ?string,
+  +topPlaylists?: Array<string>,
+  +recentlyPlayed?: Array<string>,
+  +mostPlayed?: Array<string>,
+  +followers?: Array<string>,
+  +totalFollowers?: number,
+  +following?: Array<string>,
+  +totalFollowing?: number,
 };
 
-export type State = {
-  +lastUpdated: string,
-  +currentUserID: ?string,
-  +usersByID: {+[key: string]: User},
-  +totalUsers: number,
-  +searchingUsers: boolean,
-  +fetchingUsers: boolean,
-  +savingUser: boolean,
-  +changingImage: ?string,
-  +error: ?Error | SpotifyError,
+type Action = {
+  +type?: string,
+  +error?: Error,
+  +photo?: string,
+};
+
+type State = {
+  +lastUpdated?: string,
+  +currentUserID?: ?string,
+  +usersByID?: {+[key: string]: User},
+  +totalUsers?: number,
+  +searchingUsers?: boolean,
+  +fetchingUsers?: boolean,
+  +savingUser?: boolean,
+  +changingImage?: ?string,
+  +error?: ?Error | SpotifyError,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  User,
+  Action,
+  State,
 };
 
 /**
@@ -122,11 +147,13 @@ export const initialState: State = {
   error: null,
 };
 
-function singleUser(
+export function singleUser(
   state: User = singleState,
-  action: {type: string},
+  action: Action,
 ): User {
   switch (action.type) {
+    case types.ADD_COVER_IMAGE:
+      return addSingleCoverImage(state, action);
     default:
       return state;
   }
@@ -134,10 +161,16 @@ function singleUser(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_COVER_IMAGE:
+        return addCoverImage(state, action);
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
