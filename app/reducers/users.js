@@ -14,6 +14,7 @@ import {type SpotifyError} from '../utils/spotifyAPI/types';
 // Case Functions
 import {addSingleCoverImage, addCoverImage} from '../actions/users/AddCoverImage/reducers';
 import {addSingleLocation, addCurrentLocation} from '../actions/users/AddCurrentLocation/reducers';
+import {addSingleCurrentUser, addCurrentUser} from '../actions/users/AddCurrentUser/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -31,6 +32,7 @@ type User = {
   +bio?: ?string,
   +location?: ?string,
   +website?: ?string,
+  +spotifyAccountStatus?: ?string,
   +coords?: ?{
     +lat: number,
     +lon: number,
@@ -50,6 +52,7 @@ type Action = {
   +type?: string,
   +error?: Error,
   +photo?: string,
+  +user?: User,
   +location?: {
     latitude: number,
     longitude: number,
@@ -83,26 +86,27 @@ export type {
  * @alias singleUserState
  * @type {object}
  *
- * @property {string}   lastUpdated           The date/time the user's information was last updated
- * @property {string}   id=null               The Spotify id of the user
- * @property {string}   displayName=null      The Spotify display name of the user
- * @property {string}   profileImage=null     The user's profile image url
- * @property {string}   coverImage=null       The user's cover image url
- * @property {string}   bio=null              The bio of the user
- * @property {string}   location=null         The location the user has set
- * @property {string}   website=null          The website the user has set
- * @property {object}   [coords=null]         The coordinates of the user, only applicable if the current user.
- * @property {number}   coords.lat            The latitude value of the user's coordinates
- * @property {number}   coords.lon            The longitude value of the user's coordinates
- * @property {string}   currentSessionID=null The Brassroots id of the session the user is in
- * @property {string}   favoriteTrackID=null  The Spotify id of the user's favorite track
- * @property {string[]} topPlaylists          The Spotify ids of the user's top playlists they play
- * @property {string[]} recentlyPlayed        The Spotify ids of the tracks the user has recently played
- * @property {string[]} mostPlayed            The Spotify ids of the tracks the user has played the most
- * @property {string[]} followers             The Brassroots ids of the followers of the user
- * @property {number}   totalFollowers=0      The total amount of followers the user has
- * @property {string[]} following             The Brassroots ids of the following of the user
- * @property {number}   totalFollowing=0      The total amount of following the user has
+ * @property {string}   lastUpdated               The date/time the user's information was last updated
+ * @property {string}   id=null                   The Spotify id of the user
+ * @property {string}   displayName=null          The Spotify display name of the user
+ * @property {string}   profileImage=null         The user's profile image url
+ * @property {string}   coverImage=null           The user's cover image url
+ * @property {string}   bio=null                  The bio of the user
+ * @property {string}   location=null             The location the user has set
+ * @property {string}   website=null              The website the user has set
+ * @property {string}   spotifyAccountStatus=null The account status of the Spotify user
+ * @property {object}   [coords=null]             The coordinates of the user, only applicable if the current user.
+ * @property {number}   coords.lat                The latitude value of the user's coordinates
+ * @property {number}   coords.lon                The longitude value of the user's coordinates
+ * @property {string}   currentSessionID=null     The Brassroots id of the session the user is in
+ * @property {string}   favoriteTrackID=null      The Spotify id of the user's favorite track
+ * @property {string[]} topPlaylists              The Spotify ids of the user's top playlists they play
+ * @property {string[]} recentlyPlayed            The Spotify ids of the tracks the user has recently played
+ * @property {string[]} mostPlayed                The Spotify ids of the tracks the user has played the most
+ * @property {string[]} followers                 The Brassroots ids of the followers of the user
+ * @property {number}   totalFollowers=0          The total amount of followers the user has
+ * @property {string[]} following                 The Brassroots ids of the following of the user
+ * @property {number}   totalFollowing=0          The total amount of following the user has
  */
 const singleState: User = {
   lastUpdated,
@@ -113,6 +117,7 @@ const singleState: User = {
   bio: null,
   location: null,
   website: null,
+  spotifyAccountStatus: null,
   coords: null,
   currentSessionID: null,
   favoriteTrackID: null,
@@ -161,6 +166,8 @@ export function singleUser(
       return addSingleCoverImage(state, action);
     case types.ADD_CURRENT_LOCATION:
       return addSingleLocation(state, action);
+    case types.ADD_CURRENT_USER:
+      return addSingleCurrentUser(state, action);
     default:
       return state;
   }
@@ -176,6 +183,8 @@ export default function reducer(
         return addCoverImage(state, action);
       case types.ADD_CURRENT_LOCATION:
         return addCurrentLocation(state, action);
+      case types.ADD_CURRENT_USER:
+        return addCurrentUser(state, action);
       default:
         return state;
     }
