@@ -11,6 +11,9 @@ import * as types from '../actions/sessions/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 
+// Case Functions
+import {addSingleSession, addSessions} from '../actions/sessions/AddSessions/reducers';
+
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type GetState = () => State;
@@ -28,11 +31,13 @@ type Session = {
   +mode?: ?string,
   +listeners?: Array<string>,
   +totalListeners?: number,
+  +timeLastPlayed?: ?string,
 };
 
 type Action = {
   +type?: string,
   +error?: Error,
+  +sessions?: {+[id: string]: Session},
 };
 
 type State = {
@@ -92,6 +97,7 @@ export type {
  * @property {string}   mode=null           The mode the session is currently in
  * @property {string[]} listeners           The Brassroots ids of the listeners in the session
  * @property {number}   totalListeners=0    The total amount of listeners in the session
+ * @property {string}   timeLastPlayed=null The last time the current track was played
  */
 const singleState: Session = {
   lastUpdated,
@@ -103,6 +109,7 @@ const singleState: Session = {
   mode: null,
   listeners: [],
   totalListeners: 0,
+  timeLastPlayed: null,
 };
 
 /**
@@ -165,11 +172,13 @@ export const initialState: State = {
   },
 };
 
-function singleSession(
+export function singleSession(
   state: Session = singleState,
   action: Action,
 ): Session {
   switch (action.type) {
+    case types.ADD_SESSIONS:
+      return addSingleSession(state, action);
     default:
       return state;
   }
@@ -181,6 +190,8 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
+      case types.ADD_SESSIONS:
+        return addSessions(state, action);
       default:
         return state;
     }
