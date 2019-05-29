@@ -13,6 +13,7 @@ import {type Firebase} from '../utils/firebaseTypes';
 // Case Functions
 import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
 import {addSingleTrack, addQueueTracks} from '../actions/queue/AddQueueTracks/reducers';
+import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -43,6 +44,7 @@ type Action = {
   +context?: Context,
   +tracks?: {+[id: string]: QueueTrack},
   +track?: QueueTrack,
+  +queueID?: string,
 };
 
 type State = {
@@ -166,6 +168,12 @@ export default function reducer(
         return addCurrentContext(state, action);
       case types.ADD_QUEUE_TRACKS:
         return addQueueTracks(state, action);
+      case types.DELETE_QUEUE_TRACK_REQUEST:
+        return deleteQueueTrack.request(state, action);
+      case types.DELETE_QUEUE_TRACK_SUCCESS:
+        return deleteQueueTrack.success(state, action);
+      case types.DELETE_QUEUE_TRACK_FAILURE:
+        return deleteQueueTrack.failure(state, action);
       default:
         return state;
     }
