@@ -29,6 +29,7 @@ type FirestoreDocs = {
 type FirestoreQuery = {
   get: () => Promise<FirestoreDocs>,
   limit: (number) => FirestoreDocs,
+  startAfter: (number | string) => FirestoreQuery,
 };
 
 type FirestoreRef = {

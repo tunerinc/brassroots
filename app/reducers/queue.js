@@ -9,18 +9,23 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/queue/types';
 import {type Firebase} from '../utils/firebaseTypes';
+import {type Action as AlbumAction} from './albums';
+import {type Action as ArtistAction} from './artists';
+import {type Action as TrackAction} from './tracks';
 
 // Case Functions
 import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
 import {addSingleTrack, addQueueTracks} from '../actions/queue/AddQueueTracks/reducers';
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
+import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction = Action | AlbumAction | ArtistAction | TrackAction;
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type Context = {
   +id?: string,
@@ -28,6 +33,8 @@ type Context = {
   +type?: string,
   +username?: string,
   +position?: string | number,
+  +total?: number,
+  +tracks?: Array<string>,
 };
 
 type QueueTrack = {
@@ -45,6 +52,7 @@ type Action = {
   +tracks?: {+[id: string]: QueueTrack},
   +track?: QueueTrack,
   +queueID?: string,
+  +queue?: ?Array<string>,
 };
 
 type State = {
@@ -174,6 +182,12 @@ export default function reducer(
         return deleteQueueTrack.success(state, action);
       case types.DELETE_QUEUE_TRACK_FAILURE:
         return deleteQueueTrack.failure(state, action);
+      case types.GET_CONTEXT_QUEUE_REQUEST:
+        return getContextQueue.request(state);
+      case types.GET_CONTEXT_QUEUE_SUCCESS:
+        return getContextQueue.success(state, action);
+      case types.GET_CONTEXT_QUEUE_FAILURE:
+        return getContextQueue.failure(state, action);
       default:
         return state;
     }
