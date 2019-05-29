@@ -8,49 +8,70 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/sessions/types';
+import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-export type Session = {
-  +lastUpdated: string,
-  +id: ?string,
-  +currentTrackID: ?string,
-  +currentQueueID: ?string,
-  +ownerID: ?string,
-  +distance: number,
-  +mode: ?string,
-  +listeners: Array<string>,
-  +totalListeners: number,
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Session = {
+  +lastUpdated?: string,
+  +id?: ?string,
+  +currentTrackID?: ?string,
+  +currentQueueID?: ?string,
+  +ownerID?: ?string,
+  +distance?: number,
+  +mode?: ?string,
+  +listeners?: Array<string>,
+  +totalListeners?: number,
 };
 
-export type State = {
-  +lastUpdated: string,
-  +currentSessionID: ?string,
-  +sessionsByID: {+[key: string]: Session},
-  +totalSessions: number,
-  +fetchingListeners: boolean,
-  +changingMode: boolean,
-  +fetchingInfo: boolean,
-  +fetchingSessions: boolean,
-  +paginatingSessions: boolean,
-  +refreshingSessions: boolean,
-  +joiningSession: boolean,
-  +leavingSession: boolean,
-  +selectedSession: ?string,
-  +infoUnsubscribe: ?() => void,
-  +error: ?Error | SpotifyError,
-  +explore: {
-    +trendingSessions: Array<string>,
-    +trendingCanPaginate: boolean,
-    +trendingLastUpdated: string,
-    +followingSessions: Array<string>,
-    +followingCanPaginate: boolean,
-    +followingLastUpdated: string,
-    +nearbySessions: Array<string>,
-    +nearbyCanPaginate: boolean,
-    +nearbyLastUpdated: string,
+type Action = {
+  +type?: string,
+  +error?: Error,
+};
+
+type State = {
+  +lastUpdated?: string,
+  +currentSessionID?: ?string,
+  +sessionsByID?: {+[key: string]: Session},
+  +totalSessions?: number,
+  +fetchingListeners?: boolean,
+  +changingMode?: boolean,
+  +fetchingInfo?: boolean,
+  +fetchingSessions?: boolean,
+  +paginatingSessions?: boolean,
+  +refreshingSessions?: boolean,
+  +joiningSession?: boolean,
+  +leavingSession?: boolean,
+  +selectedSession?: ?string,
+  +infoUnsubscribe?: ?() => void,
+  +error?: ?Error | SpotifyError,
+  +explore?: {
+    +trendingSessions?: Array<string>,
+    +trendingCanPaginate?: boolean,
+    +trendingLastUpdated?: string,
+    +followingSessions?: Array<string>,
+    +followingCanPaginate?: boolean,
+    +followingLastUpdated?: string,
+    +nearbySessions?: Array<string>,
+    +nearbyCanPaginate?: boolean,
+    +nearbyLastUpdated?: string,
   },
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Session,
+  Action,
+  State,
 };
 
 /**
@@ -146,7 +167,7 @@ export const initialState: State = {
 
 function singleSession(
   state: Session = singleState,
-  action: {type: string},
+  action: Action,
 ): Session {
   switch (action.type) {
     default:
@@ -156,10 +177,14 @@ function singleSession(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      default:
+        return state;
+    }
   }
+
+  return state;
 }
