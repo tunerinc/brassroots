@@ -8,38 +8,66 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/queue/types';
+import {type Firebase} from '../utils/firebaseTypes';
 
-const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+// Case Functions
+import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
 
-export type QueueTrack = {
-  +id: ?string,
-  +trackID: ?string,
-  +userID: ?string,
-  +totalLikes: number,
-  +liked: boolean,
+export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+type GetState = () => State;
+type PromiseAction = Promise<Action>;
+type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
+type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Context = {
+  +id?: string,
+  +name?: string,
+  +type?: string,
+  +username?: string,
+  +position?: string | number,
 };
 
-export type State = {
-  +lastUpdated: string,
-  +userQueue: Array<string>,
-  +contextQueue: Array<string>,
-  +queueByID: {+[key: string]: QueueTrack},
-  +totalQueue: number,
-  +fetchingQueue: boolean,
-  +fetchingContext: boolean,
-  +liking: Array<string>,
-  +deleting: Array<string>,
-  +failed: Array<string>,
-  +queueing: boolean,
-  +unsubscribe: ?() => void,
-  +error: ?Error,
-  +context: {
-    +id: string,
-    +name: string,
-    +type: string,
-    +username: string,
-    +position: string | number,
-  },
+type QueueTrack = {
+  +id?: ?string,
+  +trackID?: ?string,
+  +userID?: ?string,
+  +totalLikes?: number,
+  +liked?: boolean,
+};
+
+type Action = {
+  +type?: string,
+  +error?: Error,
+  +context?: Context,
+};
+
+type State = {
+  +lastUpdated?: string,
+  +userQueue?: Array<string>,
+  +contextQueue?: Array<string>,
+  +queueByID?: {+[key: string]: QueueTrack},
+  +totalQueue?: number,
+  +fetchingQueue?: boolean,
+  +fetchingContext?: boolean,
+  +liking?: Array<string>,
+  +deleting?: Array<string>,
+  +failed?: Array<string>,
+  +queueing?: boolean,
+  +unsubscribe?: ?() => void,
+  +error?: ?Error,
+  +context?: Context,
+};
+
+export type {
+  GetState,
+  PromiseAction,
+  ThunkAction,
+  Dispatch,
+  Context,
+  QueueTrack,
+  Action,
+  State,
 };
 
 /**
@@ -113,9 +141,9 @@ export const initialState: State = {
   },
 };
 
-function singleTrack(
+export function singleTrack(
   state: QueueTrack = singleState,
-  action: {type: string},
+  action: Action,
 ): QueueTrack {
   switch (action.type) {
     default:
@@ -125,10 +153,16 @@ function singleTrack(
 
 export default function reducer(
   state: State = initialState,
-  action: {type: string} = {},
+  action: Action = {},
 ): State {
-  switch (action.type) {
-    default:
-      return state;
-  }
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.ADD_CURRENT_CONTEXT:
+        return addCurrentContext(state, action);
+      default:
+        return state;
+    }
+  };
+
+  return state;
 }
