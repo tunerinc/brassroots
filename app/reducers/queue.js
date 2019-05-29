@@ -12,6 +12,7 @@ import {type Firebase} from '../utils/firebaseTypes';
 
 // Case Functions
 import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
+import {addSingleTrack, addQueueTracks} from '../actions/queue/AddQueueTracks/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -40,6 +41,8 @@ type Action = {
   +type?: string,
   +error?: Error,
   +context?: Context,
+  +tracks?: {+[id: string]: QueueTrack},
+  +track?: QueueTrack,
 };
 
 type State = {
@@ -146,6 +149,8 @@ export function singleTrack(
   action: Action,
 ): QueueTrack {
   switch (action.type) {
+    case types.ADD_QUEUE_TRACKS:
+      return addSingleTrack(state, action);
     default:
       return state;
   }
@@ -159,6 +164,8 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_CURRENT_CONTEXT:
         return addCurrentContext(state, action);
+      case types.ADD_QUEUE_TRACKS:
+        return addQueueTracks(state, action);
       default:
         return state;
     }
