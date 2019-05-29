@@ -206,6 +206,8 @@ export default function reducer(
         return queueTrack.failure(state, action);
       case types.REMOVE_QUEUE_TRACK:
         return removeQueueTrack(state, action);
+      case types.RESET_QUEUE:
+        return initialState;
       default:
         return state;
     }
