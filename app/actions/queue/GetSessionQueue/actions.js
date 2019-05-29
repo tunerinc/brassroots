@@ -49,7 +49,7 @@ export function getSessionQueueRequest(): Action {
  */
 export function getSessionQueueSuccess(
   queue: Array<string>,
-  unsubscribe: () => void,
+  unsubscribe: () => Promise<void>,
 ): Action {
   return {
     type: types.GET_SESSION_QUEUE_SUCCESS,

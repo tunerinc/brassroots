@@ -20,7 +20,9 @@ describe('get session queue synchronous action creators', () => {
 
   it('creates get session queue success action', () => {
     const queue: Array<string> = ['foo', 'bar'];
-    const unsubscribe: () => void = () => {return;};
+    const unsubscribe: () => Promise<void> = () => {
+      return new Promise(res => res());
+    };
     const expectedAction: Action = {
       type: types.GET_SESSION_QUEUE_SUCCESS,
       queue,

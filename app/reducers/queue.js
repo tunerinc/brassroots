@@ -21,6 +21,7 @@ import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
 import * as getSessionQueue from '../actions/queue/GetSessionQueue/reducers';
 import * as queueTrack from '../actions/queue/QueueTrack/reducers';
 import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
+import * as stopQueueListener from '../actions/queue/StopQueueListener/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -56,7 +57,7 @@ type Action = {
   +track?: QueueTrack,
   +queueID?: string,
   +queue?: ?Array<string>,
-  +unsubscribe?: () => void,
+  +unsubscribe?: () => Promise<void>,
 };
 
 type State = {
@@ -71,7 +72,7 @@ type State = {
   +deleting?: Array<string>,
   +failed?: Array<string>,
   +queueing?: boolean,
-  +unsubscribe?: ?() => void,
+  +unsubscribe?: ?() => Promise<void>,
   +error?: ?Error,
   +context?: Context,
 };
@@ -208,6 +209,12 @@ export default function reducer(
         return removeQueueTrack(state, action);
       case types.RESET_QUEUE:
         return initialState;
+      case types.STOP_QUEUE_LISTENER_REQUEST:
+        return state;
+      case types.STOP_QUEUE_LISTENER_SUCCESS:
+        return stopQueueListener.success(state);
+      case types.STOP_QUEUE_LISTENER_FAILURE:
+        return stopQueueListener.failure(state, action);
       default:
         return state;
     }
