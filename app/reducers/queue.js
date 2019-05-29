@@ -23,6 +23,7 @@ import * as queueTrack from '../actions/queue/QueueTrack/reducers';
 import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
 import * as stopQueueListener from '../actions/queue/StopQueueListener/reducers';
 import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
+import {updateSingleTrack, updateQueueTrack} from '../actions/queue/UpdateQueueTrack/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -31,6 +32,11 @@ type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
+
+type Updates = {
+  totalLikes?: number,
+  changeLike?: boolean,
+};
 
 type Context = {
   +id?: string,
@@ -59,6 +65,7 @@ type Action = {
   +queueID?: string,
   +queue?: ?Array<string>,
   +unsubscribe?: () => Promise<void>,
+  +updates?: Updates,
 };
 
 type State = {
@@ -83,6 +90,7 @@ export type {
   PromiseAction,
   ThunkAction,
   Dispatch,
+  Updates,
   Context,
   QueueTrack,
   Action,
@@ -167,6 +175,8 @@ export function singleTrack(
   switch (action.type) {
     case types.ADD_QUEUE_TRACKS:
       return addSingleTrack(state, action);
+    case types.UPDATE_QUEUE_TRACK:
+      return updateSingleTrack(state, action);
     default:
       return state;
   }
@@ -222,6 +232,8 @@ export default function reducer(
         return toggleTrackLike.success(state, action);
       case types.TOGGLE_TRACK_LIKE_FAILURE:
         return toggleTrackLike.failure(state, action);
+      case types.UPDATE_QUEUE_TRACK:
+        return updateQueueTrack(state, action);
       default:
         return state;
     }
