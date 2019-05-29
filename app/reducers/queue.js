@@ -22,6 +22,7 @@ import * as getSessionQueue from '../actions/queue/GetSessionQueue/reducers';
 import * as queueTrack from '../actions/queue/QueueTrack/reducers';
 import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
 import * as stopQueueListener from '../actions/queue/StopQueueListener/reducers';
+import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -215,6 +216,12 @@ export default function reducer(
         return stopQueueListener.success(state);
       case types.STOP_QUEUE_LISTENER_FAILURE:
         return stopQueueListener.failure(state, action);
+      case types.TOGGLE_TRACK_LIKE_REQUEST:
+        return toggleTrackLike.request(state, action);
+      case types.TOGGLE_TRACK_LIKE_SUCCESS:
+        return toggleTrackLike.success(state, action);
+      case types.TOGGLE_TRACK_LIKE_FAILURE:
+        return toggleTrackLike.failure(state, action);
       default:
         return state;
     }

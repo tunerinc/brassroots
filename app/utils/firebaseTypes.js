@@ -14,6 +14,7 @@ type FirestoreDoc = {
   set: ({[key: string]: ?string | boolean | Array<string>}) => Promise<void>,
   collection: (string) => FirestoreDocs,
   doc: (?string) => FirestoreDoc,
+  delete: () => Promise<void>,
 };
 
 type FirestoreDocs = {
