@@ -18,6 +18,7 @@ import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
 import {addSingleTrack, addQueueTracks} from '../actions/queue/AddQueueTracks/reducers';
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
+import * as getSessionQueue from '../actions/queue/GetSessionQueue/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -53,6 +54,7 @@ type Action = {
   +track?: QueueTrack,
   +queueID?: string,
   +queue?: ?Array<string>,
+  +unsubscribe?: () => void,
 };
 
 type State = {
@@ -188,6 +190,12 @@ export default function reducer(
         return getContextQueue.success(state, action);
       case types.GET_CONTEXT_QUEUE_FAILURE:
         return getContextQueue.failure(state, action);
+      case types.GET_SESSION_QUEUE_REQUEST:
+        return getSessionQueue.request(state);
+      case types.GET_SESSION_QUEUE_SUCCESS:
+        return getSessionQueue.success(state, action);
+      case types.GET_SESSION_QUEUE_FAILURE:
+        return getSessionQueue.failure(state, action);
       default:
         return state;
     }
