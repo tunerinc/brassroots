@@ -13,6 +13,7 @@ import type {SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
 import {addSingleSession, addSessions} from '../actions/sessions/AddSessions/reducers';
+import * as changeSessionMode from '../actions/sessions/ChangeSessionMode/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -192,6 +193,12 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_SESSIONS:
         return addSessions(state, action);
+      case types.CHANGE_SESSION_MODE_REQUEST:
+        return changeSessionMode.request(state);
+      case types.CHANGE_SESSION_MODE_SUCCESS:
+        return changeSessionMode.success(state);
+      case types.CHANGE_SESSION_MODE_FAILURE:
+        return changeSessionMode.failure(state, action);
       default:
         return state;
     }
