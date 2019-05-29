@@ -29,6 +29,7 @@ import {
  * @param   {string} context.type     The type of context a session is playng from
  * @param   {string} context.username The username of the owner of the context item
  * @param   {number} context.position The position from which to start retrieving tracks from the context
+ * @param   {number} context.total    The total amount of items in the context
  * 
  * @returns {object}                  Redux action with the type of ADD_CURRENT_CONTEXT and a session's context
  */

@@ -10,17 +10,21 @@ import updateObject from '../utils/updateObject';
 import * as types from '../actions/sessions/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Action as PlayerAction} from './player';
+import {type Action as QueueAction} from './queue';
 
 // Case Functions
 import {addSingleSession, addSessions} from '../actions/sessions/AddSessions/reducers';
 import * as changeSessionMode from '../actions/sessions/ChangeSessionMode/reducers';
+import * as createSession from '../actions/sessions/CreateSession/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction = Action | PlayerAction | QueueAction;
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type Session = {
   +lastUpdated?: string,
@@ -39,6 +43,7 @@ type Action = {
   +type?: string,
   +error?: Error,
   +sessions?: {+[id: string]: Session},
+  +session?: Session,
 };
 
 type State = {
@@ -180,6 +185,8 @@ export function singleSession(
   switch (action.type) {
     case types.ADD_SESSIONS:
       return addSingleSession(state, action);
+    case types.CREATE_SESSION_SUCCESS:
+      return addSingleSession(state, action);
     default:
       return state;
   }
@@ -199,6 +206,12 @@ export default function reducer(
         return changeSessionMode.success(state);
       case types.CHANGE_SESSION_MODE_FAILURE:
         return changeSessionMode.failure(state, action);
+      case types.CREATE_SESSION_REQUEST:
+        return createSession.request(state);
+      case types.CREATE_SESSION_SUCCESS:
+        return createSession.success(state, action);
+      case types.CREATE_SESSION_FAILURE:
+        return createSession.failure(state, action);
       default:
         return state;
     }

@@ -44,7 +44,7 @@
     "react-native-keyboard-aware-scroll-view": "0.8.0",
     "react-native-linear-gradient": "2.5.4",
     "react-native-modal": "9.0.0",
-    "react-native-permissions": "1.1.1",
+    "react-native-permissions": "^1.1.1",
     "react-native-render-html": "4.1.2",
     "react-native-router-flux": "4.0.6",
     "react-native-search-box": "0.0.19",

@@ -25,7 +25,7 @@ import {
 
 type User = {
   id: string,
-  username: string,
+  displayName: string,
   profileImage: string,
 };
 
@@ -37,9 +37,9 @@ type Track = {
   album: {
     id: string,
     name: string,
-    small: string,
-    medium: string,
-    large: string,
+    small?: string,
+    medium?: string,
+    large?: string,
   },
   artists: Array<
     {
@@ -51,14 +51,14 @@ type Track = {
 
 type Session = {
   id: string,
-  totalQueue: number,
+  totalQueue?: number,
   totalPlayed: number,
-  totalUsers: number,
+  totalUsers?: number,
   coords?: {
     lat: number,
     lon: number,
   },
-  current: {
+  current?: {
     id: string,
     totalLikes: number,
     userID: string,
@@ -87,11 +87,11 @@ type Session = {
   }
 };
 
-type Context = {
+type Context = ?{
   id: string,
   name: string,
   type: string,
-  username: string,
+  displayName: string,
   position: number,
   total: number,
 };
@@ -106,7 +106,7 @@ type Context = {
  *
  * @param    {object}   user                                 The user object of the current user playing a track
  * @param    {string}   user.id                              The id of the current user
- * @param    {string}   user.username                        The username of the current user
+ * @param    {string}   user.displayName                     The display name of the current user
  * @param    {string}   user.profileImage                    The profile image of the current user
  * @param    {object}   track                                The track object the current user is wanting to play
  * @param    {string}   [track.id]                           The queue id of the track to play
@@ -152,7 +152,7 @@ type Context = {
  * @param    {string}   context.id                           The id of the context of tracks
  * @param    {string}   context.name                         The name of the context, applicable with playlist, album, artist
  * @param    {string}   context.type                         The type of context, i.e. track, playlist, album, artist
- * @param    {string}   context.username                     The username of the user, applicable with the "user" prefix
+ * @param    {string}   context.displayName                  The display name of the user, applicable with the "user" prefix
  * @param    {number}   context.position
  * @param    {number}   context.total
  *
@@ -201,7 +201,7 @@ export function playTrack(
               'context.id': context.id,
               'context.name': context.name,
               'context.type': context.type,
-              'context.useranem': context.username,
+              'context.displayName': context.displayName,
               'context.position': context.position,
               'totals.context': context.total,
               'totals.previouslyPlayed': totalPlayed + 1,
@@ -261,7 +261,7 @@ export function playTrack(
               type: 'session',
               owner: {
                 id: user.id,
-                name: user.username,
+                name: user.displayName,
                 image: user.profileImage,
               },
             },
