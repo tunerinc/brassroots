@@ -78,15 +78,15 @@ export function getContextQueue(
       } else if (context.type === 'playlist' && typeof context.id === 'string') {
         spotifyTracks = await getPlaylistTracks(context.id, playlistOptions);
       } else if (context.type === 'user-most' && context.position) {
-        const mostTracks: Array<BRUserTrack> = await mostRef.startAfter(context.position).limit(limit).get();
-        spotifyTracks = await Spotify.getTracks(mostTracks.map(t => t.id), {});
+        const mostTracks: FirestoreDocs = await mostRef.startAfter(context.position).limit(limit).get();
+        spotifyTracks = await Spotify.getTracks(mostTracks.docs.map(t => t.id), {});
       } else if (context.type === 'user-recently' && context.position) {
-        const recentTracks: Array<BRUserRecent> = await recentRef.startAfter(context.position).limit(limit).get();
+        const recentTracks: FirestoreDocs = await recentRef.startAfter(context.position).limit(limit).get();
 
-        spotifyTracks = recentTracks.map(track => {
+        spotifyTracks = recentTracks.docs.map(track => {
           return {
-            ...track,
-            id: track.trackID,
+            ...track.data(),
+            id: track.data().trackID,
             trackID: null,
             timeAdded: null,
           };

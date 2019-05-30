@@ -19,10 +19,10 @@ type FirestoreDoc = {
 
 type FirestoreDocs = {
   empty: boolean,
-  docs: Array<FirestoreDoc>,
+  docs: Array<any>,
   orderBy: (string, ?string) => FirestoreQuery,
   limit: (number) => FirestoreQuery,
-  get: () => any,
+  get: () => Promise<FirestoreDocs>,
   doc: (?string | ?number) => FirestoreDoc,
   where: (string, string, string | boolean) => FirestoreQuery,
 };
@@ -35,7 +35,7 @@ type FirestoreQuery = {
 };
 
 type FirestoreRef = {
-  where: (string, string, string) => FirestoreQuery,
+  where: (string, string, string | boolean) => FirestoreQuery,
   doc: (?string) => FirestoreDoc,
   orderBy: (string, ?string) => FirestoreQuery,
   limit: (number) => FirestoreDocs,

@@ -56,7 +56,7 @@ export function getRecentTracks(
         artists: {},
       };
 
-      const recentTracks: FirestoreDocs = recentRef.orderBy('timeAdded', 'desc').limit(25).get();
+      const recentTracks: FirestoreDocs = await recentRef.orderBy('timeAdded', 'desc').limit(25).get();
       
       if (recentTracks.empty || !Array.isArray(recentTracks)) {
         dispatch(actions.getRecentTracksSuccess());
