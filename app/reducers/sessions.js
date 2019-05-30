@@ -29,6 +29,7 @@ import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
 import * as getTrendingSessions from '../actions/sessions/GetTrendingSessions/reducers';
 import * as joinSession from '../actions/sessions/JoinSession/reducers';
 import * as leaveSession from '../actions/sessions/LeaveSession/reducers';
+import * as paginateFollowingSessions from '../actions/sessions/PaginateFollowingSessions/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -64,7 +65,7 @@ type Session = {
 type Action = {
   +type?: string,
   +error?: Error,
-  +sessions?: {+[id: string]: Session},
+  +sessions?: {+[id: string]: Session} | Array<string>,
   +session?: Session,
   +followingSessions?: Array<string>,
   +followingCanPaginate?: boolean,
@@ -286,6 +287,12 @@ export default function reducer(
         return leaveSession.success(state, action);
       case types.LEAVE_SESSION_FAILURE:
         return leaveSession.failure(state, action);
+      case types.PAGINATE_FOLLOWING_SESSIONS_REQUEST:
+        return paginateFollowingSessions.request(state);
+      case types.PAGINATE_FOLLOWING_SESSIONS_SUCCESS:
+        return paginateFollowingSessions.success(state, action);
+      case types.PAGINATE_FOLLOWING_SESSIONS_FAILURE:
+        return paginateFollowingSessions.failure(state, action);
       default:
         return state;
     }
