@@ -32,6 +32,7 @@ import * as leaveSession from '../actions/sessions/LeaveSession/reducers';
 import * as paginateFollowingSessions from '../actions/sessions/PaginateFollowingSessions/reducers';
 import * as paginateNearbySessions from '../actions/sessions/PaginateNearbySessions/reducers';
 import * as paginateTrendingSessions from '../actions/sessions/PaginateTrendingSessions/reducers';
+import {removeSession} from '../actions/sessions/RemoveSession/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -307,6 +308,8 @@ export default function reducer(
         return paginateTrendingSessions.success(state, action);
       case types.PAGINATE_TRENDING_SESSIONS_FAILURE:
         return paginateTrendingSessions.failure(state, action);
+      case types.REMOVE_SESSION:
+        return removeSession(state, action);
       default:
         return state;
     }
