@@ -26,6 +26,7 @@ import * as getFollowingSessions from '../actions/sessions/GetFollowingSessions/
 import * as getNearbySessions from '../actions/sessions/GetNearbySessions/reducers';
 import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
 import * as getTrendingSessions from '../actions/sessions/GetTrendingSessions/reducers';
+import * as joinSession from '../actions/sessions/JoinSession/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -69,6 +70,9 @@ type Action = {
   +trendingSessions?: Array<string>,
   +trendingCanPaginate?: boolean,
   +unsubscribe?: () => Promise<void>,
+  +userID?: string,
+  +totalListeners?: number,
+  +sessionID?: string,
 };
 
 type State = {
@@ -214,6 +218,8 @@ export function singleSession(
       return addSingleSession(state, action);
     case types.GET_SESSION_INFO_SUCCESS:
       return addSingleSession(state, action);
+    case types.JOIN_SESSION_SUCCESS:
+      return joinSession.join(state, action);
     default:
       return state;
   }
@@ -263,6 +269,12 @@ export default function reducer(
         return getTrendingSessions.success(state, action);
       case types.GET_TRENDING_SESSIONS_FAILURE:
         return getTrendingSessions.failure(state, action);
+      case types.JOIN_SESSION_REQUEST:
+        return joinSession.request(state);
+      case types.JOIN_SESSION_SUCCESS:
+        return joinSession.success(state, action);
+      case types.JOIN_SESSION_FAILURE:
+        return joinSession.failure(state, action);
       default:
         return state;
     }
