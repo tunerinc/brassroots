@@ -33,6 +33,7 @@ import * as paginateFollowingSessions from '../actions/sessions/PaginateFollowin
 import * as paginateNearbySessions from '../actions/sessions/PaginateNearbySessions/reducers';
 import * as paginateTrendingSessions from '../actions/sessions/PaginateTrendingSessions/reducers';
 import {removeSession} from '../actions/sessions/RemoveSession/reducers';
+import * as stopSessionInfoListener from '../actions/sessions/StopSessionInfoListener/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -312,6 +313,12 @@ export default function reducer(
         return removeSession(state, action);
       case types.RESET_SESSIONS:
         return initialState;
+      case types.STOP_SESSION_INFO_LISTENER_REQUEST:
+        return state;
+      case types.STOP_SESSION_INFO_LISTENER_SUCCESS:
+        return stopSessionInfoListener.success(state);
+      case types.STOP_SESSION_INFO_LISTENER_FAILURE:
+        return stopSessionInfoListener.failure(state, action);
       default:
         return state;
     }
