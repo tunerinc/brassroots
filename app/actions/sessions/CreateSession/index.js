@@ -151,10 +151,10 @@ export function createSession(
       }
 
       if (pos.coords) {
-        pos = {
+        pos = updateObject(pos, {
           lat: pos.coords.latitude,
           lon: pos.coords.longitude
-        };
+        });
 
         dispatch(addCurrentLocation(pos.coords));
       }
@@ -178,7 +178,12 @@ export function createSession(
           repeat: false,
           seeking: false,
           shuffle: false,
-          coords: {...pos},
+          coords: pos.lat && pos.lon
+            ? {
+              lat: pos.lat,
+              lon: pos.lon,
+            }
+            : null,
           context: {
             ...restOfContext,
             tracks: context.tracks || null,

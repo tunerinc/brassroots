@@ -23,6 +23,7 @@ import {addSingleSession, addSessions} from '../actions/sessions/AddSessions/red
 import * as changeSessionMode from '../actions/sessions/ChangeSessionMode/reducers';
 import * as createSession from '../actions/sessions/CreateSession/reducers';
 import * as getFollowingSessions from '../actions/sessions/GetFollowingSessions/reducers';
+import * as getNearbySessions from '../actions/sessions/GetNearbySessions/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -61,6 +62,8 @@ type Action = {
   +session?: Session,
   +followingSessions?: Array<string>,
   +followingCanPaginate?: boolean,
+  +nearbySessions?: Array<string>,
+  +nearbyCanPaginate?: boolean,
 };
 
 type State = {
@@ -235,6 +238,12 @@ export default function reducer(
         return getFollowingSessions.success(state, action);
       case types.GET_FOLLOWING_SESSIONS_FAILURE:
         return getFollowingSessions.failure(state, action);
+      case types.GET_NEARBY_SESSIONS_REQUEST:
+        return getNearbySessions.request(state);
+      case types.GET_NEARBY_SESSIONS_SUCCESS:
+        return getNearbySessions.success(state, action);
+      case types.GET_NEARBY_SESSIONS_FAILURE:
+        return getNearbySessions.failure(state, action);
       default:
         return state;
     }
