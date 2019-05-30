@@ -310,6 +310,8 @@ export default function reducer(
         return paginateTrendingSessions.failure(state, action);
       case types.REMOVE_SESSION:
         return removeSession(state, action);
+      case types.RESET_SESSIONS:
+        return initialState;
       default:
         return state;
     }
