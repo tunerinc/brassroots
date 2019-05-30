@@ -25,7 +25,7 @@ function calculateDistance(
   lon1: number,
   lat2: number,
   lon2: number,
-  unit: string,
+  unit?: string,
 ): number {
   const radlat1: number = Math.PI * lat1 / 180;
   const radlat2: number = Math.PI * lat2 / 180;

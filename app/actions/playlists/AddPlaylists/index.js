@@ -28,7 +28,7 @@ import {
  * @returns {object}           Redux action with the type of ADD_PLAYLISTS and the retrieved playlists
  */
 export function addPlaylists(
-  playlists: {[id: string]: Playlist},
+  playlists: {+[id: string]: Playlist},
 ): Action {
   return {
     type: types.ADD_PLAYLISTS,

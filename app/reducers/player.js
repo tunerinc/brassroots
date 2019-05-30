@@ -11,7 +11,6 @@ import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/player/types';
 
 // Case Functions
-
 import * as nextTrack from '../actions/player/NextTrack/reducers';
 import * as pausePlayer from '../actions/player/PausePlayer/reducers';
 import * as playTrack from '../actions/player/PlayTrack/reducers';

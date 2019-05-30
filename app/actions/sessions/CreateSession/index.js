@@ -150,7 +150,7 @@ export function createSession(
         pos = await getUserLocation();
       }
 
-      if (pos && pos.coords) {
+      if (pos.coords) {
         pos = {
           lat: pos.coords.latitude,
           lon: pos.coords.longitude

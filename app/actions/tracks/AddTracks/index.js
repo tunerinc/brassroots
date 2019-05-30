@@ -28,7 +28,7 @@ import {
  * @returns {object}        Redux action with the type of ADD_TRACKS and the track objects to add
  */
 export function addTracks(
-  tracks: {[id: string]: Track},
+  tracks: {+[id: string]: Track},
 ): Action {
   return {
     type: types.ADD_TRACKS,

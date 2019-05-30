@@ -12,19 +12,33 @@ import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 import {type Action as PlayerAction} from './player';
 import {type Action as QueueAction} from './queue';
+import {type Action as AlbumAction} from './albums';
+import {type Action as ArtistAction} from './artists';
+import {type Action as UserAction} from './users';
+import {type Action as PlaylistAction} from './playlists';
+import {type Action as TrackAction} from './tracks';
 
 // Case Functions
 import {addSingleSession, addSessions} from '../actions/sessions/AddSessions/reducers';
 import * as changeSessionMode from '../actions/sessions/ChangeSessionMode/reducers';
 import * as createSession from '../actions/sessions/CreateSession/reducers';
+import * as getFollowingSessions from '../actions/sessions/GetFollowingSessions/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-type DispatchAction = Action | PlayerAction | QueueAction;
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
+type DispatchAction =
+  | Action
+  | PlayerAction
+  | QueueAction
+  | AlbumAction
+  | ArtistAction
+  | PlaylistAction
+  | UserAction
+  | TrackAction;
 
 type Session = {
   +lastUpdated?: string,
@@ -32,6 +46,7 @@ type Session = {
   +currentTrackID?: ?string,
   +currentQueueID?: ?string,
   +ownerID?: ?string,
+  +followingID?: string,
   +distance?: number,
   +mode?: ?string,
   +listeners?: Array<string>,
@@ -44,6 +59,8 @@ type Action = {
   +error?: Error,
   +sessions?: {+[id: string]: Session},
   +session?: Session,
+  +followingSessions?: Array<string>,
+  +followingCanPaginate?: boolean,
 };
 
 type State = {
@@ -212,6 +229,12 @@ export default function reducer(
         return createSession.success(state, action);
       case types.CREATE_SESSION_FAILURE:
         return createSession.failure(state, action);
+      case types.GET_FOLLOWING_SESSIONS_REQUEST:
+        return getFollowingSessions.request(state);
+      case types.GET_FOLLOWING_SESSIONS_SUCCESS:
+        return getFollowingSessions.success(state, action);
+      case types.GET_FOLLOWING_SESSIONS_FAILURE:
+        return getFollowingSessions.failure(state, action);
       default:
         return state;
     }

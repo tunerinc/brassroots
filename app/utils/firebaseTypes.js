@@ -24,13 +24,14 @@ type FirestoreDocs = {
   limit: (number) => FirestoreQuery,
   get: () => any,
   doc: (?string | ?number) => FirestoreDoc,
-  where: (string, string, string) => FirestoreQuery,
+  where: (string, string, string | boolean) => FirestoreQuery,
 };
 
 type FirestoreQuery = {
   get: () => Promise<FirestoreDocs>,
   limit: (number) => FirestoreDocs,
   startAfter: (number | string) => FirestoreQuery,
+  orderBy: (string, ?string) => FirestoreQuery,
 };
 
 type FirestoreRef = {

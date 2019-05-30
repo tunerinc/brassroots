@@ -64,7 +64,7 @@ type Action = {
   +type?: string,
   +error?: Error,
   +userID?: string,
-  +playlists?: {[id: string]: Playlist} | Array<string>,
+  +playlists?: {+[id: string]: Playlist} | Array<string>,
   +playlistID?: string,
   +refreshing?: boolean,
   +members?: Array<string>,

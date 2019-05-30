@@ -51,7 +51,7 @@ type Track = {
 type Action = {
   +type?: string,
   +error?: Error,
-  +tracks?: {[id: string]: Track} | Array<string>,
+  +tracks?: {+[id: string]: Track} | Array<string>,
   +track?: Track,
   +refreshing?: boolean,
   +trackID?: string,
