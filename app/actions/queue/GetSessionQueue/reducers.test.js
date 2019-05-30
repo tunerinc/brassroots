@@ -28,9 +28,7 @@ describe('get session queue reducer', () => {
 
   it('should handle GET_SESSION_QUEUE_SUCCESS', () => {
     const userQueue: Array<string> = ['foo', 'bar'];
-    const unsubscribe: () => Promise<void> = () => {
-      return new Promise(res => res());
-    };
+    const unsubscribe: () => void = () => {return};
 
     expect(
       reducer(

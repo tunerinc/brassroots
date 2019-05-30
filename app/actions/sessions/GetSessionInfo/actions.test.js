@@ -22,7 +22,7 @@ describe('get session info synchronous action creators', () => {
   });
 
   it('creates get session info success action', () => {
-    const unsubscribe: () => Promise<void> = () => {return new Promise(res => res())};
+    const unsubscribe: () => void = () => {return};
     const session: Session = {
       id: 'foo',
       currentQueueID: 'foo',

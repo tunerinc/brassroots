@@ -17,6 +17,7 @@ import {type Action as ArtistAction} from './artists';
 import {type Action as UserAction} from './users';
 import {type Action as PlaylistAction} from './playlists';
 import {type Action as TrackAction} from './tracks';
+import {type Action as ChatAction} from './chat';
 
 // Case Functions
 import {addSingleSession, addSessions} from '../actions/sessions/AddSessions/reducers';
@@ -27,6 +28,7 @@ import * as getNearbySessions from '../actions/sessions/GetNearbySessions/reduce
 import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
 import * as getTrendingSessions from '../actions/sessions/GetTrendingSessions/reducers';
 import * as joinSession from '../actions/sessions/JoinSession/reducers';
+import * as leaveSession from '../actions/sessions/LeaveSession/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -42,7 +44,8 @@ type DispatchAction =
   | ArtistAction
   | PlaylistAction
   | UserAction
-  | TrackAction;
+  | TrackAction
+  | ChatAction;
 
 type Session = {
   +lastUpdated?: string,
@@ -69,7 +72,7 @@ type Action = {
   +nearbyCanPaginate?: boolean,
   +trendingSessions?: Array<string>,
   +trendingCanPaginate?: boolean,
-  +unsubscribe?: () => Promise<void>,
+  +unsubscribe?: () => void,
   +userID?: string,
   +totalListeners?: number,
   +sessionID?: string,
@@ -220,6 +223,8 @@ export function singleSession(
       return addSingleSession(state, action);
     case types.JOIN_SESSION_SUCCESS:
       return joinSession.join(state, action);
+    case types.LEAVE_SESSION_SUCCESS:
+      return leaveSession.leave(state);
     default:
       return state;
   }
@@ -275,6 +280,12 @@ export default function reducer(
         return joinSession.success(state, action);
       case types.JOIN_SESSION_FAILURE:
         return joinSession.failure(state, action);
+      case types.LEAVE_SESSION_REQUEST:
+        return leaveSession.request(state);
+      case types.LEAVE_SESSION_SUCCESS:
+        return leaveSession.success(state, action);
+      case types.LEAVE_SESSION_FAILURE:
+        return leaveSession.failure(state, action);
       default:
         return state;
     }

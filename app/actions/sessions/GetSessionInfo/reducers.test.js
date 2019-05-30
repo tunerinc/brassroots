@@ -30,7 +30,7 @@ describe('get session info reducer', () => {
   });
 
   it('should handle GET_SESSION_INFO_SUCCESS', () => {
-    const infoUnsubscribe: () => Promise<void> = () => {return new Promise(res => res())};
+    const infoUnsubscribe: () => void = () => {return};
     const currentSessionID: string = 'foo';
     const session: Session = {
       id: 'foo',

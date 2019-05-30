@@ -52,7 +52,7 @@ export function getSessionInfoRequest(): Action {
  */
 export function getSessionInfoSuccess(
   session: Session,
-  unsubscribe: () => Promise<void>,
+  unsubscribe: () => void,
 ): Action {
   return {
     type: types.GET_SESSION_INFO_SUCCESS,

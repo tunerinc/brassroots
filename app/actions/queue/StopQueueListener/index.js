@@ -31,7 +31,7 @@ import {type ThunkAction} from '../../../reducers/queue';
  * @return {object}                  Confirmation the queue listener has been stopped
  */
 export function stopQueueListener(
-  unsubscribe: () => Promise<void>,
+  unsubscribe: () => void,
 ): ThunkAction {
   return async dispatch => {
     dispatch(actions.stopQueueListenerRequest());

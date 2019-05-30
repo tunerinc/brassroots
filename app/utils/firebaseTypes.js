@@ -42,7 +42,7 @@ type FirestoreRef = {
 };
 
 type FirestoreBatch = {
-  update: (FirestoreDoc, {[key: string]: ?string | number | boolean}) => void,
+  update: (FirestoreDoc, {[key: string]: ?string | number | boolean | {}}) => void,
   delete: (FirestoreDoc) => void,
   set: (FirestoreDoc, any) => Promise<void>,
   commit: () => Promise<void>,

@@ -64,7 +64,7 @@ type Action = {
   +track?: QueueTrack,
   +queueID?: string,
   +queue?: ?Array<string>,
-  +unsubscribe?: () => Promise<void>,
+  +unsubscribe?: () => void,
   +updates?: Updates,
 };
 
