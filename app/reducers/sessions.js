@@ -34,6 +34,7 @@ import * as paginateNearbySessions from '../actions/sessions/PaginateNearbySessi
 import * as paginateTrendingSessions from '../actions/sessions/PaginateTrendingSessions/reducers';
 import {removeSession} from '../actions/sessions/RemoveSession/reducers';
 import * as stopSessionInfoListener from '../actions/sessions/StopSessionInfoListener/reducers';
+import {updateSingleSession, updateSession} from '../actions/sessions/UpdateSession/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -81,6 +82,7 @@ type Action = {
   +userID?: string,
   +totalListeners?: number,
   +sessionID?: string,
+  +updates?: Session,
 };
 
 type State = {
@@ -230,6 +232,8 @@ export function singleSession(
       return joinSession.join(state, action);
     case types.LEAVE_SESSION_SUCCESS:
       return leaveSession.leave(state);
+    case types.UPDATE_SESSION:
+      return updateSingleSession(state, action);
     default:
       return state;
   }
@@ -319,6 +323,8 @@ export default function reducer(
         return stopSessionInfoListener.success(state);
       case types.STOP_SESSION_INFO_LISTENER_FAILURE:
         return stopSessionInfoListener.failure(state, action);
+      case types.UPDATE_SESSION:
+        return updateSession(state, action);
       default:
         return state;
     }
