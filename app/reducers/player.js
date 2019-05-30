@@ -169,6 +169,8 @@ export default function reducer(
         return previousTrack.success(state, action);
       case types.PREVIOUS_TRACK_FAILURE:
         return previousTrack.failure(state, action);
+      case types.RESET_PLAYER:
+        return initialState;
       case types.SEEK_POSITION_REQUEST:
         return seekPosition.request(state);
       case types.SEEK_POSITION_SUCCESS:
