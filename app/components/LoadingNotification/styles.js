@@ -19,7 +19,7 @@ interface Styles {
   bottom: ViewStyleProp,
 };
 
-export default StyleSheet.create({
+const styles: Styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     paddingHorizontal: 20,
@@ -55,3 +55,5 @@ export default StyleSheet.create({
     flex: 1,
   },
 });
+
+export default styles;

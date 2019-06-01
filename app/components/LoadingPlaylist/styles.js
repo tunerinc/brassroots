@@ -19,7 +19,7 @@ interface Styles {
   arrow: TextStyleProp,
 };
 
-export default StyleSheet.create({
+const styles: Styles =  StyleSheet.create({
   playlist: {
     flexDirection: 'row',
     paddingHorizontal: 20,
@@ -40,3 +40,5 @@ export default StyleSheet.create({
     paddingTop: 3,
   },
 });
+
+export default styles;
