@@ -59,5 +59,5 @@ export default class LoadingConversation extends React.PureComponent<Props, Stat
         </View>
       </View>
     );
-  };
-};
+  }
+}

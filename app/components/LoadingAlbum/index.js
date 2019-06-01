@@ -50,5 +50,5 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
         />
       </View>
     );
-  };
-};
+  }
+}

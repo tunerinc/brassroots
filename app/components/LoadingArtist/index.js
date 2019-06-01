@@ -51,5 +51,5 @@ export default class LoadingArtist extends React.PureComponent<Props, State> {
         />
       </View>
     );
-  };
-};
+  }
+}
