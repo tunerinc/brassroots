@@ -13,31 +13,48 @@ import {
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
-  artist: ViewStyleProp,
+  container: ViewStyleProp,
   image: ViewStyleProp,
   info: ViewStyleProp,
-  arrow: TextStyleProp,
+  header: ViewStyleProp,
+  member: ViewStyleProp,
+  timestamp: ViewStyleProp,
+  content: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
-  artist: {
+  container: {
     flexDirection: 'row',
     paddingHorizontal: 20,
     paddingVertical: 20,
     alignItems: 'center',
-    height: 92,
+    borderColor: '#323232',
+    borderBottomWidth: 1,
+    opacity: 0.3,
   },
   image: {
-    flex: 2,
+    flex: 1,
+    alignSelf: 'flex-start',
   },
   info: {
-    flex: 6,
-    paddingRight: 10,
+    flex: 4,
+    paddingLeft: 10,
   },
-  arrow: {
+  header: {
     flex: 1,
-    textAlign: 'right',
-    paddingTop: 3,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  member: {
+    flex: 3,
+    paddingRight: 20,
+  },
+  timestamp: {
+    flex: 1,
+  },
+  content: {
+    flex: 2,
   },
 });
 
