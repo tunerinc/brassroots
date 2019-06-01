@@ -13,8 +13,8 @@ import styles from './styles';
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-type Props = {};
-type State = {};
+type Props = {||};
+type State = {||};
 
 export default class LoadingArtist extends React.PureComponent<Props, State> {
   render() {

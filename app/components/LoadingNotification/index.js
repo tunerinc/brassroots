@@ -13,27 +13,44 @@ import styles from './styles';
 type Props = {||};
 type State = {||};
 
-export default class LoadingConversation extends React.PureComponent<Props, State> {
+export default class LoadingNotification extends React.PureComponent<Props, State> {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.image}>
+        <View style={styles.type}>
           <Placeholder.Media
             animate='fade'
-            size={60}
+            size={20}
             hasRadius={true}
             color='#888'
           />
         </View>
         <View style={styles.info}>
-          <View style={styles.header}>
-            <View style={styles.member}>
-              <Placeholder.Line
+          <View style={styles.top}>
+            <View style={styles.images}>
+              <Placeholder.Media
                 animate='fade'
-                textSize={20}
-                lineSpacing={4}
+                size={40}
+                hasRadius={true}
                 color='#888'
-                width='100%'
+              />
+              <Placeholder.Media
+                animate='fade'
+                size={40}
+                hasRadius={true}
+                color='#888'
+              />
+              <Placeholder.Media
+                animate='fade'
+                size={40}
+                hasRadius={true}
+                color='#888'
+              />
+              <Placeholder.Media
+                animate='fade'
+                size={40}
+                hasRadius={true}
+                color='#888'
               />
             </View>
             <View style={styles.timestamp}>
@@ -46,7 +63,7 @@ export default class LoadingConversation extends React.PureComponent<Props, Stat
               />
             </View>
           </View>
-          <View style={styles.content}>
+          <View style={styles.bottom}>
             <Placeholder.Paragraph
               animate='fade'
               lineNumber={2}

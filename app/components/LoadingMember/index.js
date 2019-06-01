@@ -10,11 +10,11 @@ import {View} from 'react-native';
 import Placeholder from 'rn-placeholder';
 import styles from './styles';
 
-type Props = {
+type Props = {|
   marginLeft: ?number,
-};
+|};
 
-type State = {};
+type State = {||};
 
 export default class LoadingMember extends React.PureComponent<Props, State> {
   constructor(props: Props) {
