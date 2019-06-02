@@ -13,7 +13,7 @@ import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type Props = {|
-  albumImage?: string,
+  albumImage: ?string,
   albumName: string,
   artists: string,
   navToAlbum: () => any,
