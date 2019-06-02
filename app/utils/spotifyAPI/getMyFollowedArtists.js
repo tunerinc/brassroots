@@ -9,7 +9,7 @@
  * @module SpotifyAPI
  */
 
-import Spotify from "rn-spotify-sdk";
+import Spotify from 'rn-spotify-sdk';
 import type {CursorPaging, SpotifyError} from './types';
 
 type Response = {artists: CursorPaging} | SpotifyError;

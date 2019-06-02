@@ -1,13 +1,13 @@
 'use strict';
 
-import Spotify from "rn-spotify-sdk";
+import Spotify from 'rn-spotify-sdk';
 
 /**
  * @format
  * @flow
  */
 
-type FullAlbum = {
+type FullAlbum = {|
   +album_type: string,
   +artists: Array<SimpleArtist>,
   +available_markets: Array<string>,
@@ -27,9 +27,9 @@ type FullAlbum = {
   +tracks: Paging,
   +type: string,
   +uri: string,
-};
+|};
 
-type SimpleAlbum = {
+type SimpleAlbum = {|
   +album_group?: string,
   +album_type: string,
   +artists: Array<SimpleArtist>,
@@ -44,13 +44,13 @@ type SimpleAlbum = {
   +restrictions: Restrictions,
   +type: string,
   +uri: string,
-};
+|};
 
-type Restrictions = {
+type Restrictions = {|
   +reason: string,
-};
+|};
 
-type FullArtist = {
+type FullArtist = {|
   +external_urls: ExternalURL,
   +followers: Followers,
   +genres: Array<string>,
@@ -61,18 +61,18 @@ type FullArtist = {
   +popularity: number,
   +type: string,
   +uri: string,
-};
+|};
 
-type SimpleArtist = {
+type SimpleArtist = {|
   +external_urls: ExternalURL,
   +href: string,
   +id: string,
   +name: string,
   +type: string,
   +uri: string,
-};
+|};
 
-type AudioFeatures = {
+type AudioFeatures = {|
   +acousticness: number,
   +analysis_url: string,
   +danceability: number,
@@ -91,32 +91,32 @@ type AudioFeatures = {
   +type: string,
   +uri: string,
   +valence: number,
-};
+|};
 
-type Category = {
+type Category = {|
   +href: string,
   +icons: Array<Image>,
   +id: string,
   +name: string,
-};
+|};
 
-type Context = {
+type Context = {|
   +type: string,
   +href: string,
   +external_urls: ExternalURL,
   +uri: string,
-};
+|};
 
-type Copyright = {
+type Copyright = {|
   +text: string,
   +type: string,
-};
+|};
 
-type Cursor = {
+type Cursor = {|
   +after: string,
-};
+|};
 
-type Disallows = {
+type Disallows = {|
   +interrupting_playback?: boolean | void,
   +pausing?: boolean | void,
   +playing?: boolean | void,
@@ -129,40 +129,40 @@ type Disallows = {
   +toggling_shuffle?: boolean | void,
   +toggling_repeat_track?: boolean | void,
   +transferring_playback?: boolean | void,
-};
+|};
 
-type SpotifyError = {
+type SpotifyError = {|
   +error: {
     +status: number,
     +message: string,
   },
-};
+|};
 
-type PlayerError = {
+type PlayerError = {|
   ...SpotifyError,
   +reason: string,
-};
+|};
 
-type ExternalID = {
+type ExternalID = {|
   +[key: string]: string,
-};
+|};
 
-type ExternalURL = {
+type ExternalURL = {|
   +[key: string]: string
-};
+|};
 
-type Followers = {
+type Followers = {|
   +href: ?string,
   +total: number,
-};
+|};
 
-type Image = {
+type Image = {|
   +height: number,
   +url: string,
   +width: number,
-};
+|};
 
-type Paging = {
+type Paging = {|
   +href: string,
   +limit: number,
   +next: ?string,
@@ -184,9 +184,9 @@ type Paging = {
     | SavedTrack
     | SavedAlbum
   >,
-};
+|};
 
-type CursorPaging = {
+type CursorPaging = {|
   +href: string,
   +limit: number,
   +next: ?string,
@@ -207,15 +207,15 @@ type CursorPaging = {
     | SavedTrack
     | SavedAlbum
   >,
-};
+|};
 
-type PlayHistory = {
+type PlayHistory = {|
   +track: SimpleTrack,
   +played_at: string,
   +context: Context,
-};
+|};
 
-type FullPlaylist = {
+type FullPlaylist = {|
   +collaborative: boolean,
   +description: string,
   +external_urls: ExternalURL,
@@ -230,9 +230,9 @@ type FullPlaylist = {
   +tracks: Paging,
   +type: string,
   +uri: string,
-};
+|};
 
-type SimplePlaylist = {
+type SimplePlaylist = {|
   +collaborative: boolean,
   +external_urls: ExternalURL,
   +href: string,
@@ -245,40 +245,40 @@ type SimplePlaylist = {
   +tracks: {+href: string, +total: number},
   +type: string,
   +uri: string,
-};
+|};
 
-type PlaylistTrack = {
+type PlaylistTrack = {|
   +added_at: string,
   +added_by: ?PublicUser,
   +is_local: boolean,
   +track: FullTrack,
-};
+|};
 
-type Recommendations = {
+type Recommendations = {|
   +seeds: Array<RecommendationSeed>,
   +tracks: Array<SimpleTrack>,
-};
+|};
 
-type RecommendationSeed = {
+type RecommendationSeed = {|
   +afterFilteringSize: number,
   +afterRelinkingSize: number,
   +href: ?string,
   +id: string,
   +initialPoolSize: number,
   +type: string,
-};
+|};
 
-type SavedTrack = {
+type SavedTrack = {|
   +added_at: string,
   +track: FullTrack,
-};
+|};
 
-type SavedAlbum = {
+type SavedAlbum = {|
   +added_at: string,
   +album: FullAlbum,
-};
+|};
 
-type FullTrack = {
+type FullTrack = {|
   +album: SimpleAlbum,
   +artists: Array<SimpleArtist>,
   +available_markets: Array<string>,
@@ -299,9 +299,9 @@ type FullTrack = {
   +type: string,
   +uri: string,
   +is_local: boolean,
-};
+|};
 
-type SimpleTrack = {
+type SimpleTrack = {|
   +artists: Array<SimpleArtist>,
   +available_markets: Array<string>,
   +disc_number: number,
@@ -319,17 +319,17 @@ type SimpleTrack = {
   +type: string,
   +uri: string,
   +is_local: boolean,
-};
+|};
 
-type LinkedTrack = {
+type LinkedTrack = {|
   +external_urls: ExternalURL,
   +href: string,
   +id: string,
   +type: string,
   +uri: string,
-};
+|};
 
-type PrivateUser = {
+type PrivateUser = {|
   +birthdate: string,
   +country: string,
   +display_name: string,
@@ -342,9 +342,9 @@ type PrivateUser = {
   +product: string,
   +type: string,
   +uri: string,
-};
+|};
 
-type PublicUser = {
+type PublicUser = {|
   +display_name: string,
   +external_urls: ExternalURL,
   +followers: Followers,
@@ -353,18 +353,18 @@ type PublicUser = {
   +images: Array<Image>,
   +type: string,
   +uri: string,
-};
+|};
 
-type CurrentlyPlaying = {
+type CurrentlyPlaying = {|
   +context: Context,
   +timestamp: number,
   +progress_ms: number,
   +is_playing: boolean,
   +item: ?FullTrack,
   +currently_playing_tyoe: string,
-};
+|};
 
-type Device = {
+type Device = {|
   +id: ?string,
   +is_active: boolean,
   +is_private_session: boolean,
@@ -372,13 +372,13 @@ type Device = {
   +name: string,
   +type: string,
   +volume_percent: ?number,
-};
+|};
 
-type Devices = {
+type Devices = {|
   +devices: Array<Device>,
-};
+|};
 
-type TuneableTrack = {
+type TuneableTrack = {|
   +acousticness: number,
   +danceability: number,
   +duration_ms: number,
@@ -393,7 +393,7 @@ type TuneableTrack = {
   +tempo: number,
   +time_signature: number,
   +valence: number,
-};
+|};
 
 export type {
   FullAlbum,

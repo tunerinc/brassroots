@@ -9,7 +9,7 @@
  * @module SpotifyAPI
  */
 
-import Spotify from "rn-spotify-sdk";
+import Spotify from 'rn-spotify-sdk';
 import type {Image, SpotifyError} from './types';
 
 type Response = Array<Image> | SpotifyError;
