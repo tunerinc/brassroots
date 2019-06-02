@@ -26,7 +26,7 @@ const PartyIcon = createIconSetFromFontello(fontelloConfig);
 type Props = {|
   +mode: string,
   +selected: boolean,
-  +selectMode: (string) => void,
+  +selectMode: (string) => any,
   +sessions: {
     +currentSessionID: string,
     +sessionsByID: {+[id: string]: Session},
