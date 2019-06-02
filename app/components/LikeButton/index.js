@@ -16,7 +16,7 @@ type Props = {|
   disabled: boolean,
   liked: boolean,
   showCount: boolean,
-  toggleLike: () => any;
+  toggleLike: () => any,
   totalLikes: number,
 |};
 
