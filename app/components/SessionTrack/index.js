@@ -15,8 +15,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 type Props = {|
-  currentTrackID: string,
-  currentTrackNumber: number,
+  trackID: string,
+  trackNumber: number,
   name: string,
   saved: boolean,
   artists: string,
@@ -32,9 +32,9 @@ export default class SessionTrack extends React.PureComponent<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    const {currentTrackID, currentTrackNumber} = this.props;
-    const {currentTrackID: newTrackID, currentTrackNumber: newTrackNumber} = nextProps;
-    return currentTrackID !== newTrackID || currentTrackNumber !== newTrackNumber;
+    const {trackID, trackNumber} = this.props;
+    const {trackID: newTrackID, trackNumber: newTrackNumber} = nextProps;
+    return trackID !== newTrackID || trackNumber !== newTrackNumber;
   }
 
   render() {
