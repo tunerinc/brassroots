@@ -17,7 +17,7 @@ type Props = {|
   deleteTrack: () => any,
   deleting: boolean,
   disabled: boolean,
-  error: boolean,
+  error: ?boolean,
 |};
 
 type State = {||};
