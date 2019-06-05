@@ -51,7 +51,7 @@ type Props = {|
 
 type State = {||};
 
-export default class SessionHeader extends React.Component<Props, State> {
+export default class SessionHeader extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
   }
