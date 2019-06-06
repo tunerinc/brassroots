@@ -36,7 +36,7 @@ type Response = empty | SpotifyError;
 async function uploadCustomPlaylistCoverImage(
   playlistID: string,
   image: string,
-): Promise<Response> {
+) {
   try {
     const url: string = `v1/playlists/${playlistID}/images`;
     return await Spotify.sendRequest(url, 'PUT', image, true);

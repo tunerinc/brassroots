@@ -45,7 +45,7 @@ type Options = {
  */
 async function getMySavedAlbums(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = 'v1/me/albums';
     return await Spotify.sendRequest(url, 'GET', options, false);

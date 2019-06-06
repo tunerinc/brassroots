@@ -28,7 +28,7 @@ import share from './share';
 import tracks from './tracks';
 import users from './users';
 
-export default combineReducers({
+const reducers = {
   firebase: firebaseStateReducer,
   albums,
   artists,
@@ -50,4 +50,6 @@ export default combineReducers({
   share,
   tracks,
   users,
-});
+}
+
+export default combineReducers(reducers);

@@ -43,7 +43,7 @@ type Options = {
  */
 async function getMyPlaylists(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = 'v1/me/playlists';
     return await Spotify.sendRequest(url, 'GET', options, false);

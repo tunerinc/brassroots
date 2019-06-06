@@ -34,7 +34,7 @@ type Response = empty | SpotifyError;
  */
 async function unfollowPlaylist(
   playlistID: string,
-): Promise<Response> {
+) {
   try {
     const url: string = `v1/playlists/${playlistID}/followers`;
     return await Spotify.sendRequest(url, 'DELETE', {}, true);

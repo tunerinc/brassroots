@@ -40,7 +40,7 @@ type Options = {
  */
 async function seekCurrentlyPlayingTrack(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = `v1/me/player/seek`;
     return await Spotify.sendRequest(url, 'PUT', options, false);

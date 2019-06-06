@@ -49,7 +49,7 @@ type NewPlaylist = {
 async function createPlaylist(
   userID: string,
   playlist: NewPlaylist,
-): Promise<Response> {
+) {
   try {
     const url: string = `v1/users/${userID}/playlists`;
     return await Spotify.sendRequest(url, 'POST', playlist, true);

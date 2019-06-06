@@ -51,7 +51,7 @@ export function getAlbumTopTracks(
         dispatch(actions.getAlbumTopTracksSuccess(albumID, []));
       } else {
         const trackIDs: Array<string> = trackDocs.docs.map(doc => doc.id);
-        const tracksRes: Paging = await Spotify.getTracks(trackIDs, {});
+        const tracksRes = await Spotify.getTracks(trackIDs, {});
 
         let music = {
           tracks: {},

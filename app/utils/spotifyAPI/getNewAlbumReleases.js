@@ -50,7 +50,7 @@ type AlbumReleases = {
  */
 async function getNewAlbumReleases(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = 'v1/browse/new-releases';
     return await Spotify.sendRequest(url, 'GET', options, false);

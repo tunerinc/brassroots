@@ -37,7 +37,7 @@ type Options = {
  * @resolves {object}  The current user's top track from Spotify
  * @rejects  {Error}   The error which caused the failure
  */
-async function getUserTopTrack(): Promise<Response> {
+async function getUserTopTrack() {
   try {
     const url: string = 'v1/me/top/tracks';
     const options: Options = {time_range: 'long_term', limit: 1};

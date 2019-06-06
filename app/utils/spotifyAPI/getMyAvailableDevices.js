@@ -33,7 +33,7 @@ type Response =  Devices | SpotifyError;
  * @resolves {object}  The available device objects from Spotify
  * @rejects  {Error}   The error which caused the failure
  */
-async function getMyAvailableDevices(): Promise<Response> {
+async function getMyAvailableDevices() {
   try {
     const url: string = 'v1/me/player/devices';
     return await Spotify.sendRequest(url, 'GET', {}, true);

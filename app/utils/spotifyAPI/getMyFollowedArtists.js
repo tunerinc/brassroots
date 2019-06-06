@@ -45,7 +45,7 @@ type Options = {
  */
 async function getMyFollowedArtists(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = 'v1/me/following';
     return await Spotify.sendRequest(url, 'GET', options, false);

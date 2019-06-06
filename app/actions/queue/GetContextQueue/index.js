@@ -70,7 +70,7 @@ export function getContextQueue(
       market: 'US',
     };
 
-    let spotifyTracks: Paging = [];
+    let spotifyTracks = [];
     
     try {
       if (context.tracks && Array.isArray(context.tracks)) {

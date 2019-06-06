@@ -61,7 +61,7 @@ export function getMostPlayedSpotifyTrack(
     const userDoc: FirestoreDoc = firestore.collection('users').doc(userID);
 
     try {
-      const res: Paging = await getUserTopTrack();
+      const res = await getUserTopTrack();
       const track: FullTrack = await Spotify.getTrack(res.items[0].id, {});
       const music = addMusicItems([track]);
 

@@ -38,7 +38,7 @@ type Options = {
  */
 async function unfollowUser(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = `v1/me/following?type=user`;
     return await Spotify.sendRequest(url, 'DELETE', options, true);

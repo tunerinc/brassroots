@@ -122,7 +122,7 @@ type Options = {
  */
 async function getRecommendations(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = 'v1/recommendations';
     return await Spotify.sendRequest(url, 'GET', options, false);

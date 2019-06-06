@@ -38,7 +38,7 @@ type Options = {
  */
 async function checkMySavedAlbums(
   options: Options,
-): Promise<Response>  {
+) {
   try {
     const url: string = 'v1/me/albums/contains';
     return await Spotify.sendRequest(url, 'GET', options, false);

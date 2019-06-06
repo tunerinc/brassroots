@@ -45,7 +45,7 @@ type Options = {
  */
 async function getMyRecentTracks(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = 'v1/me/player/recently-played';
     return await Spotify.sendRequest(url, 'GET', options, false);

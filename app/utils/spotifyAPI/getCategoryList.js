@@ -47,7 +47,7 @@ type Options = {
  */
 async function getCategoryList(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = 'v1/browse/categories';
     return await Spotify.sendRequest(url, 'GET', options, false);

@@ -42,7 +42,7 @@ type Options = {
 async function addPlaylistTracks(
   playlistID: string,
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = `v1/playlists/${playlistID}/tracks`;
     return await Spotify.sendRequest(url, 'POST', options, true);

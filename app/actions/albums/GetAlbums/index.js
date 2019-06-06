@@ -76,8 +76,8 @@ export function getAlbums(
     dispatch(actions.getAlbumsRequest(refreshing));
 
     try {
-      const {items}: Paging = await getMySavedAlbums({limit, offset, market});
-      const albumsFromSpotify: AlbumsFromSpotify = items.map(item => item.album);
+      const {items} = await getMySavedAlbums({limit, offset, market});
+      const albumsFromSpotify = items.map(item => item.album);
 
       let artists: Artists = {};
       let tracks: Tracks = {};

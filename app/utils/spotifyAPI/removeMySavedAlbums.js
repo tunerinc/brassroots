@@ -38,7 +38,7 @@ type Options = {
  */
 async function removeMySavedAlbums(
   options: Options,
-): Promise<Response> {
+) {
   try {
     const url: string = 'v1/me/albums';
     return await Spotify.sendRequest(url, 'DELETE', options, true);
