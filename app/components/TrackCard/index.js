@@ -39,7 +39,7 @@ type Props = {|
   trackIndex?: number,
   trackNumber?: number,
   type: string,
-  userID?: string,
+  displayName?: string,
 |};
 
 type State = {||};
@@ -69,12 +69,12 @@ export default class TrackCard extends React.PureComponent<Props, State> {
       trackIndex,
       trackNumber,
       type,
-      userID,
+      displayName,
     } = this.props;
     const editingFavorite: boolean = typeof editing === 'boolean' && type === 'favorite' && editing;
     const inQueue: boolean = type === 'userQueue' || type === 'contextQueue';
     const showTopArtists: boolean = (inQueue || type === 'playlist') && typeof artists === 'string';
-    const showUser: boolean = (inQueue || type === 'playlist') && typeof userID === 'string';
+    const showUser: boolean = (inQueue || type === 'playlist') && typeof displayName === 'string';
     const showArtistAlbum: boolean = type !== 'playlist' && !inQueue && typeof artists === 'string';
 
     return (
@@ -130,7 +130,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
             </Text>
             {showUser &&
               <Text numberOfLines={1} style={styles.user}>
-                {userID}
+                {displayName}
               </Text>
             }
             {showArtistAlbum &&
