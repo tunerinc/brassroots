@@ -10,7 +10,10 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import type {FullPlaylist, SpotifyError} from './types';
+import {
+  type FullPlaylist,
+  type SpotifyError,
+} from './types';
 
 type Response = FullPlaylist | SpotifyError;
 type Options = {

@@ -10,7 +10,10 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import type {PublicUser, SpotifyError} from './types';
+import {
+  type PublicUser,
+  type SpotifyError,
+} from './types';
 
 type Response = PublicUser | SpotifyError;
 

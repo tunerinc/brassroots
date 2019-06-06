@@ -10,7 +10,7 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import type {SpotifyError} from './types';
+import {type SpotifyError} from './types';
 
 type Response = {snapshot_id: string} | SpotifyError;
 type Options = {

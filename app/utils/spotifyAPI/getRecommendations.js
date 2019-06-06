@@ -10,7 +10,10 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import type {Recommendations, SpotifyError} from './types';
+import {
+  type Recommendations,
+  type SpotifyError,
+} from './types';
 
 type Response = Recommendations | SpotifyError;
 type Options = {

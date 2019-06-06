@@ -10,7 +10,10 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import type {Image, SpotifyError} from './types';
+import {
+  type Image,
+  type SpotifyError,
+} from './types';
 
 type Response = Array<Image> | SpotifyError;
 

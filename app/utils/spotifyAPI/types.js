@@ -1,11 +1,11 @@
 'use strict';
 
-import Spotify from 'rn-spotify-sdk';
-
 /**
  * @format
  * @flow
  */
+
+import Spotify from 'rn-spotify-sdk';
 
 type FullAlbum = {|
   +album_type: string,

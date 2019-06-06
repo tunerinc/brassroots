@@ -10,7 +10,10 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import type {Paging, SpotifyError} from './types';
+import {
+  type Paging,
+  type SpotifyError,
+} from './types';
 
 type Response = Paging | SpotifyError;
 type Options = {
