@@ -10,15 +10,26 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import {StyleSheet, StatusBar, View, Text} from 'react-native';
 import {Router, Scene, Stack, Tabs, Modal} from 'react-native-router-flux';
+import {
+  type ViewStyleProp,
+  type TextStyleProp,
+} from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 // Store w/ Redux
 import {Provider, connect} from 'react-redux';
 import configureStore from './store/configureStore';
 
+type Props = {};
+
+interface Styles {
+  container: ViewStyleProp,
+  welcome: TextStyleProp,
+  instructions: TextStyleProp,
+};
+
 const RouterWithRedux = connect()(Router);
 const store = configureStore();
-
-const styles = StyleSheet.create({
+const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -36,8 +47,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-type Props = {};
 
 export default class App extends React.Component<Props> {
   constructor(props: {}) {
