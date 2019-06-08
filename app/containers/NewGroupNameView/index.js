@@ -6,7 +6,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import styles from './styles';
 
-class GroupSettingsView extends React.Component {
+class NewGroupNameView extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -26,4 +26,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupSettingsView);
+export default connect(mapStateToProps, mapDispatchToProps)(NewGroupNameView);

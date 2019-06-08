@@ -19,7 +19,7 @@ class AddMembersView extends React.Component {
 
     this.shadowOpacity = new Animated.Value(0);
   }
-  
+
   onScroll({nativeEvent: {contentOffset: {y}}}) {
     if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
       Animated.timing(
