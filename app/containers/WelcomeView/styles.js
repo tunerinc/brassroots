@@ -1,0 +1,80 @@
+'use strict';
+
+/**
+ * @format
+ * @flow
+ */
+
+import React from 'react';
+import {StyleSheet} from 'react-native';
+import {
+  type ViewStyleProp,
+  type TextStyleProp,
+  type ImageStyleProp,
+} from 'react-native/Libraries/StyleSheet/StyleSheet';
+
+interface Styles {
+  container: ViewStyleProp,
+  logo: ImageStyleProp,
+  button: ViewStyleProp,
+  text: TextStyleProp,
+  loading: ViewStyleProp,
+  loadingGif: ImageStyleProp,
+};
+
+const styles: Styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1b1b1e',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    height: 165,
+    width: 199.65,
+    bottom: 115,
+    alignSelf: 'center',
+  },
+  button: {
+    backgroundColor: '#2b6dc0',
+    padding: 5,
+    height: 50,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    bottom: 100,
+    left: 20,
+    right: 20,
+    borderRadius: 50,
+    shadowColor: '#101010',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+  },
+  text: {
+    fontFamily: 'Muli',
+    fontSize: 22,
+    lineHeight: 28.6,
+    fontWeight: '600',
+    color: '#fefefe',
+    textAlign: 'center',
+  },
+  loading: {
+    backgroundColor: '#1b1b1e',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingGif: {
+    width: 200,
+    height: 242,
+    bottom: 115,
+    justifyContent: 'center',
+  },
+});
+
+export default styles;
