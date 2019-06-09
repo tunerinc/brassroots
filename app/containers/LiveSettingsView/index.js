@@ -89,7 +89,6 @@ class LiveSettingsView extends React.Component {
           <View style={styles.nav}>
             <Ionicons
               name='ios-arrow-back'
-              size={45}
               color='#fefefe'
               style={styles.leftIcon}
               onPress={this.navBack}
