@@ -15,25 +15,25 @@ import styles from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 // Legal Action Creators
-import {getPolicy} from '../../actions/legal/GetPolicy';
+import {getTerms} from '../../actions/legal/GetTerms';
 
 const screenWidth = Dimensions.get('window').width;
 
-class PrivacyPolicyView extends React.Component {
+class TermsServiceView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.shadowOpacity = new Animated.Value(0);
-
     this.onScroll = this.onScroll.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
+
+    this.shadowOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
-    const {getPolicy, legal: {privacy: {text}}} = this.props;
+    const {getTerms, legal: {terms: {text}}} = this.props;
     
     if (text === '') {
-      getPolicy();
+      getTerms();
     }
   }
 
@@ -51,23 +51,23 @@ class PrivacyPolicyView extends React.Component {
         toValue: 0,
         duration: 75,
         easing: Easing.linear,
-      }).start()
+      }).start();
     }
   }
 
   handleRefresh() {
-    const {getPolicy, legal: {privacy: {fetchingPrivacy, refreshingPrivacy}}} = this.props;
+    const {getTerms, legal: {terms: {fetchingTerms, refreshingTerms}}} = this.props;
 
-    if (fetchingPrivacy || refreshingPrivacy) return;
+    if (fetchingTerms || refreshingTerms) return;
 
-    getPolicy(true);
+    getTerms(true);
   }
 
   render() {
     const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
-    const {legal: {privacy: {text, fetchingPrivacy, refreshingPrivacy, error}}} = this.props;
-    const emptyPolicy = fetchingPrivacy && !refreshingPrivacy && text === '';
-    const policyExists = (!fetchingPrivacy || refreshingPrivacy) && (text !== '' || error);
+    const {legal: {terms: {text, fetchingTerms, refreshingTerms, error}}} = this.props;
+    const emptyTerms = fetchingTerms && !refreshingTerms && text === '';
+    const termsExists = (!fetchingTerms || refreshingTerms) && (text !== '' || error);
 
     return (
       <View style={styles.container}>
@@ -79,11 +79,11 @@ class PrivacyPolicyView extends React.Component {
               style={styles.leftIcon}
               onPress={Actions.pop}
             />
-            <Text style={styles.title}>Privacy Policy</Text>
+            <Text style={styles.title}>Terms of Service</Text>
             <View style={styles.rightIcon}></View>
           </View>
         </Animated.View>
-        {emptyPolicy &&
+        {emptyTerms &&
           <View style={styles.spinnerWrap}>
             <Placeholder.Paragraph
               animate='fade'
@@ -95,16 +95,16 @@ class PrivacyPolicyView extends React.Component {
             />
           </View>
         }
-        {policyExists &&
+        {termsExists &&
           <ScrollView
-            style={styles.privacyWrap}
+            style={styles.termsWrap}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
             refreshControl={
-              <RefreshControl refreshing={refreshingPrivacy} onRefresh={this.handleRefresh} />
+              <RefreshControl refreshing={refreshingTerms} onRefresh={this.handleRefresh} />
             }
           >
-            {error && <Text>Unable to retrieve privacy privacy.</Text>}
+            {error && <Text>Unable to retrieve terms of service.</Text>}
             {text !== '' &&
               <HTML
                 html={text}
@@ -120,9 +120,9 @@ class PrivacyPolicyView extends React.Component {
   }
 }
 
-PrivacyPolicyView.propTypes = {
+TermsServiceView.propTypes = {
   legal: PropTypes.object.isRequired,
-  getPolicy: PropTypes.func.isRequired,
+  getTerms: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({legal}) {
@@ -130,7 +130,7 @@ function mapStateToProps({legal}) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({getPolicy}, dispatch);
+  return bindActionCreators({getTerms}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PrivacyPolicyView);
+export default connect(mapStateToProps, mapDispatchToProps)(TermsServiceView);
