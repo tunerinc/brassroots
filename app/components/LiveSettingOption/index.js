@@ -24,16 +24,11 @@ import {
 const PartyIcon = createIconSetFromFontello(fontelloConfig);
 
 type Props = {|
-  +mode: string,
+  +mode: 'dj' | 'radio' | 'party',
   +selected: boolean,
   +selectMode: (string) => any,
-  +sessions: {
-    +currentSessionID: string,
-    +sessionsByID: {+[id: string]: Session},
-  },
-  +users: {
-    +currentUserID: string,
-  },
+  +ownerID: ?string,
+  +currentUserID: string,
 |};
 
 type State = {||};
@@ -48,17 +43,16 @@ export default class LiveSettingOption extends React.PureComponent<Props, State>
       mode,
       selected,
       selectMode,
-      sessions: {currentSessionID, sessionsByID},
-      users: {currentUserID},
+      ownerID,
+      currentUserID,
     } = this.props;
-    const session: ?Session = sessionsByID[currentSessionID];
 
     return (
       <TouchableHighlight
         style={styles.button}
         activeOpacity={0.5}
         underlayColor='#1b1b1e'
-        disabled={session && session.ownerID !== currentUserID}
+        disabled={typeof ownerID === 'string' && ownerID !== currentUserID}
         onPress={selectMode(mode)}
       >
         <View style={styles.wrap}>
@@ -139,7 +133,7 @@ export default class LiveSettingOption extends React.PureComponent<Props, State>
               </View>
             }
           </View>
-          {session && session.ownerID === currentUserID && selected &&
+          {typeof ownerID === 'string' && ownerID === currentUserID && selected &&
             <Ionicons
               name='md-radio-button-on'
               size={45}
@@ -147,7 +141,7 @@ export default class LiveSettingOption extends React.PureComponent<Props, State>
               style={styles.radio}
             />
           }
-          {session && session.ownerID === currentUserID && !selected &&
+          {typeof ownerID === 'string' && ownerID === currentUserID && !selected &&
             <Ionicons
               name='md-radio-button-off'
               size={45}
@@ -155,7 +149,7 @@ export default class LiveSettingOption extends React.PureComponent<Props, State>
               style={styles.radio}
             />
           }
-          {session && session.ownerID !== currentUserID && selected &&
+          {typeof ownerID === 'string' && ownerID !== currentUserID && selected &&
             <Ionicons
               name='md-checkmark'
               size={45}
@@ -163,7 +157,7 @@ export default class LiveSettingOption extends React.PureComponent<Props, State>
               style={styles.check}
             />
           }
-          {!session || (session.ownerID !== currentUserID && !selected) &&
+          {typeof ownerID !== 'string' || (ownerID !== currentUserID && !selected) &&
             <View style={styles.check}></View>
           }
         </View>
