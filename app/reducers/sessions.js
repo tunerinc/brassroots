@@ -59,12 +59,12 @@ type Session = {
   +currentTrackID?: ?string,
   +currentQueueID?: ?string,
   +ownerID?: ?string,
-  +followingID?: string,
   +distance?: number,
   +mode?: ?string,
   +listeners?: Array<string>,
   +totalListeners?: number,
   +timeLastPlayed?: ?string,
+  +followingID?: string,
 };
 
 type Action = {

@@ -11,66 +11,30 @@ import styles from './styles';
 
 type Props = {|
   closeModal: () => void,
-  queueTrack: (any, string, string) => void,
+  queueTrack: () => void,
   name: string,
   artists: string,
   albumName: string,
   albumImage: string,
   trackID?: string,
-  ownerID?: string,
   trackInQueue?: boolean,
-  currentUserID?: string,
-  sessionID?: string,
-  nextLength?: number,
-  prevLength?: number,
+  isListenerOwner?: boolean,
 |};
 
 type State = {||};
 
 export default class TrackModal extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.handleAddTrack = this.handleAddTrack.bind(this);
-  }
-
-  handleAddTrack: () => void
-  handleAddTrack() {
-    const {
-      closeModal,
-      trackID,
-      currentUserID,
-      queueTrack,
-      sessionID,
-      nextLength,
-      prevLength,
-    } = this.props;
-    
-    if (currentUserID && sessionID && nextLength && prevLength && trackID) {
-      closeModal();
-      queueTrack(
-        {
-          id: sessionID,
-          totalNext: nextLength + 1,
-          totalPlayed: prevLength,
-        },
-        trackID,
-        currentUserID,
-      );
-    }
-  }
-
   render() {
     const {
       closeModal,
-      trackID,
+      queueTrack,
       name,
       artists,
       albumName,
       albumImage,
-      ownerID,
-      currentUserID,
+      trackID,
       trackInQueue,
+      isListenerOwner,
     } = this.props;
 
     if (!trackID) return <View></View>;
@@ -97,14 +61,14 @@ export default class TrackModal extends React.PureComponent<Props, State> {
           </View>
         </View>
         <View style={styles.option}>
-          {ownerID && currentUserID && ownerID === currentUserID &&
+          {isListenerOwner &&
             <View>
               {!trackInQueue &&
                 <TouchableHighlight
                   style={styles.button}
                   activeOpacity={0.5}
                   underlayColor='#fefefe'
-                  onPress={this.handleAddTrack}
+                  onPress={queueTrack}
                 >
                   <Text style={styles.text}>add to queue</Text>
                 </TouchableHighlight>
