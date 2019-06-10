@@ -21,6 +21,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 type Props = {|
   albumName?: string,
+  artists?: string,
   context: Context,
   deleting?: boolean,
   editing?: boolean,
@@ -34,7 +35,6 @@ type Props = {|
   showRoundImage?: boolean,
   showSquareImage?: boolean,
   totalLikes?: number,
-  artists?: string,
   trackCount?: number,
   trackIndex?: number,
   trackNumber?: number,

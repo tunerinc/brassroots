@@ -164,8 +164,9 @@ class LibraryTabView extends React.Component {
     const {
       albums: {albumsByID},
       tracks: {tracksByID},
-      users: {userID, username},
+      users: {currentUserID, usersByID},
     } = this.props;
+    const {displayName} = usersByID[currentUserID];
     const {albumID, artists} = tracksByID[item];
     const {small, name: albumName} = albumsByID[albumID];
     const artistNames = artists.map(a => a.name).join(', ');
@@ -174,7 +175,7 @@ class LibraryTabView extends React.Component {
       <TrackCard
         key={item}
         type="cover"
-        context={{type, username, id: userID, name: username}}
+        context={{type, displayName, id: currentUserID, name: displayName}}
         openModal={this.openModal}
         trackIndex={index}
         name={name}
