@@ -141,6 +141,7 @@ const singleState: Artist = {
  * @property {boolean}  fetchingPlaylists=false Whether the current user is fetching playlists of an artist
  * @property {boolean}  fetchingTracks=false    Whether the current user is fetching trakcs of an artist
  * @property {boolean}  incrementingCount=false Whether the current user is incrmenting the amount of plays for the current user on artists
+ * @property {boolean}  refreshingArtists=false Whether the current suer is refreshing the artists
  * @property {Error}    error=null              The error related to artists actions
  */
 export const initialState: State = {
@@ -156,6 +157,7 @@ export const initialState: State = {
   fetchingPlaylists: false,
   fetchingTracks: false,
   incrementingCount: false,
+  refreshingArtists: false,
   error: null,
 };
 
