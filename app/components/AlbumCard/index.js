@@ -11,12 +11,15 @@ import styles from './styles';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Foundation from 'react-native-vector-icons/Foundation';
 
 type Props = {|
   albumImage: ?string,
   albumName: string,
   artists: string,
   navToAlbum: () => any,
+  index?: number,
+  count?: number,
 |};
 
 type State = {||};
@@ -27,7 +30,7 @@ export default class AlbumCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {albumImage, albumName, artists, navToAlbum} = this.props;
+    const {albumImage, albumName, artists, navToAlbum, index, count} = this.props;
 
     return (
       <TouchableHighlight
@@ -37,7 +40,14 @@ export default class AlbumCard extends React.PureComponent<Props, State> {
         onPress={navToAlbum}
       >
         <View style={styles.wrap}>
-          <Image style={styles.image} source={{uri: albumImage}} />
+          {typeof index !== 'number' && <Image style={styles.image} source={{uri: albumImage}} />}
+          {typeof index === 'number' &&
+            <View style={styles.position}>
+              <Text style={styles.positionText}>
+                {index + 1}
+              </Text>
+            </View>
+          }
           <View style={styles.info}>
             <Text numberOfLines={1} style={styles.name}>
               {albumName}
@@ -46,12 +56,17 @@ export default class AlbumCard extends React.PureComponent<Props, State> {
               {artists}
             </Text>
           </View>
-          <Ionicons
-            name="ios-arrow-forward"
-            size={35}
-            style={styles.arrow}
-            color="#fefefe"
-          />
+          {typeof count === 'number' &&
+            <View style={styles.count}>
+              <Foundation name='play' color='#fefefe' style={styles.play} />
+              <Text numberOfLines={1} style={styles.number}>
+                {count}
+              </Text>
+            </View>
+          }
+          {typeof count !== 'number' &&
+            <Ionicons name="ios-arrow-forward" style={styles.arrow} color="#fefefe" />
+          }
         </View>
       </TouchableHighlight>
     );

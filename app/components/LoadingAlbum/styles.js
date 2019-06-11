@@ -14,6 +14,7 @@ import {
 
 interface Styles {
   album: ViewStyleProp,
+  position: ViewStyleProp,
   image: ViewStyleProp,
   info: ViewStyleProp,
   arrow: TextStyleProp,
@@ -26,6 +27,9 @@ const styles: Styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: 'center',
     height: 82,
+  },
+  position: {
+    flex: 1,
   },
   image: {
     flex: 2,
