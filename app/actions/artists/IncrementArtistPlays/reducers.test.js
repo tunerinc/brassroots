@@ -45,6 +45,7 @@ describe('increment artist plays reducer', () => {
       topListeners: [],
       topPlaylists: [],
       topTracks: [],
+      userProfile: null,
       lastUpdated: initialState.lastUpdated,
     };
 

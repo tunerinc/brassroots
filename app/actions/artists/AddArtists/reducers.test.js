@@ -64,6 +64,7 @@ describe('add artists reducer', () => {
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,
+              userProfile: null,
             },
             bar: {
               ...artists.bar,
@@ -74,6 +75,7 @@ describe('add artists reducer', () => {
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,
+              userProfile: null,
             },
           },
         }

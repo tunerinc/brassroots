@@ -42,6 +42,7 @@ type Artist = {
   +topListeners?: Array<string>,
   +topPlaylists?: Array<string>,
   +topTracks?: Array<string>,
+  +userProfile?: ?string,
 };
 
 type Action = {
@@ -120,6 +121,7 @@ const singleState: Artist = {
   topListeners: [],
   topPlaylists: [],
   topTracks: [],
+  userProfile: null,
 };
 
 /**

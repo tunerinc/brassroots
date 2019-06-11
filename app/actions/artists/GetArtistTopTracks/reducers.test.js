@@ -44,6 +44,7 @@ describe('get artist top tracks reducer', () => {
       topListeners: [],
       topPlaylists: [],
       topTracks: [],
+      userProfile: null,
       lastUpdated: initialState.lastUpdated,
     };
 
