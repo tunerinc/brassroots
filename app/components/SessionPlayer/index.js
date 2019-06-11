@@ -17,11 +17,10 @@ type Props = {|
   togglePause: () => void,
   skipNext: () => void,
   skipPrev: () => void,
-  trackNumber: number,
+  prevTrackID: ?string,
+  nextTrackID: ?string,
   isOwner: boolean,
   paused: boolean,
-  queueLength: number,
-  contextLength: number,
   image: string,
 |};
 
@@ -43,17 +42,16 @@ export default class SessionPlayer extends React.Component<Props, State> {
       togglePause,
       skipNext,
       skipPrev,
-      trackNumber,
+      prevTrackID,
+      nextTrackID,
       isOwner,
       paused,
-      queueLength,
-      contextLength,
       image,
     } = this.props;
-    const prevExists = isOwner && trackNumber !== 0;
+    const prevExists = isOwner && prevTrackID;
     const prevDisabled = prevExists ? false : true;
     const prevColor = prevExists ? 'rgba(254,254,254,0.9)' : 'rgba(254,254,254,0.2)';
-    const nextExists = isOwner && (queueLength !== 0 || contextLength !== 0);
+    const nextExists = isOwner && nextTrackID;
     const nextDisabled = nextExists ? false : true;
     const nextColor = nextExists ? 'rgba(254,254,254,0.9)' : 'rgba(254,254,254,0.2)';
 

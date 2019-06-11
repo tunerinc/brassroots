@@ -22,7 +22,7 @@ import {
 
 type User = {
   +id: string,
-  +username: string,
+  +displayName: string,
   +profileImage: string,
 };
 
@@ -45,7 +45,7 @@ type Message = {
  * @param    {string}  message           The message the current user is sending in the session
  * @param    {object}  user              The user object for the current user
  * @param    {string}  user.id           The id of the current user
- * @param    {string}  user.username     The username of the current user
+ * @param    {string}  user.displayName  The display name of the current user
  * @param    {string}  user.profileImage The profile image URL of the current user
  * @param    {number}  total             The new total amount of chat messages
  *

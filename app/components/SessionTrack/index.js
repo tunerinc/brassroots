@@ -16,7 +16,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 type Props = {|
   trackID: string,
-  trackNumber: number,
+  queueID: string,
   name: string,
   saved: boolean,
   artists: string,
@@ -32,9 +32,9 @@ export default class SessionTrack extends React.PureComponent<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    const {trackID, trackNumber} = this.props;
-    const {trackID: newTrackID, trackNumber: newTrackNumber} = nextProps;
-    return trackID !== newTrackID || trackNumber !== newTrackNumber;
+    const {trackID, queueID} = this.props;
+    const {trackID: newTrackID, queueID: newQueueID} = nextProps;
+    return trackID !== newTrackID || queueID !== newQueueID;
   }
 
   render() {

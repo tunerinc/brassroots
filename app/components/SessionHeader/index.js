@@ -33,12 +33,13 @@ type Props = {|
   image: string,
   mode: string,
   live: boolean,
-  trackNumber: number,
+  prevTrackID: ?string,
+  nextTrackID: ?string,
+  currentQueueID: string,
   currentUserID: string,
   ownerID: string,
   paused: boolean,
   queueLength: number,
-  contextLength: number,
   sessionID: string,
   durationMS: number,
   progress: number,
@@ -73,12 +74,13 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
       image,
       mode,
       live,
-      trackNumber,
+      prevTrackID,
+      nextTrackID,
+      currentQueueID,
       currentUserID,
       ownerID,
       paused,
       queueLength,
-      contextLength,
       sessionID,
       durationMS,
       progress,
@@ -95,11 +97,10 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
           togglePause={togglePause}
           skipNext={skipNext}
           skipPrev={skipPrev}
-          trackNumber={trackNumber}
+          prevTrackID={prevTrackID}
+          nextTrackID={nextTrackID}
           isOwner={ownerID === currentUserID}
           paused={paused}
-          queueLength={queueLength}
-          contextLength={contextLength}
           image={image}
         />
         <View style={styles.sessionLiveMode}>
@@ -128,7 +129,7 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
         {trackID &&
           <SessionTrack
             trackID={trackID}
-            trackNumber={trackNumber}
+            queueID={currentQueueID}
             name={name}
             saved={saved}
             artists={artists}

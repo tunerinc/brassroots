@@ -15,7 +15,7 @@ type Props = {|
   isCurrentUser: boolean,
   optionsOpacity: number,
   zIndex: number,
-  handleLeave: () => any,
+  leave: () => any,
   navToSettings: () => any,
   toggleMenu: () => any,
 |};
@@ -34,7 +34,7 @@ export default class DJModal extends React.PureComponent<Props, State> {
       isCurrentUser,
       optionsOpacity,
       zIndex,
-      handleLeave,
+      leave,
       navToSettings,
       toggleMenu,
     } = this.props;
@@ -124,7 +124,7 @@ export default class DJModal extends React.PureComponent<Props, State> {
                 style={styles.button}
                 activeOpacity={0.5}
                 underlayColor='#fefefe'
-                onPress={handleLeave}
+                onPress={leave}
               >
                 <Text style={[styles.text, {color: '#c0293b'}]}>leave</Text>
               </TouchableHighlight>

@@ -34,6 +34,7 @@ type Props = {|
   showOptions?: boolean,
   showRoundImage?: boolean,
   showSquareImage?: boolean,
+  toggleLike?: () => void,
   totalLikes?: number,
   trackCount?: number,
   trackIndex?: number,
@@ -64,6 +65,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
       showOptions,
       showRoundImage,
       showSquareImage,
+      toggleLike,
       totalLikes,
       trackCount,
       trackIndex,
@@ -157,12 +159,12 @@ export default class TrackCard extends React.PureComponent<Props, State> {
               error={queueError || null}
             />
           }
-          {(inQueue && !editing) &&
+          {(inQueue && !editing && toggleLike) &&
             <LikeButton
               disabled={type === 'contextQueue'}
               liked={type === 'userQueue' && typeof liked === 'boolean' && liked}
               showCount={inQueue && type !== 'contextQueue'}
-              toggleLike={() => console.log('toggle like pressed')}
+              toggleLike={toggleLike}
               totalLikes={totalLikes || 0}
             />
           }

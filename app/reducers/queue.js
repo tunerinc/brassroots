@@ -42,7 +42,7 @@ type Context = {
   +id?: string,
   +name?: string,
   +type?: string,
-  +username?: string,
+  +displayName?: string,
   +position?: string | number,
   +total?: number,
   +tracks?: Array<string>,
@@ -142,7 +142,7 @@ const singleState: QueueTrack = {
  * @property {string}          context.id            The id of the current context
  * @property {string}          context.name          The name of the current context
  * @property {string}          context.type          The type of item the current context is
- * @property {string}          context.username      The username of the current context
+ * @property {string}          context.displayName   The display name of the current context
  * @property {(number|string)} context.position=0    The position/cursor in the context the current track is located
  */
 export const initialState: State = {
@@ -163,7 +163,7 @@ export const initialState: State = {
     id: '',
     name: '',
     type: '',
-    username: '',
+    displayName: '',
     position: 0,
   },
 };

@@ -14,7 +14,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type Props = {|
-  handleActiveViewChange: () => any,
+  changeActiveView: () => any,
   viewingChat: boolean,
   viewingPlayer: boolean,
 |};
@@ -33,10 +33,10 @@ export default class SessionActiveViewIcon extends React.Component<Props, State>
   }
 
   render() {
-    const {handleActiveViewChange, viewingChat, viewingPlayer} = this.props;
+    const {changeActiveView, viewingChat, viewingPlayer} = this.props;
 
     return (
-      <TouchableOpacity style={styles.button} onPress={handleActiveViewChange}>
+      <TouchableOpacity style={styles.button} onPress={changeActiveView}>
         {viewingPlayer && renderChat()}
         {viewingChat && renderPlayer()}
       </TouchableOpacity>

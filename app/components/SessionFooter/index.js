@@ -26,10 +26,10 @@ type Props = {|
   image: string,
   contextQueue: Array<Track>,
   context: {
-    id: string,
-    type: string,
-    name?: string,
-    displayName?: string,
+    +id: string,
+    +type: string,
+    +name?: string,
+    +displayName?: string,
   },
 |};
 
