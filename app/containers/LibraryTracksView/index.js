@@ -30,7 +30,6 @@ import {createSession} from "../../actions/sessions/CreateSession";
 import {leaveSession} from "../../actions/sessions/LeaveSession";
 
 // Tracks Action Creators
-import {addRecentTrack} from "../../actions/tracks/AddRecentTrack";
 import {getTracks} from "../../actions/tracks/GetTracks";
 
 class LibraryTracksView extends React.Component {
@@ -232,7 +231,7 @@ class LibraryTracksView extends React.Component {
     const {
       albums: {albumsByID},
       queue: {userQueue, queueing, error: queueError},
-      sessionsByID: {currentSessionID, sessionsByID},
+      sessions: {currentSessionID, sessionsByID},
       tracks: {userTracks, fetchingTracks, refreshingTracks, tracksByID, error: trackError},
       users: {currentUserID},
     } = this.props;
@@ -357,7 +356,6 @@ function mapStateToProps(
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    addRecentTrack,
     createSession,
     getTracks,
     leaveSession,
