@@ -12,9 +12,10 @@
 import moment from 'moment';
 import GeoFirestore from 'geofirestore';
 import {Actions} from 'react-native-router-flux';
-// import {leaveSession} from '../LeaveSession';
+import {leaveSession} from '../LeaveSession';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/sessions';
+import {type TrackArtist} from '../../../reducers/tracks';
 import {type BRSession} from '../../../utils/brassrootsTypes';
 import {
   type FirestoreInstance,
@@ -34,11 +35,29 @@ type Session = {
   },
   current?: string,
   total?: number,
-  track?: string,
+  track?: {
+    trackID?: string,
+    timeAdded?: string | number,
+    id: string,
+    name: string,
+    trackNumber: number,
+    durationMS: number,
+    artists: Array<TrackArtist>,
+    album: {
+      id: string,
+      name: string,
+      small: string,
+      medium: string,
+      large: string,
+      artists: Array<TrackArtist>,
+    },
+  },
   coords?: {
     lat: number,
     lon: number,
   },
+  chatUnsubscribe: ?() => void,
+  queueUnsubscribe: ?() => void,
 };
 
 type User = {
@@ -84,15 +103,35 @@ export function joinSession(
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
     if (leaving) {
-      const {owner, coords, current, total, track} = session;
+      const {
+        owner,
+        coords,
+        current,
+        total,
+        track,
+        chatUnsubscribe,
+        queueUnsubscribe,
+      } = session;
 
-      // dispatch(
-      //   leaveSession(
-      //     user.id,
-      //     {id: current, current: track, total, coords},
-      //     owner,
-      //   )
-      // );
+      if (owner && current && total && track && chatUnsubscribe && queueUnsubscribe) {
+        const sessionToLeave = {
+          coords,
+          total,
+          owner,
+          track,
+          chatUnsubscribe,
+          queueUnsubscribe,
+          id: current,
+        };
+  
+        dispatch(
+          leaveSession(
+            user.id,
+            sessionToLeave,
+            owner,
+          )
+        );
+      }
     }
 
     dispatch(actions.joinSessionRequest());
