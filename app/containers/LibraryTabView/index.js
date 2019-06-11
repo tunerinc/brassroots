@@ -305,14 +305,14 @@ class LibraryTabView extends React.Component {
     const {
       albums: {albumsByID},
       playlists: {fetchingTopPlaylists, error: playlistError},
-      queue: {queueing, error: queueError},
+      queue: {userQueue, queueing, error: queueError},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID, fetchingRecent, fetchingMostPlayed, error: trackError},
       users: {currentUserID, usersByID, error: userError},
     } = this.props;
     const {mostPlayed, recentlyPlayed, topPlaylists} = usersByID[currentUserID];
     const session = sessionsByID[currentSessionID] || null;
-    const queueHasTracks = session && session.userQueue.length > 0;
+    const queueHasTracks = session && userQueue.length > 0;
     const inSession = session
       && session.listeners.indexOf(currentUserID) !== -1
       || session.ownerID === currentUserID;
