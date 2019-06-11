@@ -164,35 +164,38 @@ class LibrarySingleArtistView extends React.Component {
       tracks: {tracksByID},
     } = this.props;
 
-    if (!selectedTrack || !tracksByID[selectedTrack]) return null;
-
-    const {listeners, ownerID} = sessionsByID[currentSessionID];
-    const isListenerOwner = listeners.indexOf(currentUserID) !== -1 || ownerID === currentUserID;
-    const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
+    if (
+      !item
+      || (type === 'track' && !tracksByID[item])
+      || (type === 'artist' && !artistsByID[item])
+    ) return null;
 
     switch (type) {
-      case 'track':
+      case 'track': {
+        const {name, albumID, artists} = tracksByID[item];
+        const {small, name: albumName} = albumsByID[albumID];
+        const {listeners, ownerID} = sessionsByID[currentSessionID];
+        const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+        const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(item) !== -1;
+
         return (
           <TrackModal
             trackID={item}
             closeModal={this.closeModal}
             queueTrack={this.handleAddTrack}
-            name={tracksByID[selectedTrack].name}
-            artists={tracksByID[selectedTrack].artists.map(a => a.name).join(', ')}
-            albumName={albumsByID[tracksByID[selectedTrack].albumID].name}
-            albumImage={albumsByID[tracksByID[selectedTrack].albumID].small}
+            name={name}
+            artists={artists.map(a => a.name).join(', ')}
+            albumName={albumName}
+            albumImage={small}
             trackInQueue={songQueued}
             isListenerOwner={isListenerOwner}
           />
         );
-      case 'artist':
-        return (
-          <ArtistModal
-            artistImage={artistsByID[item].small}
-            artistName={artistsByID[item].name}
-            closeModal={this.closeModal}
-          />
-        );
+      }
+      case 'artist': {
+        const {small, name} = artistsByID[item];
+        return <ArtistModal artistImage={small} artistName={name} closeModal={this.closeModal} />;
+      }
       default:
         return <View></View>;
     }
@@ -274,7 +277,7 @@ class LibrarySingleArtistView extends React.Component {
       artists: {artistsByID},
       sessions: {sessionsByID, currentSessionID},
       tracks: {tracksByID},
-      queue: {queueing, error: queueError},
+      queue: {userQueue, queueing, error: queueError},
       users: {currentUserID},
     } = this.props;
     const {userTracks, name, large} = artistsByID[artistToView];
@@ -446,22 +449,22 @@ LibrarySingleArtistView.propTypes = {
   artistToView: PropTypes.string,
   createSession: PropTypes.func,
   leaveSession: PropTypes.func,
+  player: PropTypes.object,
   playlists: PropTypes.object,
   playTrack: PropTypes.func,
   queueTrack: PropTypes.func,
   sessions: PropTypes.object,
-  settings: PropTypes.object,
   tracks: PropTypes.object,
   users: PropTypes.object,
 };
 
-function mapStateToProps({ albums, artists, playlists, sessions, settings, tracks, users }) {
+function mapStateToProps({albums, artists, player, playlists, sessions, tracks, users}) {
   return {
     albums,
     artists,
+    player,
     playlists,
     sessions,
-    settings,
     tracks,
     users,
   };

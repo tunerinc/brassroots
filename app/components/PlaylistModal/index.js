@@ -14,7 +14,7 @@ type Props = {|
   closeModal: () => any,
   name: string,
   image: string,
-  displayName?: string,
+  displayName?: ?string,
   isOwnerMember: boolean,
 |};
 
