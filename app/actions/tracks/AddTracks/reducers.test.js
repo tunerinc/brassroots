@@ -58,6 +58,7 @@ describe('add tracks reducer', () => {
                   ...track,
                   userPlays: 0,
                   totalPlays: 0,
+                  saved: false,
                 },
               });
             }

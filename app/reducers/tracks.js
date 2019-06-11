@@ -46,6 +46,7 @@ type Track = {
   +durationMS?: number,
   +totalPlays?: number,
   +userPlays?: number,
+  +saved?: boolean,
 };
 
 type Action = {
@@ -102,6 +103,7 @@ export type {
  * @property {number}   durationMS=0  The duration of the track in milliseconds
  * @property {number}   totalPlays=0  The total amount of plays the track has
  * @property {number}   userPlays=0   The amount of plays the current user has on the track
+ * @property {boolean}  saved=false   Whether the track is saved in the current user's library
  */
 const singleState: Track = {
   id: null,
@@ -112,6 +114,7 @@ const singleState: Track = {
   durationMS: 0,
   totalPlays: 0,
   userPlays: 0,
+  saved: false,
 };
 
 /**

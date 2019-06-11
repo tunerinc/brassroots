@@ -42,6 +42,7 @@ describe('increment track plays reducer', () => {
       durationMS: 0,
       totalPlays: 0,
       userPlays: 0,
+      saved: false,
     };
 
     expect(
