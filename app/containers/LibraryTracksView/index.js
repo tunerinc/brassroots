@@ -49,6 +49,7 @@ class LibraryTracksView extends React.Component {
     this.renderFooter = this.renderFooter.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
+    this.renderModalContent = this.renderModalContent.bind(this);
 
     this.shadowOpacity = new Animated.Value(0);
 

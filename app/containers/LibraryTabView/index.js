@@ -61,6 +61,7 @@ class LibraryTabView extends React.Component {
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
+    this.renderModalContent = this.renderModalContent.bind(this);
 
     this.shadowOpacity = new Animated.Value(0);
     this.syncIndex = new Animated.Value(5);

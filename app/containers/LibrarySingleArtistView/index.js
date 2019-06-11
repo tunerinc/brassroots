@@ -13,7 +13,7 @@ import PlayButton from '../../components/PlayButton';
 import TrackCard from '../../components/TrackCard';
 import TrackModal from '../../components/TrackModal';
 import LoadingTrack from '../../components/LoadingTrack';
-import AlbumModal from '../../components/AlbumModal';
+import ArtistModal from '../../components/ArtistModal';
 import styles from './styles';
 
 // Icons
@@ -34,15 +34,15 @@ const HEADER_MAX_HEIGHT = 261;
 const HEADER_MIN_HEIGHT = 85;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-class LibrarySingleAlbumView extends React.Component {
+class LibrarySingleArtistView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       scrollY: new Animated.Value(0),
       scrollEnabled: false,
-      isOpen: true,
-      isAlbumMenuOpen: false,
+      isOpen: false,
+      isArtistMenuOpen: false,
       isTrackMenuOpen: false,
       selectedTrack: '',
     };
@@ -58,49 +58,40 @@ class LibrarySingleAlbumView extends React.Component {
     this.onPanelDrag = this.onPanelDrag.bind(this);
 
     this._deltaY = new Animated.Value(0);
-  }
+  };
 
   componentDidMount() {
     this.closeModal();
   }
 
-  navToDetails = (albumToView) => () => {
-    Actions.libraryAlbumDetails({albumToView});
+  navToDetails = (artistToView) => () => {
+    Actions.libraryArtistDetails({artistToView});
   }
 
-  openModal = (selectedTrack, type) => () => {
-    this.setState({
-      selectedTrack,
-      isTrackMenuOpen: type === 'track',
-      isAlbumMenuOpen: type === 'album',
-    });
-  }
-
-  closeModal() {
-    this.setState({isTrackMenuOpen: false, isAlbumMenuOpen: false});
-  }
-
-  renderTrack = (albumToView) => ({item, index}) => {
+  renderTrack = (artistToView) => ({item, index}) => {
     const {
       albums: {albumsByID},
+      artists: {artistsByID},
       tracks: {tracksByID},
-      users: {usersByID, currentUserID},
+      users: {currentUserID, usersByID},
     } = this.props;
     const {displayName} = usersByID[currentUserID];
-    const {albumID, artists, name} = tracksByID[item];
-    const {name: albumName} = albumsByID[albumToView];
+    const {name, albumID, artists} = tracksByID[item];
+    const {small, name: albumName} = albumsByID[albumID];
+    const {name: artistName} = artistsByID[artistToView];
 
     return (
       <TrackCard
-        key={item}
+        key={item.id}
         albumName={albumName}
-        type='album'
-        context={{displayName, id: albumToView, name: albumName, type: 'user-album'}}
+        type='cover'
+        context={{displayName, name: artistName, id: artistToView, type: 'user-artist'}}
         name={name}
         openModal={this.openModal}
         showOptions={true}
+        showSquareImage={true}
+        image={small}
         artists={artists.map(a => a.name).join(', ')}
-        trackIndex={index}
       />
     );
   }
@@ -167,6 +158,7 @@ class LibrarySingleAlbumView extends React.Component {
   renderModalContent(type, item) {
     const {
       albums: {albumsByID},
+      artists: {artistsByID},
       queue: {userQueue, queueByID},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
@@ -177,9 +169,6 @@ class LibrarySingleAlbumView extends React.Component {
     const {listeners, ownerID} = sessionsByID[currentSessionID];
     const isListenerOwner = listeners.indexOf(currentUserID) !== -1 || ownerID === currentUserID;
     const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
-    const albumArtists = albumsByID[tracksByID[selectedTrack].albumID].artists
-      .map(a => a.name)
-      .join(', ');
 
     switch (type) {
       case 'track':
@@ -196,18 +185,29 @@ class LibrarySingleAlbumView extends React.Component {
             isListenerOwner={isListenerOwner}
           />
         );
-      case 'album':
+      case 'artist':
         return (
-          <AlbumModal
-            albumImage={albumsByID[tracksByID[selectedTrack].albumID].small}
-            albumName={albumsByID[tracksByID[selectedTrack].albumID].name}
-            artists={albumArtists}
+          <ArtistModal
+            artistImage={artistsByID[item].small}
+            artistName={artistsByID[item].name}
             closeModal={this.closeModal}
           />
         );
       default:
         return <View></View>;
     }
+  }
+
+  openModal = (selectedTrack, type) => () => {
+    this.setState({
+      selectedTrack,
+      isTrackMenuOpen: type === 'track',
+      isArtistMenuOpen: type === 'artist',
+    });
+  }
+
+  closeModal() {
+    this.setState({isTrackMenuOpen: false, isArtistMenuOpen: false});
   }
 
   onPanelDrag({nativeEvent: {y}}) {
@@ -223,6 +223,8 @@ class LibrarySingleAlbumView extends React.Component {
   }
 
   onScroll({nativeEvent: {contentOffset}}) {
+    const {isOpen, scrollEnabled} = this.state;
+
     if ((isOpen || contentOffset.y <= 0) && scrollEnabled) {
       this.setState({scrollEnabled: false, isOpen: true});
       this.refs['TrackList'].getScrollResponder().scrollTo({x: 0, y: 0});
@@ -265,16 +267,18 @@ class LibrarySingleAlbumView extends React.Component {
       outputRange: [600, 0],
       extrapolate: 'clamp',
     });
-    const {isAlbumMenuOpen, isTrackMenuOpen, scrollEnabled, selectedTrack, scrollY: y} = this.state;
+    const {isArtistMenuOpen, isTrackMenuOpen, scrollEnabled, selectedTrack, scrollY: y} = this.state;
     const {
-      albumToView,
-      albums: {albumsByID, fetchingTracks, refreshingTracks, error: albumError},
-      queue: {userQueue, queueing, error: queueError},
-      sessions: {currentSessionID, sessionsByID},
+      artistToView,
+      albums: {albumsByID},
+      artists: {artistsByID},
+      sessions: {sessionsByID, currentSessionID},
       tracks: {tracksByID},
+      queue: {queueing, error: queueError},
       users: {currentUserID},
     } = this.props;
-    const {userTracks, name, medium, large} = albumsByID[albumToView];
+    const {userTracks, name, large} = artistsByID[artistToView];
+    const {medium} = albumsByID[tracksByID[selectedTrack].albumID];
     const session = sessionsByID[currentSessionID];
     const inSession = session
       && session.listeners.indexOf(currentUserID) !== -1
@@ -288,12 +292,13 @@ class LibrarySingleAlbumView extends React.Component {
               styles.animatedHeader,
               {height: headerHeight, backgroundColor: large === '' ? '#888' : '#1b1b1e'},
             ]}
-          />
+          >
+          </Animated.View>
         </View>
         <Interactable.View
           verticalOnly={true}
-          snapPoints={[{y: 0}, {y: -HEADER_SCROLL_DISTANCE}]}
-          boundaries={{top: -HEADER_SCROLL_DISTANCE, bottom: 0}}
+          snapPoints={[{y: 0}, {y: -(HEADER_SCROLL_DISTANCE)}]}
+          boundaries={{top: -(HEADER_SCROLL_DISTANCE), bottom: 0}}
           animatedValueY={this._deltaY}
           onDrag={this.onPanelDrag}
         >
@@ -301,7 +306,7 @@ class LibrarySingleAlbumView extends React.Component {
             <VirtualizedList
               ref='TrackList'
               data={userTracks}
-              renderItem={this.renderTrack(albumToView)}
+              renderItem={this.renderTrack(artistToView)}
               keyExtractor={item => item.id}
               getItem={(data, index) => data[index]}
               getItemCount={data => data.length}
@@ -318,9 +323,9 @@ class LibrarySingleAlbumView extends React.Component {
               )}
             />
           }
-          {(userTracks.length === 0 || !userTracks.length) &&
+          {userTracks.length === 0 || !userTracks.length &&
             <View style={styles.scrollWrap}>
-              <LoadingTrack type='album' />
+              <LoadingTrack type='cover' />
             </View>
           }
         </Interactable.View>
@@ -331,7 +336,7 @@ class LibrarySingleAlbumView extends React.Component {
               height: headerHeight,
               shadowOpacity: headerShadowOpacity,
               backgroundColor: large === '' ? '#888' : '#1b1b1e',
-            }
+            },
           ]}
         >
           <View style={styles.nav}>
@@ -339,7 +344,7 @@ class LibrarySingleAlbumView extends React.Component {
               name='ios-arrow-back'
               color='#fefefe'
               style={styles.leftIcon}
-              onPress={Actions.pop}
+              onPress={this.navBack}
             />
             <Text numberOfLines={1} style={styles.title}>
               {name}
@@ -348,13 +353,13 @@ class LibrarySingleAlbumView extends React.Component {
               name='md-information-circle'
               color='#fefefe'
               style={styles.rightIcon}
-              onPress={this.navToDetails(albumToView)}
+              onPress={this.navToDetails(artistToView)}
             />
           </View>
           <Animated.View
             style={[
               styles.playButtonWrap,
-              {opacity: playButtonOpacity, bottom: playButtonOffset},
+              {opacity: playButtonOpacity, bottom: playButtonOffset}
             ]}
           >
             <PlayButton play={this.handlePlay} disabled={true} />
@@ -373,11 +378,15 @@ class LibrarySingleAlbumView extends React.Component {
               name='options'
               color='#fefefe'
               style={styles.options}
-              onPress={this.openModal('', 'album')}
+              onPress={this.openModal('', 'artist')}
             />
           </Animated.View>
           <View style={styles.headerFilter} />
-          <Image style={styles.headerBackground} source={{uri: large}} resizeMode='cover' />
+          <Image
+            style={styles.headerBackground}
+            source={{uri: large}}
+            resizeMode='cover'
+          />
           <Animated.Image
             source={{uri: large}}
             blurRadius={80}
@@ -403,8 +412,8 @@ class LibrarySingleAlbumView extends React.Component {
           {this.renderModalContent('track', selectedTrack)}
         </Modal>
         <Modal
-          isVisible={isAlbumMenuOpen}
-          backdropColor={'#1b1b1e'}
+          isVisible={isArtistMenuOpen}
+          backdropColor={ '#1b1b1e' }
           backdropOpacity={0.7}
           animationIn='slideInUp'
           animationInTiming={230}
@@ -417,7 +426,7 @@ class LibrarySingleAlbumView extends React.Component {
           style={styles.modal}
           onBackdropPress={this.closeModal}
         >
-          {this.renderModalContent('album', albumToView)}
+          {this.renderModalContent('artist', artistToView)}
         </Modal>
         <AddToQueueDialog
           queueing={queueing}
@@ -431,22 +440,22 @@ class LibrarySingleAlbumView extends React.Component {
   }
 }
 
-LibrarySingleAlbumView.propTypes = {
-  albums: PropTypes.object.isRequired,
-  albumToView: PropTypes.string,
-  artists: PropTypes.object.isRequired,
-  createSession: PropTypes.func.isRequired,
-  leaveSession: PropTypes.func.isRequired,
+LibrarySingleArtistView.propTypes = {
+  albums: PropTypes.object,
+  artists: PropTypes.object,
+  artistToView: PropTypes.string,
+  createSession: PropTypes.func,
+  leaveSession: PropTypes.func,
   playlists: PropTypes.object,
   playTrack: PropTypes.func,
   queueTrack: PropTypes.func,
   sessions: PropTypes.object,
   settings: PropTypes.object,
-  tracks: PropTypes.object.isRequired,
-  users: PropTypes.object.isRequired
+  tracks: PropTypes.object,
+  users: PropTypes.object,
 };
 
-function mapStateToProps({albums, artists, playlists, sessions, settings, tracks, users}) {
+function mapStateToProps({ albums, artists, playlists, sessions, settings, tracks, users }) {
   return {
     albums,
     artists,
@@ -454,7 +463,7 @@ function mapStateToProps({albums, artists, playlists, sessions, settings, tracks
     sessions,
     settings,
     tracks,
-    users
+    users,
   };
 }
 
@@ -463,8 +472,8 @@ function mapDispatchToProps(dispatch) {
     createSession,
     leaveSession,
     playTrack,
-    queueTrack
+    queueTrack,
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LibrarySingleAlbumView);
+export default connect(mapStateToProps, mapDispatchToProps)(LibrarySingleArtistView);
