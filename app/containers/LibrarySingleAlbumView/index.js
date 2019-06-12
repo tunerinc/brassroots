@@ -87,7 +87,7 @@ class LibrarySingleAlbumView extends React.Component {
       users: {usersByID, currentUserID},
     } = this.props;
     const {displayName} = usersByID[currentUserID];
-    const {albumID, artists, name} = tracksByID[item];
+    const {albumID, artists, name, trackNumber} = tracksByID[item];
     const {name: albumName} = albumsByID[albumToView];
 
     return (
@@ -100,7 +100,7 @@ class LibrarySingleAlbumView extends React.Component {
         openModal={this.openModal}
         showOptions={true}
         artists={artists.map(a => a.name).join(', ')}
-        trackIndex={index}
+        trackNumber={trackNumber}
       />
     );
   }

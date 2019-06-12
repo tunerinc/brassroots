@@ -94,9 +94,7 @@ class AlbumDetailsView extends React.Component {
     const {
       albums: {albumsByID},
       tracks: {tracksByID},
-      usersByID: {currentUserID, usersByID},
     } = this.props;
-    const {displayName} = usersByID[currentUserID];
     const {name, totalPlays, albumID, artists} = tracksByID[item];
     const {name: albumName} = albumsByID[albumID];
 
@@ -120,11 +118,11 @@ class AlbumDetailsView extends React.Component {
         key={item}
         albumName={albumName}
         artists={artists.map(a => a.name).join(', ')}
-        context={{type, displayName, id: albumID, name: albumName}}
+        context={{type: 'album-most', id: albumID, name: albumName}}
         name={name}
         trackCount={trackCount}
         trackIndex={index}
-        type='album-top-track'
+        type='most'
       />
     );
   }
