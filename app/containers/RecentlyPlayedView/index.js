@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, TouchableOpacity, Animated, Easing, VirtualizedList} from 'react-native';
+import {Text, View, TouchableOpacity, VirtualizedList, Animated, Easing} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -10,9 +10,9 @@ import Modal from 'react-native-modal';
 import styles from './styles';
 
 // Components
+import LoadingTrack from '../../components/LoadingTrack';
 import TrackCard from '../../components/TrackCard';
 import TrackModal from '../../components/TrackModal';
-import LoadingTrack from '../../components/LoadingTrack';
 import AddToQueueDialog from '../../components/AddToQueueDialog';
 import ShuffleButton from '../../components/ShuffleButton';
 
@@ -30,9 +30,9 @@ import {createSession} from '../../actions/sessions/CreateSession';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 
 // Tracks Action Creators
-import {getMostPlayedTracks} from '../../actions/tracks/GetMostPlayedTracks';
+import {getRecentTracks} from '../../actions/tracks/GetRecentTracks';
 
-class MostPlayedView extends React.Component {
+class RecentlyPlayedView extends React.Component {
   constructor(props) {
     super(props);
 
@@ -54,23 +54,23 @@ class MostPlayedView extends React.Component {
 
   componentDidMount() {
     const {
-      getMostPlayedTracks,
+      getRecentTracks,
       selectedUser,
       users: {currentUserID, usersByID},
     } = this.props;
     const userID = selectedUser || currentUserID;
-    const {mostPlayed} = usersByID[userID];
+    const {recentlyPlayed} = usersByID[userID];
 
     this.closeModal();
 
-    if (!mostPlayed.length) {
-      getMostPlayedTracks(userID);
+    if (!recentlyPlayed.length) {
+      getRecentTracks(userID);
     }
   }
 
   refresh() {
     const {
-      getMostPlayedTracks,
+      getRecentTracks,
       selectedUser,
       tracks: {refreshingTracks},
       users: {currentUserID},
@@ -79,7 +79,7 @@ class MostPlayedView extends React.Component {
 
     if (refreshingTracks) return;
 
-    getMostPlayedTracks(userID);
+    getRecentTracks(userID);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -96,15 +96,8 @@ class MostPlayedView extends React.Component {
   }
 
   renderTrack({item, index}) {
-    const {
-      selectedUser,
-      albums: {albumsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
-    } = this.props;
-    const {displayName} = usersByID[selectedUser] || usersByID[currentUserID];
-    const {name, artists, albumID, userPlays} = tracksByID[item];
-    const {name: albumName} = albumsByID[albumID];
+    const {selectedUser, users: {currentUserID, usersByID}} = this.props;
+    const {username} = usersByID[selectedUser] || usersByID[currentUserID];
 
     return (
       <TrackCard
@@ -113,14 +106,16 @@ class MostPlayedView extends React.Component {
         artists={artists.map(a => a.name).join(', ')}
         context={{
           displayName,
-          id: currentUserID,
+          id: userID,
+          type: 'user-recently',
           name: displayName,
-          type: 'user-most',
         }}
+        image={small}
         name={name}
-        trackCount={userPlays}
-        trackIndex={index}
-        type='most'
+        openModal={this.openModal}
+        showOptions={true}
+        showSquareImage={true}
+        type='cover'
       />
     );
   }
@@ -189,7 +184,7 @@ class MostPlayedView extends React.Component {
       tracks: {tracksByID},
       users: {currentUserID},
     } = this.props;
-    const isListenerOwner = sessionsByID[currentSessionID].listeners.indexOf(currentUserID) !== -1
+    const isListenerOwner = sessionsByID[currentSessionID].listeners.includes(currentUserID)
       || sessionsByID[currentSessionID].ownerID === currentUserID;
 
     return (
@@ -217,16 +212,16 @@ class MostPlayedView extends React.Component {
 
   render() {
     const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
-    const {isTrackMenuOpen, selectedTrack} = this.state;
+    const {isTrackMenuOpen} = this.state;
     const {
       selectedUser,
       albums: {albumsByID},
       queue: {userQueue, queueing, error: queueError},
-      sessions: {sessionsByID},
-      tracks: {tracksByID, fetchingMostPlayed, refreshingTracks, error: trackError},
+      sessions: {currentSessionID, sessionsByID},
+      tracks: {tracksByID, fetchingRecent, refreshingTracks, error: trackError},
       users: {currentUserID, usersByID},
     } = this.props;
-    const {mostPlayed} = selectedUser ? usersByID[selectedUser] : usersByID[currentUserID];
+    const {recentlyPlayed} = usersByID[selectedUser] || usersByID[currentUserID];
     const session = sessionsByID[currentSessionID];
     const inSession = session
       && session.listeners.indexOf(currentUserID) !== -1
@@ -234,21 +229,22 @@ class MostPlayedView extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[ styles.shadow, animatedHeaderStyle ]}>
+        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
           <View style={styles.nav}>
             <Ionicons
               name='ios-arrow-back'
+              size={45}
               color='#fefefe'
               style={styles.leftIcon}
-              onPress={Actions.pop}
+              onPress={this.navBack}
             />
-            <Text style={styles.title}>Most Played</Text>
+            <Text style={styles.title}>Recently Played</Text>
             <View style={styles.rightIcon}></View>
           </View>
         </Animated.View>
-        {mostPlayed.length !== 0 &&
+        {recentlyPlayed.length !== 0 &&
           <VirtualizedList
-            data={mostPlayed}
+            data={recentlyPlayed}
             extraData={this.props}
             renderItem={this.renderTrack}
             keyExtractor={item => item}
@@ -267,20 +263,20 @@ class MostPlayedView extends React.Component {
             onEndReachedThreshold={0.7}
           />
         }
-        {(!mostPlayed || !mostPlayed.length || mostPlayed.length === 0) &&
-          <View style={styles.mostPlayedWrap}>
+        {(!recentlyPlayed || !recentlyPlayed.length || recentlyPlayed.length === 0) &&
+          <View style={styles.recentlyPlayedWrap}>
             <ShuffleButton disabled={true} />
-            {(!fetchingMostPlayed && trackError) && <Text>Something went wrong</Text>}
-            {(!fetchingMostPlayed && !trackError) && <Text>Nothing to show</Text>}
-            {fetchingMostPlayed &&
+            {(fetchingRecent && !trackError) &&
               <View>
-                <LoadingTrack type='most' />
-                <LoadingTrack type='most' />
-                <LoadingTrack type='most' />
-                <LoadingTrack type='most' />
-                <LoadingTrack type='most' />
+                <LoadingTrack type='cover' />
+                <LoadingTrack type='cover' />
+                <LoadingTrack type='cover' />
+                <LoadingTrack type='cover' />
+                <LoadingTrack type='cover' />
               </View>
             }
+            {(!fetchingRecent && trackError) && <Text>Something went wrong</Text>}
+            {(!fetchingRecent && !trackError) && <Text>Nothing to show</Text>}
           </View>
         }
         <Modal
@@ -312,7 +308,7 @@ class MostPlayedView extends React.Component {
   }
 }
 
-MostPlayedView.propTypes = {
+RecentlyPlayedView.propTypes = {
   albums: PropTypes.object.isRequired,
   artists: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
@@ -349,4 +345,4 @@ function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MostPlayedView);
+export default connect(mapStateToProps, mapDispatchToProps)(RecentlyPlayedView);
