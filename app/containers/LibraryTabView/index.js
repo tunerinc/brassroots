@@ -140,12 +140,10 @@ class LibraryTabView extends React.Component {
   renderPlaylist({item}) {
     const {playlists: {playlistsByID}, users: {currentUserID, usersByID}} = this.props;
     const {image, name, members, mode, ownerID, ownerType} = playlistsByID[item];
-    const ownerName = ownerType === 'user' && ownerID !== currentUserID
-      ? usersByID[ownerID].username
-      : ownerType === 'spotify' && ownerID === 'spotify'
+    const ownerName = ownerID === 'spotify'
       ? 'Spotify'
-      : ownerType === 'spotify' && ownerID !== 'spotify'
-      ? 'Spotify user'
+      : ownerID !== currentUserID
+      ? usersByID[ownerID].displayName
       : null;
 
     return (
@@ -175,10 +173,9 @@ class LibraryTabView extends React.Component {
     return (
       <TrackCard
         key={item}
-        type="cover"
+        type='cover'
         context={{type, displayName, id: currentUserID, name: displayName}}
         openModal={this.openModal}
-        trackIndex={index}
         name={name}
         artists={artistNames}
         showSquareImage={true}
@@ -483,7 +480,7 @@ class LibraryTabView extends React.Component {
             }
           </View>
         </ScrollView>
-        {/* <Modal
+        <Modal
           isVisible={isTrackMenuOpen}
           backdropColor={"#1b1b1e"}
           backdropOpacity={0.7}
@@ -499,7 +496,7 @@ class LibraryTabView extends React.Component {
           onBackdropPress={this.closeModal}
         >
           {this.renderModalContent()}
-        </Modal> */}
+        </Modal>
         <AddToQueueDialog
           queueing={queueing}
           error={queueError}

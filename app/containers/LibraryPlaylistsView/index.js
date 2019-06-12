@@ -82,9 +82,16 @@ class LibraryPlaylistsView extends React.Component {
   }
 
   renderPlaylist({item}) {
-    const {playlists: {playlistsByID}, users: {currentUserID, usersByID}} = this.props;
+    const {
+      playlists: {playlistsByID},
+      users: {currentUserID, usersByID},
+    } = this.props;
     const {small, name, members, mode, ownerID} = playlistsByID[item];
-    const {displayName} = usersByID[ownerID];
+    const ownerName = ownerID === 'spotify'
+      ? 'Spotify'
+      : ownerID !== currentUserID
+      ? usersByID[ownerID].displayName
+      : null;
 
     return (
       <PlaylistCard
@@ -94,7 +101,7 @@ class LibraryPlaylistsView extends React.Component {
         name={name}
         navToPlaylist={this.navToPlaylist('library', item)}
         mode={mode}
-        ownerName={displayName}
+        ownerName={ownerName}
       />
     );
   }
