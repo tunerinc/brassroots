@@ -21,7 +21,7 @@ type Props = {|
   name: string,
   navToPlaylist: () => any,
   mode?: 'mode' | 'hidden' | 'vip',
-  ownerName?: string,
+  ownerName?: ?string,
 |};
 
 type State = {||};
