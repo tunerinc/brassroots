@@ -10,12 +10,12 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
+import * as actions from './actions';
 import {addArtists} from '../../artists/AddArtists';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addTracks} from '../../tracks/AddTracks';
 import {addPeople} from '../../users/AddPeople';
 import {addQueueTracks} from '../AddQueueTracks';
-import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/queue';
 import {type FirestoreInstance} from '../../../utils/firebaseTypes';
 

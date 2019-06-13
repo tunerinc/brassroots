@@ -10,7 +10,7 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-// import {addUserRecentTrack} from '../../users/AddUserRecentTrack';
+import {addUserRecentTrack} from '../../users/AddUserRecentTrack';
 import * as actions from './actions';
 import {
   type ThunkAction,
@@ -24,20 +24,20 @@ import {
 } from "../../../utils/firebaseTypes";
 
 type Track = {
-  trackID?: string,
-  timeAdded?: string | number,
-  id: string,
-  name: string,
-  trackNumber: number,
-  durationMS: number,
-  artists: Array<TrackArtist>,
-  album: {
-    id: string,
-    name: string,
-    small: string,
-    medium: string,
-    large: string,
-    artists: Array<TrackArtist>,
+  +trackID?: string,
+  +timeAdded?: string | number,
+  +id: string,
+  +name: string,
+  +trackNumber: number,
+  +durationMS: number,
+  +artists: Array<TrackArtist>,
+  +album: {
+    +id: string,
+    +name: string,
+    +small: string,
+    +medium: string,
+    +large: string,
+    +artists: Array<TrackArtist>,
   },
 };
 
@@ -101,7 +101,7 @@ export function addRecentTrack(
       }
 
       await batch.commit();
-      // dispatch(addUserRecentTrack(track.id));
+      dispatch(addUserRecentTrack(track.id));
       dispatch(actions.addRecentTrackSuccess());
     } catch (err) {
       dispatch(actions.addRecentTrackFailure(err));

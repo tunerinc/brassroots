@@ -7,6 +7,7 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import {type Action as TrackAction} from './tracks';
 import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/player/types';
 
@@ -26,10 +27,11 @@ import * as toggleShuffle from '../actions/player/ToggleShuffle/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction = Action | TrackAction;
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<DispatchAction>) => any;
 
 type Action = {
   +type?: string,

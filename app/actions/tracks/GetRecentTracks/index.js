@@ -14,7 +14,7 @@ import updateObject from '../../../utils/updateObject';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
 import {addTracks} from '../AddTracks';
-// import {addUserRecentlyPlayed} from '../../users/AddUserRecentlyPlayed';
+import {addUserRecentlyPlayed} from '../../users/AddUserRecentlyPlayed';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/tracks';
 import {
@@ -79,7 +79,7 @@ export function getRecentTracks(
         dispatch(addArtists(music.artists));
         dispatch(addAlbums(music.albums));
         dispatch(addTracks(music.tracks));
-        // dispatch(addUserRecentlyPlayed(userID, recentTracks.map(t => t.data().trackID)));
+        dispatch(addUserRecentlyPlayed(userID, recentTracks.map(t => t.data().trackID)));
         dispatch(actions.getRecentTracksSuccess());
       }
     } catch (err) {

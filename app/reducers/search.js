@@ -106,6 +106,8 @@ export default function reducer(
     switch (action.type) {
       case types.CLEAR_SEARCH_QUERY:
         return clearSearchQuery(state);
+      case types.RESET_SEARCH:
+        return initialState;
       default:
         return state;
     }

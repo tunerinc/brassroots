@@ -16,8 +16,8 @@ import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
 import {addTracks} from '../AddTracks';
-// import {addCoverImage} from '../../users/AddCoverImage';
-// import {addFavoriteTrack} from '../../users/AddFavoriteTrack';
+import {addCoverImage} from '../../users/AddCoverImage';
+import {addFavoriteTrack} from '../../users/AddFavoriteTrack';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/tracks';
 import {type Blob} from '../../../utils/brassrootsTypes';
@@ -74,7 +74,7 @@ export function getMostPlayedSpotifyTrack(
 
         const url: string = await uploadTask.snapshot.ref.getDownloadURL();
         batch.update(userDoc, {coverImage: url});
-        // dispatch(addCoverImage(url));
+        dispatch(addCoverImage(url));
       } else {
         batch.update(userDoc, {coverImage: ''});
       }
@@ -86,7 +86,7 @@ export function getMostPlayedSpotifyTrack(
       dispatch(addAlbums(music.albums));
       dispatch(addArtists(music.artists));
       dispatch(addTracks(music.tracks));
-      // dispatch(addFavoriteTrack(track.id));
+      dispatch(addFavoriteTrack(track.id));
       dispatch(actions.getMostPlayedSpotifyTrackSuccess());
     } catch (err) {
       dispatch(actions.getMostPlayedSpotifyTrackFailure(err));

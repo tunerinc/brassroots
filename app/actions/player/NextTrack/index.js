@@ -12,9 +12,10 @@
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
 import {GeoFirestore} from 'geofirestore';
-// import {addRecentTrack} from '../../tracks/AddRecentTrack';
+import {addRecentTrack} from '../../tracks/AddRecentTrack';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/player';
 import {
   type FirestoreInstance,
@@ -26,7 +27,7 @@ import {
 
 type User = {
   id: string,
-  username: string,
+  displayName: string,
   profileImage: string,
 };
 
@@ -45,23 +46,21 @@ type Session = {
     userID: string,
     prevTrackID: string,
     track: {
+      trackID?: string,
+      timeAdded?: string | number,
       id: string,
       name: string,
+      trackNumber: number,
       durationMS: number,
-      userID: string,
+      artists: Array<TrackArtist>,
       album: {
         id: string,
         name: string,
         small: string,
         medium: string,
         large: string,
+        artists: Array<TrackArtist>,
       },
-      artists: Array<
-        {
-          id: string,
-          name: string,
-        }
-      >,
     },
   }
 };
@@ -104,7 +103,7 @@ type NextTrack = {
  *
  * @param    {object}   user
  * @param    {string}   user.id                              The user id of the current user
- * @param    {string}   user.username                        The username of the current user
+ * @param    {string}   user.displayName                     The display name of the current user
  * @param    {string}   user.profileImage                    The profile image of the current user
  * @param    {string}   session                              The session object to play the next track in
  * @param    {string}   session.id                           The id of the session to play the next track in
@@ -178,9 +177,7 @@ export function nextTrack(
     let batch: FirestoreBatch = firestore.batch();
 
     try {
-      // dispatch(
-      //   addRecentTrack(user.id, {...current.track, id: current.id, trackID: current.track.id})
-      // );
+      dispatch(addRecentTrack(user.id, current.track));
 
       batch.update(sessionUserRef, {progress: 0, paused: false});
       batch.delete(sessionQueueRef.doc(current.id));
@@ -189,7 +186,7 @@ export function nextTrack(
         {
           id: current.id,
           trackID: current.track.id,
-          userID: current.track.userID,
+          userID: current.userID,
           totalLikes: current.totalLikes,
           prevTrackID: current.prevTrackID,
           nextTrackID: nextTrack.id,
@@ -197,8 +194,8 @@ export function nextTrack(
       );
 
       if (!nextTrack.id) {
-        const queueDoc = sessionQueueRef.doc();
-        const queueID = queueDoc.id;
+        const queueDoc: FirestoreDoc = sessionQueueRef.doc();
+        const queueID: string = queueDoc.id;
         nextTrack = updateObject(nextTrack, {id: queueID});
 
         batch.set(
@@ -247,7 +244,7 @@ export function nextTrack(
               type: 'session',
               owner: {
                 id: user.id,
-                name: user.username,
+                name: user.displayName,
                 image: user.profileImage,
               },
             },

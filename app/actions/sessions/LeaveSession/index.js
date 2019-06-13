@@ -12,14 +12,14 @@
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
 import GeoFirestore from 'geofirestore';
-import {stopChatListener} from '../../chat/StopChatListener';
-// import {stopSessionInfoListener} from '../StopSessionInfoListener';
-import {stopQueueListener} from '../../queue/StopQueueListener';
-import {addRecentTrack} from '../../tracks/AddRecentTrack';
+import * as actions from './actions';
+import {stopSessionInfoListener} from '../StopSessionInfoListener';
 import {resetChat} from '../../chat/ResetChat';
+import {stopChatListener} from '../../chat/StopChatListener';
 import {resetPlayer} from '../../player/ResetPlayer';
 import {resetQueue} from '../../queue/ResetQueue';
-import * as actions from './actions';
+import {stopQueueListener} from '../../queue/StopQueueListener';
+import {addRecentTrack} from '../../tracks/AddRecentTrack';
 import {type ThunkAction} from '../../../reducers/sessions';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {
@@ -31,30 +31,31 @@ import {
 } from '../../../utils/firebaseTypes';
 
 type Session = {
-  id: string,
-  track: {
-    trackID?: string,
-    timeAdded?: string | number,
-    id: string,
-    name: string,
-    trackNumber: number,
-    durationMS: number,
-    artists: Array<TrackArtist>,
-    album: {
-      id: string,
-      name: string,
-      small: string,
-      medium: string,
-      large: string,
-      artists: Array<TrackArtist>,
+  +id: string,
+  +track: {
+    +trackID?: string,
+    +timeAdded?: string | number,
+    +id: string,
+    +name: string,
+    +trackNumber: number,
+    +durationMS: number,
+    +artists: Array<TrackArtist>,
+    +album: {
+      +id: string,
+      +name: string,
+      +small: string,
+      +medium: string,
+      +large: string,
+      +artists: Array<TrackArtist>,
     },
   },
-  total: number,
-  chatUnsubscribe: () => void,
-  queueUnsubscribe: () => void,
-  coords?: {
-    lat: number,
-    lon: number,
+  +total: number,
+  +chatUnsubscribe: () => void,
+  +infoUnsubscribe: () => void,
+  +queueUnsubscribe: () => void,
+  +coords?: {
+    +lat: number,
+    +lon: number,
   },
 };
 
@@ -68,6 +69,12 @@ type Owner = {
  * Stop the realtime listener on the chat
  * 
  * @callback chatUnsub
+ */
+
+/**
+ * Stop the realtime listener on the info
+ * 
+ * @callback infoUnsub
  */
 
 /**
@@ -106,6 +113,7 @@ type Owner = {
  * @param    {string}     session.track.artists.name       The name of the track artist
  * @param    {number}     session.total                    The total number of listeners in the session
  * @param    {chatUnsub}  session.chatUnsubscribe          The function to invoke to unsubscribe from the chat listener
+ * @param    {infoUnsub}  session.infoUnsubscribe          The function to invoke to unsubscribe from the info listener
  * @param    {queueUnsub} session.queueUnsubscribe         The function to invoke to unsubscribe from the queue listener
  * @param    {object}     [session.coords]                 The coordinates of the session the current user is leaving, if available
  * @param    {number}     session.coords.lat               The latitude value of the coordinates
@@ -127,7 +135,7 @@ export function leaveSession(
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.leaveSessionRequest());
     dispatch(stopChatListener(session.chatUnsubscribe));
-    // dispatch(stopSessionInfoListener(session.id));
+    dispatch(stopSessionInfoListener(session.infoUnsubscribe));
     dispatch(stopQueueListener(session.queueUnsubscribe));
     dispatch(addRecentTrack(userID, session.track));
 

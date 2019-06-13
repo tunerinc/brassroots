@@ -15,14 +15,14 @@ import addMusicItems from '../../../utils/addMusicItems';
 import getUserLocation from '../../../utils/getUserLocation';
 import calculateDistance from '../../../utils/calculateDistance';
 import updateObject from '../../../utils/updateObject';
+import * as actions from './actions';
+import {addSessions} from '../AddSessions';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
 import {addTracks} from '../../tracks/AddTracks';
 import {addPlaylists} from '../../playlists/AddPlaylists';
 import {addCurrentLocation} from '../../users/AddCurrentLocation';
 import {addPeople} from '../../users/AddPeople';
-import {addSessions} from '../AddSessions';
-import * as actions from './actions';
 import {
   type ThunkAction,
   type Session,
@@ -39,17 +39,9 @@ import {type Album} from '../../../reducers/albums';
 import {type Artist} from '../../../reducers/artists';
 import {type Track} from '../../../reducers/tracks';
 
-type Sessions = {
-  +[id: string]: Session,
-};
-
-type Playlists = {
-  +[id: string]: Playlist,
-};
-
-type Users = {
-  +[id: string]: User,
-};
+type Sessions = {+[id: string]: Session};
+type Playlists = {+[id: string]: Playlist};
+type Users = {+[id: string]: User};
 
 type Coords = {
   coords?: {
@@ -58,17 +50,11 @@ type Coords = {
   },
 };
 
-type Music = {
-  tracks: {
-    +[id: string]: Track,
-  },
-  albums: {
-    +[id: string]: Album,
-  },
-  artists: {
-    +[id: string]: Artist,
-  },
-};
+type Music = {|
+  +tracks: {+[id: string]: Track},
+  +albums: {+[id: string]: Album},
+  +artists: {+[id: string]: Artist},
+|};
 
 /**
  * Async function which gets the current trending sessions from Ultrasound

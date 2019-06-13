@@ -10,14 +10,14 @@ import addMusicItems from '../../../utils/addMusicItems';
 import getUserLocation from '../../../utils/getUserLocation';
 import calculateDistance from '../../../utils/calculateDistance';
 import updateObject from '../../../utils/updateObject';
+import * as actions from './actions';
+import {addSessions} from '../AddSessions';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
 import {addPlaylists} from '../../playlists/AddPlaylists';
+import {addTracks} from '../../tracks/AddTracks';
 import {addCurrentLocation} from '../../users/AddCurrentLocation';
 import {addPeople} from '../../users/AddPeople';
-import {addSessions} from '../AddSessions';
-import * as actions from './actions';
 
 /**
  * Async function which gets the current sessions from Ultrasound

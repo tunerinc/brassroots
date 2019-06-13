@@ -14,7 +14,7 @@ import addMusicItems from '../../../utils/addMusicItems';
 import {addTracks} from '../AddTracks';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
-// import {addUserMostPlayed} from '../../users/AddUserMostPlayed';
+import {addUserMostPlayed} from '../../users/AddUserMostPlayed';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/tracks';
 import {
@@ -65,7 +65,7 @@ export function getMostPlayedTracks(
         dispatch(addTracks(music.tracks));
         dispatch(addAlbums(music.albums));
         dispatch(addArtists(music.artists));
-        // dispatch(addUserMostPlayed(userID, mostPlayedTracks));
+        dispatch(addUserMostPlayed(userID, mostPlayedTracks));
         dispatch(actions.getMostPlayedTracksSuccess());
       }
     } catch (err) {

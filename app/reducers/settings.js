@@ -9,6 +9,18 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/settings/types';
 import {type Firebase} from '../utils/firebaseTypes';
+import {type Action as AlbumAction} from './albums';
+import {type Action as ArtistAction} from './artists';
+import {type Action as ChatAction} from './chat';
+import {type Action as FeedbackAction} from './feedback';
+import {type Action as OnboardingAction} from './onboarding';
+import {type Action as PlayerAction} from './player';
+import {type Action as PlaylistAction} from './playlists';
+import {type Action as QueueAction} from './queue';
+import {type Action as SearchAction} from './search';
+import {type Action as SessionAction} from './sessions';
+import {type Action as TrackAction} from './tracks';
+import {type Action as UserAction} from './users';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
@@ -34,10 +46,25 @@ import * as logOut from '../actions/settings/LogOut/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction =
+  | Action
+  | AlbumAction
+  | ArtistAction
+  | ChatAction
+  | FeedbackAction
+  | OnboardingAction
+  | PlayerAction
+  | PlaylistAction
+  | QueueAction
+  | SearchAction
+  | SessionAction
+  | TrackAction
+  | UserAction;
+
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<DispatchAction>) => any;
 
 type Notify = {
   +session: string,

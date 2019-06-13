@@ -5,30 +5,35 @@
  * @flow
  */
 
-import getUserPlaylists from '../../../utils/spotifyAPI/getUserPlaylists';
-import updateObject from '../../../utils/updateObject';
-import {addPlaylists} from '../AddPlaylists';
-// import {addPeople} from '../../users/AddPeople';
-import {
-  type ThunkAction,
-  type Playlist,
-} from '../../../reducers/playlists';
-import * as actions from './actions';
-
 /**
  * @module GetPlaylists
  */
 
+import getUserPlaylists from '../../../utils/spotifyAPI/getUserPlaylists';
+import updateObject from '../../../utils/updateObject';
+import * as actions from './actions';
+import {addPlaylists} from '../AddPlaylists';
+import {addPeople} from '../../users/AddPeople';
+import {
+  type ThunkAction,
+  type Playlist,
+} from '../../../reducers/playlists';
+
 type Users = {
-  [id: string]: {
-    id: string,
-    displayName: string,
-  },
+  +[id: string]: {|
+    +id: string,
+    +displayName: string,
+  |},
 };
 
 type Playlists = {
-  [id: string]: Playlist,
+  +[id: string]: Playlist,
 };
+
+type Options = {|
+  +limit: number,
+  +offset: number,
+|};
 
 /**
  * Async function that fetches the user's playlists from Spotify
@@ -50,13 +55,10 @@ type Playlists = {
 
 export function getPlaylists(
   spotifyUserID: string,
-  refreshing: boolean = false,
-  existingPlaylists: number = 0,
+  refreshing?: boolean = false,
+  existingPlaylists?: number = 0,
 ): ThunkAction {
-  const options: {
-    limit: number,
-    offset: number,
-  } = {
+  const options: Options = {
     limit: 20,
     offset: existingPlaylists,
   };
@@ -94,7 +96,7 @@ export function getPlaylists(
         });
       }, {});
 
-      // dispatch(addPeople(users));
+      dispatch(addPeople(users));
       dispatch(addPlaylists(playlistsFromSpotify));
       dispatch(actions.getPlaylistsSuccess(items.map(p => p.id)));
     } catch (err) {

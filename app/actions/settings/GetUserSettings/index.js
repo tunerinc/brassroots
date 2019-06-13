@@ -49,9 +49,9 @@ export function getUserSettings(
         dispatch(actions.getUserSettingsSuccess());
       } else {
         throw new Error('Unable to retrieve user settings from Ultrasound');
-      };
+      }
     } catch (err) {
       dispatch(actions.getUserSettingsFailure(err))
-    };
+    }
   };
-};
+}

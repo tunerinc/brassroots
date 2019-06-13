@@ -12,6 +12,11 @@
 import * as types from '../types';
 import {type Action} from '../../../reducers/playlists';
 
+type PlaylistTrack = {|
+  +trackID: string,
+  +userID: string,
+|};
+
 /**
  * Adds tracks from a playlist
  * 
@@ -28,12 +33,7 @@ import {type Action} from '../../../reducers/playlists';
  */
 export function addPlaylistTracks(
   playlistID: string,
-  tracks: Array<
-    {
-      trackID: string,
-      userID: string,
-    }
-  >,
+  tracks: Array<PlaylistTrack>,
 ): Action {
   return {
     type: types.ADD_PLAYLIST_TRACKS,

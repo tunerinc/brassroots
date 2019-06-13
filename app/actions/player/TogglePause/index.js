@@ -19,11 +19,11 @@ import {
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
 
-type Session = {
-  id: string,
-  current: string,
-  progress: number,
-};
+type Session = {|
+  +id: string,
+  +current: string,
+  +progress: number,
+|};
 
 /**
  * Async function that pauses the track the current user is listening to
@@ -60,19 +60,16 @@ export function togglePause(
 
     let batch: FirestoreBatch = firestore.batch();
     let newPosition: number = 0;
+    let playbackState: {position?: number} = {};
 
     try {
-      let playbackState: {
-        position?: number,
-      } = {};
-
       if (status) {
         playbackState = await Spotify.getPlaybackStateAsync();
 
         if (!playbackState || Object.keys(playbackState).length === 0) {
           throw new Error('Unable to retrieve playback state');
-        };
-      };
+        }
+      }
 
       if (
         Object.keys(playbackState).length !== 0
@@ -85,19 +82,19 @@ export function togglePause(
         await Spotify.playURI(`spotify:track:${session.current}`, 0, newPosition);
       } else {
         await Spotify.setPlaying(status);
-      };
+      }
 
       if (!status) {
         playbackState = await Spotify.getPlaybackStateAsync();
 
         if (!playbackState || Object.keys(playbackState).length === 0) {
           throw new Error('Unable to retrieve playback state');
-        };
-      };
+        }
+      }
 
       if (newPosition === 0 && playbackState.position) {
         newPosition = playbackState.position * 1000;
-      };
+      }
 
       const timeLastPlayed: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -105,7 +102,7 @@ export function togglePause(
 
       if (ownerID === userID) {
         batch.update(sessionRef, {timeLastPlayed, currentProgressMS: newPosition, paused: !status});
-      };
+      }
 
       await batch.commit();
       dispatch(actions.togglePauseSuccess(!status, newPosition + 1000));

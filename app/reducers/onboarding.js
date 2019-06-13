@@ -7,6 +7,7 @@
 
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/onboarding/types';
+import {type Action as UserAction} from './users';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 
@@ -14,10 +15,11 @@ import {type SpotifyError} from '../utils/spotifyAPI/types';
 import * as createProfile from '../actions/onboarding/CreateProfile/reducers';
 import {setOnboarding} from '../actions/onboarding/SetOnboarding/reducers';
 
+type DispatchAction = Action | UserAction;
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<DispatchAction>) => any;
 
 type Action = {
   +type?: string,

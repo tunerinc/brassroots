@@ -11,18 +11,18 @@
 
 import Spotify from 'rn-spotify-sdk';
 import {Actions, ActionConst} from 'react-native-router-flux';
-// import {resetAlbums} from '../../albums/ResetAlbums';
-// import {resetArtists} from '../../artists/ResetArtists';
-// import {resetChat} from '../../chat/ResetChat';
-// import {resetFeedback} from '../../feedback/ResetFeedback';
-// import {resetOnboarding} from '../../onboarding/ResetOnboarding';
-// import {resetPlayer} from '../../player/ResetPlayer';
-// import {resetPlaylists} from '../../playlists/ResetPlaylists';
-// import {resetQueue} from '../../queue/ResetQueue';
-// import {resetSearch} from '../../search/ResetSearch';
-// import {resetSessions} from '../../sessions/ResetSessions';
-// import {resetTracks} from '../../tracks/ResetTracks';
-// import {resetUsers} from '../../users/ResetUsers';
+import {resetAlbums} from '../../albums/ResetAlbums';
+import {resetArtists} from '../../artists/ResetArtists';
+import {resetChat} from '../../chat/ResetChat';
+import {resetFeedback} from '../../feedback/ResetFeedback';
+import {resetOnboarding} from '../../onboarding/ResetOnboarding';
+import {resetPlayer} from '../../player/ResetPlayer';
+import {resetPlaylists} from '../../playlists/ResetPlaylists';
+import {resetQueue} from '../../queue/ResetQueue';
+import {resetSearch} from '../../search/ResetSearch';
+import {resetSessions} from '../../sessions/ResetSessions';
+import {resetTracks} from '../../tracks/ResetTracks';
+import {resetUsers} from '../../users/ResetUsers';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/settings';
 
@@ -47,18 +47,18 @@ export function logOut(): ThunkAction {
       Actions.welcome({type: ActionConst.RESET});
       
       dispatch(actions.logOutSuccess());
-      // dispatch(resetAlbums());
-      // dispatch(resetArtists());
-      // dispatch(resetChat());
-      // dispatch(resetFeedback());
-      // dispatch(resetOnboarding());
-      // dispatch(resetPlayer());
-      // dispatch(resetPlaylists());
-      // dispatch(resetQueue());
-      // dispatch(resetSearch());
-      // dispatch(resetSessions());
-      // dispatch(resetTracks());
-      // dispatch(resetUsers());
+      dispatch(resetAlbums());
+      dispatch(resetArtists());
+      dispatch(resetChat());
+      dispatch(resetFeedback());
+      dispatch(resetOnboarding());
+      dispatch(resetPlayer());
+      dispatch(resetPlaylists());
+      dispatch(resetQueue());
+      dispatch(resetSearch());
+      dispatch(resetSessions());
+      dispatch(resetTracks());
+      dispatch(resetUsers());
     } catch (err) {
       dispatch(actions.logOutFailure(err));
     }

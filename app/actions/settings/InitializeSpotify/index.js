@@ -11,11 +11,11 @@
 
 import Spotify from 'rn-spotify-sdk';
 import {Actions, ActionConst} from 'react-native-router-flux';
-import {authorizeUserSuccess} from '../AuthUser/actions';
-// import {setOnboarding} from '../../onboarding/SetOnboarding';
-// import {addCurrentUser} from '../../users/AddCurrentUser';
-import {getUserSettings} from '../GetUserSettings';
 import * as actions from './actions';
+import {getUserSettings} from '../GetUserSettings';
+import {authorizeUserSuccess} from '../AuthUser/actions';
+import {setOnboarding} from '../../onboarding/SetOnboarding';
+import {addCurrentUser} from '../../users/AddCurrentUser';
 import envConfig from '../../../../env.json';
 import {type ThunkAction} from '../../../reducers/settings';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
@@ -71,9 +71,9 @@ export function initializeSpotify(): ThunkAction {
             ],
             tokenSwapURL: envConfig.tokenSwapURL,
             tokenRefreshURL: envConfig.tokenRefreshURL,
-          }
+          },
         );
-      };
+      }
 
       if (loggedIn) {
         const spotifyUser: PrivateUser = await Spotify.getMe();
@@ -103,8 +103,8 @@ export function initializeSpotify(): ThunkAction {
 
           dispatch(actions.initializeSpotifySuccess(true));
           dispatch(authorizeUserSuccess());
-          // dispatch(addCurrentUser(user));
-          // dispatch(setOnboarding(false));
+          dispatch(addCurrentUser(user));
+          dispatch(setOnboarding(false));
           dispatch(getUserSettings(user.id));
           Actions.root({type: ActionConst.RESET});
         }

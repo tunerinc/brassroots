@@ -80,10 +80,10 @@ type Action = {
     +userID?: string,
   },
   +tracks?: Array<
-    {
-      trackID: string,
-      userID: string,
-    }
+    {|
+      +trackID: string,
+      +userID: string,
+    |}
   >
 };
 
@@ -317,6 +317,8 @@ export default function reducer(
         return incrementPlaylistPlays.failure(state, action);
       case types.REMOVE_NEW_PLAYLIST_USER:
         return removeNewPlaylistUser(state, action);
+      case types.RESET_PLAYLISTS:
+        return initialState;
       case types.SET_NEW_PLAYLIST_MODE:
         return setNewPlaylistMode(state, action);
       case types.SET_NEW_PLAYLIST_NAME:

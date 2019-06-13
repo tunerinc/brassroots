@@ -16,18 +16,6 @@ type Blob = {
 type BRAlbum = {
   id: string,
   plays: number,
-  conversations?: {
-    [key: string]: BRAlbumConversation,
-  },
-  playlists?: {
-    [key: string]: BRAlbumPlaylist,
-  },
-  tracks?: {
-    [key: string]: BRAlbumTrack,
-  },
-  users?: {
-    [key: string]: BRAlbumUser,
-  },
 };
 
 type BRAlbumConversation = {
@@ -58,21 +46,6 @@ type BRAlbumUser = {
 type BRArtist = {
   id: string,
   plays: number,
-  albums?: {
-    [key: string]: BRArtistAlbum,
-  },
-  conversations?: {
-    [key: string]: BRArtistConversation,
-  },
-  playlists?: {
-    [key: string]: BRArtistPlaylist,
-  },
-  tracks?: {
-    [key: string]: BRArtistTrack,
-  },
-  users?: {
-    [key: string]: BRArtistUser,
-  },
 };
 
 type BRArtistAlbum = {
@@ -114,15 +87,6 @@ type BRConversation = {
   totalAttachments: number,
   totalMessages: number,
   totalUsers: number,
-  attachments?: {
-    [key: string]: BRConversationAttachment,
-  },
-  messages?: {
-    [key: string]: BRConversationMessage,
-  },
-  users?: {
-    [key: string]: BRConversationUser,
-  },
 };
 
 type BRConversationAttachment = {
@@ -213,18 +177,6 @@ type BRGroup = {
   permissions: {
     join: string,
   },
-  featured?: {
-    [key: string]: BRGroupFeature,
-  },
-  playlists?: {
-    [key: string]: BRGroupPlaylist,
-  },
-  recentlyPlayed?: {
-    [key: string]: BRGroupRecent,
-  },
-  users?: {
-    [key: string]: BRGroupUser,
-  },
 };
 
 type BRGroupFeature = {
@@ -272,12 +224,6 @@ type BRPlaylist = {
     id: string,
     type: string,
     name: string,
-  },
-  tracks?: {
-    [key: string]: BRPlaylistTrack,
-  },
-  users?: {
-    [key: string]: BRPlaylistUser,
   },
 };
 
@@ -342,18 +288,6 @@ type BRSession = {
     queue: number,
     previouslyPlayed: number,
     users: number,
-  },
-  messages?: {
-    [key: string]: BRSessionMessage,
-  },
-  previouslyPlayed?: {
-    [key: string]: BRSessionPrevious,
-  },
-  queue?: {
-    [key: string]: BRSessionQueueTrack,
-  },
-  users?: {
-    [key: string]: BRSessionUser,
   },
 };
 
@@ -457,15 +391,6 @@ type BRSessionSetting = {
 type BRTrack = {
   id: string,
   plays: number,
-  conversations?: {
-    [key: string]: BRTrackConversation,
-  },
-  playlists?: {
-    [key: string]: BRTrackPlaylist,
-  },
-  users?: {
-    [key: string]: BRTrackUser,
-  },
 };
 
 type BRTrackConversation = {
@@ -522,42 +447,6 @@ type BRUser = {
     memberInGroups: number,
     recentlyPlayed: number,
     searches: number,
-  },
-  +albums?: {
-    [key: string]: BRUserAlbum,
-  },
-  +artists?: {
-    [key: string]: BRUserArtist,
-  },
-  +blockedUsers?: {
-    [key: string]: BRUserBlockedUser,
-  },
-  +conversations?: {
-    [key: string]: BRUserConversation,
-  },
-  +followers?: {
-    [key: string]: BRUserFollower,
-  },
-  +following?: {
-    [key: string]: BRUserFollowing,
-  },
-  +groups?: {
-    [key: string]: BRUserGroup,
-  },
-  +playlists?: {
-    [key: string]: BRUserPlaylist,
-  },
-  +recentlyPlayed?: {
-    [key: string]: BRUserRecent,
-  },
-  +searches?: {
-    [key: string]: BRUserSearch,
-  },
-  +sessions?: {
-    [key: string]: BRUserSession,
-  },
-  +tracks?: {
-    [key: string]: BRUserTrack,
   },
 };
 

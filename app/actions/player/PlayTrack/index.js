@@ -14,7 +14,8 @@ import Spotify from 'rn-spotify-sdk';
 import GeoFirestore from 'geofirestore';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-// import {addRecentTrack} from '../../tracks/AddRecentTrack';
+import {addRecentTrack} from '../../tracks/AddRecentTrack';
+import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/player';
 import {
   type FirestoreInstance,
@@ -34,19 +35,17 @@ type Track = {
   trackID: string,
   durationMS: number,
   name: string,
+  trackNumber: number,
+  durationMS: number,
+  artists: Array<TrackArtist>,
   album: {
     id: string,
     name: string,
-    small?: string,
-    medium?: string,
-    large?: string,
+    small: string,
+    medium: string,
+    large: string,
+    artists: Array<TrackArtist>,
   },
-  artists: Array<
-    {
-      id: string,
-      name: string,
-    }
-  >,
 };
 
 type Session = {
@@ -66,23 +65,21 @@ type Session = {
     prevQueueID?: string,
     nextQueueID?: string,
     track: {
+      trackID?: string,
+      timeAdded?: string | number,
       id: string,
       name: string,
+      trackNumber: number,
       durationMS: number,
-      userID: string,
+      artists: Array<TrackArtist>,
       album: {
         id: string,
         name: string,
         small: string,
         medium: string,
         large: string,
+        artists: Array<TrackArtist>,
       },
-      artists: Array<
-        {
-          id: string,
-          name: string,
-        }
-      >,
     },
   }
 };
@@ -179,13 +176,13 @@ export function playTrack(
     const {totalPlayed, current, coords} = session;
 
     let batch = firestore.batch();
-    
+
     try {
       if (!track.id) {
-        const queueDoc = sessionQueueRef.doc();
-        const queueID = queueDoc.id;
+        const queueDoc: FirestoreDoc = sessionQueueRef.doc();
+        const queueID: string = queueDoc.id;
         track = updateObject(track, {id: queueID});
-      };
+      }
 
       batch.update(sessionUserRef, {paued: false, progress: 0});
       batch.update(
@@ -212,7 +209,7 @@ export function playTrack(
       );
 
       if (context && current) {
-        // dispatch(addRecentTrack(user.id, current.track));
+        dispatch(addRecentTrack(user.id, current.track));
 
         batch.set(
           sessionPrevRef.doc(current.id),
@@ -243,8 +240,8 @@ export function playTrack(
 
         if (current.nextQueueID) {
           batch.update(sessionQueueRef.doc(current.nextQueueID), {prevQueueID: track.id});
-        };
-      };
+        }
+      }
 
       const promises = [
         batch.commit(),

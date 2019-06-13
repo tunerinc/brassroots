@@ -18,6 +18,11 @@ import {
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
 
+type Session = {|
+  +id: string,
+  +total: number,
+|};
+
 /**
  * Async function that deletes a track from a session's queue
  * 
@@ -37,10 +42,7 @@ import {
  * @rejects  {Error}                 The error which caused the delete queue track failure
  */
 export function deleteQueueTrack(
-  session: {
-    id: string,
-    total: number,
-  },
+  session: Session,
   queueID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {

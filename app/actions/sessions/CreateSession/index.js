@@ -18,6 +18,7 @@ import {addCurrentLocation} from '../../users/AddCurrentLocation';
 import {playTrack} from '../../player/PlayTrack';
 import {addCurrentContext} from '../../queue/AddCurrentContext';
 import * as actions from './actions';
+import {type TrackArtist} from '../../../reducers/tracks';
 import {
   type ThunkAction,
   type Session,
@@ -31,37 +32,30 @@ import {
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
 
-type User = {
+type User = {|
   id: string,
   displayName: string,
   profileImage: string,
   totalFollowers: number,
-};
+|};
 
-type Track = {
+type Track = {|
+  trackID?: string,
+  timeAdded?: string | number,
   id: string,
   name: string,
+  trackNumber: number,
   durationMS: number,
+  artists: Array<TrackArtist>,
   album: {
     id: string,
     name: string,
-    small?: string,
-    medium?: string,
-    large?: string,
-    artists: Array<
-      {
-        id: string,
-        name: string,
-      }
-    >,
+    small: string,
+    medium: string,
+    large: string,
+    artists: Array<TrackArtist>,
   },
-  artists: Array<
-    {
-      id: string,
-      name: string,
-    }
-  >,
-};
+|};
 
 type Coords = {
   lat?: number,
@@ -90,6 +84,7 @@ type Coords = {
  * @param    {string}   track.id                   The Spotify id of the track to play
  * @param    {string}   track.name                 The name of the track to play
  * @param    {number}   track.durationMS           The duration in ms of the track
+ * @param    {number}   track.trackNumber          The track number of the track in its respective album
  * @param    {object}   track.album                The album object of the respective track
  * @param    {string}   track.album.id             The Spotify id of the track's album
  * @param    {string}   track.album.name           The name of the track's album

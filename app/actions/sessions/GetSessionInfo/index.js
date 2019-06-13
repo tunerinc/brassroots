@@ -9,9 +9,9 @@
  * @module GetSessionInfo
  */
 
-import {addPeople} from '../../users/AddPeople';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {addPeople} from '../../users/AddPeople';
 import {type ThunkAction} from '../../../reducers/sessions';
 import {
   type FirestoreInstance,

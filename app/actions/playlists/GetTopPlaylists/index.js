@@ -9,7 +9,7 @@
  * @module GetTopPlaylists
  */
 
-// import {addUserTopPlaylists} from '../../users/AddUserTopPlaylists';
+import {addUserTopPlaylists} from '../../users/AddUserTopPlaylists';
 import {addPlaylists} from '../AddPlaylists';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/playlists';

@@ -11,7 +11,7 @@
 
 import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
-// import {addTracks} from '../../tracks/AddTracks';
+import {addTracks} from '../../tracks/AddTracks';
 import {addPlaylistTracks} from '../AddPlaylistTracks';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/playlists';

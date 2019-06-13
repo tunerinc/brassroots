@@ -12,8 +12,9 @@
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
 import {GeoFirestore} from 'geofirestore';
-// import {addRecentTrack} from '../../tracks/AddRecentTrack';
+import {addRecentTrack} from '../../tracks/AddRecentTrack';
 import * as actions from './actions';
+import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/player';
 import {
   type FirestoreInstance,
@@ -44,22 +45,21 @@ type Session = {
     prevTrackID: string,
     nextTrackID: string,
     track: {
+      trackID?: string,
+      timeAdded?: string | number,
       id: string,
       name: string,
+      trackNumber: number,
       durationMS: number,
+      artists: Array<TrackArtist>,
       album: {
         id: string,
         name: string,
-        small?: string,
-        medium?: string,
-        large?: string,
+        small: string,
+        medium: string,
+        large: string,
+        artists: Array<TrackArtist>,
       },
-      artists: Array<
-        {
-          id: string,
-          name: string,
-        }
-      >,
     },
   },
   prevTrack: {
@@ -110,6 +110,7 @@ type Session = {
  * @param    {string}   session.current.nextTrackID
  * @param    {string}   session.current.track.id
  * @param    {string}   session.current.track.name
+ * @param    {number}   session.current.track.trackNumber
  * @param    {number}   session.current.track.durationMS
  * @param    {object}   session.current.track.album
  * @param    {string}   session.current.track.album.id
@@ -157,7 +158,7 @@ export function previousTrack(
     const {prevTrackID, ...track} = prevTrack;
 
     try {
-      // dispatch(addRecentTrack(user.id, current.track));
+      dispatch(addRecentTrack(user.id, current.track));
 
       const queueDoc = sessionQueueRef.doc();
       const queueID = queueDoc.id;
@@ -194,7 +195,7 @@ export function previousTrack(
 
       if (current.nextTrackID) {
         batch.update(sessionQueueRef.doc(current.nextTrackID), {prevTrackID: queueID});
-      };
+      }
 
       batch.update(
         sessionRef,
@@ -244,6 +245,6 @@ export function previousTrack(
       );
     } catch (err) {
       dispatch(actions.previousTrackFailure(err));
-    };
+    }
   };
-};
+}

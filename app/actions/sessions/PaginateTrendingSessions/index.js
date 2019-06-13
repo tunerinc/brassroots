@@ -39,17 +39,9 @@ import {type Album} from '../../../reducers/albums';
 import {type Artist} from '../../../reducers/artists';
 import {type Track} from '../../../reducers/tracks';
 
-type Sessions = {
-  +[id: string]: Session,
-};
-
-type Playlists = {
-  +[id: string]: Playlist,
-};
-
-type Users = {
-  +[id: string]: User,
-};
+type Sessions = {+[id: string]: Session};
+type Playlists = {+[id: string]: Playlist};
+type Users = {+[id: string]: User};
 
 type Coords = {
   coords?: {
@@ -58,17 +50,11 @@ type Coords = {
   },
 };
 
-type Music = {
-  tracks: {
-    +[id: string]: Track,
-  },
-  albums: {
-    +[id: string]: Album,
-  },
-  artists: {
-    +[id: string]: Artist,
-  },
-};
+type Music = {|
+  +tracks: {+[id: string]: Track},
+  +albums: {+[id: string]: Album},
+  +artists: {+[id: string]: Artist},
+|};
 
 /**
  * Async function that paginates trending sessions from Ultrasound

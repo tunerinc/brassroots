@@ -13,7 +13,7 @@ import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
 import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import {Actions} from 'react-native-router-flux';
-// import {addCurrentUser} from '../../users/AddCurrentUser';
+import {addCurrentUser} from '../../users/AddCurrentUser';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/onboarding';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
@@ -128,21 +128,21 @@ export function createProfile(
 
       await batch.commit();
 
-      // dispatch(
-      //   addCurrentUser(
-      //     {
-      //       ...newUserProfile,
-      //       spotifyAccountStatus: user.product,
-      //       coverImage: '',
-      //       bio: '',
-      //       location: '',
-      //       website: '',
-      //       favoriteTrackID: null,
-      //       totalFollowers: 0,
-      //       totalFollowing: 0,
-      //     },
-      //   ),
-      // );
+      dispatch(
+        addCurrentUser(
+          {
+            ...newUserProfile,
+            spotifyAccountStatus: user.product,
+            coverImage: '',
+            bio: '',
+            location: '',
+            website: '',
+            favoriteTrackID: null,
+            totalFollowers: 0,
+            totalFollowing: 0,
+          },
+        ),
+      );
 
       dispatch(actions.createProfileSuccess());
       Actions.createProfile();

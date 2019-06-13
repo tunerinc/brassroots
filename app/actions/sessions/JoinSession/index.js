@@ -33,38 +33,39 @@ type Session = {
     +name: string,
     +image: string,
   },
-  current?: string,
-  total?: number,
-  track?: {
-    trackID?: string,
-    timeAdded?: string | number,
-    id: string,
-    name: string,
-    trackNumber: number,
-    durationMS: number,
-    artists: Array<TrackArtist>,
-    album: {
-      id: string,
-      name: string,
-      small: string,
-      medium: string,
-      large: string,
-      artists: Array<TrackArtist>,
+  +current?: string,
+  +total?: number,
+  +track?: {
+    +trackID?: string,
+    +timeAdded?: string | number,
+    +id: string,
+    +name: string,
+    +trackNumber: number,
+    +durationMS: number,
+    +artists: Array<TrackArtist>,
+    +album: {
+      +id: string,
+      +name: string,
+      +small: string,
+      +medium: string,
+      +large: string,
+      +artists: Array<TrackArtist>,
     },
   },
-  coords?: {
-    lat: number,
-    lon: number,
+  +coords?: {
+    +lat: number,
+    +lon: number,
   },
-  chatUnsubscribe: ?() => void,
-  queueUnsubscribe: ?() => void,
+  +chatUnsubscribe: ?() => void,
+  +infoUnsubscribe: ?() => void,
+  +queueUnsubscribe: ?() => void,
 };
 
-type User = {
-  id: string,
-  displayName: string,
-  profileImage: string,
-};
+type User = {|
+  +id: string,
+  +displayName: string,
+  +profileImage: string,
+|};
 
 /**
  * Async function which joins a session for the current user
@@ -110,20 +111,30 @@ export function joinSession(
         total,
         track,
         chatUnsubscribe,
+        infoUnsubscribe,
         queueUnsubscribe,
       } = session;
 
-      if (owner && current && total && track && chatUnsubscribe && queueUnsubscribe) {
+      if (
+        owner
+        && current
+        && total
+        && track
+        && chatUnsubscribe
+        && infoUnsubscribe
+        && queueUnsubscribe
+      ) {
         const sessionToLeave = {
           coords,
           total,
           owner,
           track,
           chatUnsubscribe,
+          infoUnsubscribe,
           queueUnsubscribe,
           id: current,
         };
-  
+
         dispatch(
           leaveSession(
             user.id,

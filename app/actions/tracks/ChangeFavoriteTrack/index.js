@@ -9,7 +9,7 @@
  * @module ChangeFavoriteTrack
  */
 
-// import {addFavoriteTrack} from '../../users/AddFavoriteTrack';
+import {addFavoriteTrack} from '../../users/AddFavoriteTrack';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/tracks';
 import {type FirestoreInstance} from '../../../utils/firebaseTypes';
@@ -40,7 +40,7 @@ export function changeFavoriteTrack(
 
     try {
       await firestore.collection('users').doc(userID).update({favoriteTrackID: trackID});
-      // dispatch(addFavoriteTrack(trackID));
+      dispatch(addFavoriteTrack(trackID));
       dispatch(actions.changeFavoriteTrackSuccess());
     } catch (err) {
       dispatch(actions.changeFavoriteTrackFailure(err));

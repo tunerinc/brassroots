@@ -10,6 +10,7 @@
  */
 
 import * as actions from './actions';
+import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/queue';
 import {
   type FirestoreInstance,
@@ -18,42 +19,33 @@ import {
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
 
-type Session = {
-  id: string,
-  prevQueueID: string,
-  totalQueue: number
-};
+type Session = {|
+  +id: string,
+  +prevQueueID: string,
+  +totalQueue: number
+|};
 
-type Track = {
-  id: string,
-  name: string,
-  durationMS: number,
-  album: {
-    id: string,
-    name: string,
-    small: string,
-    medium: string,
-    large: string,
-    artists: Array<
-      {
-        id: string,
-        name: string,
-      }
-    >,
+type Track = {|
+  +id: string,
+  +name: string,
+  +trackNumber: number,
+  +durationMS: number,
+  +artists: Array<TrackArtist>,
+  +album: {
+    +id: string,
+    +name: string,
+    +small: string,
+    +medium: string,
+    +large: string,
+    +artists: Array<TrackArtist>,
   },
-  artists: Array<
-    {
-      id: string,
-      name: string,
-    }
-  >,
-};
+|};
 
-type User = {
-  id: string,
-  displayName: string,
-  profileImage: string,
-};
+type User = {|
+  +id: string,
+  +displayName: string,
+  +profileImage: string,
+|};
 
 /**
  * Async function that adds a track to the current session's queue

@@ -11,10 +11,10 @@
 
 import Spotify from 'rn-spotify-sdk';
 import {Actions, ActionConst} from 'react-native-router-flux';
-// import {setOnboarding} from '../../onboarding/SetOnboarding';
-// import {getUserSettings} from '../GetUserSettings';
-// import {createProfile} from '../../onboarding/CreateProfile';
-// import {addCurrentUser} from '../../users/AddCurrentUser';
+import {setOnboarding} from '../../onboarding/SetOnboarding';
+import {getUserSettings} from '../GetUserSettings';
+import {createProfile} from '../../onboarding/CreateProfile';
+import {addCurrentUser} from '../../users/AddCurrentUser';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/settings';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
@@ -55,8 +55,8 @@ export function authorizeUser(): ThunkAction {
 
       if (userDocs.empty) {
         dispatch(actions.authorizeUserSuccess());
-        // dispatch(setOnboarding(true));
-        // dispatch(createProfile(spotifyUser));
+        dispatch(setOnboarding(true));
+        dispatch(createProfile(spotifyUser));
       } else {
         const users = userDocs.docs.map(doc => doc.data());
         const user = {
@@ -77,11 +77,11 @@ export function authorizeUser(): ThunkAction {
         }
 
         dispatch(actions.authorizeUserSuccess());
-        // dispatch(addCurrentUser(user));
-        // dispatch(setOnboarding(false));
-        // dispatch(getUserSettings(user.id));
+        dispatch(addCurrentUser(user));
+        dispatch(setOnboarding(false));
+        dispatch(getUserSettings(user.id));
         Actions.root({type: ActionConst.RESET});
-      };
+      }
     } catch (err) {
       dispatch(actions.authorizeUserFailure(err));
     }

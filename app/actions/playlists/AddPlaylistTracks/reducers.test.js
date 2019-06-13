@@ -9,6 +9,11 @@ import reducer, {initialState} from '../../../reducers/playlists';
 import * as actions from '../AddPlaylistTracks';
 import updateObject from '../../../utils/updateObject';
 
+type PlaylistTrack = {|
+  +trackID: string,
+  +userID: string,
+|};
+
 describe('add playlist tracks reducer', () => {
   it('should return initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
@@ -16,12 +21,7 @@ describe('add playlist tracks reducer', () => {
 
   it('should handle ADD_PLAYLIST_TRACKS', () => {
     const playlistID: string = 'foo';
-    const tracks: Array<
-      {
-        trackID: string,
-        userID: string,
-      }
-    > = [
+    const tracks: Array<PlaylistTrack> = [
       {trackID: 'foo', userID: 'foo'},
       {trackID: 'bar', userID: 'bar'},
     ];
