@@ -4,7 +4,7 @@
  * @module AddMusicItems
  */
 
-import updateObject from './update_object';
+import updateObject from './updateObject';
 
 /**
  * @constant

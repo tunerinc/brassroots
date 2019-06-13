@@ -1,19 +1,10 @@
 'use strict';
 
 /**
- * @format
- * @flow
- */
-
-/**
  * @module AddAlbums
  */
 
 import * as types from '../types';
-import {
-  type Action,
-  type Album,
-} from '../../../reducers/albums';
 
 /**
  * Add albums retrieved from Ultrasound
@@ -27,9 +18,7 @@ import {
  *
  * @returns {object}        Redux action with the type of ADD_ALBUMS and the retrieved albums
  */
-export function addAlbums(
-  albums: {+[key: string]: Album},
-): Action {
+export function addAlbums(albums) {
   return {
     type: types.ADD_ALBUMS,
     albums,

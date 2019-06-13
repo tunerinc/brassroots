@@ -12,8 +12,8 @@
 import getMySavedAlbums from "../../../utils/spotifyAPI/getMySavedAlbums";
 import updateObject from '../../../utils/updateObject';
 import {addAlbums} from '../AddAlbums';
-// import {addArtists} from '../../artists/AddArtists';
-// import {addTracks} from '../../tracks/AddTracks';
+import {addArtists} from '../../artists/AddArtists';
+import {addTracks} from '../../tracks/AddTracks';
 import * as actions from './actions';
 import {
   lastUpdated,
@@ -137,9 +137,9 @@ export function getAlbums(
         });
       }, {});
 
-      // dispatch(addArtists(artists));
+      dispatch(addArtists(artists));
       dispatch(addAlbums(albums));
-      // dispatch(addTracks(tracks));
+      dispatch(addTracks(tracks));
       dispatch(actions.getAlbumsSuccess(albumsFromSpotify.map(a => a.id)));
     } catch (err) {
       dispatch(actions.getAlbumsFailure(err));

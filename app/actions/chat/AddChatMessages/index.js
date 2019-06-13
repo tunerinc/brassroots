@@ -1,11 +1,6 @@
 'use strict';
 
 /**
- * @format
- * @flow
- */
-
-/**
  * @module AddChatMessages
  */
 
@@ -27,9 +22,7 @@ import {
  * 
  * @returns {object}          Redux action with the type of ADD_CHAT_MESSAGES and the chat message objects
  */
-export function addChatMessages(
-  messages: {[id: string]: ChatMessage},
-): Action {
+export function addChatMessages(messages) {
   return {
     type: types.ADD_CHAT_MESSAGES,
     messages,

@@ -9,7 +9,7 @@
  * @module GetArtistTopListeners
  */
 
-// import {addPeople} from '../../users/AddPeople';
+import {addPeople} from '../../users/AddPeople';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/artists';
@@ -72,7 +72,7 @@ export function getArtistTopListeners(
           }
         }, {});
 
-        // dispatch(addPeople(users));
+        dispatch(addPeople(users));
         dispatch(actions.getArtistTopListenersSuccess(artistID, topUserDocs.docs.map(doc => doc.id)));
       }
     } catch (err) {

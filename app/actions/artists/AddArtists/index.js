@@ -1,19 +1,10 @@
 'use strict';
 
 /**
- * @format
- * @flow
- */
-
-/**
  * @module AddArtists
  */
 
 import * as types from '../types';
-import {
-  type Artist,
-  type Action,
-} from '../../../reducers/artists';
 
 /**
   * Add artists retrieved from Ultrasound
@@ -27,9 +18,7 @@ import {
   *
   * @returns {object}         Redux action with the type of ADD_ARTISTS and the retrieved artists
   */
-export function addArtists(
-  artists: {+[id: string]: Artist},
-): Action {
+export function addArtists(artists) {
   return {
     type: types.ADD_ARTISTS,
     artists,

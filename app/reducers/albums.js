@@ -9,6 +9,10 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
+import {type Action as ArtistAction} from './artists';
+import {type Action as PlaylistAction} from './playlists';
+import {type Action as TrackAction} from './tracks';
+import {type Action as UserAction} from './users';
 import * as types from '../actions/albums/types';
 
 // Case Functions
@@ -21,10 +25,11 @@ import * as incrementAlbumPlays from '../actions/albums/IncrementAlbumPlays/redu
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction = Action | ArtistAction | PlaylistAction | TrackAction | UserAction;
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type Artist = {|
   +id?: string,

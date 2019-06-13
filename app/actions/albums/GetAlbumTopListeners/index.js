@@ -9,7 +9,7 @@
  * @module GetAlbumTopListeners
  */
 
-// import {addPeople} from '../../users/AddPeople';
+import {addPeople} from '../../users/AddPeople';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/albums';
@@ -21,10 +21,10 @@ import {
 } from '../../../utils/firebaseTypes';
 
 type Users = {
-  [id: string]: {
-    id: string,
-    username: string,
-    profileImage: string,
+  +[id: string]: {
+    +id: string,
+    +displayName: string,
+    +profileImage: string,
   },
 };
 
@@ -62,14 +62,14 @@ export function getAlbumTopListeners(
         const userDocs = await Promise.all(promises);
         const users: Users = userDocs.reduce((userList, userDoc) => {
           if (userDoc.exists) {
-            const {id, username, profileImage} = userDoc.data();
-            return updateObject(userList, {[id]: {id, username, profileImage}});
+            const {id, displayName, profileImage} = userDoc.data();
+            return updateObject(userList, {[id]: {id, displayName, profileImage}});
           } else {
             throw new Error('Unable to retrieve user from Brassroots');
           }
         }, {});
 
-        // dispatch(addPeople(users));
+        dispatch(addPeople(users));
         dispatch(actions.getAlbumTopListenersSuccess(albumID, topUserDocs.docs.map(doc => doc.id)));
       }
     } catch (err) {

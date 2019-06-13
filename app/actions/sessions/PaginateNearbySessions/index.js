@@ -5,15 +5,15 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import addMusicItems from '../../../utils/add_music_items';
-import calculateDistance from '../../../utils/calculate_distance';
+import addMusicItems from '../../../utils/addMusicItems';
+import calculateDistance from '../../../utils/calculateDistance';
+import updateObject from '../../../utils/updateObject';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
 import {addTracks} from '../../tracks/AddTracks';
 import {addPlaylists} from '../../playlists/AddPlaylists';
 import {addPeople} from '../../users/AddPeople';
 import {addSessions} from '../AddSessions';
-import updateObject from '../../../utils/update_object';
 import * as actions from './actions';
 
 /**

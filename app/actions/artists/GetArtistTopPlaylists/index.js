@@ -9,8 +9,8 @@
  * @module GetArtistTopPlaylists
  */
 
-// import {addPlaylists} from '../../playlists/AddPlaylists';
-// import {addPeople} from '../../users/AddPeople';
+import {addPlaylists} from '../../playlists/AddPlaylists';
+import {addPeople} from '../../users/AddPeople';
 import getPlaylist from '../../../utils/spotifyAPI/getPlaylist';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
@@ -127,8 +127,8 @@ export function getArtistTopPlaylists(
           });
         }
 
-        // dispatch(addPlaylists(playlists));
-        // dispatch(addPeople(users));
+        dispatch(addPlaylists(playlists));
+        dispatch(addPeople(users));
         dispatch(actions.getArtistTopPlaylistsSuccess(artistID, playlistIDs));
       }
     } catch (err) {

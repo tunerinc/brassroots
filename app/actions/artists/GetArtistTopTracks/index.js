@@ -12,7 +12,7 @@
 import Spotify from 'rn-spotify-sdk';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../AddArtists';
-// import {addTracks} from '../../tracks/AddTracks';
+import {addTracks} from '../../tracks/AddTracks';
 import addMusicItems from '../../../utils/addMusicItems';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/artists';
@@ -66,7 +66,7 @@ export function getArtistTopTracks(
 
         dispatch(addAlbums(music.albums));
         dispatch(addArtists(music.artists));
-        // dispatch(addTracks(music.tracks));
+        dispatch(addTracks(music.tracks));
         dispatch(actions.getArtistTopTracksSuccess(artistID, trackIDs));
       }
     } catch (err) {

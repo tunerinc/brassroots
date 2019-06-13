@@ -1,19 +1,10 @@
 'use strict';
 
 /**
- * @format
- * @flow
- */
-
-/**
  * @module AddPeople
  */
 
 import * as types from '../types';
-import {
-  type User,
-  type Action,
-} from '../../../reducers/users';
 
 /**
  * Adds users retrieved from Ultrasound
@@ -27,9 +18,7 @@ import {
  *
  * @returns {object}        Redux action with the type of ADD_PEOPLE and the people to add to the app
  */
-export function addPeople(
-  people: {+[id: string]: User},
-): Action {
+export function addPeople(people) {
   return {
     type: types.ADD_PEOPLE,
     people,

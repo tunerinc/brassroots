@@ -1,19 +1,10 @@
 'use strict';
 
 /**
- * @format
- * @flow
- */
-
-/**
  * @module AddTracks
  */
 
 import * as types from '../types';
-import {
-  type Track,
-  type Action,
-} from '../../../reducers/tracks';
 
 /**
  * Adds tracks retrieved from Spotify
@@ -27,9 +18,7 @@ import {
  *
  * @returns {object}        Redux action with the type of ADD_TRACKS and the track objects to add
  */
-export function addTracks(
-  tracks: {+[id: string]: Track},
-): Action {
+export function addTracks(tracks) {
   return {
     type: types.ADD_TRACKS,
     tracks,

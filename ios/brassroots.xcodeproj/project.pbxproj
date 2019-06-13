@@ -42,6 +42,10 @@
 		609F7FC92269E25100E1054E /* SpotifyAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609F7FC62269E25100E1054E /* SpotifyAuthentication.framework */; };
 		609F7FCA2269E25100E1054E /* SpotifyMetadata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609F7FC72269E25100E1054E /* SpotifyMetadata.framework */; };
 		609F7FCB2269E25100E1054E /* SpotifyAudioPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609F7FC82269E25100E1054E /* SpotifyAudioPlayback.framework */; };
+		60FE8A5F22B0D08A008CFD62 /* Muli-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60FE8A3422B0D089008CFD62 /* Muli-Italic.ttf */; };
+		60FE8A6022B0D08A008CFD62 /* Muli-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60FE8A5C22B0D08A008CFD62 /* Muli-Bold.ttf */; };
+		60FE8A6122B0D08A008CFD62 /* Muli-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60FE8A5D22B0D08A008CFD62 /* Muli-SemiBold.ttf */; };
+		60FE8A6222B0D08A008CFD62 /* Muli.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60FE8A5E22B0D08A008CFD62 /* Muli.ttf */; };
 		639742D08ACB481CBE3C7162 /* libRNSpotify.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C18F40805246849585BD13 /* libRNSpotify.a */; };
 		7E152C97198649909304B9EC /* libRNEventEmitter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D3954CB188FB4CC3BDAD4AE4 /* libRNEventEmitter.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -372,6 +376,10 @@
 		609F7FC62269E25100E1054E /* SpotifyAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyAuthentication.framework; path = "../node_modules/rn-spotify-sdk/ios/external/SpotifySDK/SpotifyAuthentication.framework"; sourceTree = "<group>"; };
 		609F7FC72269E25100E1054E /* SpotifyMetadata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyMetadata.framework; path = "../node_modules/rn-spotify-sdk/ios/external/SpotifySDK/SpotifyMetadata.framework"; sourceTree = "<group>"; };
 		609F7FC82269E25100E1054E /* SpotifyAudioPlayback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyAudioPlayback.framework; path = "../node_modules/rn-spotify-sdk/ios/external/SpotifySDK/SpotifyAudioPlayback.framework"; sourceTree = "<group>"; };
+		60FE8A3422B0D089008CFD62 /* Muli-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Italic.ttf"; sourceTree = "<group>"; };
+		60FE8A5C22B0D08A008CFD62 /* Muli-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Bold.ttf"; sourceTree = "<group>"; };
+		60FE8A5D22B0D08A008CFD62 /* Muli-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-SemiBold.ttf"; sourceTree = "<group>"; };
+		60FE8A5E22B0D08A008CFD62 /* Muli.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Muli.ttf; sourceTree = "<group>"; };
 		65C5C85321A7BAA3576A5469 /* Pods-brassroots.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassroots.release.xcconfig"; path = "Target Support Files/Pods-brassroots/Pods-brassroots.release.xcconfig"; sourceTree = "<group>"; };
 		75B03CE3EE3DB794B90A5B55 /* libPods-brassroots.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-brassroots.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		770D7A517463FAB2197EECE9 /* Pods-brassrootsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassrootsTests.debug.xcconfig"; path = "Target Support Files/Pods-brassrootsTests/Pods-brassrootsTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -683,6 +691,10 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				60FE8A5C22B0D08A008CFD62 /* Muli-Bold.ttf */,
+				60FE8A3422B0D089008CFD62 /* Muli-Italic.ttf */,
+				60FE8A5D22B0D08A008CFD62 /* Muli-SemiBold.ttf */,
+				60FE8A5E22B0D08A008CFD62 /* Muli.ttf */,
 				13B07FAE1A68108700A75B9A /* brassroots */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* brassrootsTests */,
@@ -1191,7 +1203,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60FE8A6122B0D08A008CFD62 /* Muli-SemiBold.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				60FE8A6222B0D08A008CFD62 /* Muli.ttf in Resources */,
+				60FE8A6022B0D08A008CFD62 /* Muli-Bold.ttf in Resources */,
+				60FE8A5F22B0D08A008CFD62 /* Muli-Italic.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				609F7F562269DD5000E1054E /* GoogleService-Info.plist in Resources */,
 			);

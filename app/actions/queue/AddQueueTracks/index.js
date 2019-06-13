@@ -1,19 +1,10 @@
 'use strict';
 
 /**
- * @format
- * @flow
- */
-
-/**
  * @module AddQueueTracks
  */
 
 import * as types from '../types';
-import {
-  type QueueTrack,
-  type Action,
-} from '../../../reducers/queue';
 
 /**
  * Adds queue tracks to Redux
@@ -27,9 +18,7 @@ import {
  * 
  * @returns {object}        Redux action with the type of ADD_QUEUE_TRACKS and the queue tracks to add
  */
-export function addQueueTracks(
-  tracks: {+[id: string]: QueueTrack},
-): Action {
+export function addQueueTracks(tracks) {
   return {
     type: types.ADD_QUEUE_TRACKS,
     tracks,

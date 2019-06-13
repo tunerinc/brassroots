@@ -1,19 +1,10 @@
 'use strict';
 
 /**
- * @format
- * @flow
- */
-
-/**
  * @module AddPlaylists
  */
 
 import * as types from '../types';
-import {
-  type Action,
-  type Playlist,
-} from '../../../reducers/playlists';
 
 /**
  * Adds the current user's playlists retrieved from Drizzle
@@ -27,9 +18,7 @@ import {
  *
  * @returns {object}           Redux action with the type of ADD_PLAYLISTS and the retrieved playlists
  */
-export function addPlaylists(
-  playlists: {+[id: string]: Playlist},
-): Action {
+export function addPlaylists(playlists) {
   return {
     type: types.ADD_PLAYLISTS,
     playlists,

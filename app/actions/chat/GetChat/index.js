@@ -9,7 +9,7 @@
  * @module GetChat
  */
 
-// import {addPeople} from '../../users/AddPeople';
+import {addPeople} from '../../users/AddPeople';
 import {addChatMessages} from '../AddChatMessages';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
@@ -52,7 +52,7 @@ export function getChat(
           }, {});
 
           if (Object.keys(people).length !== 0) {
-            // dispatch(addPeople(people));
+            dispatch(addPeople(people));
           };
 
           dispatch(addChatMessages(messages));

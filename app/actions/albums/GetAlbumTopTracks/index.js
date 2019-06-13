@@ -6,8 +6,8 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-// import {addArtists} from '../../artists/AddArtists';
-// import {addTracks} from '../../tracks/AddTracks';
+import {addArtists} from '../../artists/AddArtists';
+import {addTracks} from '../../tracks/AddTracks';
 import addMusicItems from '../../../utils/addMusicItems';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/albums';
@@ -61,8 +61,8 @@ export function getAlbumTopTracks(
 
         music = addMusicItems(tracksRes.tracks, music);
 
-        // dispatch(addArtists(music.artists));
-        // dispatch(addTracks(music.tracks));
+        dispatch(addArtists(music.artists));
+        dispatch(addTracks(music.tracks));
         dispatch(actions.getAlbumTopTracksSuccess(albumID, trackIDs));
       }
     } catch (err) {
