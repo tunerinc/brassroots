@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import {View, Text, Image, TouchableHighlight} from 'react-native';
+import {View, Text, Image, TouchableHighlight, TouchableOpacity,} from 'react-native';
 import styles from './styles';
 import {type Context} from '../../reducers/queue';
 
@@ -95,9 +95,9 @@ export default class TrackCard extends React.PureComponent<Props, State> {
             <View>
               <Image style={styles.image} source={{uri: image}} />
               {editingFavorite &&
-                <View style={styles.imageFilter}>
+                <TouchableOpacity style={styles.imageFilter} disabled>
                   <MaterialIcons name='edit' style={styles.editIcon} />
-                </View>
+                </TouchableOpacity>
               }
             </View>
           }
@@ -177,7 +177,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
             </View>
           }
           {showFavoriteIcon && <Foundation name='star' size={25} style={styles.favoriteTrackIcon} />}
-          {showOptions &&
+          {(showOptions && openModal) &&
             <SimpleLineIcons
               name='options'
               style={styles.options}

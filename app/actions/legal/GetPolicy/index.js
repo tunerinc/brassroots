@@ -38,8 +38,8 @@ export function getPolicy(
 
     try {
       const policyURL: string = 'https://ps.tiunncer.com/policy';
-      const html: string = await fetchRemoteURL(policyURL, 'text');
-      dispatch(actions.getPolicySuccess(html));
+      // const html: string = await fetchRemoteURL(policyURL, 'text');
+      // dispatch(actions.getPolicySuccess(html));
     } catch (err) {
       dispatch(actions.getPolicyFailure(err));
     }

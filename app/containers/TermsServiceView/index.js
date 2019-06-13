@@ -97,22 +97,24 @@ class TermsServiceView extends React.Component {
         }
         {termsExists &&
           <ScrollView
-            style={styles.termsWrap}
+            style={styles.scrollContainer}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
             refreshControl={
               <RefreshControl refreshing={refreshingTerms} onRefresh={this.handleRefresh} />
             }
           >
-            {error && <Text>Unable to retrieve terms of service.</Text>}
-            {text !== '' &&
-              <HTML
-                html={text}
-                imagesMaxWidth={screenWidth}
-                baseFontStyle={{color: '#fefefe', fontFamily: 'Muli'}}
-                tagsStyles={{p: {margin: 0}}}
-              />
-            }
+            <View style={styles.scrollWrap}>
+              {error && <Text>Unable to retrieve terms of service.</Text>}
+              {text !== '' &&
+                <HTML
+                  html={text}
+                  imagesMaxWidth={screenWidth}
+                  baseFontStyle={{color: '#fefefe', fontFamily: 'Muli'}}
+                  tagsStyles={{p: {margin: 0}}}
+                />
+              }
+            </View>
           </ScrollView>
         }
       </View>

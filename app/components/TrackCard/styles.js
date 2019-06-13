@@ -40,11 +40,11 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   track: {
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 82,
+    height: 90,
     width: '100%',
   },
   wrap: {
@@ -52,8 +52,8 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     marginRight: 10,
   },
   editIcon: {
@@ -62,8 +62,8 @@ const styles: Styles = StyleSheet.create({
     fontSize: 40,
   },
   imageFilter: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     position: 'absolute',
     top: 0,
     left: 0,

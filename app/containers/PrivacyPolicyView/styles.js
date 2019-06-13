@@ -48,6 +48,7 @@ const styles: Styles = StyleSheet.create({
   nav: {
     flex: 1,
     flexDirection: 'row',
+    paddingTop: 15,
   },
   leftIcon: {
     flex: 1,
@@ -72,6 +73,7 @@ const styles: Styles = StyleSheet.create({
   },
   spinnerWrap: {
     flex: 1,
+    marginTop: 85,
     paddingHorizontal: 20,
     opacity: 0.3,
   },

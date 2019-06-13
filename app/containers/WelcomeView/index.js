@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {TouchableHighlight, Text, View, Image, Animated, Easing} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {Actions} from 'react-native-router-flux';
 import styles from './styles';
 
 // Users Action Creators
@@ -73,6 +74,20 @@ class WelcomeView extends React.Component {
         <TouchableHighlight style={styles.button} onPress={authorizeUser}>
           <Text style={styles.text}>LOGIN WITH SPOTIFY</Text>
         </TouchableHighlight>
+        <View style={styles.footnoteWrap}>
+          <View style={styles.footnote}>
+            <Text style={styles.footText}>By tapping the button above, you agree to the </Text>
+            <Text
+              style={styles.footLink}
+              onPress={Actions.welcomeTermsOfService}
+            >Terms of Service</Text>
+            <Text style={styles.footText}> and </Text>
+            <Text
+              style={styles.footLink}
+              onPress={Actions.welcomePrivacyPolicy}
+            >Privacy Policy.</Text>
+          </View>
+        </View>
       </View>
     );
   }

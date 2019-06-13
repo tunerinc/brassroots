@@ -45,6 +45,7 @@ interface Styles {
   photoButton: ViewStyleProp,
   roundPhotoWrap: ViewStyleProp,
   roundPhotoFilter: ViewStyleProp,
+  editIcon: TextStyleProp,
   editPhotoText: TextStyleProp,
   editCoverPhoto: ViewStyleProp,
 };
@@ -64,7 +65,7 @@ const styles: Styles = StyleSheet.create({
   },
   scrollWrap: {
     marginTop: HEADER_MAX_HEIGHT,
-    minHeight: screenHeight - HEADER_MIN_HEIGHT,
+    minHeight: screenHeight - HEADER_MIN_HEIGHT - 15,
   },
   favoriteWrapper: {
     borderColor: '#323232',
@@ -165,7 +166,8 @@ const styles: Styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(27,27,30,0.5)'
+    width: null,
+    backgroundColor: 'rgba(27,27,30,0.5)',
   },
   nav: {
     height: HEADER_MIN_HEIGHT,
@@ -251,6 +253,11 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(136,136,136,0.5)'
   },
+  editIcon: {
+    backgroundColor: 'transparent',
+    color: '#fefefe',
+    fontSize: 40,
+  },
   editPhotoText: {
     backgroundColor: 'transparent',
     textAlign: 'center',
@@ -263,7 +270,8 @@ const styles: Styles = StyleSheet.create({
   editCoverPhoto: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    color: '#fefefe'
   }
 });
 

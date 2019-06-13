@@ -20,6 +20,10 @@ interface Styles {
   text: TextStyleProp,
   loading: ViewStyleProp,
   loadingGif: ImageStyleProp,
+  footnoteWrap: ViewStyleProp,
+  footnote: ViewStyleProp,
+  footText: TextStyleProp,
+  footLink: TextStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -74,6 +78,27 @@ const styles: Styles = StyleSheet.create({
     height: 242,
     bottom: 115,
     justifyContent: 'center',
+  },
+  footnoteWrap: {
+    position: 'absolute',
+    bottom: 30,
+    left: 20,
+    right: 20,
+  },
+  footnote: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  footText: {
+    color: '#888',
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  footLink: {
+    color: '#2b6dc0',
+    fontSize: 14,
+    lineHeight: 18
   },
 });
 

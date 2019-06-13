@@ -173,12 +173,13 @@ class EditProfileView extends React.Component {
                 <TrackCard
                   albumName={album.name}
                   type='favorite'
-                  context={{displayName, id: albumID, name: albumName, type:'favorite'}}
+                  context={{displayName, id: track.albumID, name: album.name, type:'favorite'}}
                   editing={true}
                   image={album.small}
+                  name={track.name}
                   showFavoriteIcon={true}
                   showSquareImage={true}
-                  trackArtists={track.artists.map(a => a.name).join(', ')}
+                  artists={track.artists.map(a => a.name).join(', ')}
                 />
               </View>
             }

@@ -68,7 +68,9 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
                 {name}
               </Text>
               <Text style={styles.playerTrackSeparator}> • </Text>
-              {artists}
+              <Text>
+                {artists}
+              </Text>
             </Text>
             <Text numberOfLines={1} style={styles.playerSessionOwner}>
               {displayName}

@@ -74,7 +74,7 @@ const styles: Styles = StyleSheet.create({
   nav: {
     flex: 1,
     flexDirection: 'row',
-    paddingTop: 10,
+    paddingTop: 15,
   },
   leftIcon: {
     flex: 2,

@@ -133,25 +133,28 @@ class PlayerTabBar extends React.Component {
       sessions: {currentSessionID, sessionsByID},
       users: {currentUserID},
     } = this.props;
-    const {ownerID, nextToPlay, moreToPlay, previouslyPlayed} = sessionsByID[currentSessionID];
+    
+    if (currentSessionID && sessionsByID[currentSessionID]) {
+      const {ownerID, nextToPlay, moreToPlay, previouslyPlayed} = sessionsByID[currentSessionID];
 
-    // BackgroundTimer.clearInterval(this.progressInterval);
+      // BackgroundTimer.clearInterval(this.progressInterval);
 
-    // add seeking edge case when song close to end
+      // add seeking edge case when song close to end
 
-    if (ownerID === currentUserID) {
-      if (nextToPlay.length !== 0 || moreToPlay.length !== 0) {
-        nextTrack(
-          currentUserID,
-          {
-            id: currentSessionID,
-            moreToPlay,
-            totalNext: nextToPlay.length + 1,
-            totalPlayed: previouslyPlayed.length,
-          },
-        );
-      } else {
-        stopPlayer(currentSessionID);
+      if (ownerID === currentUserID) {
+        if (nextToPlay.length !== 0 || moreToPlay.length !== 0) {
+          nextTrack(
+            currentUserID,
+            {
+              id: currentSessionID,
+              moreToPlay,
+              totalNext: nextToPlay.length + 1,
+              totalPlayed: previouslyPlayed.length,
+            },
+          );
+        } else {
+          stopPlayer(currentSessionID);
+        }
       }
     }
   }
@@ -184,7 +187,10 @@ class PlayerTabBar extends React.Component {
   navToProfile() {
     const {sessions: {currentSessionID, sessionsByID}} = this.props;
     const currentSession = sessionsByID[currentSessionID];
-    Actions.libraryProfileMain({userToView: currentSession.ownerID});
+
+    if (currentSession) {
+      Actions.libraryProfileMain({userToView: currentSession.ownerID});
+    }
   }
 
   createButton({routeName}) {
@@ -211,7 +217,9 @@ class PlayerTabBar extends React.Component {
     } = this.props;
     const currentSession = sessionsByID[currentSessionID];
 
-    togglePause(currentUserID, currentSession.ownerID, currentSessionID, paused);
+    if (currentSession) {
+      togglePause(currentUserID, currentSession.ownerID, currentSessionID, paused);
+    }
   }
 
   render() {

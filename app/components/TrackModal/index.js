@@ -18,7 +18,7 @@ type Props = {|
   albumImage: string,
   trackID?: string,
   trackInQueue?: boolean,
-  isListenerOwner?: boolean,
+  isListenerOwner?: ?boolean,
 |};
 
 type State = {||};
@@ -61,7 +61,7 @@ export default class TrackModal extends React.PureComponent<Props, State> {
           </View>
         </View>
         <View style={styles.option}>
-          {isListenerOwner &&
+          {(typeof isListenerOwner === 'boolean' && isListenerOwner) &&
             <View>
               {!trackInQueue &&
                 <TouchableHighlight

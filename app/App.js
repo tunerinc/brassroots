@@ -121,7 +121,7 @@ export default class App extends React.Component<Props> {
       <Provider store={store}>
         <RouterWithRedux>
           <Modal>
-          <Scene key='welcome' hideNavBar>
+            <Scene key='welcome' hideNavBar>
               <Scene
                 key='welcomeMain'
                 type='jump'

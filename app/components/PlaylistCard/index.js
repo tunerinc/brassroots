@@ -54,7 +54,7 @@ export default class PlaylistCard extends React.PureComponent<Props, State> {
             </Text>
             {typeof ownerName === 'string' &&
               <Text numberOfLines={1} style={styles.owner}>
-                by <Text>{ownerName}</Text>
+                by {ownerName}
               </Text>
             }
           </View>

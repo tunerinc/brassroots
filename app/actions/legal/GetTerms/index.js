@@ -38,8 +38,8 @@ export function getTerms(
 
     try {
       const termsURL: string = 'https://ps.tiunncer.com/terms';
-      const html: string = await fetchRemoteURL(termsURL, 'text');
-      dispatch(actions.getTermsSuccess(html));
+      // const html: string = await fetchRemoteURL(termsURL, 'text');
+      // dispatch(actions.getTermsSuccess(html));
     } catch (err) {
       dispatch(actions.getTermsFailure(err));
     }
