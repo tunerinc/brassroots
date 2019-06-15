@@ -46,7 +46,7 @@ export function initializeSpotify(): ThunkAction {
     try {
       const initialized: Promise<boolean> = await Spotify.isInitializedAsync();
 
-      let loggedIn: boolean | Promise<boolean> = false;
+      let loggedIn: boolean = false;
 
       if (!initialized) {
         loggedIn = await Spotify.initialize(
