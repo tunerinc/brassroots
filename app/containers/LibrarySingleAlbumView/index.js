@@ -80,7 +80,7 @@ class LibrarySingleAlbumView extends React.Component {
     this.setState({isTrackMenuOpen: false, isAlbumMenuOpen: false});
   }
 
-  renderTrack = (albumToView) => ({item, index}) => {
+  renderTrack = albumToView => ({item, index}) => {
     const {
       albums: {albumsByID},
       tracks: {tracksByID},
@@ -97,7 +97,7 @@ class LibrarySingleAlbumView extends React.Component {
         type='album'
         context={{displayName, id: albumToView, name: albumName, type: 'user-album'}}
         name={name}
-        openModal={this.openModal}
+        openModal={this.openModal(item, 'track')}
         showOptions={true}
         artists={artists.map(a => a.name).join(', ')}
         trackNumber={trackNumber}
@@ -170,15 +170,22 @@ class LibrarySingleAlbumView extends React.Component {
       queue: {userQueue, queueByID},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
+      users: {currentUserID},
     } = this.props;
 
-    if (!item || !tracksByID[item]) return null;
+    if (
+      !item
+      || (type === 'track' && !tracksByID[item])
+      || (type === 'album' && !albumsByID[item])
+    ) return <View></View>;
 
-    const {name, artists, albumID} = tracksByID[item];
-    const {small, name: albumName, artists: albumArtists} = albumsByID[albumID];
-    const {listeners, ownerID} = sessionsByID[currentSessionID];
-    const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-    const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(item) !== -1;
+    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+    const songQueued = userQueue.map(id => queueByID[id].trackID).includes(item);
+    const isListenerOwner = sessionExists
+      && (
+        sessionsByID[currentSessionID].listeners.includes(currentUserID)
+        || sessionsByID[currentSessionID].ownerID === currentUserID
+      );
 
     switch (type) {
       case 'track':
@@ -187,20 +194,20 @@ class LibrarySingleAlbumView extends React.Component {
             trackID={item}
             closeModal={this.closeModal}
             queueTrack={this.handleAddTrack}
-            name={name}
-            artists={artists.map(a => a.name).join(', ')}
-            albumName={albumName}
-            albumImage={small}
+            name={tracksByID[item].name}
+            artists={tracksByID[item].artists.map(a => a.name).join(', ')}
+            albumName={albumsByID[tracksByID[item].albumID].name}
+            albumImage={albumsByID[tracksByID[item].albumID].small}
             trackInQueue={songQueued}
-            isListenerOwner={isListenerOwner}
+            isListenerOwner={sessionExists ? isListenerOwner : null}
           />
         );
       case 'album':
         return (
           <AlbumModal
-            albumImage={small}
-            albumName={albumName}
-            artists={albumArtists.map(a => a.name).join(', ')}
+            albumImage={albumsByID[item].small}
+            albumName={albumsByID[item].name}
+            artists={albumsByID[item].artists.map(a => a.name).join(', ')}
             closeModal={this.closeModal}
           />
         );
@@ -301,7 +308,7 @@ class LibrarySingleAlbumView extends React.Component {
               ref='TrackList'
               data={userTracks}
               renderItem={this.renderTrack(albumToView)}
-              keyExtractor={item => item.id}
+              keyExtractor={item => item}
               getItem={(data, index) => data[index]}
               getItemCount={data => data.length}
               removeClippedSubviews={false}
@@ -416,7 +423,7 @@ class LibrarySingleAlbumView extends React.Component {
           style={styles.modal}
           onBackdropPress={this.closeModal}
         >
-          {this.renderModalContent('album', selectedTrack)}
+          {this.renderModalContent('album', albumToView)}
         </Modal>
         <AddToQueueDialog
           queueing={queueing}

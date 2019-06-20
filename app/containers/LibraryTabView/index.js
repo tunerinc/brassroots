@@ -274,7 +274,7 @@ class LibraryTabView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    if (!selectedTrack || !tracksByID[selectedTrack]) return null;
+    if (!selectedTrack || !tracksByID[selectedTrack]) return <View></View>;
 
     const sessionExists = currentSessionID && sessionsByID[currentSessionID];
     const songQueued = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);

@@ -125,7 +125,7 @@ class LibraryTracksView extends React.Component {
         type='basic'
         context={{id, displayName, type: 'user-tracks', name: displayName}}
         name={name}
-        openModal={this.openModal}
+        openModal={this.openModal(item)}
         showOptions={true}
         artists={artists.map(a => a.name).join(', ')}
       />
@@ -203,25 +203,33 @@ class LibraryTracksView extends React.Component {
     const {selectedTrack} = this.state;
     const {
       albums: {albumsByID},
-      queue: {userQueue},
+      queue: {userQueue, queueByID},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
       users: {currentUserID},
     } = this.props;
-    const isListenerOwner = sessionsByID[currentSessionID].listeners.indexOf(currentUserID) !== -1
-      || sessionsByID[currentSessionID].ownerID === currentUserID;
+
+    if (!selectedTrack || !tracksByID[selectedTrack]) return <View></View>;
+
+    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+    const songQueued = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);
+    const isListenerOwner = sessionExists
+      && (
+        sessionsByID[currentSessionID].listeners.includes(currentUserID)
+        || sessionsByID[currentSessionID].ownerID === currentUserID
+      );
 
     return (
       <TrackModal
+        trackID={selectedTrack}
         closeModal={this.closeModal}
         queueTrack={this.handleAddTrack}
         name={tracksByID[selectedTrack].name}
         artists={tracksByID[selectedTrack].artists.map(a => a.name).join(', ')}
         albumName={albumsByID[tracksByID[selectedTrack].albumID].name}
         albumImage={albumsByID[tracksByID[selectedTrack].albumID].small}
-        trackID={selectedTrack}
-        trackInQueue={userQueue.includes(selectedTrack)}
-        isListenerOwner={isListenerOwner}
+        trackInQueue={songQueued}
+        isListenerOwner={sessionExists ? isListenerOwner : null}
       />
     );
   }
