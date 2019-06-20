@@ -51,9 +51,12 @@ class LibraryTabView extends React.Component {
       scrollEnabled: true,
       isTrackMenuOpen: false,
       selectedTrack: "",
+      shadowOpacity: new Animated.Value(0),
+      syncIndex: new Animated.Value(5),
+      syncOpacity: new Animated.Value(1),
+      syncContentOpacity: new Animated.Value(1),
     };
 
-    this.removeSyncScreen = this.removeSyncScreen.bind(this);
     this.navToLibrary = this.navToLibrary.bind(this);
     this.renderPlaylist = this.renderPlaylist.bind(this);
     this.renderTrack = this.renderTrack.bind(this);
@@ -62,31 +65,24 @@ class LibraryTabView extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
-    this.syncIndex = new Animated.Value(5);
-    this.syncOpacity = new Animated.Value(1);
-    this.syncContentOpacity = new Animated.Value(1);
   }
 
   componentDidMount() {
-    this.removeSyncScreen();
-  }
+    const {syncContentOpacity, syncOpacity, syncIndex} = this.state;
 
-  removeSyncScreen() {
     Animated.sequence([
-      Animated.timing(this.syncContentOpacity, {
+      Animated.timing(syncContentOpacity, {
         toValue: 0,
         duration: 300,
         easing: Easing.linear
       }),
-      Animated.timing(this.syncOpacity, {
+      Animated.timing(syncOpacity, {
         toValue: 0,
         duration: 300,
         delay: 300,
         easing: Easing.linear
       }),
-      Animated.timing(this.syncIndex, {
+      Animated.timing(syncIndex, {
         toValue: -5,
         duration: 1,
         delay: 600,
@@ -192,16 +188,18 @@ class LibraryTabView extends React.Component {
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
+    const {shadowOpacity} = this.state;
+
     if (y > 0) {
-      if (this.shadowOpacity != 0.9) {
-        Animated.timing(this.shadowOpacity, {
+      if (shadowOpacity !== 0.9) {
+        Animated.timing(shadowOpacity, {
           toValue: 0.9,
           duration: 75,
           easing: Easing.linear,
         }).start();
       };
     } else {
-      Animated.timing(this.shadowOpacity, {
+      Animated.timing(shadowOpacity, {
         toValue: 0,
         duration: 75,
         easing: Easing.linear,
@@ -300,8 +298,14 @@ class LibraryTabView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
-    const {scrollEnabled, isTrackMenuOpen, selectedTrack} = this.state;
+    const {
+      scrollEnabled,
+      isTrackMenuOpen,
+      selectedTrack,
+      shadowOpacity,
+      syncOpacity,
+      syncIndex,
+    } = this.state;
     const {
       albums: {albumsByID},
       playlists: {fetchingTopPlaylists, error: playlistError},
@@ -323,9 +327,9 @@ class LibraryTabView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[
             styles.syncScreen,
-            {opacity: this.syncOpacity, zIndex: this.syncIndex},
+            {opacity: syncOpacity, zIndex: syncIndex},
           ]}></Animated.View>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <View style={styles.leftIcon}></View>
             <Text style={styles.title}>Library</Text>

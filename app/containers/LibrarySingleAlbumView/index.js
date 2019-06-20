@@ -229,6 +229,8 @@ class LibrarySingleAlbumView extends React.Component {
   }
 
   onScroll({nativeEvent: {contentOffset}}) {
+    const {isOpen, scrollEnabled} = this.state;
+
     if ((isOpen || contentOffset.y <= 0) && scrollEnabled) {
       this.setState({scrollEnabled: false, isOpen: true});
       this.refs['TrackList'].getScrollResponder().scrollTo({x: 0, y: 0});
@@ -281,10 +283,13 @@ class LibrarySingleAlbumView extends React.Component {
       users: {currentUserID},
     } = this.props;
     const {userTracks, name, medium, large} = albumsByID[albumToView];
-    const session = sessionsByID[currentSessionID];
-    const inSession = session
-      && session.listeners.indexOf(currentUserID) !== -1
-      || session.ownerID === currentUserID;
+    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+    const queueHasTracks = sessionExists && userQueue.length > 0;
+    const inSession = sessionExists
+      && (
+        sessionsByID[currentSessionID].listeners.includes(currentUserID)
+        || sessionsByID[currentSessionID].ownerID === currentUserID
+      );
 
     return (
       <View style={styles.container}>
@@ -425,13 +430,15 @@ class LibrarySingleAlbumView extends React.Component {
         >
           {this.renderModalContent('album', albumToView)}
         </Modal>
-        <AddToQueueDialog
-          queueing={queueing}
-          error={queueError}
-          inSession={inSession}
-          queueHasTracks={userQueue.length > 0}
-          image={medium}
-        />
+        {(typeof selectedTrack === 'string' && tracksByID[selectedTrack]) &&
+          <AddToQueueDialog
+            queueing={queueing}
+            error={queueError}
+            inSession={inSession}
+            queueHasTracks={queueHasTracks}
+            image={albumsByID[tracksByID[selectedTrack].albumID].medium}
+          />
+        }
       </View>
     );
   }
@@ -452,12 +459,13 @@ LibrarySingleAlbumView.propTypes = {
   users: PropTypes.object.isRequired
 };
 
-function mapStateToProps({albums, artists, player, playlists, sessions, tracks, users}) {
+function mapStateToProps({albums, artists, player, playlists, queue, sessions, tracks, users}) {
   return {
     albums,
     artists,
     player,
     playlists,
+    queue,
     sessions,
     tracks,
     users

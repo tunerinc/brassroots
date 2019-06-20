@@ -244,10 +244,13 @@ class LibraryTracksView extends React.Component {
       tracks: {userTracks, fetchingTracks, refreshingTracks, tracksByID, error: trackError},
       users: {currentUserID},
     } = this.props;
-    const session = sessionsByID[currentSessionID];
-    const inSession = session
-      && session.listeners.indexOf(currentUserID) !== -1
-      || session.ownerID === currentUserID;
+    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+    const queueHasTracks = sessionExists && userQueue.length > 0;
+    const inSession = sessionExists
+      && (
+        sessionsByID[currentSessionID].listeners.includes(currentUserID)
+        || sessionsByID[currentSessionID].ownerID === currentUserID
+      );
 
     return (
       <View style={styles.container}>
@@ -319,20 +322,21 @@ class LibraryTracksView extends React.Component {
         >
           {this.renderModalContent()}
         </Modal>
-        <AddToQueueDialog
-          queueing={queueing}
-          error={queueError}
-          inSession={inSession}
-          queueHasTracks={userQueue.length > 0}
-          image={albumsByID[tracksByID[selectedTrack].albumID].medium}
-        />
+        {(typeof selectedTrack === 'string' && tracksByID[selectedTrack]) &&
+          <AddToQueueDialog
+            queueing={queueing}
+            error={queueError}
+            inSession={inSession}
+            queueHasTracks={queueHasTracks}
+            image={albumsByID[tracksByID[selectedTrack].albumID].medium}
+          />
+        }
       </View>
     );
   }
 }
 
 LibraryTracksView.propTypes = {
-  addRecentTrack: PropTypes.func.isRequired,
   albums: PropTypes.object.isRequired,
   artists: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
