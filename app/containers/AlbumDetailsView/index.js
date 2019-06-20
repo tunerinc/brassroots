@@ -6,19 +6,25 @@ import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-n
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
-import LoadingTrack from '../../components/LoadingTrack';
-import LoadingUser from '../../components/LoadingUser';
-import TrackCard from '../../components/TrackCard';
 import styles from './styles';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Foundation from 'react-native-vector-icons/Foundation';
 
+// Components
+import LoadingTrack from '../../components/LoadingTrack';
+import LoadingUser from '../../components/LoadingUser';
+import TrackCard from '../../components/TrackCard';
+import ArtistCard from '../../components/ArtistCard';
+
 // Albums Action Creators
 import {getAlbumTopListeners} from '../../actions/albums/GetAlbumTopListeners';
 import {getAlbumTopPlaylists} from '../../actions/albums/GetAlbumTopPlaylists';
 import {getAlbumTopTracks} from '../../actions/albums/GetAlbumTopTracks';
+
+// Artists Action Creators
+import {getArtistImages} from '../../actions/artists/GetArtistImages';
 
 class AlbumDetailsView extends React.Component {
   constructor(props) {
@@ -32,12 +38,27 @@ class AlbumDetailsView extends React.Component {
   componentDidMount() {
     const {
       albumToView,
+      getArtistImages,
       getAlbumTopListeners,
       getAlbumTopPlaylists,
       getAlbumTopTracks,
       albums: {albumsByID},
+      artists: {artistsByID},
     } = this.props;
-    const {topListeners, topPlaylists, topTracks} = albumsByID[albumToView];
+    const {artists, topListeners, topPlaylists, topTracks} = albumsByID[albumToView];
+    const artistsToFetch = artists
+      .map(a => {
+        const {small, medium, large} = artistsByID[a.id];
+        const fetchSmall = typeof small !== 'string' || small === '';
+        const fetchMedium = typeof medium !== 'string' || medium === '';
+        const fetchLarge = typeof large !== 'string' || large === '';
+        if (fetchSmall && fetchMedium && fetchLarge) return a.id;
+      })
+      .filter(id => typeof id === 'string');
+
+    if (artistsToFetch.length !== 0) {
+      getArtistImages(artistsToFetch);
+    }
 
     if (topListeners.length === 0) {
       // getAlbumTopListeners(albumToView);
@@ -55,18 +76,11 @@ class AlbumDetailsView extends React.Component {
   renderArtist({item, index}) {
     const {artists: {artistsByID}} = this.props;
     const artist = artistsByID[item];
-    const styles = [styles.albumArtist, {marginLeft: index === 0 ? 20 : 0}];
+    const cardStyles = [styles.albumArtist, {marginLeft: index === 0 ? 20 : 0}];
 
-    if (artist) {
-      return (
-        <TouchableOpacity disabled={true} style={styles}>
-          <Image style={styles.albumArtistImage} source={{uri: artist.image}} />
-          <Text numberOfLines={1} style={styles.albumArtistName}>
-            {artist.name}
-          </Text>
-        </TouchableOpacity>
-      );
-    }
+    if (!artist) return <View></View>;
+
+    return <View></View>;
   }
 
   goToProfile = userToView => () => {
@@ -131,6 +145,7 @@ class AlbumDetailsView extends React.Component {
     const {
       albumToView,
       albums: {albumsByID, fetchingListeners, fetchingTracks, error: albumsError},
+      artists: {artistsByID, fetchingImages},
     } = this.props;
     const {artists, topListeners, topTracks, totalPlays, large, name} = albumsByID[albumToView];
 
@@ -150,21 +165,12 @@ class AlbumDetailsView extends React.Component {
                 />
               }
               {artists.length === 1 &&
-                <TouchableOpacity style={styles.singleAlbumArtist} disabled>
-                  {/* <Image
-                    style={styles.singleAlbumArtistImage}
-                    source={{
-                      uri:
-                        artists.artistsByID[
-                          albums.albumsByID[albumToView].artists[0]
-                        ].image
-                    }}
-                  /> */}
-                  <Text style={styles.singleAlbumArtistName}>
-                    {artists[0].name}
-                  </Text>
-                  <Ionicons name='ios-arrow-forward' color='#fefefe' style={styles.arrowForward} />
-                </TouchableOpacity>
+                <ArtistCard
+                  artistImage={artistsByID[artists[0].id].small}
+                  artistName={artistsByID[artists[0].id].name}
+                  navToArtist={() => console.log('artist pressed')}
+                  fetchingImage={fetchingImages}
+                />
               }
             </View>
             <View style={styles.topListeners}>
@@ -274,6 +280,7 @@ AlbumDetailsView.propTypes = {
   albums: PropTypes.object.isRequired,
   albumToView: PropTypes.string.isRequired,
   artists: PropTypes.object.isRequired,
+  getArtistImages: PropTypes.func.isRequired,
   getAlbumTopListeners: PropTypes.func.isRequired,
   getAlbumTopPlaylists: PropTypes.func.isRequired,
   getAlbumTopTracks: PropTypes.func.isRequired,
@@ -292,6 +299,7 @@ function mapStateToProps({albums, artists, tracks, users}) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    getArtistImages,
     getAlbumTopListeners,
     getAlbumTopPlaylists,
     getAlbumTopTracks

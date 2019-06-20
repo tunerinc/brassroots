@@ -7,6 +7,7 @@
 
 import React from 'react';
 import {Text, View, Image, TouchableHighlight} from 'react-native';
+import Placeholder from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
@@ -16,7 +17,8 @@ type Props = {|
   artistImage: ?string,
   artistName: string,
   navToArtist: () => any,
-  userTrackLength: number,
+  userTrackLength?: number,
+  fetchingImage?: boolean,
 |};
 
 type State = {||};
@@ -27,7 +29,7 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {artistImage, artistName, navToArtist, userTrackLength} = this.props;
+    const {artistImage, artistName, navToArtist, userTrackLength, fetchingImage} = this.props;
 
     return (
       <TouchableHighlight
@@ -37,10 +39,24 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
         onPress={navToArtist}
       >
         <View style={styles.wrap}>
-          {artistImage !== '' &&
+          {(fetchingImage && (typeof artistImage !== 'string' || artistImage === '')) &&
+            <View style={styles.loading}>
+              <Placeholder.ImageContent
+                animate='fade'
+                size={60}
+                position='left'
+                hasRadius={true}
+                lineNumber={1}
+                textSize={20}
+                lineSpacing={4}
+                color='#888'
+              />
+            </View>
+          }
+          {(typeof artistImage === 'string' && artistImage !== '') &&
             <Image style={styles.image} source={{uri: artistImage}} />
           }
-          {!artistImage || artistImage === '' &&
+          {(typeof artistImage !== 'string' || artistImage === '') &&
             <View style={styles.placeholder}>
               <Ionicons
                 name='md-microphone'
@@ -54,12 +70,12 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
             <Text numberOfLines={1} style={styles.name}>
               {artistName}
             </Text>
-            {userTrackLength === 1 &&
+            {(typeof userTrackLength === 'number' && userTrackLength === 1) &&
               <Text numberOfLines={1} style={styles.count}>
                 {userTrackLength} song
               </Text>
             }
-            {userTrackLength !== 1 &&
+            {(typeof userTrackLength === 'number' && userTrackLength !== 1) &&
               <Text numberOfLines={1} style={styles.count}>
                 {userTrackLength} songs
               </Text>

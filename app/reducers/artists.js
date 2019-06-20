@@ -14,6 +14,7 @@ import * as types from '../actions/artists/types';
 
 // Case Functions
 import {addSingleArtist, addArtists} from '../actions/artists/AddArtists/reducers';
+import * as getArtistImages from '../actions/artists/GetArtistImages/reducers';
 import * as getArtistTopAlbums from '../actions/artists/GetArtistTopAlbums/reducers';
 import * as getArtistTopListeners from '../actions/artists/GetArtistTopListeners/reducers';
 import * as getArtistTopPlaylists from '../actions/artists/GetArtistTopPlaylists/reducers';
@@ -67,6 +68,7 @@ type State = {
   +searchingArtists?: boolean,
   +fetchingAlbums?: boolean,
   +fetchingArtists?: boolean,
+  +fetchingImages?: boolean,
   +fetchingListeners?: boolean,
   +fetchingPlaylists?: boolean,
   +fetchingTracks?: boolean,
@@ -92,8 +94,8 @@ export type {
  * @property {string}   lastUpdated  The date/time the single artist was last updated
  * @property {string}   id=null      The Spotify id of the artist
  * @property {string}   name=null    The name of the artist
- * @property {string}   small=null   64x64 size image url for artist
- * @property {string}   medium=null  300x300 size image url for artist
+ * @property {string}   small=null   120x120 size image url for artist
+ * @property {string}   medium=null  320x320 size image url for artist
  * @property {string}   large-null   640x640 size image url for artist
  * @property {string[]} albums       The Spotify ids of a single artist's albums in order of release date
  * @property {number}   totalPlays=0 The total amount of plays a single artist has
@@ -137,6 +139,7 @@ const singleState: Artist = {
  * @property {boolean}  searchingArtists=false  Whether the current user is searching artists
  * @property {boolean}  fetchingAlbums=false    Whether the current user is fetching albums of an artist
  * @property {boolean}  fetchingArtists=false   Whether the current user is fetching artists
+ * @property {boolean}  fetchingImages=false    Whether the current user is fetching images of artists
  * @property {boolean}  fetchingListeners=false Whether the current user is fetching listeners of an artist
  * @property {boolean}  fetchingPlaylists=false Whether the current user is fetching playlists of an artist
  * @property {boolean}  fetchingTracks=false    Whether the current user is fetching trakcs of an artist
@@ -153,6 +156,7 @@ export const initialState: State = {
   searchingArtists: false,
   fetchingAlbums: false,
   fetchingArtists: false,
+  fetchingImages: false,
   fetchingListeners: false,
   fetchingPlaylists: false,
   fetchingTracks: false,
@@ -168,6 +172,8 @@ export function singleArtist(
   switch (action.type) {
     case types.ADD_ARTISTS:
       return addSingleArtist(state, action);
+    case types.GET_ARTIST_IMAGES_SUCCESS:
+      return getArtistImages.addImages(state, action);
     case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:
       return getArtistTopAlbums.addAlbums(state, action);
     case types.GET_ARTIST_TOP_LISTENERS_SUCCESS:
@@ -191,6 +197,12 @@ export default function reducer(
     switch (action.type) {
       case types.ADD_ARTISTS:
         return addArtists(state, action);
+      case types.GET_ARTIST_IMAGES_REQUEST:
+        return getArtistImages.request(state);
+      case types.GET_ARTIST_IMAGES_SUCCESS:
+        return getArtistImages.success(state, action);
+      case types.GET_ARTIST_IMAGES_FAILURE:
+        return getArtistImages.failure(state, action);
       case types.GET_ARTIST_TOP_ALBUMS_REQUEST:
         return getArtistTopAlbums.request(state);
       case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:

@@ -16,6 +16,7 @@ import {
 interface Styles {
   artist: ViewStyleProp,
   wrap: ViewStyleProp,
+  loading: ViewStyleProp,
   image: ImageStyleProp,
   placeholder: ViewStyleProp,
   artistIcon: TextStyleProp,
@@ -36,11 +37,16 @@ const styles: Styles = StyleSheet.create({
   wrap: {
     flexDirection: 'row',
   },
+  loading: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+  },
   image: {
     width: 60,
     height: 60,
-    borderRadius: 30,
     marginRight: 10,
+    borderRadius: 30,
     backgroundColor: '#888',
   },
   placeholder: {
@@ -60,12 +66,11 @@ const styles: Styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   name: {
-    flex: 1,
     color: '#fefefe',
     fontSize: 20,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 26,
+    lineHeight: 20,
   },
   count: {
     flex: 1,

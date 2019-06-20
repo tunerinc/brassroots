@@ -90,10 +90,12 @@ export function getAlbums(
             [artist.id]: {
               id: artist.id,
               name: artist.name,
-              image: '',
+              small: '',
+              medium: '',
+              large: '',
             },
-          }, {});
-        });
+          });
+        }, {});
 
         artists = updateObject(artists, albumArtists);
 
@@ -103,7 +105,9 @@ export function getAlbums(
               [artist.id]: {
                 id: artist.id,
                 name: artist.name,
-                image: '',
+                small: '',
+                medium: '',
+                large: '',
               },
             });
           }, {});
