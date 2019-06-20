@@ -23,10 +23,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const firestore = firebase.firestore();
-const rfConfig = {};
 const firestoreSettings = {};
+const rfConfig = {
+  allowMultipleListeners: true,
+};
 
 firestore.settings(firestoreSettings);
+firebase.firestore.setLogLevel('debug');
 
 const config = {
   userProfile: "users",

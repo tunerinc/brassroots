@@ -16,27 +16,36 @@ class WelcomeView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.attemptedToInitialize = false;
-    this.loadingIndex = new Animated.Value(1);
-    this.loadingOpacity = new Animated.Value(1);
+    this.state = {
+      attemptedToInitialize: false,
+      loadingIndex: new Animated.Value(1),
+      loadingOpacity: new Animated.Value(1),
+    };
   }
 
   componentDidMount() {
+    const {attemptedToInitialize} = this.state;
     const {initializeSpotify, settings: {initialized}} = this.props;
 
-    if (!this.attemptedToInitialize && !initialized) {
-      this.attemptedToInitialize = true;
+    if (!attemptedToInitialize && !initialized) {
+      this.setState({attemptedToInitialize: true});
       initializeSpotify();
     }
   }
 
   componentDidUpdate(prevProps) {
+    const {loadingOpacity, loadingIndex} = this.state;
     const {settings: {initializing: oldInitializing}} = prevProps;
     const {settings: {initializing, loggedIn}, users: {currentUserID}} = this.props;
   
-    if (oldInitializing && !initializing && currentUserID === '' && !loggedIn) {
+    if (
+      oldInitializing
+      && !initializing
+      && (currentUserID === '' || typeof currentUserID !== 'string')
+      && !loggedIn
+    ) {
       Animated.sequence([
-        Animated.timing(this.loadingOpacity,
+        Animated.timing(loadingOpacity,
           {
             toValue: 0,
             duration: 150,
@@ -44,7 +53,7 @@ class WelcomeView extends React.Component {
             easing: Easing.linear,
           }
         ),
-        Animated.timing(this.loadingIndex,
+        Animated.timing(loadingIndex,
           {
             toValue: -1,
             duration: 1,
@@ -57,6 +66,7 @@ class WelcomeView extends React.Component {
   }
   
   render() {
+    const {loadingIndex, loadingOpacity} = this.state;
     const {authorizeUser} = this.props;
 
     return (
@@ -64,8 +74,8 @@ class WelcomeView extends React.Component {
         <Animated.View style={[
           styles.loading,
           {
-            zIndex: this.loadingIndex,
-            opacity: this.loadingOpacity,
+            zIndex: loadingIndex,
+            opacity: loadingOpacity,
           }
         ]}>
           <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
@@ -76,7 +86,7 @@ class WelcomeView extends React.Component {
         </TouchableHighlight>
         <View style={styles.footnoteWrap}>
           <View style={styles.footnote}>
-            <Text style={styles.footText}>By tapping the button above, you agree to the </Text>
+            <Text style={styles.footText}>By logging in, you agree to the </Text>
             <Text
               style={styles.footLink}
               onPress={Actions.welcomeTermsOfService}
@@ -101,7 +111,10 @@ WelcomeView.propTypes = {
 };
 
 function mapStateToProps({settings, users}) {
-  return {settings, users};
+  return {
+    settings,
+    users,
+  };
 }
 
 function mapDispatchToProps(dispatch) {

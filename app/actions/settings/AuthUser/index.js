@@ -21,7 +21,7 @@ import {type PrivateUser} from '../../../utils/spotifyAPI/types';
 import {
   type FirestoreInstance,
   type FirestoreRef,
-  type FirestoreDocs,
+  type FirestoreDoc,
 } from '../../../utils/firebaseTypes';
 
 /**
@@ -51,36 +51,35 @@ export function authorizeUser(): ThunkAction {
 
       const spotifyUser: PrivateUser = await Spotify.getMe();
       const usersRef: FirestoreRef = firestore.collection('users');
-      const userDocs: FirestoreDocs = await usersRef.where('id', '==', spotifyUser.id).get();
+      const userDoc: FirestoreDoc = await usersRef.doc(spotifyUser.id).get();
 
-      if (userDocs.empty) {
-        dispatch(actions.authorizeUserSuccess());
-        dispatch(setOnboarding(true));
-        dispatch(createProfile(spotifyUser));
-      } else {
-        const users = userDocs.docs.map(doc => doc.data());
+      if (userDoc.exists) {
         const user = {
           id: spotifyUser.id,
           displayName: spotifyUser.display_name,
           spotifyAccountStatus: spotifyUser.product,
           country: spotifyUser.country,
-          profileImage: users[0].profileImage,
-          coverImage: users[0].coverImage,
-          bio: users[0].bio,
-          location: users[0].location,
-          birthdate: users[0].birthdate,
-          website: users[0].website,
-          email: users[0].email,
-          favoriteTrackID: users[0].favoriteTrackID,
-          totalFollowers: users[0].totals.followers,
-          totalFollowing: users[0].totals.following,
-        }
+          profileImage: userDoc.data().profileImage,
+          coverImage: userDoc.data().coverImage,
+          bio: userDoc.data().bio,
+          location: userDoc.data().location,
+          birthdate: userDoc.data().birthdate,
+          website: userDoc.data().website,
+          email: userDoc.data().email,
+          favoriteTrackID: userDoc.data().favoriteTrackID,
+          totalFollowers: userDoc.data().totals.followers,
+          totalFollowing: userDoc.data().totals.following,
+        };
 
         dispatch(actions.authorizeUserSuccess());
         dispatch(addCurrentUser(user));
         dispatch(setOnboarding(false));
         dispatch(getUserSettings(user.id));
         Actions.root({type: ActionConst.RESET});
+      } else {
+        dispatch(actions.authorizeUserSuccess());
+        dispatch(setOnboarding(true));
+        dispatch(createProfile(spotifyUser));
       }
     } catch (err) {
       dispatch(actions.authorizeUserFailure(err));

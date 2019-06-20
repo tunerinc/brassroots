@@ -6,7 +6,8 @@
  */
 
 import {combineReducers} from 'redux';
-import {firebaseStateReducer} from 'react-redux-firebase';
+import {firebaseReducer as firebase} from 'react-redux-firebase';
+import {firestoreReducer as firestore} from 'redux-firestore';
 import albums from './albums';
 import artists from './artists';
 import chat from './chat';
@@ -29,13 +30,14 @@ import tracks from './tracks';
 import users from './users';
 
 const reducers = {
-  firebase: firebaseStateReducer,
   albums,
   artists,
   chat,
   conversations,
   events,
   feedback,
+  firebase,
+  firestore,
   groups,
   legal,
   notifications,
