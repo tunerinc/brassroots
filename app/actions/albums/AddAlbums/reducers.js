@@ -26,21 +26,28 @@ import {singleAlbum, lastUpdated} from '../../../reducers/albums';
  * @param   {string[]} action.album.tracks     The tracks of the album in order by track number
  * @param   {number}   action.album.totalPlays The total amount of plays for the album
  * @param   {string[]} action.album.userTracks The tracks of the album the current user has saved in their library
+ * @param   {boolean}  action.refreshingAlbums Whether the current user is refreshing the albums
  * 
  * @returns {object}                           The state of the newly added single album
  */
 export function addSingleAlbum(state, action) {
   const {tracks, userTracks: oldTracks} = state;
-  const {album} = action;
+  const {album, refreshingAlbums} = action;
   const {userTracks} = album;
-  const hasBothUserTracks = oldTracks && userTracks;
-  const hasBothTracks = tracks && album.tracks;
 
   return updateObject(state, {
     ...album,
     lastUpdated,
-    userTracks: hasBothUserTracks ? [...oldTracks, ...userTracks] : userTracks ? [...userTracks] : [],
-    tracks: hasBothTracks ? [...tracks, ...album.tracks] : album.tracks ? [...album.tracks] : [],
+    userTracks: Array.isArray(userTracks) && userTracks.length && refreshingAlbums
+      ? [...userTracks]
+      : Array.isArray(userTracks) && userTracks.length
+      ? [...oldTracks, ...userTracks].filter((el, i, arr) => i === arr.indexOf(el))
+      : [...oldTracks],
+    tracks: Array.isArray(album.tracks) && album.tracks.length && refreshingAlbums
+      ? [...album.tracks]
+      : Array.isArray(album.tracks) && album.tracks.length
+      ? [...tracks, ...album.tracks].filter((el, i, arr) => i === arr.indexOf(el))
+      : [...tracks],
   });
 }
 
@@ -59,12 +66,12 @@ export function addSingleAlbum(state, action) {
  * @returns {object}               The state with the albumsByID prop updated
  */
 export function addAlbums(state, action) {
+  let {albumsByID, refreshingAlbums} = state;
+
   const {albums} = action;
-      
-  let {albumsByID} = state;
 
   Object.values(albums).forEach(album => {
-    const addedAlbum = singleAlbum(albumsByID[album.id], {...action, album});
+    const addedAlbum = singleAlbum(albumsByID[album.id], {...action, album, refreshingAlbums});
     albumsByID = updateObject(albumsByID, {[album.id]: addedAlbum});
   });
   

@@ -25,10 +25,8 @@ interface Styles {
   info: ViewStyleProp,
   name: TextStyleProp,
   bottom: TextStyleProp,
-  artists: TextStyleProp,
-  separator: TextStyleProp,
+  bottomText: TextStyleProp,
   gray: TextStyleProp,
-  album: TextStyleProp,
   user: TextStyleProp,
   options: TextStyleProp,
   count: ViewStyleProp,
@@ -40,11 +38,11 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   track: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 90,
+    height: 82,
     width: '100%',
   },
   wrap: {
@@ -88,41 +86,27 @@ const styles: Styles = StyleSheet.create({
   },
   info: {
     flex: 6,
-    paddingTop: 2,
     justifyContent: 'space-around',
+    paddingTop: 4,
   },
   name: {
-    flex: 1,
     color: '#fefefe',
     fontSize: 18,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 25.2,
+    lineHeight: 18,
   },
   bottom: {
-    flex: 1,
-    paddingTop: 2,
+    paddingTop: 6,
     fontFamily: 'Muli',
   },
-  artists: {
+  bottomText: {
     fontSize: 14,
     fontWeight: '600',
-    lineHeight: 18.2,
-    color: '#888',
-  },
-  separator: {
-    fontSize: 18,
-    fontWeight: '600',
-    lineHeight: 25.2,
+    lineHeight: 14,
     color: '#888',
   },
   gray: {
-    color: '#888',
-  },
-  album: {
-    fontSize: 14,
-    fontWeight: '600',
-    lineHeight: 18.2,
     color: '#888',
   },
   user: {

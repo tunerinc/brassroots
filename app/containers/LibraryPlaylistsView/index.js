@@ -97,7 +97,7 @@ class LibraryPlaylistsView extends React.Component {
       <PlaylistCard
         key={item}
         image={small}
-        isMember={members.includes(currentUserID)}
+        isMember={members.includes(currentUserID) || ownerID === currentUserID}
         name={name}
         navToPlaylist={this.navToPlaylist('library', item)}
         mode={mode}
@@ -111,11 +111,7 @@ class LibraryPlaylistsView extends React.Component {
 
     if (!fetchingPlaylists || refreshingPlaylists) return null;
 
-    return (
-      <View style={{paddingTop: 20, paddingBottom: 40}}>
-        <ActivityIndicator size='small' animating={true} color='#888' />
-      </View>
-    );
+    return <LoadingPlaylist />;
   }
 
   renderCreateButton() {
@@ -195,6 +191,8 @@ class LibraryPlaylistsView extends React.Component {
             {fetchingPlaylists &&
               <View>
                 {this.renderCreateButton()}
+                <LoadingPlaylist />
+                <LoadingPlaylist />
                 <LoadingPlaylist />
                 <LoadingPlaylist />
                 <LoadingPlaylist />

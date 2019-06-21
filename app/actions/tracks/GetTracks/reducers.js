@@ -73,10 +73,12 @@ export function success(
   )
     ? {
       lastUpdated,
-      userTracks: refreshingTracks ? [...tracks] : [...userTracks, ...tracks],
       refreshingTracks: false,
       fetchingTracks: false,
       error: null,
+      userTracks: refreshingTracks
+        ? [...tracks]
+        : [...userTracks, ...tracks].filter((el, i, arr) => i === arr.indexOf(el)),
     }
     : {};
 

@@ -36,7 +36,6 @@ export default class LoadingTrack extends React.PureComponent<Props, State> {
             <Placeholder.Media
               animate='fade'
               size={50}
-              position='left'
               hasRadius={false}
               color='#888'
             />
@@ -47,7 +46,6 @@ export default class LoadingTrack extends React.PureComponent<Props, State> {
             <Placeholder.Media
               animate='fade'
               size={18}
-              position='left'
               hasRadius={true}
               color='#888'
             />
@@ -75,12 +73,7 @@ export default class LoadingTrack extends React.PureComponent<Props, State> {
           </View>
         }
         {(type !== 'top' || type !== 'favorite' || !type) &&
-          <SimpleLineIcons
-            name='options'
-            size={35}
-            style={styles.options}
-            color='#888'
-          />
+          <SimpleLineIcons name='options' style={styles.options} color='#888' />
         }
         {type === 'favorite' &&
           <Foundation name='star' size={25} style={styles.favoriteTrackIcon} />

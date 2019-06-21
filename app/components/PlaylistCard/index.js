@@ -66,12 +66,7 @@ export default class PlaylistCard extends React.PureComponent<Props, State> {
               <MaterialIcons name='all-inclusive' color='#fefefe' style={styles.mode} />
             }
           </View>
-          <Ionicons
-            name='ios-arrow-forward'
-            size={35}
-            style={styles.arrow}
-            color='#fefefe'
-          />
+          <Ionicons name='ios-arrow-forward' style={styles.arrow} color='#fefefe' />
         </View>
       </TouchableHighlight>
     );

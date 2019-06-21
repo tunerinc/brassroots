@@ -38,7 +38,7 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
   },
   info: {
-    flex: 5,
+    flex: 6,
     marginRight: 10,
   },
   plays: {
@@ -48,6 +48,9 @@ const styles: Styles = StyleSheet.create({
   options: {
     flex: 1,
     textAlign: 'right',
+    height: 45,
+    backgroundColor: '#1b1b1e',
+    fontSize: 35,
   },
   favoriteTrackIcon: {
     flex: 1,

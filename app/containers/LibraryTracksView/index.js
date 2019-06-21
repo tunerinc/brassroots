@@ -39,6 +39,7 @@ class LibraryTracksView extends React.Component {
     this.state = {
       isTrackMenuOpen: false,
       selectedTrack: "",
+      shadowOpacity: new Animated.Value(0),
     }
     
     this.openModal = this.openModal.bind(this);
@@ -50,8 +51,6 @@ class LibraryTracksView extends React.Component {
     this.handleRefresh = this.handleRefresh.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
 
     this._onEndReached = debounce(this.onEndReached, 1000);
   }
@@ -91,16 +90,18 @@ class LibraryTracksView extends React.Component {
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
+    const {shadowOpacity} = this.state;
+
     if (y > 0) {
-      if (this.shadowOpacity != 0.9) {
-        Animated.timing(this.shadowOpacity, {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
           toValue: 0.9,
           duration: 75,
           easing: Easing.linear,
         }).start();
       };
     } else {
-      Animated.timing(this.shadowOpacity, {
+      Animated.timing(shadowOpacity, {
         toValue: 0,
         duration: 75,
         easing: Easing.linear,
@@ -137,11 +138,7 @@ class LibraryTracksView extends React.Component {
 
     if (!fetchingTracks || refreshingTracks) return null;
 
-    return (
-      <View style={{paddingTop: 20, paddingBottom: 40}}>
-        <ActivityIndicator size="small" animating={true} color="#888" />
-      </View>
-    );
+    return <LoadingTrack />;
   }
 
   handleAddTrack() {
@@ -235,8 +232,7 @@ class LibraryTracksView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
-    const {isTrackMenuOpen, selectedTrack} = this.state;
+    const {isTrackMenuOpen, selectedTrack, shadowOpacity} = this.state;
     const {
       albums: {albumsByID},
       queue: {userQueue, queueing, error: queueError},
@@ -254,7 +250,7 @@ class LibraryTracksView extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <Ionicons
               name="ios-arrow-back"
@@ -298,10 +294,12 @@ class LibraryTracksView extends React.Component {
                   <LoadingTrack />
                   <LoadingTrack />
                   <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
                 </View>
               }
-              {!fetchingTracks && !trackError && <Text>Nothing to show</Text>}
-              {!fetchingTracks && trackError && <Text>There was an error.</Text>}
+              {(!fetchingTracks && !trackError) && <Text>Nothing to show</Text>}
+              {(!fetchingTracks && trackError) && <Text>There was an error.</Text>}
             </View>
           </View>
         }

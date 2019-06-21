@@ -50,13 +50,7 @@ export default class TrackModal extends React.PureComponent<Props, State> {
               {name}
             </Text>
             <Text numberOfLines={1} style={styles.bottom}>
-              <Text numberOfLines={1} style={styles.artists}>
-                {artists}
-              </Text>
-              <Text style={styles.separator}> • </Text>
-              <Text style={styles.album}>
-                {albumName}
-              </Text>
+              {artists} • {albumName}
             </Text>
           </View>
         </View>

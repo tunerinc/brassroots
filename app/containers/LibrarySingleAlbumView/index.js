@@ -31,7 +31,7 @@ import {createSession} from '../../actions/sessions/CreateSession';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 
 const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 85;
+const HEADER_MIN_HEIGHT = 70;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class LibrarySingleAlbumView extends React.Component {
@@ -297,7 +297,7 @@ class LibrarySingleAlbumView extends React.Component {
           <Animated.View
             style={[
               styles.animatedHeader,
-              {height: headerHeight, backgroundColor: large === '' ? '#888' : '#1b1b1e'},
+              {height: headerHeight},
             ]}
           />
         </View>
@@ -332,6 +332,11 @@ class LibrarySingleAlbumView extends React.Component {
           {(userTracks.length === 0 || !userTracks.length) &&
             <View style={styles.scrollWrap}>
               <LoadingTrack type='album' />
+              <LoadingTrack type='album' />
+              <LoadingTrack type='album' />
+              <LoadingTrack type='album' />
+              <LoadingTrack type='album' />
+              <LoadingTrack type='album' />
             </View>
           }
         </Interactable.View>
@@ -341,7 +346,6 @@ class LibrarySingleAlbumView extends React.Component {
             {
               height: headerHeight,
               shadowOpacity: headerShadowOpacity,
-              backgroundColor: large === '' ? '#888' : '#1b1b1e',
             }
           ]}
         >

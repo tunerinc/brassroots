@@ -7,6 +7,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import styles from './styles';
+import debounce from "lodash.debounce";
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';

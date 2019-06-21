@@ -41,14 +41,10 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
         <View style={styles.wrap}>
           {(fetchingImage && (typeof artistImage !== 'string' || artistImage === '')) &&
             <View style={styles.loading}>
-              <Placeholder.ImageContent
+              <Placeholder.Media
                 animate='fade'
                 size={60}
-                position='left'
                 hasRadius={true}
-                lineNumber={1}
-                textSize={20}
-                lineSpacing={4}
                 color='#888'
               />
             </View>
@@ -81,12 +77,7 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
               </Text>
             }
           </View>
-          <Ionicons
-            name='ios-arrow-forward'
-            size={45}
-            style={styles.arrow}
-            color='#fefefe'
-          />
+          <Ionicons name='ios-arrow-forward' style={styles.arrow} color='#fefefe' />
         </View>
       </TouchableHighlight>
     );

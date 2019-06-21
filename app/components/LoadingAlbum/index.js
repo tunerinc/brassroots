@@ -33,7 +33,6 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
             <Placeholder.Media
               animate='fade'
               size={18}
-              position='left'
               hasRadius={true}
               color='#888'
             />
@@ -41,14 +40,10 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
         }
         {typeof showIndex !== 'boolean' &&
           <View style={styles.image}>
-            <Placeholder.ImageContent
+            <Placeholder.Media
               animate='fade'
               size={50}
-              position='left'
               hasRadius={false}
-              lineNumber={2}
-              textSize={18}
-              lineSpacing={7.2}
               color='#888'
             />
           </View>

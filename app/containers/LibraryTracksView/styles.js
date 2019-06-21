@@ -51,7 +51,7 @@ const styles: Styles = StyleSheet.create({
     paddingTop: 10,
   },
   leftIcon: {
-    flex: 2,
+    flex: 1,
     height: 35,
     fontSize: 35,
     backgroundColor: 'transparent',
@@ -60,16 +60,16 @@ const styles: Styles = StyleSheet.create({
   title: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 26.4,
+    lineHeight: 28.8,
     textAlign: 'center',
     alignSelf: 'center',
     backgroundColor: 'transparent',
   },
   rightIcon: {
-    flex: 2,
+    flex: 1,
     alignSelf: 'center',
   },
   scrollContainer: {

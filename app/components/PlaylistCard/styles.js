@@ -46,8 +46,8 @@ const styles: Styles = StyleSheet.create({
     marginRight: 10,
   },
   default: {
-    height: 50,
-    width: 50,
+    height: 60,
+    width: 60,
     backgroundColor: '#323232',
     marginRight: 10,
     alignItems: 'center',
@@ -59,8 +59,9 @@ const styles: Styles = StyleSheet.create({
     width: 45,
   },
   info: {
-    flex: 7,
+    flex: 6,
     justifyContent: 'space-around',
+    paddingTop: 8,
   },
   name: {
     flex: 1,
@@ -68,16 +69,16 @@ const styles: Styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 25.2,
+    lineHeight: 18,
   },
   owner: {
     flex: 1,
     fontSize: 14,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 18.2,
+    lineHeight: 14,
     color: '#888',
-    paddingTop: 2,
+    paddingTop: 4,
   },
   mode: {
     width: 30,
@@ -95,6 +96,7 @@ const styles: Styles = StyleSheet.create({
     borderColor: '#fefefe',
     borderWidth: 3,
     marginRight: 5,
+    marginBottom: 3,
     fontSize: 16,
     height: 26,
     width: 26,
@@ -105,8 +107,8 @@ const styles: Styles = StyleSheet.create({
   arrow: {
     flex: 1,
     textAlign: 'right',
-    marginLeft: 5,
-    paddingTop: 3,
+    fontSize: 35,
+    alignSelf: 'center',
   },
 });
 

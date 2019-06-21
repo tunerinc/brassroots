@@ -52,7 +52,7 @@ export function getTracks(
     try {
       const {items} = await getMySavedTracks(options);
       const music = addMusicItems(items);
-      const tracks: Array<string> = items.map(item => item.track.id);
+      const tracks: Array<string> = items.map(item => item.track.id)
 
       dispatch(addArtists(music.artists));
       dispatch(addAlbums(music.albums));

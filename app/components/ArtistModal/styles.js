@@ -37,10 +37,10 @@ const styles: Styles = StyleSheet.create({
   },
   artist: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 92,
+    height: 82,
     alignItems: 'center',
   },
   shadow: {
@@ -62,10 +62,10 @@ const styles: Styles = StyleSheet.create({
   name: {
     flex: 6,
     color: '#1b1b1e',
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 26,
+    lineHeight: 18,
   },
   option: {
     borderColor: '#888',

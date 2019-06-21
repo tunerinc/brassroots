@@ -32,16 +32,19 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    flex: 2,
+    height: 50,
+    width: 50,
+    marginRight: 10,
   },
   info: {
     flex: 6,
-    paddingRight: 10,
   },
   arrow: {
     flex: 1,
     textAlign: 'right',
+    marginLeft: 5,
     paddingTop: 3,
+    fontSize: 35,
   },
 });
 

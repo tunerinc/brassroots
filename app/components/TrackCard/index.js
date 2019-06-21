@@ -123,7 +123,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
               <Text style={styles.name}>{name}</Text>
               {showTopArtists &&
                 <Text numberOfLines={1}>
-                  <Text style={styles.separator}> • </Text>
+                  <Text style={styles.name}> • </Text>
                   <Text style={[styles.name, styles.gray]}>
                     {artists}
                   </Text>
@@ -137,13 +137,13 @@ export default class TrackCard extends React.PureComponent<Props, State> {
             }
             {showArtistAlbum &&
               <Text numberOfLines={1} style={styles.bottom}>
-                <Text style={styles.artists}>
+                <Text style={styles.bottomText}>
                   {artists}
                 </Text>
                 {(albumName && type !== 'albumTrack') &&
                   <Text>
-                    <Text style={styles.separator}> • </Text>
-                    <Text style={styles.album}>
+                    <Text style={styles.bottomText}> • </Text>
+                    <Text style={styles.bottomText}>
                       {albumName}
                     </Text>
                   </Text>

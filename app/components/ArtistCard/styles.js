@@ -29,9 +29,9 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   artist: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 15,
     flexDirection: 'row',
-    height: 92,
+    height: 82,
     alignItems: 'center',
   },
   wrap: {
@@ -64,27 +64,28 @@ const styles: Styles = StyleSheet.create({
   info: {
     flex: 6,
     justifyContent: 'space-around',
+    paddingTop: 4,
   },
   name: {
     color: '#fefefe',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 20,
+    lineHeight: 18,
   },
   count: {
-    flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 20.8,
+    lineHeight: 14,
     color: '#888',
-    paddingTop: 4,
+    paddingTop: 6,
   },
   arrow: {
     flex: 1,
     textAlign: 'right',
-    paddingTop: 3,
+    fontSize: 35,
+    alignSelf: 'center',
   },
 });
 
