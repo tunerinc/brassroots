@@ -41,16 +41,19 @@ export function getTracksRequest(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {string[]} tracks The Spotify track ids from the current user's library
+ * @param   {string[]} tracks          The Spotify track ids from the current user's library
+ * @param   {boolean}  [replace=false] Whether or not the tracks need to be replaced
  *
- * @returns {object}          Redux action with the type of GET_TRACKS_SUCCESS and the tracks from the library
+ * @returns {object}                   Redux action with the type of GET_TRACKS_SUCCESS and the tracks from the library
  */
 export function getTracksSuccess(
   tracks: Array<string>,
+  replace?: boolean = false,
 ): Action {
   return {
     type: types.GET_TRACKS_SUCCESS,
     tracks,
+    replace,
   };
 }
 

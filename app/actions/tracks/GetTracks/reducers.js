@@ -53,21 +53,23 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state         The Redux state
- * @param   {object}   action        The Redux action
- * @param   {string}   action.type   The type of Redux action
- * @param   {string[]} action.tracks The Spotify ids of the current user's library tracks
+ * @param   {object}   state          The Redux state
+ * @param   {object}   action         The Redux action
+ * @param   {string}   action.type    The type of Redux action
+ * @param   {string[]} action.tracks  The Spotify ids of the current user's library tracks
+ * @param   {boolean}  action.replace Whether or not all the tracks need to be replaced
  * 
- * @returns {object}                 The state with the library track ids added
+ * @returns {object}                  The state with the library track ids added
  */
 export function success(
   state: State,
   action: Action,
 ): State {
   const {refreshingTracks, userTracks} = state;
-  const {tracks} = action;
+  const {tracks, replace} = action;
   const updates = (
     typeof refreshingTracks === 'boolean'
+    && typeof replace === 'boolean'
     && Array.isArray(userTracks)
     && Array.isArray(tracks)
   )
@@ -76,7 +78,7 @@ export function success(
       refreshingTracks: false,
       fetchingTracks: false,
       error: null,
-      userTracks: refreshingTracks
+      userTracks: refreshingTracks || replace
         ? [...tracks]
         : [...userTracks, ...tracks].filter((el, i, arr) => i === arr.indexOf(el)),
     }

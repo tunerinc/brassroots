@@ -53,23 +53,31 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state         The Redux state
- * @param   {object}   action        The Redux action
- * @param   {string}   action.type   The type of Redux action
- * @param   {string[]} action.albums The Spotify ids of the albums saved in the current user's library
+ * @param   {object}   state          The Redux state
+ * @param   {object}   action         The Redux action
+ * @param   {string}   action.type    The type of Redux action
+ * @param   {string[]} action.albums  The Spotify ids of the albums saved in the current user's library
+ * @param   {boolean}  action.replace Whether or not the albums need to be replaced
  * 
- * @returns {object}                 The state with the current user's saved albums added
+ * @returns {object}                  The state with the current user's saved albums added
  */
 export function success(
   state: State,
   action: Action,
 ): State {
   const {refreshingAlbums, userAlbums: oldAlbums} = state;
-  const {albums} = action;
-  const updates = Array.isArray(albums) && Array.isArray(oldAlbums)
+  const {albums, replace} = action;
+  const updates = (
+    typeof refreshingAlbums === 'boolean'
+    && typeof replace === 'boolean'
+    && Array.isArray(oldAlbums)
+    && Array.isArray(albums)
+  )
     ? {
       lastUpdated,
-      userAlbums: refreshingAlbums ? [...albums] : [...oldAlbums, ...albums],
+      userAlbums: refreshingAlbums || replace
+        ? [...albums]
+        : [...oldAlbums, ...albums],
       refreshingAlbums: false,
       fetchingAlbums: false,
       error: null,

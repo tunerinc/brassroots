@@ -41,6 +41,7 @@ describe('get tracks reducer', () => {
 
   it('should handle GET_TRACKS_SUCCESS', () => {
     const userTracks: Array<string> = ['bar', 'xyz'];
+    const replace: boolean = true;
 
     expect(
       reducer(
@@ -57,6 +58,14 @@ describe('get tracks reducer', () => {
       ),
     )
       .toStrictEqual({...initialState, userTracks: ['foo', ...userTracks]});
+
+    expect(
+      reducer(
+        {...initialState, fetchingTracks: true, userTracks: ['foo']},
+        actions.getTracksSuccess(userTracks, replace),
+      ),
+    )
+      .toStrictEqual({...initialState, userTracks});
 
     expect(
       reducer(

@@ -22,12 +22,15 @@ describe('get albums synchronous action creators', () => {
 
   it('creates get albums success action', () => {
     const albums: Array<string> = ['foo', 'bar'];
+    const replace: boolean = true;
     const expectedAction: Action = {
       type: types.GET_ALBUMS_SUCCESS,
       albums,
+      replace,
     };
 
-    expect(actions.getAlbumsSuccess(albums)).toStrictEqual(expectedAction);
+    expect(actions.getAlbumsSuccess(albums)).toStrictEqual({...expectedAction, replace: false});
+    expect(actions.getAlbumsSuccess(albums, replace)).toStrictEqual(expectedAction);
   });
 
   it('creates get albums failure action', () => {

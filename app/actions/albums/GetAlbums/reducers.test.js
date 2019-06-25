@@ -41,6 +41,7 @@ describe('get albums reducer', () => {
 
   it('should handle GET_ALBUMS_SUCCESS', () => {
     const userAlbums: Array<string> = ['bar', 'xyz'];
+    const replace: boolean = true;
 
     expect(
       reducer(
@@ -57,6 +58,14 @@ describe('get albums reducer', () => {
       ),
     )
       .toStrictEqual({...initialState, userAlbums: ['xyz', ...userAlbums]});
+    
+    expect(
+      reducer(
+        {...initialState, userAlbums: ['xyz'], fetchingAlbums: true},
+        actions.getAlbumsSuccess(userAlbums, replace),
+      ),
+    )
+      .toStrictEqual({...initialState, userAlbums});
 
     expect(
       reducer(
