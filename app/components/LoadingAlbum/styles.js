@@ -32,8 +32,8 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    height: 50,
-    width: 50,
+    height: 60,
+    width: 60,
     marginRight: 10,
   },
   info: {

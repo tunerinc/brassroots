@@ -6,9 +6,14 @@ import {Text, View, ActivityIndicator, Animated, Easing, VirtualizedList} from '
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import styles from './styles';
+
+// Components
 import ArtistCard from '../../components/ArtistCard';
 import LoadingArtist from '../../components/LoadingArtist';
-import styles from './styles';
+
+// Artists Action Creators
+import {getArtists} from '../../actions/artists/GetArtists';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,16 +22,19 @@ class LibraryArtistsView extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      shadowOpacity: new Animated.Value(0),
+    };
+
     this.onScroll = this.onScroll.bind(this);
     this.renderArtist = this.renderArtist.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
-    
+    const {getArtists, artists: {userArtists, fetchingArtists}} = this.props;
+    if (!userArtists.length && !fetchingArtists) getArtists();
   }
 
   navToArtist = artistID => () => {
@@ -34,26 +42,33 @@ class LibraryArtistsView extends React.Component {
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
   renderArtist({item}) {
     const {artists: {artistsByID}} = this.props;
-    const {image, name, userTracks} = artistsByID[artistID];
+    const {medium, name, userTracks} = artistsByID[item];
 
     return (
       <ArtistCard
         key={item}
-        artistImage={image || ''}
+        artistImage={medium || ''}
         artistName={name}
         navToArtist={this.navToArtist(item)}
         userTrackLength={userTracks.length}
@@ -66,26 +81,23 @@ class LibraryArtistsView extends React.Component {
 
     if (!fetchingArtists) return null;
 
-    return (
-      <View style={{paddingTop: 20, paddingBottom: 40}}>
-        <ActivityIndicator size='small' animating={true} color='#888' />
-      </View>
-    );
+    return <LoadingArtist />;
   }
 
   handleRefresh() {
-
+    const {getArtists} = this.props;
+    getArtists();
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
+    const {shadowOpacity} = this.state;
     const {
       artists: {userArtists, fetchingArtists, refreshingArtists, error: artistError},
     } = this.props;
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[ styles.shadow, animatedHeaderStyle ]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <Ionicons
               name='ios-arrow-back'
@@ -117,7 +129,7 @@ class LibraryArtistsView extends React.Component {
             onRefresh={this.handleRefresh}
           />
         }
-        {userArtists.length === 0 || !userArtists.length &&
+        {(userArtists.length === 0 || !userArtists.length) &&
           <View style={styles.scrollContainer}>
             <View style={styles.scrollWrap}>
               {fetchingArtists &&
@@ -127,10 +139,12 @@ class LibraryArtistsView extends React.Component {
                   <LoadingArtist />
                   <LoadingArtist />
                   <LoadingArtist />
+                  <LoadingArtist />
+                  <LoadingArtist />
                 </View>
               }
-              {!fetchingArtists && !artistError && <Text>Nothing to show</Text>}
-              {!fetchingArtists && artistError && <Text>There was an error.</Text>}
+              {(!fetchingArtists && !artistError) && <Text>Nothing to show</Text>}
+              {(!fetchingArtists && artistError) && <Text>There was an error.</Text>}
             </View>
           </View>
         }
@@ -141,6 +155,7 @@ class LibraryArtistsView extends React.Component {
 
 LibraryArtistsView.propTypes = {
   artists: PropTypes.object.isRequired,
+  getArtists: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 }
 
@@ -152,7 +167,9 @@ function mapStateToProps({artists, users}) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({
+    getArtists,
+  }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LibraryArtistsView);

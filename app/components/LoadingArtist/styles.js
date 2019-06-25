@@ -23,21 +23,24 @@ const styles: Styles = StyleSheet.create({
   artist: {
     flexDirection: 'row',
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 15,
     alignItems: 'center',
-    height: 92,
+    height: 82,
   },
   image: {
-    flex: 2,
+    height: 60,
+    width: 60,
+    marginRight: 10,
   },
   info: {
     flex: 6,
-    paddingRight: 10,
   },
   arrow: {
     flex: 1,
     textAlign: 'right',
+    marginLeft: 5,
     paddingTop: 3,
+    fontSize: 35,
   },
 });
 

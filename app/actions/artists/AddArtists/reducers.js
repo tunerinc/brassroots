@@ -30,7 +30,14 @@ import {singleArtist, lastUpdated} from '../../../reducers/artists';
  * @returns {object}                            The state of newly added artist
  */
 export function addSingleArtist(state, action) {
-  const {albums, userAlbums: oldAlbums, userTracks: oldTracks} = state;
+  const {
+    albums,
+    small: oldSmall,
+    medium: oldMedium,
+    large: oldLarge,
+    userAlbums: oldAlbums,
+    userTracks: oldTracks,
+  } = state;
   const {artist} = action;
   const {images, small, medium, large, userAlbums, userTracks, ...restOfArtist} = artist;
   const hasBothAlbums = albums && artist.albums;
@@ -40,12 +47,20 @@ export function addSingleArtist(state, action) {
   return updateObject(state, {
     ...restOfArtist,
     lastUpdated,
-    large: large ? large : images && images.length ? images[0].url : '',
-    medium: medium ? medium : images && images.length ? images[1].url : '',
-    small: small ? small : images && images.length ? images[2].url : '',
+    large: large ? large : oldLarge ? oldLarge : images && images.length ? images[0].url : '',
+    medium: medium ? medium : oldMedium ? oldMedium : images && images.length ? images[1].url : '',
+    small: small ? small : oldSmall ? oldSmall : images && images.length ? images[2].url : '',
     albums: hasBothAlbums ? [...albums, ...artist.albums] : artist.albums ? [...artist.albums] : [],
-    userAlbums: hasBothUserAlbums ? [...oldAlbums, ...userAlbums] : userAlbums ? [...userAlbums] : [],
-    userAlbums: hasBothTracks ? [...oldTracks, ...userTracks] : userTracks ? [...userTracks] : [],
+    userAlbums: hasBothUserAlbums
+      ? [...oldAlbums, ...userAlbums]
+      : userAlbums
+      ? [...userAlbums]
+      : [...oldAlbums],
+    userTracks: hasBothTracks
+      ? [...oldTracks, ...userTracks]
+      : userTracks
+      ? [...userTracks]
+      : [...oldTracks],
   });
 }
 
@@ -77,8 +92,6 @@ export function addArtists(state, action) {
     artistsByID,
     lastUpdated,
     totalArtists: Object.keys(artistsByID).length,
-    fetchingAlbums: false,
-    fetchingArtists: false,
     error: null,
   });
 }

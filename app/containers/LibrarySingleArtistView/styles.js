@@ -39,7 +39,7 @@ interface Styles {
 
 const screenHeight: number = Dimensions.get('window').height;
 const HEADER_MAX_HEIGHT: number = 261;
-const HEADER_MIN_HEIGHT: number = 85;
+const HEADER_MIN_HEIGHT: number = 70;
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -48,7 +48,7 @@ const styles: Styles = StyleSheet.create({
   list: {
     marginBottom: HEADER_MIN_HEIGHT,
     backgroundColor: '#1b1b1e',
-    minHeight: screenHeight - (HEADER_MAX_HEIGHT + 60),
+    minHeight: screenHeight - (HEADER_MAX_HEIGHT + 75),
   },
   scrollWrap: {
     backgroundColor: '#1b1b1e',
@@ -61,7 +61,7 @@ const styles: Styles = StyleSheet.create({
   animatedHeader: {
     backgroundColor: '#1b1b1e',
     shadowColor: '#fefefe',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
   },
   animatedShadow: {
@@ -73,7 +73,7 @@ const styles: Styles = StyleSheet.create({
     bottom: 0,
     width: null,
     shadowColor: '#101010',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
   },
   headerBackground: {
@@ -108,28 +108,30 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 10,
     paddingHorizontal: 20,
-    paddingTop: 15,
+    paddingTop: 20,
   },
   leftIcon: {
     flex: 1,
-    height: 45,
-    fontSize: 45,
+    height: 35,
+    fontSize: 35,
     backgroundColor: 'transparent',
+    alignSelf: 'center',
   },
   title: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 28,
+    fontSize: 24,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 33.6,
+    lineHeight: 28.8,
     textAlign: 'center',
+    alignSelf: 'center',
     backgroundColor: 'transparent',
   },
   rightIcon: {
     flex: 1,
-    height: 45,
-    fontSize: 40,
+    height: 35,
+    fontSize: 35,
     textAlign: 'right',
     backgroundColor: 'transparent',
   },

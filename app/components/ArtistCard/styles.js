@@ -19,6 +19,8 @@ interface Styles {
   loading: ViewStyleProp,
   image: ImageStyleProp,
   placeholder: ViewStyleProp,
+  default: ViewStyleProp,
+  defaultImage: ImageStyleProp,
   artistIcon: TextStyleProp,
   info: ViewStyleProp,
   name: TextStyleProp,
@@ -36,6 +38,7 @@ const styles: Styles = StyleSheet.create({
   },
   wrap: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   loading: {
     width: 60,
@@ -57,6 +60,20 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#888',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  default: {
+    height: 60,
+    width: 60,
+    backgroundColor: '#323232',
+    marginRight: 10,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  defaultImage: {
+    flex: 1,
+    height: 37.19,
+    width: 45,
   },
   artistIcon: {
     paddingTop: 3,

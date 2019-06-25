@@ -64,6 +64,7 @@ type Action = {
   +playlistIDs?: Array<string>,
   +trackIDs?: Array<string>,
   +albumCount?: number,
+  +replace?: boolean,
 };
 
 type State = {

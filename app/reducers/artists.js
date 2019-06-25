@@ -8,6 +8,7 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import {type Action as AlbumAction} from './albums';
+import {type Action as TrackAction} from './tracks';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/artists/types';
@@ -15,6 +16,7 @@ import * as types from '../actions/artists/types';
 // Case Functions
 import {addSingleArtist, addArtists} from '../actions/artists/AddArtists/reducers';
 import * as getArtistImages from '../actions/artists/GetArtistImages/reducers';
+import * as getArtists from '../actions/artists/GetArtists/reducers';
 import * as getArtistTopAlbums from '../actions/artists/GetArtistTopAlbums/reducers';
 import * as getArtistTopListeners from '../actions/artists/GetArtistTopListeners/reducers';
 import * as getArtistTopPlaylists from '../actions/artists/GetArtistTopPlaylists/reducers';
@@ -23,10 +25,11 @@ import * as incrementArtistPlays from '../actions/artists/IncrementArtistPlays/r
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction = Action | AlbumAction | TrackAction;
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | AlbumAction | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type Artist = {
   +lastUpdated?: string,
@@ -57,6 +60,7 @@ type Action = {
   +trackIDs?: Array<string>,
   +artistCounts?: Array<number>,
   +artistCount?: number,
+  +refreshing?: boolean,
 };
 
 type State = {
@@ -72,6 +76,7 @@ type State = {
   +fetchingListeners?: boolean,
   +fetchingPlaylists?: boolean,
   +fetchingTracks?: boolean,
+  +refreshingArtists?: boolean,
   +incrementingCount?: boolean,
   +error?: ?Error | SpotifyError,
 };
@@ -203,6 +208,12 @@ export default function reducer(
         return getArtistImages.success(state, action);
       case types.GET_ARTIST_IMAGES_FAILURE:
         return getArtistImages.failure(state, action);
+      case types.GET_ARTISTS_REQUEST:
+        return getArtists.request(state, action);
+      case types.GET_ARTISTS_SUCCESS:
+        return getArtists.success(state, action);
+      case types.GET_ARTISTS_FAILURE:
+        return getArtists.failure(state, action);
       case types.GET_ARTIST_TOP_ALBUMS_REQUEST:
         return getArtistTopAlbums.request(state);
       case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:

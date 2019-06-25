@@ -97,7 +97,9 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
         [artist.id]: {
           id: artist.id,
           name: artist.name,
-          image: '',
+          small: images && images.length == 3 ? images[2].url : '',
+          medium: images && images.length === 3 ? images[1].url : '',
+          large: images && images.length ? images[0].url : '',
           userTracks: [],
           userAlbums: [],
           tracks: [],
@@ -112,7 +114,9 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
           [artist.id]: {
             id: artist.id,
             name: artist.name,
-            image: '',
+            small: images && images.length == 3 ? images[2].url : '',
+            medium: images && images.length === 3 ? images[1].url : '',
+            large: images && images.length ? images[0].url : '',
             albums: [],
             userTracks: [],
             userAlbums: [],

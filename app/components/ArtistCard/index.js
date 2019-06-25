@@ -53,13 +53,8 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
             <Image style={styles.image} source={{uri: artistImage}} />
           }
           {(typeof artistImage !== 'string' || artistImage === '') &&
-            <View style={styles.placeholder}>
-              <Ionicons
-                name='md-microphone'
-                size={30}
-                color='#fefefe'
-                style={styles.artistIcon}
-              />
+            <View style={styles.default}>
+              <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
             </View>
           }
           <View style={styles.info}>

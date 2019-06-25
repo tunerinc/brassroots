@@ -124,7 +124,7 @@ class LibrarySingleAlbumView extends React.Component {
       const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
       const {displayName, profileImage} = usersByID[currentUserID];
 
-      if (isListenerOwner && !songQueued) {
+      if (isListenerOwner && !songQueued && selectedTrack !== '') {
         const {name, durationMS, albumID, artists} = tracksByID[selectedTrack];
         const {name: albumName, small, medium, large, artists: albumArtists} = albumsByID[albumID];
         const trackToQueue = {
@@ -283,7 +283,7 @@ class LibrarySingleAlbumView extends React.Component {
       users: {currentUserID},
     } = this.props;
     const {userTracks, name, medium, large} = albumsByID[albumToView];
-    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+    const sessionExists = currentSessionID && sessionsByID.hasOwnProperty(currentSessionID);
     const queueHasTracks = sessionExists && userQueue.length > 0;
     const inSession = sessionExists
       && (
@@ -434,7 +434,7 @@ class LibrarySingleAlbumView extends React.Component {
         >
           {this.renderModalContent('album', albumToView)}
         </Modal>
-        {(typeof selectedTrack === 'string' && tracksByID[selectedTrack]) &&
+        {(typeof selectedTrack === 'string' && selectedTrack !== '' && tracksByID[selectedTrack]) &&
           <AddToQueueDialog
             queueing={queueing}
             error={queueError}

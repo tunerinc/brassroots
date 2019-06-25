@@ -31,7 +31,7 @@ import {createSession} from '../../actions/sessions/CreateSession';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 
 const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 85;
+const HEADER_MIN_HEIGHT = 70;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class LibrarySingleArtistView extends React.Component {
@@ -47,7 +47,6 @@ class LibrarySingleArtistView extends React.Component {
       selectedTrack: '',
     };
 
-    this.navToDetails = this.navToDetails.bind(this);
     this.renderTrack = this.renderTrack.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
@@ -77,20 +76,20 @@ class LibrarySingleArtistView extends React.Component {
     } = this.props;
     const {displayName} = usersByID[currentUserID];
     const {name, albumID, artists} = tracksByID[item];
-    const {small, name: albumName} = albumsByID[albumID];
+    const {medium, name: albumName} = albumsByID[albumID];
     const {name: artistName} = artistsByID[artistToView];
 
     return (
       <TrackCard
-        key={item.id}
+        key={item}
         albumName={albumName}
         type='cover'
         context={{displayName, name: artistName, id: artistToView, type: 'user-artist'}}
         name={name}
-        openModal={this.openModal}
+        openModal={this.openModal(item, 'track')}
         showOptions={true}
         showSquareImage={true}
-        image={small}
+        image={medium}
         artists={artists.map(a => a.name).join(', ')}
       />
     );
@@ -115,7 +114,7 @@ class LibrarySingleArtistView extends React.Component {
       const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
       const {displayName, profileImage} = usersByID[currentUserID];
 
-      if (isListenerOwner && !songQueued) {
+      if (isListenerOwner && !songQueued && selectedTrack !== '') {
         const {name, durationMS, albumID, artists} = tracksByID[selectedTrack];
         const {name: albumName, small, medium, large, artists: albumArtists} = albumsByID[albumID];
         const trackToQueue = {
@@ -166,17 +165,21 @@ class LibrarySingleArtistView extends React.Component {
 
     if (
       !item
-      || (type === 'track' && !tracksByID[item])
-      || (type === 'artist' && !artistsByID[item])
-    ) return null;
+      || (type === 'track' && !tracksByID.hasOwnProperty(item))
+      || (type === 'artist' && !artistsByID.hasOwnProperty(item))
+    ) return <View></View>;
 
     switch (type) {
       case 'track': {
         const {name, albumID, artists} = tracksByID[item];
         const {small, name: albumName} = albumsByID[albumID];
-        const {listeners, ownerID} = sessionsByID[currentSessionID];
-        const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-        const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(item) !== -1;
+        const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+        const songQueued = userQueue.map(id => queueByID[id].trackID).includes(item);
+        const isListenerOwner = sessionExists
+          && (
+            sessionsByID[currentSessionID].listeners.includes(currentUserID)
+            || sessionsByID[currentSessionID].ownerID === currentUserID
+          );
 
         return (
           <TrackModal
@@ -275,17 +278,19 @@ class LibrarySingleArtistView extends React.Component {
       artistToView,
       albums: {albumsByID},
       artists: {artistsByID},
+      queue: {userQueue, queueing, error: queueError},
       sessions: {sessionsByID, currentSessionID},
       tracks: {tracksByID},
-      queue: {userQueue, queueing, error: queueError},
       users: {currentUserID},
     } = this.props;
     const {userTracks, name, large} = artistsByID[artistToView];
-    const {medium} = albumsByID[tracksByID[selectedTrack].albumID];
-    const session = sessionsByID[currentSessionID];
-    const inSession = session
-      && session.listeners.indexOf(currentUserID) !== -1
-      || session.ownerID === currentUserID;
+    const sessionExists = currentSessionID && sessionsByID.hasOwnProperty(currentSessionID);
+    const queueHasTracks = sessionExists && userQueue.length > 0;
+    const inSession = sessionExists
+      && (
+        sessionsByID[currentSessionID].listeners.includes(currentUserID)
+        || sessionsByID[currentSessionID].ownerID === currentUserID
+      );
 
     return (
       <View style={styles.container}>
@@ -347,7 +352,7 @@ class LibrarySingleArtistView extends React.Component {
               name='ios-arrow-back'
               color='#fefefe'
               style={styles.leftIcon}
-              onPress={this.navBack}
+              onPress={Actions.pop}
             />
             <Text numberOfLines={1} style={styles.title}>
               {name}
@@ -431,39 +436,43 @@ class LibrarySingleArtistView extends React.Component {
         >
           {this.renderModalContent('artist', artistToView)}
         </Modal>
-        <AddToQueueDialog
-          queueing={queueing}
-          error={queueError}
-          inSession={inSession}
-          queueHasTracks={userQueue.length > 0}
-          image={medium}
-        />
+        {(typeof selectedTrack === 'string' && selectedTrack !== '' && tracksByID[selectedTrack]) &&
+          <AddToQueueDialog
+            queueing={queueing}
+            error={queueError}
+            inSession={inSession}
+            queueHasTracks={queueHasTracks}
+            image={albumsByID[tracksByID[selectedTrack].albumID].medium}
+          />
+        }
       </View>
     );
   }
 }
 
 LibrarySingleArtistView.propTypes = {
-  albums: PropTypes.object,
-  artists: PropTypes.object,
+  albums: PropTypes.object.isRequired,
+  artists: PropTypes.object.isRequired,
   artistToView: PropTypes.string,
-  createSession: PropTypes.func,
-  leaveSession: PropTypes.func,
-  player: PropTypes.object,
-  playlists: PropTypes.object,
-  playTrack: PropTypes.func,
-  queueTrack: PropTypes.func,
-  sessions: PropTypes.object,
-  tracks: PropTypes.object,
-  users: PropTypes.object,
+  createSession: PropTypes.func.isRequired,
+  leaveSession: PropTypes.func.isRequired,
+  player: PropTypes.object.isRequired,
+  playlists: PropTypes.object.isRequired,
+  playTrack: PropTypes.func.isRequired,
+  queue: PropTypes.object.isRequired,
+  queueTrack: PropTypes.func.isRequired,
+  sessions: PropTypes.object.isRequired,
+  tracks: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, player, playlists, sessions, tracks, users}) {
+function mapStateToProps({albums, artists, player, playlists, queue, sessions, tracks, users}) {
   return {
     albums,
     artists,
     player,
     playlists,
+    queue,
     sessions,
     tracks,
     users,

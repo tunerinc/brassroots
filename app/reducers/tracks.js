@@ -59,6 +59,7 @@ type Action = {
   +refreshing?: boolean,
   +trackID?: string,
   +trackCount?: number,
+  +replace?: boolean,
 };
 
 type State = {
