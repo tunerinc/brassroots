@@ -53,7 +53,7 @@ interface Styles {
 
 const screenHeight: number = Dimensions.get('window').height;
 const HEADER_MAX_HEIGHT: number = 261;
-const HEADER_MIN_HEIGHT: number = 85;
+const HEADER_MIN_HEIGHT: number = 70;
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -73,13 +73,13 @@ const styles: Styles = StyleSheet.create({
     zIndex: 0,
   },
   animatedHeader: {
-    backgroundColor: '#1b1b1e',
+    backgroundColor: '#888',
     shadowColor: '#fefefe',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
   },
   animatedShadow: {
-    backgroundColor: '#1b1b1e',
+    backgroundColor: '#888',
     position: 'absolute',
     top: 0,
     left: 0,
@@ -87,7 +87,7 @@ const styles: Styles = StyleSheet.create({
     bottom: 0,
     width: null,
     shadowColor: '#101010',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
   },
   headerBackground: {
@@ -122,28 +122,30 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 10,
     paddingHorizontal: 20,
-    paddingTop: 15,
+    paddingTop: 20,
   },
   leftIcon: {
     flex: 1,
-    height: 45,
-    fontSize: 45,
+    height: 35,
+    fontSize: 35,
     backgroundColor: 'transparent',
+    alignSelf: 'center',
   },
   title: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 28,
+    fontSize: 24,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 33.6,
+    lineHeight: 28.8,
     textAlign: 'center',
+    alignSelf: 'center',
     backgroundColor: 'transparent',
   },
   rightIcon: {
     flex: 1,
-    height: 45,
-    fontSize: 40,
+    height: 35,
+    fontSize: 35,
     textAlign: 'right',
     backgroundColor: 'transparent',
   },
@@ -220,16 +222,15 @@ const styles: Styles = StyleSheet.create({
   options: {
     flex: 1,
     textAlign: 'right',
-    height: 40,
-    fontSize: 35,
+    height: 45,
     backgroundColor: 'transparent',
+    fontSize: 35,
   },
   addPlaylistTrack: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 15,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    height: 92,
+    height: 82,
     alignItems: 'center',
   },
   addPlaylistTrackWrap: {
@@ -245,12 +246,13 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#888',
   },
   addPlaylistTrackText: {
-    flex: 4,
+    flex: 6,
     color: '#fefefe',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
     fontFamily: 'Muli',
-    lineHeight: 26,
+    lineHeight: 18,
+    paddingTop: 4,
   },
   plus: {
     paddingTop: 4,
@@ -266,10 +268,10 @@ const styles: Styles = StyleSheet.create({
   playlistTrackErrorText: {
     flex: 1,
     color: '#fefefe',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 26,
+    lineHeight: 18,
     textAlign: 'center',
     marginTop: 50,
   },

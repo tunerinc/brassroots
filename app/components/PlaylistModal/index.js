@@ -54,23 +54,9 @@ export default class PlaylistModal extends React.PureComponent<Props, State> {
                 underlayColor='#fefefe'
                 disabled
               >
-                <Text style={styles.text}>invite</Text>
-              </TouchableHighlight>
-            </View>
-            <View style={styles.option}>
-              <TouchableHighlight
-                style={styles.button}
-                activeOpacity={0.5}
-                underlayColor='#fefefe'
-                disabled
-              >
                 <Text style={styles.text}>edit playlist</Text>
               </TouchableHighlight>
             </View>
-          </View>
-        }
-        {!isOwnerMember &&
-          <View>
             <View style={styles.option}>
               <TouchableHighlight
                 style={styles.button}
@@ -78,17 +64,7 @@ export default class PlaylistModal extends React.PureComponent<Props, State> {
                 underlayColor='#fefefe'
                 disabled
               >
-                <Text style={[styles.text, styles.disabled]}>edit playlist</Text>
-              </TouchableHighlight>
-            </View>
-            <View style={styles.option}>
-              <TouchableHighlight
-                style={styles.button}
-                activeOpacity={0.5}
-                underlayColor='#fefefe'
-                disabled
-              >
-                <Text style={[styles.text, styles.disabled]}>invite</Text>
+                <Text style={styles.text}>invite</Text>
               </TouchableHighlight>
             </View>
           </View>

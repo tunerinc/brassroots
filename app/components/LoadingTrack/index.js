@@ -35,7 +35,7 @@ export default class LoadingTrack extends React.PureComponent<Props, State> {
           <View style={styles.image}>
             <Placeholder.Media
               animate='fade'
-              size={50}
+              size={60}
               hasRadius={false}
               color='#888'
             />

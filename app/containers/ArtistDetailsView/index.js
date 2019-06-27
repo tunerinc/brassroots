@@ -6,11 +6,14 @@ import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-n
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import styles from './styles';
+
+// Components
 import LoadingTrack from '../../components/LoadingTrack';
+import LoadingAlbum from '../../components/LoadingAlbum';
 import LoadingUser from '../../components/LoadingUser';
 import TrackCard from '../../components/TrackCard';
 import AlbumCard from '../../components/AlbumCard';
-import styles from './styles';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -124,12 +127,12 @@ class ArtistDetailsView extends React.Component {
 
   renderTopAlbum({item, index}) {
     const {albums: {albumsByID}} = this.props;
-    const {small, name, artists, totalPlays} = albumsByID[item];
+    const {medium, name, artists, totalPlays} = albumsByID[item];
 
     return (
       <AlbumCard
         key={item}
-        albumImage={small}
+        albumImage={medium}
         albumName={name}
         artists={artists.map(a => a.name).join(', ')}
         navToAlbum={this.goToAlbum}
@@ -142,12 +145,12 @@ class ArtistDetailsView extends React.Component {
   render() {
     const {
       artistToView,
-      artists: {artistsByID, fetchingListeners, fetchingTracks, error: artistsError},
+      artists: {artistsByID, fetchingListeners, fetchingAlbums, fetchingTracks, error: artistsError},
     } = this.props;
     const {
       userProfile,
       name,
-      small,
+      medium,
       topListeners,
       topTracks,
       topAlbums,
@@ -162,7 +165,7 @@ class ArtistDetailsView extends React.Component {
               <Text style={styles.sectionTitle}>PROFILE</Text>
               {userProfile &&
                 <TouchableOpacity style={styles.artistUserProfile}>
-                  <Image style={styles.artistUserProfileImage} source={{uri: small}} />
+                  <Image style={styles.artistUserProfileImage} source={{uri: medium}} />
                   <Text style={styles.artistUserProfileName}>
                     {name}
                   </Text>
@@ -171,7 +174,9 @@ class ArtistDetailsView extends React.Component {
               }
               {!userProfile &&
                 <View style={styles.artistUserProfilePlaceholder}>
-                  <View style={styles.artistUserProfileImagePlaceholder}></View>
+                  <View style={styles.default}>
+                    <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
+                  </View>
                   <Text style={styles.artistUserProfileNamePlaceholder}>No user profile</Text>
                   <Ionicons name='ios-arrow-forward' color='#888' style={styles.arrowForward} />
                 </View>
@@ -179,7 +184,7 @@ class ArtistDetailsView extends React.Component {
             </View>
             <View style={styles.topListeners}>
               <Text style={styles.sectionTitle}>TOP LISTENERS</Text>
-              {!fetchingListeners && !artistsError && topListeners.length !== 0 &&
+              {(!fetchingListeners && !artistsError && topListeners.length !== 0) &&
                 <FlatList
                   data={topListeners}
                   renderItem={this.renderTopListener}
@@ -187,14 +192,14 @@ class ArtistDetailsView extends React.Component {
                   horizontal={true}
                 />
               }
-              {fetchingListeners || artistsError || topListeners.length === 0 &&
+              {(fetchingListeners || artistsError || topListeners.length === 0) &&
                 <View>
-                  {!fetchingListeners && artistsError &&
+                  {(!fetchingListeners && artistsError) &&
                     <View style={styles.topListenersError}>
                       <Text style={styles.topListenersErrorText}>Unable to load top listeners</Text>
                     </View>
                   }
-                  {fetchingListeners && !artistsError &&
+                  {(fetchingListeners && !artistsError) &&
                     <View style={styles.loadingSection}>
                       <LoadingUser />
                       <LoadingUser />
@@ -226,21 +231,21 @@ class ArtistDetailsView extends React.Component {
                   {paddingBottom: 10},
                 ]}
               >TOP TRACKS</Text>
-              {!fetchingTracks && !artistsError  && topTracks.length !== 0 &&
+              {(!fetchingTracks && !artistsError  && topTracks.length !== 0) &&
                 <FlatList
                   data={topTracks}
                   renderItem={this.renderTopTrack}
                   keyExtractor={item => item}
                 />
               }
-              {fetchingTracks || artistsError || topTracks.length === 0 &&
+              {(fetchingTracks || artistsError || topTracks.length === 0) &&
                 <View>
-                  {!fetchingTracks && artistsError &&
+                  {(!fetchingTracks && artistsError) &&
                     <View style={styles.topTracksError}>
                       <Text style={styles.topTracksErrorText}>Unable to load top tracks</Text>
                     </View>
                   }
-                  {fetchingTracks && !artistsError &&
+                  {(fetchingTracks && !artistsError) &&
                     <View>
                       <LoadingTrack type='top' />
                     </View>
@@ -255,21 +260,21 @@ class ArtistDetailsView extends React.Component {
                   {paddingBottom: 10},
                 ]}
               >TOP ALBUMS</Text>
-              {!fetchingAlbums && !artistsError  && topAlbums.length !== 0 &&
+              {(!fetchingAlbums && !artistsError  && topAlbums.length !== 0) &&
                 <FlatList
                   data={topAlbums}
                   renderItem={this.renderTopAlbum}
                   keyExtractor={item => item}
                 />
               }
-              {fetchingAlbums || artistsError || topAlbums.length === 0 &&
+              {(fetchingAlbums || artistsError || topAlbums.length === 0) &&
                 <View>
-                  {!fetchingAlbums && artistsError &&
+                  {(!fetchingAlbums && artistsError) &&
                     <View style={styles.topAlbumsError}>
                       <Text style={styles.topAlbumsErrorText}>Unable to load top albums</Text>
                     </View>
                   }
-                  {fetchingAlbums && !artistsError &&
+                  {(fetchingAlbums && !artistsError) &&
                     <View>
                       <LoadingAlbum showIndex={true} />
                     </View>

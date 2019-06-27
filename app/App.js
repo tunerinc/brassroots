@@ -37,7 +37,7 @@ import UserProfileView from './containers/UserProfileView';
 
 // Library
 import LibraryPlaylistsView from './containers/LibraryPlaylistsView';
-import LibrarySinglePlaylistView from './containers/LibrarySinglePlaylistView';
+import PlaylistView from './containers/PlaylistView';
 import LibraryArtistsView from './containers/LibraryArtistsView';
 import LibrarySingleArtistView from './containers/LibrarySingleArtistView';
 import LibraryAlbumsView from './containers/LibraryAlbumsView';
@@ -177,7 +177,7 @@ export default class App extends React.Component<Props> {
                   />
                   <Scene
                     key='librarySinglePlaylist'
-                    component={LibrarySinglePlaylistView}
+                    component={PlaylistView}
                     title='Library'
                   />
                   <Scene
@@ -530,7 +530,7 @@ export default class App extends React.Component<Props> {
                   />
                   <Scene
                     key='profileSinglePlaylist'
-                    component={LibrarySinglePlaylistView}
+                    component={PlaylistView}
                     title='Profile'
                   />
                   <Scene

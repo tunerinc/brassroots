@@ -6,10 +6,14 @@ import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-n
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import Placeholder from 'rn-placeholder';
+import styles from './styles';
+
+// Components
+import RoundPerson from '../../components/RoundPerson';
 import TrackCard from '../../components/TrackCard';
 import LoadingTrack from '../../components/LoadingTrack';
 import LoadingMember from '../../components/LoadingMember';
-import styles from './styles';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -28,6 +32,9 @@ import {queueTrack} from '../../actions/queue/QueueTrack';
 // Sessions Action Creators
 import {createSession} from '../../actions/sessions/CreateSession';
 
+// Users Action Creators
+import {getUserImage} from '../../actions/users/GetUserImage';
+
 class PlaylistDetailsView extends React.Component {
   constructor(props) {
     super(props);
@@ -36,6 +43,27 @@ class PlaylistDetailsView extends React.Component {
     this.renderTopTrack = this.renderTopTrack.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
   }
+
+  componentDidMount() {
+    const {
+      getUserImage,
+      playlistToView,
+      playlists: {playlistsByID},
+      users: {usersByID, fetchingImages},
+    } = this.props;
+
+      if (
+        playlistToView
+        && playlistsByID[playlistToView]
+        && !fetchingImages
+        && (
+          !usersByID[playlistsByID[playlistToView].ownerID].profileImage
+          || usersByID[playlistsByID[playlistToView].ownerID].profileImage === ''
+        )
+      ) {
+        getUserImage(playlistsByID[playlistToView].ownerID);
+      }
+  };
 
   navToProfile = title => () => {
     switch (title) {
@@ -54,54 +82,30 @@ class PlaylistDetailsView extends React.Component {
     const {
       playlistToView,
       title,
-      playlists: {playlistsByID},
+      playlists: {playlistsByID, fetchingMembers},
       users: {usersByID},
     } = this.props;
+    
+    if (!usersByID[item] || !playlistToView || !playlistsByID[playlistToView]) return <View></View>;
+    
     const playlist = playlistsByID[playlistToView];
     const user = usersByID[item];
-
-    if (!user) return null;
+    const filterText = (index !== 2 || playlist.members.length <= 3)
+      ? ''
+      : playlist.members.length - 3 > 100
+      ? '100+'
+      : `${playlist.members.length - 3}+`;
 
     return (
-      <TouchableOpacity style={styles.playlistMember} onPress={this.navToProfile(title)}>
-        {index === 2 && playlist.members.length > 3 &&
-          <View
-            style={{
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: 80,
-              height: 90,
-            }}
-          >
-            {playlist.members.length - 3 > 100 &&
-              <Text style={styles.memberCountText}>100+</Text>
-            }
-            {playlist.members.length - 3 <= 100 &&
-              <Text style={styles.memberCountText}>
-                {playlist.totalMembers - 3}+
-              </Text>
-            }
-            <View style={styles.playlistMemberViewAllFilter}></View>
-            <Image style={styles.playlistMemberViewAllImage} source={{uri: user.profileImage}} />
-            <Text numberOfLines={1} style={styles.playlistMemberName}>view all</Text>
-          </View>
-        }
-        {(index !== 2 || playlist.members.length <= 3) &&
-          <View
-            style={{
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              width: 80,
-              height: 90,
-            }}
-          >
-            <Image style={styles.playlistMemberImage} source={{uri: user.profileImage}} />
-            <Text numberOfLines={1} style={styles.playlistMemberName}>
-              {user.username}
-            </Text>
-          </View>
-        }
-      </TouchableOpacity>
+      <RoundPerson
+        onPress={() => console.log(user)}
+        marginLeft={index === 0 ? 20 : 0}
+        loading={fetchingMembers}
+        image={user.profileImage}
+        text={index === 2 && playlist.members.length > 3 ? 'view all' : user.displayName}
+        showFilter={index === 2 && playlist.members.length > 3}
+        filterText={filterText}
+      />
     );
   }
 
@@ -153,17 +157,12 @@ class PlaylistDetailsView extends React.Component {
     const {ownerID, members} = playlistsByID[playlistToView];
 
     return (
-      <TouchableOpacity style={styles.playlistMemberAction} disabled>
-        <View style={styles.playlistMemberImagePlaceholder}>
-          <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.plus} />
-        </View>
-        {(members.indexOf(currentUserID) !== -1 || ownerID === currentUserID) &&
-          <Text style={styles.playlistMemberInviteText}>invite</Text>
-        }
-        {(members.indexOf(currentUserID) === -1 && ownerID !== currentUserID) &&
-          <Text style={styles.playlistMemberInviteText}>join</Text>
-        }
-      </TouchableOpacity>
+      <RoundPerson
+        onPress={() => console.log('header pressed')}
+        image={null}
+        text={(members.indexOf(currentUserID) !== -1 || ownerID === currentUserID) ? 'invite' : 'join'}
+        showPlus={true}
+      />
     );
   }
 
@@ -172,18 +171,18 @@ class PlaylistDetailsView extends React.Component {
       playlistToView,
       title,
       playlists: {playlistsByID, fetchingMembers, fetchingTopTracks, error: playlistError},
-      users: {usersByID},
+      users: {usersByID, fetchingImages},
     } = this.props;
     const {
       ownerID,
       ownerType,
-      topMembers,
+      members,
       topTracks,
       totalPlays,
-      image,
+      large,
       name,
     } = playlistsByID[playlistToView];
-    const owner = usersByID[playlist.ownerID];
+    const owner = usersByID[ownerID];
 
     return (
       <View style={styles.container}>
@@ -205,9 +204,26 @@ class PlaylistDetailsView extends React.Component {
               {ownerID !== 'spotify' &&
                 <TouchableOpacity
                   style={styles.playlistCreator}
-                  onPress={this.navToProfile(title)}
+                  onPress={() => console.log(owner)}
                 >
-                  <Image style={styles.playlistCreatorImage} source={{uri: owner.profileImage}} />
+                  {(typeof owner.profileImage === 'string' && owner.profileImage !== '') &&
+                    <Image style={styles.playlistCreatorImage} source={{uri: owner.profileImage}} />
+                  }
+                  {(!fetchingImages && (!owner.profileImage || owner.profileImage === '')) &&
+                    <View style={styles.default}>
+                      <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
+                    </View>
+                  }
+                  {(fetchingImages && (!owner.profileImage || owner.profileImage === '')) &&
+                    <View style={styles.playlistCreatorImage}>
+                      <Placeholder.Media
+                        animate='fade'
+                        size={60}
+                        hasRadius={true}
+                        color='#888'
+                      />
+                    </View>
+                  }
                   <Text style={styles.playlistCreatorName}>
                     {owner.displayName}
                   </Text>
@@ -220,43 +236,45 @@ class PlaylistDetailsView extends React.Component {
                 </TouchableOpacity>
               }
             </View>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>MEMBERS</Text>
-              {(!fetchingMembers && topMembers.length !== 0) &&
-                <FlatList
-                  data={topMembers}
-                  renderItem={this.renderMember}
-                  keyExtractor={item => item}
-                  getItem={(data, index) => data[index]}
-                  getItemCount={data => data.length}
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  ListHeaderComponent={this.renderHeader}
-                />
-              }
-              {(fetchingMembers || topMembers.length === 0) &&
-                <View>
-                  {(!fetchingMembers && playlistError) &&
-                    <View style={styles.topMembersError}>
-                      <Text style={styles.topMembersErrorText}>Unable to load members</Text>
-                    </View>
-                  }
-                  {(!fetchingMembers && !playlistError && topMembers.length === 0) &&
-                    <View style={styles.topMembersEmpty}>
-                      <Text style={styles.topMembersEmptyText}>No members</Text>
-                    </View>
-                  }
-                  {fetchingMembers &&
-                    <View style={styles.loadingSection}>
-                      <LoadingMember marginLeft={20} />
-                      <LoadingMember />
-                      <LoadingMember />
-                      <LoadingMember />
-                    </View>
-                  }
-                </View>
-              }
-            </View>
+            {ownerID  !== 'spotify' &&
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>MEMBERS</Text>
+                {(!fetchingMembers && members.length !== 0) &&
+                  <FlatList
+                    data={members}
+                    renderItem={this.renderMember}
+                    keyExtractor={item => item}
+                    getItem={(data, index) => data[index]}
+                    getItemCount={data => data.length}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    ListHeaderComponent={this.renderHeader}
+                  />
+                }
+                {(fetchingMembers || members.length === 0) &&
+                  <View>
+                    {(!fetchingMembers && playlistError) &&
+                      <View style={styles.membersError}>
+                        <Text style={styles.membersErrorText}>Unable to load members</Text>
+                      </View>
+                    }
+                    {(!fetchingMembers && !playlistError && members.length === 0) &&
+                      <View style={styles.topTracksEmpty}>
+                        <Text style={styles.topTracksEmptyText}>No members</Text>
+                      </View>
+                    }
+                    {fetchingMembers &&
+                      <View style={styles.loadingSection}>
+                        <LoadingMember marginLeft={20} />
+                        <LoadingMember />
+                        <LoadingMember />
+                        <LoadingMember />
+                      </View>
+                    }
+                  </View>
+                }
+              </View>
+            }
             {totalPlays === 1 &&
               <Text style={styles.playlistPlays}>
                 <Text style={styles.playlistPlaysNumber}>
@@ -300,7 +318,7 @@ class PlaylistDetailsView extends React.Component {
           <View style={styles.headerBackground}>
             <Image
               style={styles.headerBackground}
-              source={{uri: image}}
+              source={{uri: large}}
               resizeMode='cover'
               blurRadius={80}
             />
@@ -330,6 +348,7 @@ PlaylistDetailsView.propTypes = {
   createSession: PropTypes.func.isRequired,
   getPlaylistTopMembers: PropTypes.func.isRequired,
   getPlaylistTopTracks: PropTypes.func.isRequired,
+  getUserImage: PropTypes.func.isRequired,
   playlists: PropTypes.object.isRequired,
   playlistToView: PropTypes.string,
   playTrack: PropTypes.func.isRequired,
@@ -357,6 +376,7 @@ function mapDispatchToProps(dispatch) {
     createSession,
     getPlaylistTopMembers,
     getPlaylistTopTracks,
+    getUserImage,
     playTrack,
     queueTrack,
   },

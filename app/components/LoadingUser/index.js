@@ -20,7 +20,7 @@ export default class LoadingUser extends React.PureComponent<Props, State> {
         <View style={styles.image}>
           <Placeholder.Media
             animate='fade'
-            size={30}
+            size={60}
             hasRadius={true}
             color='#888'
           />

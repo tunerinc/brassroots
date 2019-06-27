@@ -315,7 +315,7 @@ class LibrarySingleArtistView extends React.Component {
               ref='TrackList'
               data={userTracks}
               renderItem={this.renderTrack(artistToView)}
-              keyExtractor={item => item.id}
+              keyExtractor={item => item}
               getItem={(data, index) => data[index]}
               getItemCount={data => data.length}
               removeClippedSubviews={false}
@@ -331,7 +331,7 @@ class LibrarySingleArtistView extends React.Component {
               )}
             />
           }
-          {userTracks.length === 0 || !userTracks.length &&
+          {(userTracks.length === 0 || !userTracks.length) &&
             <View style={styles.scrollWrap}>
               <LoadingTrack type='cover' />
             </View>

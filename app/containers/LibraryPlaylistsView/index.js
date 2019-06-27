@@ -86,7 +86,7 @@ class LibraryPlaylistsView extends React.Component {
       playlists: {playlistsByID},
       users: {currentUserID, usersByID},
     } = this.props;
-    const {small, name, members, mode, ownerID} = playlistsByID[item];
+    const {medium, name, members, mode, ownerID} = playlistsByID[item];
     const ownerName = ownerID === 'spotify'
       ? 'Spotify'
       : ownerID !== currentUserID
@@ -96,7 +96,7 @@ class LibraryPlaylistsView extends React.Component {
     return (
       <PlaylistCard
         key={item}
-        image={small}
+        image={medium}
         isMember={members.includes(currentUserID) || ownerID === currentUserID}
         name={name}
         navToPlaylist={this.navToPlaylist('library', item)}

@@ -88,12 +88,12 @@ class LibraryAlbumsView extends React.Component {
 
   renderAlbum({item}) {
     const {albums: {albumsByID}} = this.props;
-    const {small, name, artists} = albumsByID[item];
+    const {medium, name, artists} = albumsByID[item];
 
     return (
       <AlbumCard
         key={item}
-        albumImage={small || ''}
+        albumImage={medium || ''}
         albumName={name}
         artists={artists.map(artist => artist.name).join(', ')}
         navToAlbum={this.navToAlbum(item)}

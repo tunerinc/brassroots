@@ -17,17 +17,20 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   owner: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    width: 80,
+    height: 90,
+    marginVertical: 20,
+    marginRight: 20,
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   image: {
-    width: 30,
-    height: 30,
-    marginRight: 5,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   name: {
-    width: 100,
+    width: 75,
   },
 });
 

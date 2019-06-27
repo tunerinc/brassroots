@@ -86,7 +86,7 @@ class AlbumDetailsView extends React.Component {
     ) return <View></View>;
 
     const image = type === 'artist'
-      ? artistsByID[item.id].small
+      ? artistsByID[item.id].medium
       : type === 'user'
       ? usersByID[item].profileImage
       : '';
@@ -162,7 +162,8 @@ class AlbumDetailsView extends React.Component {
         <ScrollView style={styles.scrollContainer} keyboardDismissMode='interactive'>
           <View style={styles.scrollWrap}>
             <View style={styles.albumArtists}>
-              <Text style={styles.sectionTitle}>ARTISTS</Text>
+              {artists.length > 1 && <Text style={styles.sectionTitle}>ARTISTS</Text>}
+              {artists.length === 1 && <Text style={styles.sectionTitle}>ARTIST</Text>}
               {artists.length > 1 &&
                 <FlatList
                   data={artists}

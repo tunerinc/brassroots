@@ -242,7 +242,7 @@ const styles: Styles = StyleSheet.create({
     height: 35,
     textAlign: 'right',
     backgroundColor: 'transparent',
-  }
+  },
 });
 
 export default styles;
