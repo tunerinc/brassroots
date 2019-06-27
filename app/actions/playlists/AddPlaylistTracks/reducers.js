@@ -65,7 +65,6 @@ export function addPlaylistTracks(state, action) {
     lastUpdated,
     playlistTracksByID,
     totalPlaylistTracks: Object.keys(playlistTracksByID).length,
-    fetchingTracks: false,
     error: null,
   });
 }

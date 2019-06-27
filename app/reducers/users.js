@@ -24,6 +24,7 @@ import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUser
 import {addUserTopPlaylists} from '../actions/users/AddUserTopPlaylists/reducers';
 import * as changeCoverPhoto from '../actions/users/ChangeCoverPhoto/reducers';
 import * as changeProfilePhoto from '../actions/users/ChangeProfilePhoto/reducers';
+import * as getUserImage from '../actions/users/GetUserImage/reducers';
 import * as saveProfile from '../actions/users/SaveProfile/reducers';
 import {setCameraRollPhotoIndex} from '../actions/users/SetCameraRollPhotoIndex/reducers';
 
@@ -92,6 +93,7 @@ type State = {
   +totalUsers?: number,
   +searchingUsers?: boolean,
   +fetchingUsers?: boolean,
+  +fetchingImages?: boolean,
   +savingUser?: boolean,
   +changingImage?: ?string,
   +error?: ?Error | SpotifyError,
@@ -167,6 +169,7 @@ const singleState: User = {
  * @property {number}  totalUsers=0         The total amount of users in Redux
  * @property {boolean} searchingUsers=false Whether the current user is searching for users
  * @property {boolean} fetchingUsers=false  Whether the current user is fetching users
+ * @property {boolean} fetchingImages=false Whether the current user is fetching images of users
  * @property {boolean} savingUser=false     Whether the current user is saving
  * @property {string}  changingImage=null   Whether the current user is changing a profile/cover image
  * @property {Error}   error=null           The error related to users actions
@@ -178,6 +181,7 @@ export const initialState: State = {
   totalUsers: 0,
   searchingUsers: false,
   fetchingUsers: false,
+  fetchingImages: false,
   savingUser: false,
   changingImage: null,
   error: null,
@@ -249,6 +253,8 @@ export function singleUser(
       return changeCoverPhoto.addImage(state, action);
     case types.CHANGE_PROFILE_PHOTO_SUCCESS:
       return changeProfilePhoto.addImage(state, action);
+    case types.GET_USER_IMAGE_SUCCESS:
+      return getUserImage.addImage(state, action);
     case types.SAVE_PROFILE_SUCCESS:
       return saveProfile.save(state, action);
     default:
@@ -292,6 +298,12 @@ export default function reducer(
         return changeProfilePhoto.success(state, action);
       case types.CHANGE_PROFILE_PHOTO_FAILURE:
         return changeProfilePhoto.failure(state, action);
+      case types.GET_USER_IMAGE_REQUEST:
+        return getUserImage.request(state);
+      case types.GET_USER_IMAGE_SUCCESS:
+        return getUserImage.success(state, action);
+      case types.GET_USER_IMAGE_FAILURE:
+        return getUserImage.failure(state, action);
       case types.RESET_USERS:
         return initialState;
       case types.SAVE_PROFILE_REQUEST:

@@ -19,6 +19,7 @@ import {clearNewPlaylist} from '../actions/playlists/ClearNewPlaylist/reducers';
 import * as getPlaylists from '../actions/playlists/GetPlaylists/reducers';
 import * as getPlaylistTopMembers from '../actions/playlists/GetPlaylistTopMembers/reducers';
 import * as getPlaylistTopTracks from '../actions/playlists/GetPlaylistTopTracks/reducers';
+import * as getPlaylistTracks from '../actions/playlists/GetPlaylistTracks/reducers';
 import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
 import * as incrementPlaylistPlays from '../actions/playlists/IncrementPlaylistPlays/reducers';
 import {removeNewPlaylistUser} from '../actions/playlists/RemoveNewPlaylistUser/reducers';
@@ -79,12 +80,14 @@ type Action = {
     +trackID?: string,
     +userID?: string,
   },
-  +tracks?: Array<
-    {|
-      +trackID: string,
-      +userID: string,
-    |}
-  >
+  +tracks?:
+    | Array<string>
+    | Array<
+      {|
+        +trackID: string,
+        +userID: string,
+      |}
+    >
 };
 
 type State = {
@@ -101,6 +104,7 @@ type State = {
   +fetchingPlaylists?: boolean,
   +fetchingTopPlaylists?: boolean,
   +fetchingTopTracks?: boolean,
+  +refreshingTracks?: boolean,
   +fetchingTracks?: boolean,
   +searchingPlaylists?: boolean,
   +creatingPlaylist?: boolean,
@@ -202,6 +206,7 @@ const singlePlaylistState: Playlist = {
  * @property {boolean}  fetchingTopPlaylists=false Whether the current user is fetching top playlists
  * @property {boolean}  fetchingTopTracks=false    Whether the current user is fetching top tracks of a playlist
  * @property {boolean}  fetchingTracks=false       Whether the current user is fetching tracks of a playlist
+ * @property {boolean}  refreshingTracks=false     Whether the current user is refreshing tracks of a playlist
  * @property {boolean}  searchingPlaylists=false   Whether the current user is searching playlists
  * @property {boolean}  creatingPlaylist=false     Whether the current user is creating a playlist
  * @property {boolean}  incrementingCount=false    Whether the current user is incrementing the count of a playlist & a playlist track
@@ -227,6 +232,7 @@ export const initialState: State = {
   fetchingTopPlaylists: false,
   fetchingTopTracks: false,
   fetchingTracks: false,
+  refreshingTracks: false,
   searchingPlaylists: false,
   creatingPlaylist: false,
   incrementingCount: false,
@@ -264,6 +270,8 @@ export function singlePlaylist(
       return getPlaylistTopMembers.addMembers(state, action);
     case types.GET_PLAYLIST_TOP_TRACKS_SUCCESS:
       return getPlaylistTopTracks.addTracks(state, action);
+    case types.GET_PLAYLIST_TRACKS_SUCCESS:
+      return getPlaylistTracks.addTracks(state, action);
     case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
       return incrementPlaylistPlays.incrementPlaylist(state, action);
     default:
@@ -303,6 +311,12 @@ export default function reducer(
         return getPlaylistTopTracks.success(state, action);
       case types.GET_PLAYLIST_TOP_TRACKS_FAILURE:
         return getPlaylistTopTracks.failure(state, action);
+      case types.GET_PLAYLIST_TRACKS_REQUEST:
+        return getPlaylistTracks.request(state, action);
+      case types.GET_PLAYLIST_TRACKS_SUCCESS:
+        return getPlaylistTracks.success(state, action);
+      case types.GET_PLAYLIST_TRACKS_FAILURE:
+        return getPlaylistTracks.failure(state, action);
       case types.GET_TOP_PLAYLISTS_REQUEST:
         return getTopPlaylists.request(state);
       case types.GET_TOP_PLAYLISTS_SUCCESS:
