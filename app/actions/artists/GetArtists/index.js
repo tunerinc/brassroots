@@ -150,9 +150,9 @@ export function getArtists(
       dispatch(addArtists(music.artists));
       dispatch(addAlbums(music.albums));
       dispatch(addTracks(music.tracks));
+      dispatch(actions.getArtistsSuccess(sortedArtists));
       dispatch(getAlbumsSuccess(albumsFromSpotify.map(a => a.album.id), true));
       dispatch(getTracksSuccess(tracksFromSpotify.map(t => t.track.id), true));
-      dispatch(actions.getArtistsSuccess(sortedArtists));
     } catch (err) {
       dispatch(actions.getArtistsFailure(err));
     }
