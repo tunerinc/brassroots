@@ -36,17 +36,17 @@ const styles: Styles = StyleSheet.create({
     borderTopRightRadius: 5,
   },
   artist: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 82,
+    height: 75,
     alignItems: 'center',
   },
   shadow: {
-    height: 60,
-    width: 60,
-    borderRadius: 30,
+    height: 55,
+    width: 55,
+    borderRadius: 27.5,
     marginRight: 10,
     backgroundColor: '#888',
     shadowColor: '#101010',
@@ -55,31 +55,34 @@ const styles: Styles = StyleSheet.create({
     shadowRadius: 5,
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
   },
   name: {
     flex: 6,
     color: '#1b1b1e',
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 18,
+    lineHeight: 16,
+    paddingTop: 2,
   },
   option: {
     borderColor: '#888',
     borderTopWidth: 1,
   },
   button: {
-    paddingVertical: 15,
+    backgroundColor: '#fefefe',
+    justifyContent: 'center',
+    paddingVertical: 12.5,
   },
   text: {
     color: '#1b1b1e',
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 26,
+    lineHeight: 21.6, // x1.2
     textAlign: 'center',
   },
   danger: {
@@ -89,10 +92,10 @@ const styles: Styles = StyleSheet.create({
     paddingVertical: 20,
     borderColor: '#888',
     borderTopWidth: 1,
+    backgroundColor: '#fefefe',
+    justifyContent: 'center',
   },
-  cancelButton: {
-    
-  },
+  cancelButton: {},
   count: {
     flex: 2,
     flexDirection: 'row',
@@ -102,10 +105,10 @@ const styles: Styles = StyleSheet.create({
   },
   number: {
     color: '#1b1b1e',
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 23.4,
+    lineHeight: 20.8, // x1.3
     marginLeft: 7,
     paddingTop: 1,
   },

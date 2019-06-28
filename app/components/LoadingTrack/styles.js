@@ -25,11 +25,11 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   track: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 82,
+    height: 75,
   },
   image: {
     marginRight: 10,
@@ -48,15 +48,16 @@ const styles: Styles = StyleSheet.create({
   options: {
     flex: 1,
     textAlign: 'right',
-    height: 45,
     backgroundColor: '#1b1b1e',
-    fontSize: 35,
+    fontSize: 30,
+    color: '#888',
   },
   favoriteTrackIcon: {
     flex: 1,
     textAlign: 'right',
     color: '#FDC52F',
     alignSelf: 'center',
+    fontSize: 25,
   },
 });
 

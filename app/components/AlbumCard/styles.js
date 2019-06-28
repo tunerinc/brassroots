@@ -30,10 +30,9 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   album: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    height: 75,
     flexDirection: 'row',
-    height: 82,
     alignItems: 'center',
   },
   wrap: {
@@ -51,8 +50,8 @@ const styles: Styles = StyleSheet.create({
     color: '#888',
   },
   image: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     marginRight: 10
   },
   info: {
@@ -62,10 +61,10 @@ const styles: Styles = StyleSheet.create({
   },
   name: {
     color: '#fefefe',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 18,
+    lineHeight: 16,
   },
   artists: {
     fontSize: 14,
@@ -78,8 +77,9 @@ const styles: Styles = StyleSheet.create({
   arrow: {
     flex: 1,
     textAlign: 'right',
-    fontSize: 35,
+    fontSize: 30,
     alignSelf: 'center',
+    color: '#fefefe',
   },
   count: {
     flex: 2,
@@ -90,13 +90,14 @@ const styles: Styles = StyleSheet.create({
   },
   play: {
     fontSize: 20,
+    color: '#fefefe',
   },
   number: {
     color: '#fefefe',
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 20.8,
+    lineHeight: 18.2, // x1.3
     marginLeft: 7,
     paddingBottom: 1,
   },

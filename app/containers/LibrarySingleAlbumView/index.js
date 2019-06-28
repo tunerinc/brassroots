@@ -31,7 +31,7 @@ import {createSession} from '../../actions/sessions/CreateSession';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 
 const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 70;
+const HEADER_MIN_HEIGHT = 65;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class LibrarySingleAlbumView extends React.Component {
@@ -350,18 +350,12 @@ class LibrarySingleAlbumView extends React.Component {
           ]}
         >
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>
             <Ionicons
               name='md-information-circle'
-              color='#fefefe'
               style={styles.rightIcon}
               onPress={this.navToDetails(albumToView)}
             />
@@ -386,7 +380,6 @@ class LibrarySingleAlbumView extends React.Component {
             </TouchableOpacity>
             <SimpleLineIcons
               name='options'
-              color='#fefefe'
               style={styles.options}
               onPress={this.openModal('', 'album')}
             />

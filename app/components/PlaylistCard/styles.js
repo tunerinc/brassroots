@@ -30,10 +30,10 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   playlist: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     flexDirection: 'row',
-    height: 82,
+    height: 75,
     alignItems: 'center',
   },
   wrap: {
@@ -41,13 +41,13 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     marginRight: 10,
   },
   default: {
-    height: 60,
-    width: 60,
+    height: 55,
+    width: 55,
     backgroundColor: '#323232',
     marginRight: 10,
     alignItems: 'center',
@@ -55,21 +55,22 @@ const styles: Styles = StyleSheet.create({
   },
   defaultImage: {
     flex: 1,
-    height: 37.19,
-    width: 45,
+    height: 34.09,
+    width: 41.25,
   },
   info: {
     flex: 6,
     justifyContent: 'space-around',
-    paddingTop: 8,
+    paddingTop: 7,
   },
   name: {
     flex: 1,
     color: '#fefefe',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 18,
+    lineHeight: 16,
+    paddingTop: 5,
   },
   owner: {
     flex: 1,
@@ -78,7 +79,7 @@ const styles: Styles = StyleSheet.create({
     fontFamily: 'Muli',
     lineHeight: 14,
     color: '#888',
-    paddingTop: 4,
+    paddingTop: 1,
   },
   mode: {
     width: 30,
@@ -107,8 +108,9 @@ const styles: Styles = StyleSheet.create({
   arrow: {
     flex: 1,
     textAlign: 'right',
-    fontSize: 35,
+    fontSize: 30,
     alignSelf: 'center',
+    color: '#fefefe',
   },
 });
 

@@ -53,7 +53,7 @@ interface Styles {
 const screenWidth: number = Dimensions.get('window').width;
 const screenHeight: number = Dimensions.get('window').height;
 const HEADER_MAX_HEIGHT: number = 261;
-const HEADER_MIN_HEIGHT: number = 70;
+const HEADER_MIN_HEIGHT: number = 65;
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -65,7 +65,7 @@ const styles: Styles = StyleSheet.create({
   },
   scrollWrap: {
     marginTop: HEADER_MAX_HEIGHT,
-    minHeight: screenHeight - HEADER_MIN_HEIGHT - 15,
+    minHeight: screenHeight - HEADER_MIN_HEIGHT,
   },
   favoriteWrapper: {
     borderColor: '#323232',
@@ -75,50 +75,50 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderColor: '#323232',
     borderBottomWidth: 1,
   },
   profileLeftIcon: {
-    width: 50,
-    fontSize: 35,
+    width: 55,
+    fontSize: 30,
     color: '#888',
     textAlign: 'center',
   },
   input: {
     flex: 5,
     height: 54,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 21.6,
+    lineHeight: 19.2, // x1.2
     color: '#fefefe',
     paddingLeft: 10,
   },
   bio: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderColor: '#323232',
     borderBottomWidth: 1,
   },
   location: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderColor: '#323232',
     borderBottomWidth: 1,
   },
   website: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderColor: '#323232',
     borderBottomWidth: 1,
   },
   email: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderColor: '#323232',
     borderBottomWidth: 1,
   },
@@ -136,7 +136,7 @@ const styles: Styles = StyleSheet.create({
   birthdate: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderColor: '#323232',
     borderBottomWidth: 1,
   },
@@ -145,8 +145,8 @@ const styles: Styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    paddingTop: 15,
-    paddingHorizontal: 20,
+    paddingTop: 5,
+    paddingHorizontal: 15,
     backgroundColor: '#323232',
     shadowColor: '#101010',
     shadowOffset: {width: 0, height: 8},
@@ -183,10 +183,10 @@ const styles: Styles = StyleSheet.create({
   title: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 26.4,
+    lineHeight: 24,
     textAlign: 'center',
     alignSelf: 'center',
     backgroundColor: 'transparent',
@@ -216,6 +216,7 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    marginTop: 10,
     paddingVertical: 20,
     paddingHorizontal: 10,
   },
@@ -262,9 +263,9 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: 'transparent',
     textAlign: 'center',
     marginTop: 10,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 21.6,
+    lineHeight: 19.2, // x1.2
     color: '#fefefe'
   },
   editCoverPhoto: {

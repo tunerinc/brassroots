@@ -40,15 +40,16 @@ class LibraryTracksView extends React.Component {
       isTrackMenuOpen: false,
       selectedTrack: "",
       shadowOpacity: new Animated.Value(0),
+      canPaginate: true,
     }
     
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.onEndReached = this.onEndReached.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.renderTrack = this.renderTrack.bind(this);
-    this.onEndReached = this.onEndReached.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
-    this.handleRefresh = this.handleRefresh.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
 
@@ -65,6 +66,18 @@ class LibraryTracksView extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      tracks: {fetchingTracks: oldFetching, userTracks: oldTracks, refreshingTracks: oldRefreshing},
+    } = prevProps;
+    const {tracks: {fetchingTracks, refreshingTracks, userTracks, error}} = this.props;
+
+    if (oldRefreshing && !refreshingTracks) this.setState({canPaginate: true});
+    if (oldFetching && !fetchingTracks && oldTracks.length === userTracks.length && !error) {
+      this.setState({canPaginate: false});
+    }
+  }
+
   openModal = selectedTrack => () => {
     this.setState({selectedTrack, isTrackMenuOpen: true});
   }
@@ -74,9 +87,10 @@ class LibraryTracksView extends React.Component {
   }
 
   onEndReached() {
+    const {canPaginate} = this.state;
     const {getTracks, tracks: {fetchingTracks, userTracks}} = this.props;
 
-    if (fetchingTracks || !userTracks.length) return;
+    if (fetchingTracks || !userTracks.length || !canPaginate) return;
 
     getTracks(false, userTracks.length);
   }
@@ -252,12 +266,7 @@ class LibraryTracksView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name="ios-arrow-back"
-              color="#fefefe"
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Songs</Text>
             <View style={styles.rightIcon} />
           </View>
@@ -343,15 +352,12 @@ LibraryTracksView.propTypes = {
   playTrack: PropTypes.func.isRequired,
   queueTrack: PropTypes.func.isRequired,
   sessions: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired,
   tracks: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(
-  {albums, artists, player, playlists, queue, sessions, settings, tracks, users},
-) {
+function mapStateToProps({albums, artists, player, playlists, queue, sessions, tracks, users}) {
   return {
     albums,
     artists,
@@ -359,7 +365,6 @@ function mapStateToProps(
     playlists,
     queue,
     sessions,
-    settings,
     tracks,
     users,
   };

@@ -49,7 +49,7 @@ import {createSession} from '../../actions/sessions/CreateSession';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 
 const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 70;
+const HEADER_MIN_HEIGHT = 65;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class PlaylistView extends React.Component {
@@ -487,19 +487,12 @@ class PlaylistView extends React.Component {
           ]}
         >
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>
             <Ionicons
               name='md-information-circle'
-              size={40}
-              color='#fefefe'
               style={styles.rightIcon}
               onPress={this.navToDetails(playlistToView, title)}
             />
@@ -520,24 +513,16 @@ class PlaylistView extends React.Component {
           >
             <View style={styles.shareButtonWrap}>
               <TouchableOpacity style={styles.shareButton} disabled={true}>
-                <Ionicons name='md-share-alt' color='#fefefe' style={styles.shareIcon} />
+                <Ionicons name='md-share-alt' style={styles.shareIcon} />
                 <Text style={styles.shareText}>Share</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.playlistDetailsWrap}>
               <TouchableOpacity style={styles.playlistModeButton} disabled={true}>
-                {mode === 'hidden' &&
-                  <Octicons name='telescope' color='#fefefe' style={styles.playlistModeIcon} />
-                }
-                {mode === 'vip' &&
-                  <Foundation name='ticket' color='#fefefe' style={styles.playlistModeIcon} />
-                }
+                {mode === 'hidden' && <Octicons name='telescope' style={styles.playlistModeIcon} />}
+                {mode === 'vip' && <Foundation name='ticket' style={styles.playlistModeIcon} />}
                 {mode === 'limitless' &&
-                  <MaterialIcons
-                    name='all-inclusive'
-                    color='#fefefe'
-                    style={styles.playlistModeIcon}
-                  />
+                  <MaterialIcons name='all-inclusive' style={styles.playlistModeIcon} />
                 }
               </TouchableOpacity>
               {members.includes(currentUserID) &&
@@ -549,7 +534,6 @@ class PlaylistView extends React.Component {
             <View style={styles.optionsWrap}>
               <SimpleLineIcons
                 name='options'
-                color='#fefefe'
                 style={styles.options}
                 onPress={this.openModal('', 'playlist')}
               />

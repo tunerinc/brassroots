@@ -86,13 +86,15 @@ class WelcomeView extends React.Component {
         </TouchableHighlight>
         <View style={styles.footnoteWrap}>
           <View style={styles.footnote}>
-            <Text style={styles.footText}>By logging in, you agree to the </Text>
+            <Text allowFontScaling={false} style={styles.footText}>By logging in, you agree to the </Text>
             <Text
+              allowFontScaling={false}
               style={styles.footLink}
               onPress={Actions.welcomeTermsOfService}
             >Terms of Service</Text>
-            <Text style={styles.footText}> and </Text>
+            <Text allowFontScaling={false} style={styles.footText}> and </Text>
             <Text
+              allowFontScaling={false}
               style={styles.footLink}
               onPress={Actions.welcomePrivacyPolicy}
             >Privacy Policy.</Text>

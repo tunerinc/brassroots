@@ -34,7 +34,7 @@ import {saveProfile} from '../../actions/users/SaveProfile';
 
 const AnimatedScrollView = Animated.createAnimatedComponent(KeyboardAwareScrollView);
 const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 85;
+const HEADER_MIN_HEIGHT = 65;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class EditProfileView extends React.Component {

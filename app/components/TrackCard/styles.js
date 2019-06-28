@@ -37,12 +37,11 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   track: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    height: 82,
+    height: 75,
     width: '100%',
   },
   wrap: {
@@ -50,8 +49,8 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     marginRight: 10,
   },
   editIcon: {
@@ -60,8 +59,8 @@ const styles: Styles = StyleSheet.create({
     fontSize: 40,
   },
   imageFilter: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -72,7 +71,7 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: 'rgba(136,136,136,0.5)'
   },
   round: {
-    borderRadius: 30,
+    borderRadius: 27.5,
   },
   position: {
     flex: 1,
@@ -91,10 +90,10 @@ const styles: Styles = StyleSheet.create({
   },
   name: {
     color: '#fefefe',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 18,
+    lineHeight: 16,
   },
   bottom: {
     paddingTop: 6,
@@ -123,7 +122,8 @@ const styles: Styles = StyleSheet.create({
     textAlign: 'right',
     height: 45,
     backgroundColor: '#1b1b1e',
-    fontSize: 35,
+    paddingTop: 7.5,
+    fontSize: 30,
   },
   count: {
     flex: 2,

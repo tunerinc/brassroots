@@ -127,12 +127,12 @@ class ArtistDetailsView extends React.Component {
 
   renderTopAlbum({item, index}) {
     const {albums: {albumsByID}} = this.props;
-    const {medium, name, artists, totalPlays} = albumsByID[item];
+    const {large, name, artists, totalPlays} = albumsByID[item];
 
     return (
       <AlbumCard
         key={item}
-        albumImage={medium}
+        albumImage={large}
         albumName={name}
         artists={artists.map(a => a.name).join(', ')}
         navToAlbum={this.goToAlbum}
@@ -150,7 +150,7 @@ class ArtistDetailsView extends React.Component {
     const {
       userProfile,
       name,
-      medium,
+      large,
       topListeners,
       topTracks,
       topAlbums,
@@ -165,7 +165,7 @@ class ArtistDetailsView extends React.Component {
               <Text style={styles.sectionTitle}>PROFILE</Text>
               {userProfile &&
                 <TouchableOpacity style={styles.artistUserProfile}>
-                  <Image style={styles.artistUserProfileImage} source={{uri: medium}} />
+                  <Image style={styles.artistUserProfileImage} source={{uri: large}} />
                   <Text style={styles.artistUserProfileName}>
                     {name}
                   </Text>
@@ -288,19 +288,14 @@ class ArtistDetailsView extends React.Component {
           <View style={styles.headerBackground}>
             <Image
               style={styles.headerBackground}
-              source={{uri: small}}
+              source={{uri: large}}
               resizeMode='cover'
               blurRadius={80}
             />
             <View style={styles.headerFilter}></View>
           </View>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>

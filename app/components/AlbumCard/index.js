@@ -56,16 +56,14 @@ export default class AlbumCard extends React.PureComponent<Props, State> {
               {artists}
             </Text>
           </View>
+          {typeof count !== 'number' && <Ionicons name="ios-arrow-forward" style={styles.arrow} />}
           {typeof count === 'number' &&
             <View style={styles.count}>
-              <Foundation name='play' color='#fefefe' style={styles.play} />
+              <Foundation name='play' style={styles.play} />
               <Text numberOfLines={1} style={styles.number}>
                 {count}
               </Text>
             </View>
-          }
-          {typeof count !== 'number' &&
-            <Ionicons name="ios-arrow-forward" style={styles.arrow} color="#fefefe" />
           }
         </View>
       </TouchableHighlight>

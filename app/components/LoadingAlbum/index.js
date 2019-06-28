@@ -32,7 +32,7 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
           <View style={styles.position}>
             <Placeholder.Media
               animate='fade'
-              size={18}
+              size={14}
               hasRadius={true}
               color='#888'
             />
@@ -42,7 +42,7 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
           <View style={styles.image}>
             <Placeholder.Media
               animate='fade'
-              size={50}
+              size={55}
               hasRadius={false}
               color='#888'
             />
@@ -52,18 +52,13 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
           <Placeholder.Paragraph
             animate='fade'
             lineNumber={2}
-            textSize={18}
-            lineSpacing={7.2}
+            textSize={16}
+            lineSpacing={6.4}
             color='#888'
             width='100%'
           />
         </View>
-        <Ionicons
-          name='ios-arrow-forward'
-          size={45}
-          style={styles.arrow}
-          color='#888'
-        />
+        <Ionicons name='ios-arrow-forward' style={styles.arrow} />
       </View>
     );
   }

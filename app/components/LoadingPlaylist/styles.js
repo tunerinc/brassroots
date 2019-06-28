@@ -22,14 +22,14 @@ interface Styles {
 const styles: Styles =  StyleSheet.create({
   playlist: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     alignItems: 'center',
-    height: 82,
+    height: 75,
   },
   image: {
-    height: 50,
-    width: 50,
+    height: 55,
+    width: 55,
     marginRight: 10,
   },
   info: {
@@ -40,7 +40,8 @@ const styles: Styles =  StyleSheet.create({
     textAlign: 'right',
     marginLeft: 5,
     paddingTop: 3,
-    fontSize: 35,
+    fontSize: 30,
+    color: '#888',
   },
 });
 

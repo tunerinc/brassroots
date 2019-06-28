@@ -27,6 +27,7 @@ class LibraryAlbumsView extends React.Component {
 
     this.state = {
       shadowOpacity: new Animated.Value(0),
+      canPaginate: true,
     };
 
     this.onScroll = this.onScroll.bind(this);
@@ -46,10 +47,24 @@ class LibraryAlbumsView extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      albums: {fetchingAlbums: oldFetching, userAlbums: oldAlbums, refreshingAlbums: oldRefreshing},
+    } = prevProps;
+    const {albums: {fetchingAlbums, refreshingAlbums, userAlbums, error}} = this.props;
+
+    if (oldRefreshing && !refreshingAlbums) this.setState({canPaginate: true});
+    if (oldFetching && !fetchingAlbums && oldAlbums.length === userAlbums.length && !error) {
+      this.setState({canPaginate: false});
+    }
+
+  }
+
   onEndReached() {
+    const {canPaginate} = this.state;
     const {getAlbums, albums: {fetchingAlbums, userAlbums}} = this.props;
 
-    if (fetchingAlbums || !userAlbums.length) return;
+    if (fetchingAlbums || !userAlbums.length || !canPaginate) return;
 
     getAlbums(false, userAlbums.length);
   }
@@ -117,12 +132,7 @@ class LibraryAlbumsView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name="ios-arrow-back"
-              color="#fefefe"
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Albums</Text>
             <View style={styles.rightIcon} />
           </View>

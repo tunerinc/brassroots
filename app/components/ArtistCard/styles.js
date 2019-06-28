@@ -30,10 +30,10 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   artist: {
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     flexDirection: 'row',
-    height: 82,
+    height: 75,
     alignItems: 'center',
   },
   wrap: {
@@ -41,39 +41,39 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
   },
   loading: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     marginRight: 10,
   },
   image: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     marginRight: 10,
-    borderRadius: 30,
+    borderRadius: 27.5,
     backgroundColor: '#888',
   },
   placeholder: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
     marginRight: 10,
     backgroundColor: '#888',
     justifyContent: 'center',
     alignItems: 'center',
   },
   default: {
-    height: 60,
-    width: 60,
+    height: 50,
+    width: 50,
     backgroundColor: '#323232',
     marginRight: 10,
-    borderRadius: 30,
+    borderRadius: 27.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   defaultImage: {
     flex: 1,
-    height: 37.19,
-    width: 45,
+    height: 34.09,
+    width: 41.25,
   },
   artistIcon: {
     paddingTop: 3,
@@ -85,10 +85,10 @@ const styles: Styles = StyleSheet.create({
   },
   name: {
     color: '#fefefe',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 18,
+    lineHeight: 16,
   },
   count: {
     fontSize: 14,
@@ -101,8 +101,9 @@ const styles: Styles = StyleSheet.create({
   arrow: {
     flex: 1,
     textAlign: 'right',
-    fontSize: 35,
+    fontSize: 30,
     alignSelf: 'center',
+    color: '#fefefe',
   },
 });
 

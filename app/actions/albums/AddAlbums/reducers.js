@@ -79,8 +79,6 @@ export function addAlbums(state, action) {
     albumsByID,
     lastUpdated,
     totalAlbums: Object.keys(albumsByID).length,
-    fetchingAlbums: false,
-    fetchingTracks: false,
     error: null,
   });
 };

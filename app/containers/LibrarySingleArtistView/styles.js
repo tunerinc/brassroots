@@ -39,7 +39,7 @@ interface Styles {
 
 const screenHeight: number = Dimensions.get('window').height;
 const HEADER_MAX_HEIGHT: number = 261;
-const HEADER_MIN_HEIGHT: number = 70;
+const HEADER_MIN_HEIGHT: number = 65;
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -48,7 +48,7 @@ const styles: Styles = StyleSheet.create({
   list: {
     marginBottom: HEADER_MIN_HEIGHT,
     backgroundColor: '#1b1b1e',
-    minHeight: screenHeight - (HEADER_MAX_HEIGHT + 75),
+    minHeight: screenHeight - (HEADER_MAX_HEIGHT + 65),
   },
   scrollWrap: {
     backgroundColor: '#1b1b1e',
@@ -107,32 +107,36 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 10,
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 15,
+    paddingTop: 25,
   },
   leftIcon: {
     flex: 1,
-    height: 35,
-    fontSize: 35,
+    height: 45,
+    fontSize: 30,
+    paddingTop: 7,
+    color: '#fefefe',
     backgroundColor: 'transparent',
     alignSelf: 'center',
   },
   title: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 28.8,
+    lineHeight: 24,
     textAlign: 'center',
     alignSelf: 'center',
     backgroundColor: 'transparent',
   },
   rightIcon: {
     flex: 1,
-    height: 35,
-    fontSize: 35,
+    height: 45,
+    fontSize: 30,
+    paddingTop: 6,
     textAlign: 'right',
+    color: '#fefefe',
     backgroundColor: 'transparent',
   },
   playButtonWrap: {
@@ -145,7 +149,7 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     zIndex: 3,
   },
   shareButton: {
@@ -159,16 +163,17 @@ const styles: Styles = StyleSheet.create({
   },
   shareText: {
     color: '#fefefe',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
     fontFamily: 'Muli',
-    lineHeight: 23.4,
+    lineHeight: 20.8,
   },
   options: {
     flex: 1,
     textAlign: 'right',
-    height: 40,
-    fontSize: 35,
+    height: 30,
+    fontSize: 30,
+    color: '#fefefe',
     backgroundColor: 'transparent',
   },
   modal: {

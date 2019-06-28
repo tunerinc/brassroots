@@ -53,7 +53,7 @@ interface Styles {
 
 const screenHeight: number = Dimensions.get('window').height;
 const HEADER_MAX_HEIGHT: number = 261;
-const HEADER_MIN_HEIGHT: number = 70;
+const HEADER_MIN_HEIGHT: number = 65;
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -62,7 +62,7 @@ const styles: Styles = StyleSheet.create({
   list: {
     marginBottom: HEADER_MIN_HEIGHT,
     backgroundColor: '#1b1b1e',
-    minHeight: screenHeight - (HEADER_MAX_HEIGHT + 60),
+    minHeight: screenHeight - (HEADER_MAX_HEIGHT + 65),
   },
   scrollWrap: {
     backgroundColor: '#1b1b1e',
@@ -121,33 +121,38 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 10,
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingHorizontal: 15,
+    paddingTop: 25,
   },
   leftIcon: {
     flex: 1,
-    height: 35,
-    fontSize: 35,
+    height: 45,
+    fontSize: 30,
+    paddingTop: 7,
+    color: '#fefefe',
     backgroundColor: 'transparent',
     alignSelf: 'center',
   },
   title: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 28.8,
+    lineHeight: 24,
     textAlign: 'center',
     alignSelf: 'center',
     backgroundColor: 'transparent',
   },
   rightIcon: {
     flex: 1,
-    height: 35,
-    fontSize: 35,
+    height: 45,
+    paddingTop: 6,
+    fontSize: 30,
+    color: '#fefefe',
     textAlign: 'right',
     backgroundColor: 'transparent',
+    alignSelf: 'center',
   },
   playButtonWrap: {
     marginTop: 25,
@@ -159,7 +164,7 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     zIndex: 3,
   },
   shareButtonWrap: {
@@ -174,13 +179,14 @@ const styles: Styles = StyleSheet.create({
   shareIcon: {
     marginRight: 5,
     fontSize: 30,
+    color: '#fefefe',
   },
   shareText: {
     color: '#fefefe',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
     fontFamily: 'Muli',
-    lineHeight: 23.4,
+    lineHeight: 20.8, // x1.3
   },
   playlistDetailsWrap: {
     flex: 1,
@@ -197,6 +203,7 @@ const styles: Styles = StyleSheet.create({
   },
   playlistModeIcon: {
     fontSize: 30,
+    color: '#fefefe',
   },
   playlistMemberButton: {
     marginLeft: 20,
@@ -222,9 +229,10 @@ const styles: Styles = StyleSheet.create({
   options: {
     flex: 1,
     textAlign: 'right',
-    height: 45,
+    height: 30,
     backgroundColor: 'transparent',
-    fontSize: 35,
+    fontSize: 30,
+    color: '#fefefe',
   },
   addPlaylistTrack: {
     paddingHorizontal: 20,

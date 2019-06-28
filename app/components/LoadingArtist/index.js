@@ -23,7 +23,7 @@ export default class LoadingArtist extends React.PureComponent<Props, State> {
         <View style={styles.image}>
           <Placeholder.Media
             animate='fade'
-            size={60}
+            size={55}
             hasRadius={true}
             color='#888'
           />
@@ -32,8 +32,8 @@ export default class LoadingArtist extends React.PureComponent<Props, State> {
           <Placeholder.Paragraph
             animate='fade'
             lineNumber={2}
-            textSize={20}
-            lineSpacing={4}
+            textSize={16}
+            lineSpacing={6.2}
             color='#888'
             width='100%'
             lastLineWidth='30%'

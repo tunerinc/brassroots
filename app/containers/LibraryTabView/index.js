@@ -345,47 +345,22 @@ class LibraryTabView extends React.Component {
           showsVerticalScrollIndicator={false}
         >
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("playlists")}>
-            <MaterialIcons
-              name="library-books"
-              size={50}
-              color="#fefefe"
-              style={styles.libraryOptionIcon}
-            />
+            <MaterialIcons name="library-books" color="#fefefe" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Playlists</Text>
             <Ionicons name="ios-arrow-forward" color="#fefefe" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("artists")}>
-            <Ionicons
-              name="md-microphone"
-              size={50}
-              color="#fefefe"
-              style={styles.libraryOptionIcon}
-            />
+            <Ionicons name="md-microphone" color="#fefefe" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Artists</Text>
             <Ionicons name="ios-arrow-forward" color="#fefefe" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("albums")}>
-            <MaterialCommunityIcons
-              name="album"
-              size={50}
-              color="#fefefe"
-              style={styles.libraryOptionIcon}
-            />
+            <MaterialCommunityIcons name="album" color="#fefefe" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Albums</Text>
-            <Ionicons
-              name="ios-arrow-forward"
-              size={45}
-              Color="#fefefe"
-              style={styles.libraryOptionArrow}
-            />
+            <Ionicons name="ios-arrow-forward" Color="#fefefe" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("tracks")}>
-            <Ionicons
-              name="ios-musical-notes"
-              size={60}
-              color="#fefefe"
-              style={styles.libraryOptionIcon}
-            />
+            <Ionicons name="ios-musical-notes" color="#fefefe" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Songs</Text>
             <Ionicons name="ios-arrow-forward" color="#fefefe" style={styles.libraryOptionArrow} />
           </TouchableOpacity>

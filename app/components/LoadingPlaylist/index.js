@@ -21,14 +21,9 @@ export default class LoadingPlaylist extends React.PureComponent<Props, State> {
     return (
       <View style={styles.playlist}>
         <View style={styles.image}>
-          <Placeholder.ImageContent
+          <Placeholder.Media
             animate='fade'
-            size={50}
-            position='left'
-            hasRadius={false}
-            lineNumber={2}
-            textSize={18}
-            lineSpacing={7.2}
+            size={55}
             color='#888'
           />
         </View>
@@ -36,18 +31,13 @@ export default class LoadingPlaylist extends React.PureComponent<Props, State> {
           <Placeholder.Paragraph
             animate='fade'
             lineNumber={2}
-            textSize={18}
-            lineSpacing={7.2}
+            textSize={16}
+            lineSpacing={6.2}
             color='#888'
             width='100%'
           />
         </View>
-        <Ionicons
-          name='ios-arrow-forward'
-          size={45}
-          style={styles.arrow}
-          color='#888'
-        />
+        <Ionicons name='ios-arrow-forward' style={styles.arrow} />
       </View>
     );
   }
