@@ -97,7 +97,7 @@ class LibrarySingleAlbumView extends React.Component {
         type='album'
         context={{displayName, id: albumToView, name: albumName, type: 'user-album'}}
         name={name}
-        onPress={this.handlePlay}
+        onPress={this.handlePlay(item, index)}
         openModal={this.openModal(item, 'track')}
         showOptions={true}
         artists={artists.map(a => a.name).join(', ')}
@@ -161,15 +161,27 @@ class LibrarySingleAlbumView extends React.Component {
     }
   }
 
-  handlePlay() {
+  handlePlay = (trackID, trackIndex) => () => {
     const {
+      albumToView,
       createSession,
+      albums: {albumsByID},
       sessions: {currentSessionID, sessionsByID},
-      tracks: {userTracks},
+      settings: {preference: {session: mode}},
+      tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
     const currentSession = sessionsByID[currentSessionID];
-    const currentUser = usersByID[currentUserID];
+    const {displayName, profileImage, totalFollowers} = usersByID[currentUserID];
+    const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
+    const {
+      small,
+      medium,
+      large,
+      userTracks,
+      name: albumName,
+      artists: albumArtists,
+    } = albumsByID[albumID];
 
     if (currentSession) {
       if (currentSession.ownerID === currentUserID) {
@@ -179,6 +191,35 @@ class LibrarySingleAlbumView extends React.Component {
       }
     } else {
       setTimeout(Actions.liveSession, 200);
+
+      createSession(
+        {displayName, profileImage, totalFollowers, id: currentUserID},
+        {
+          name,
+          durationMS,
+          trackNumber,
+          artists,
+          id: trackID,
+          album: {
+            small,
+            medium,
+            large,
+            id: albumID,
+            name: albumName,
+            artists: albumArtists,
+          },
+        },
+        {
+          displayName,
+          id: albumToView,
+          name: albumName,
+          type: 'user-album',
+          total: userTracks.length,
+          position: trackIndex,
+          tracks: userTracks.slice(1),
+        },
+        mode,
+      );
     }
   }
 
@@ -462,7 +503,6 @@ class LibrarySingleAlbumView extends React.Component {
 LibrarySingleAlbumView.propTypes = {
   albums: PropTypes.object.isRequired,
   albumToView: PropTypes.string,
-  artists: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
   player: PropTypes.object,
@@ -474,14 +514,14 @@ LibrarySingleAlbumView.propTypes = {
   users: PropTypes.object.isRequired
 };
 
-function mapStateToProps({albums, artists, player, playlists, queue, sessions, tracks, users}) {
+function mapStateToProps({albums, player, playlists, queue, sessions, settings, tracks, users}) {
   return {
     albums,
-    artists,
     player,
     playlists,
     queue,
     sessions,
+    settings,
     tracks,
     users
   };

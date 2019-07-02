@@ -86,7 +86,7 @@ class LibrarySingleArtistView extends React.Component {
         type='cover'
         context={{displayName, name: artistName, id: artistToView, type: 'user-artist'}}
         name={name}
-        onPress={this.handlePlay}
+        onPress={this.handlePlay(item, index)}
         openModal={this.openModal(item, 'track')}
         showOptions={true}
         showSquareImage={true}
@@ -151,15 +151,22 @@ class LibrarySingleArtistView extends React.Component {
     }
   }
 
-  handlePlay() {
+  handlePlay = (trackID, trackIndex) => () => {
     const {
+      artistToView,
       createSession,
+      albums: {albumsByID},
+      artists: {artistsByID},
       sessions: {currentSessionID, sessionsByID},
-      tracks: {userTracks},
+      settings: {preference: {session: mode}},
+      tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
     const currentSession = sessionsByID[currentSessionID];
-    const currentUser = usersByID[currentUserID];
+    const {displayName, profileImage, totalFollowers} = usersByID[currentUserID];
+    const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
+    const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
+    const {userTracks, name: artistName} = artistsByID[artistToView];
 
     if (currentSession) {
       if (currentSession.ownerID === currentUserID) {
@@ -169,6 +176,35 @@ class LibrarySingleArtistView extends React.Component {
       }
     } else {
       setTimeout(Actions.liveSession, 200);
+
+      createSession(
+        {displayName, profileImage, totalFollowers, id: currentUserID},
+        {
+          name,
+          durationMS,
+          trackNumber,
+          artists,
+          id: trackID,
+          album: {
+            small,
+            medium,
+            large,
+            id: albumID,
+            name: albumName,
+            artists: albumArtists,
+          },
+        },
+        {
+          displayName,
+          id: artistToView,
+          name: artistName,
+          type: 'user-artist',
+          total: userTracks.length,
+          position: trackIndex,
+          tracks: userTracks.slice(1),
+        },
+        mode,
+      );
     }
   }
 
@@ -473,11 +509,14 @@ LibrarySingleArtistView.propTypes = {
   queue: PropTypes.object.isRequired,
   queueTrack: PropTypes.func.isRequired,
   sessions: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
   tracks: PropTypes.object.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, player, playlists, queue, sessions, tracks, users}) {
+function mapStateToProps(
+  {albums, artists, player, playlists, queue, sessions, settings, tracks, users},
+) {
   return {
     albums,
     artists,
@@ -485,6 +524,7 @@ function mapStateToProps({albums, artists, player, playlists, queue, sessions, t
     playlists,
     queue,
     sessions,
+    settings,
     tracks,
     users,
   };

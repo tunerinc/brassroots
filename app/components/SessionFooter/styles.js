@@ -24,17 +24,17 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   addTrackButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   addTrackIcon: {
     backgroundColor: '#888',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -42,31 +42,32 @@ const styles: Styles = StyleSheet.create({
   addTrackPlus: {
     textAlign: 'center',
     backgroundColor: 'transparent',
-    paddingTop: 2,
-    fontSize: 45,
+    lineHeight: 55,
+    fontSize: 40,
+    color: '#fefefe',
   },
   addTrackText: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 26,
+    lineHeight: 19.2,
   },
   upNext: {
     marginTop: 20,
     alignItems: 'center',
   },
   upNextHeading: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     marginBottom: 5,
   },
   upNextHeadingText: {
-    color: '#fefefe',
-    fontSize: 18,
+    color: '#888',
+    fontSize: 16,
+    lineHeight: 19.2, // x1.2
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 21.6,
     textAlign: 'center',
   },
 });

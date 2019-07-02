@@ -28,7 +28,7 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   options: {
     position: 'absolute',
-    top: 90,
+    top: 65,
     left: 0,
     right: 0,
     bottom: 0,
@@ -46,16 +46,19 @@ const styles: Styles = StyleSheet.create({
   option: {
     borderColor: '#888',
     borderTopWidth: 1,
+    backgroundColor: 'transparent',
   },
   button: {
-    paddingVertical: 15,
+    backgroundColor: '#fefefe',
+    justifyContent: 'center',
+    paddingVertical: 12.5,
   },
   text: {
     color: '#1b1b1e',
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 26,
+    lineHeight: 21.6, // x1.2
     textAlign: 'center',
   },
   backdropButton: {
@@ -67,11 +70,15 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#1b1b1e',
   },
   close: {
-    paddingVertical: 20,
     borderColor: '#888',
     borderTopWidth: 1,
+    backgroundColor: 'transparent',
   },
-  closeButton: {},
+  closeButton: {
+    backgroundColor: '#fefefe',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
 });
 
 export default styles;

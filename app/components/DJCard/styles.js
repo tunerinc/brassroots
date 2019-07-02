@@ -30,7 +30,7 @@ const styles: Styles = StyleSheet.create({
   },
   info: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   image: {
@@ -41,12 +41,16 @@ const styles: Styles = StyleSheet.create({
   },
   name: {
     color: '#fefefe',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '600',
     fontFamily: 'Muli',
-    lineHeight: 26,
+    lineHeight: 20.8,
   },
-  icon: {},
+  icon: {
+    fontSize: 15,
+    color: '#fefefe',
+    marginTop: -3,
+  },
 });
 
 export default styles;

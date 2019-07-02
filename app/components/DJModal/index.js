@@ -50,6 +50,7 @@ export default class DJModal extends React.PureComponent<Props, State> {
                   activeOpacity={0.5}
                   underlayColor='#fefefe'
                   onPress={navToSettings}
+                  disabled
                 >
                   <Text style={styles.text}>change mode</Text>
                 </TouchableHighlight>

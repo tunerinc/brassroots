@@ -173,7 +173,7 @@ class PlaylistView extends React.Component {
         type='cover'
         context={{displayName, name: playlistName, id: playlistToView, type: 'playlist'}}
         name={name}
-        onPress={this.handlePlay}
+        onPress={this.handlePlay(item, index)}
         openModal={this.openModal(item, 'track')}
         showOptions={true}
         showSquareImage={true}
@@ -188,7 +188,6 @@ class PlaylistView extends React.Component {
     const {
       queueTrack,
       albums: {albumsByID},
-      artists: {artistsByID},
       player: {prevQueueID},
       queue: {userQueue, queueByID, contextQueue, totalQueue},
       sessions: {currentSessionID, sessionsByID},
@@ -238,15 +237,23 @@ class PlaylistView extends React.Component {
     }
   }
 
-  handlePlay() {
+  handlePlay = (playlistTrackID, trackIndex) => () => {
     const {
       createSession,
+      playlistToView,
+      albums: {albumsByID},
+      playlists: {playlistsByID},
       sessions: {currentSessionID, sessionsByID},
-      tracks: {userTracks},
+      settings: {preference: {session: mode}},
+      tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
+    const trackID = playlistTrackID.split(`${playlistToView}-`).pop();
     const currentSession = sessionsByID[currentSessionID];
-    const currentUser = usersByID[currentUserID];
+    const {displayName, profileImage, totalFollowers} = usersByID[currentUserID];
+    const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
+    const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
+    const {tracks, ownerID, name: playlistName} = playlistsByID[playlistToView];
 
     if (currentSession) {
       if (currentSession.ownerID === currentUserID) {
@@ -256,13 +263,40 @@ class PlaylistView extends React.Component {
       }
     } else {
       setTimeout(Actions.liveSession, 200);
+
+      createSession(
+        {displayName, profileImage, totalFollowers, id: currentUserID},
+        {
+          name,
+          durationMS,
+          trackNumber,
+          artists,
+          id: trackID,
+          album: {
+            small,
+            medium,
+            large,
+            id: albumID,
+            name: albumName,
+            artists: albumArtists,
+          },
+        },
+        {
+          id: playlistToView,
+          name: playlistName,
+          displayName: ownerID === 'spotify' ? 'spotify' : usersByID[ownerID].displayName,
+          type: 'playlist',
+          total: 1,
+          position: trackIndex,
+        },
+        mode,
+      );
     }
   }
 
   renderModalContent(type, item) {
     const {
       albums: {albumsByID},
-      artists: {artistsByID},
       playlists: {playlistsByID, playlistTracksByID},
       queue: {userQueue, queueByID},
       sessions: {currentSessionID, sessionsByID},
@@ -521,7 +555,7 @@ class PlaylistView extends React.Component {
               {opacity: playButtonOpacity, bottom: playButtonOffset}
             ]}
           >
-            <PlayButton play={this.handlePlay} />
+            <PlayButton play={this.handlePlay(tracks[0], 0)} />
           </Animated.View>
           <Animated.View
             style={[
@@ -620,7 +654,6 @@ class PlaylistView extends React.Component {
 
 PlaylistView.propTypes = {
   albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
   getPlaylistTracks: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
@@ -630,19 +663,21 @@ PlaylistView.propTypes = {
   playTrack: PropTypes.func.isRequired,
   queue: PropTypes.object.isRequired,
   queueTrack: PropTypes.func.isRequired,
+  sessions: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   tracks: PropTypes.object.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, player, playlists, queue, sessions, tracks, users}) {
+function mapStateToProps({albums, player, playlists, queue, sessions, settings, tracks, users}) {
   return {
     albums,
-    artists,
     player,
     playlists,
     queue,
     sessions,
+    settings,
     tracks,
     users,
   };

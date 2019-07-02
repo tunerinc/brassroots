@@ -23,6 +23,7 @@ type Track = {|
 type Props = {|
   toggleLike: () => any,
   currentUserID: string,
+  displayName: string,
   image: string,
   contextQueue: Array<Track>,
   context: {
@@ -41,13 +42,13 @@ export default class SessionFooter extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {toggleLike, currentUserID, image, contextQueue, context} = this.props;
+    const {toggleLike, currentUserID, displayName, image, contextQueue, context} = this.props;
 
     return (
       <View>
         <TouchableOpacity style={styles.addTrackButton} disabled>
           <View style={styles.addTrackIcon}>
-            <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.addTrackPlus} />
+            <MaterialCommunityIcons name='plus' style={styles.addTrackPlus} />
           </View>
           <Text style={styles.addTrackText}>Add a track...</Text>
           <LikeButton
@@ -63,67 +64,29 @@ export default class SessionFooter extends React.PureComponent<Props, State> {
             <View style={styles.upNextHeading}>
               <Text style={styles.upNextHeadingText} numberOfLines={1}>
                 <Text>From </Text>
-                {context.type === 'user-album' || context.type === 'user-artist' &&
-                  <Text>
-                    {context.type.split('-').pop()}{' '}
-                  </Text>
+                {(
+                  context.displayName === displayName
+                  && (
+                    context.type === 'user-tracks'
+                    || context.type === 'user-album'
+                    || context.type === 'user-artist'
+                  )
+                ) &&
+                  <Text>your library</Text>
                 }
                 {(
-                  !context.type.includes('tracks')
-                  && !context.type.includes('most')
-                  && !context.type.includes('recently')
-                  && context.type !== 'conversation'
+                  context.displayName !== currentUserID
+                  && (
+                    context.type === 'user-tracks'
+                    || context.type === 'user-album'
+                    || context.type === 'user-artist'
+                  )
                 ) &&
-                  <Text>
-                    {context.type}{' '}
-                  </Text>
+                  <Text>{context.displayName}'s library</Text>
                 }
-                {(
-                  context.type === 'playlist'
-                  || context.type.includes('album')
-                  || context.type.includes('artist')
-                  || context.type.includes('tracks')
-                  || context.type === 'conversation'
-                ) &&
+                {(context.type === 'playlist') &&
                   <Text>
                     "{context.name}"
-                  </Text>
-                }
-                {(
-                  context.id === currentUserID
-                  && context.type !== 'conversation'
-                  && context.type !== 'playlist'
-                  && !context.type.includes('album')
-                  && !context.type.includes('artist')
-                  && !context.type.includes('recently')
-                  && !context.type.includes('tracks')
-                ) &&
-                  <Text>
-                    <Text>your</Text>
-                    <Text>
-                      {' '}{context.type.split('-').pop()}{' '}
-                    </Text>
-                    <Text>played</Text>
-                  </Text>
-                }
-                {(
-                  context.id !== currentUserID
-                  && context.type !== 'conversation'
-                  && context.type !== 'playlist'
-                  && !context.type.includes('album')
-                  && !context.type.includes('artist')
-                  && !context.type.includes('recently')
-                  && !context.type.includes('tracks')
-                ) &&
-                  <Text>
-                    <Text>
-                      {context.displayName}
-                    </Text>
-                    <Text>'s </Text>
-                    <Text>
-                    {' '}{context.type.split('-').pop()}{' '}
-                    </Text>
-                    <Text> played</Text>
                   </Text>
                 }
               </Text>

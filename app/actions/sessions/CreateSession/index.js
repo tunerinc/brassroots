@@ -124,7 +124,7 @@ export function createSession(
     const geoRef: FirestoreRef = firestore.collection('geo');
     const sessionsRef: FirestoreRef = firestore.collection('sessions');
     const userRef: FirestoreDoc = firestore.collection('users').doc(user.id);
-    const geoFirestore = new GeoFirestore(geoRef);
+    // const geoFirestore = new GeoFirestore(geoRef);
 
     try {
       const permission: string = await Permissions.request('location', { type: 'whenInUse' });
@@ -157,7 +157,7 @@ export function createSession(
       const timeJoined: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
       const {total: contextTotal, ...restOfContext} = context;
 
-      batch.update(userRef, {currentSession: newSessionKey});
+      batch.update(userRef, {currentSession: newSessionKey, online: true});
       batch.set(userRef.collection('sessions').doc(newSessionKey), {id: newSessionKey, timeJoined});
       batch.set(
         sessionsRef.doc(newSessionKey),
@@ -245,39 +245,17 @@ export function createSession(
         totalListeners: 1,
       });
 
-      const promises = [
-        batch.commit(),
-        ...(pos.lat && pos.lon
-          ? [geoFirestore.set(
-            session.id,
-            {
-              id: session.id,
-              currentTrackID: track.id,
-              coordinates: new firestore.GeoPoint(pos.lat, pos.lon),
-              totalListeners: 1,
-              type: 'session',
-              owner: {
-                id: user.id,
-                name: user.displayName,
-                image: user.profileImage,
-              },
-            },
-          )]
-          : []
-        ),
-      ];
-
-      await Promise.all(promises);
+      await batch.commit();
       dispatch(actions.createSessionSuccess(session));
       dispatch(addCurrentContext(context));
-      dispatch(
-        playTrack(
-          user,
-          {...track, id: newTrackID, trackID: track.id},
-          {id: session.id, totalPlayed: 0},
-          null,
-        ),
-      );
+      // dispatch(
+      //   playTrack(
+      //     user,
+      //     {...track, id: newTrackID, trackID: track.id},
+      //     {id: session.id, totalPlayed: 0},
+      //     null,
+      //   ),
+      // );
     } catch (err) {
       dispatch(actions.createSessionFailure(err));
     }

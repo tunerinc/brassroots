@@ -45,12 +45,7 @@ export default class DJCard extends React.Component<Props, State> {
             {displayName}
           </Text>
         </View>
-        <Ionicons
-          name={isMenuOpen ? 'ios-arrow-up' : 'ios-arrow-down'}
-          size={25}
-          color='#fefefe'
-          style={styles.icon}
-        />
+        <Ionicons name={isMenuOpen ? 'ios-arrow-up' : 'ios-arrow-down'} style={styles.icon} />
       </TouchableOpacity>
     );
   }

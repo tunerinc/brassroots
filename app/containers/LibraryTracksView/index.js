@@ -124,7 +124,7 @@ class LibraryTracksView extends React.Component {
     }
   }
 
-  renderTrack({item}) {
+  renderTrack({item, index}) {
     const {
       albums: {albumsByID},
       tracks: {tracksByID},
@@ -141,7 +141,7 @@ class LibraryTracksView extends React.Component {
         type='basic'
         context={{id, displayName, type: 'user-tracks', name: displayName}}
         name={name}
-        onPress={this.handlePlay}
+        onPress={this.handlePlay(item, index)}
         openModal={this.openModal(item)}
         showOptions={true}
         artists={artists.map(a => a.name).join(', ')}
@@ -157,15 +157,19 @@ class LibraryTracksView extends React.Component {
     return <LoadingTrack />;
   }
 
-  handlePlay() {
+  handlePlay = (trackID, trackIndex) => () => {
     const {
       createSession,
+      albums: {albumsByID},
       sessions: {currentSessionID, sessionsByID},
-      tracks: {userTracks},
+      settings: {preference: {session: mode}},
+      tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
     const currentSession = sessionsByID[currentSessionID];
-    const currentUser = usersByID[currentUserID];
+    const {displayName, profileImage, totalFollowers} = usersByID[currentUserID];
+    const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
+    const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
 
     if (currentSession) {
       if (currentSession.ownerID === currentUserID) {
@@ -175,6 +179,34 @@ class LibraryTracksView extends React.Component {
       }
     } else {
       setTimeout(Actions.liveSession, 200);
+
+      createSession(
+        {displayName, profileImage, totalFollowers, id: currentUserID},
+        {
+          name,
+          durationMS,
+          trackNumber,
+          artists,
+          id: trackID,
+          album: {
+            small,
+            medium,
+            large,
+            id: albumID,
+            name: albumName,
+            artists: albumArtists,
+          },
+        },
+        {
+          displayName,
+          id: currentUserID,
+          name: displayName,
+          type: 'user-tracks',
+          total: 1,
+          position: trackIndex,
+        },
+        mode,
+      );
     }
   }
 
@@ -368,26 +400,26 @@ class LibraryTracksView extends React.Component {
 
 LibraryTracksView.propTypes = {
   albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
   getTracks: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
   playTrack: PropTypes.func.isRequired,
   queueTrack: PropTypes.func.isRequired,
   sessions: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
   tracks: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, player, playlists, queue, sessions, tracks, users}) {
+function mapStateToProps({albums, player, playlists, queue, sessions, settings, tracks, users}) {
   return {
     albums,
-    artists,
     player,
     playlists,
     queue,
     sessions,
+    settings,
     tracks,
     users,
   };

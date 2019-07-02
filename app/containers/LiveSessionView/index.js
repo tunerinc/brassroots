@@ -315,7 +315,7 @@ class LiveSessionView extends React.Component {
     const {isMenuOpen} = this.state;
     const {sessions: {currentSessionID, sessionsByID}, users: {currentUserID}} = this.props;
     const currentSession = sessionsByID[currentSessionID];
-    const height = currentSession && currentSession.ownerID === currentUserID ? 412 : 356;
+    const height = currentSession && currentSession.ownerID === currentUserID ? 352 : 306;
 
     if (currentSession) {
       if (isMenuOpen) {
@@ -323,15 +323,15 @@ class LiveSessionView extends React.Component {
           Animated.parallel([
             Animated.timing(
               this.animatedDJOptionOpacity,
-              {toValue: 0, duration: 230, easing: Easing.linear}
+              {toValue: 0, duration: 115, easing: Easing.linear}
             ),
             Animated.timing(
               this.animatedHeight,
-              {toValue: 0, duration: 230, delay: 115, easing: Easing.linear}
+              {toValue: 0, duration: 115, delay: 58, easing: Easing.linear}
             ),
             Animated.timing(
               this.animatedOpacity,
-              {toValue: 0, duration: 460, delay: 115, easing: Easing.linear}
+              {toValue: 0, duration: 230, delay: 58, easing: Easing.linear}
             )
           ]),
           Animated.timing(
@@ -348,15 +348,15 @@ class LiveSessionView extends React.Component {
           Animated.parallel([
             Animated.timing(
               this.animatedHeight,
-              {toValue: height, duration: 230, easing: Easing.linear}
+              {toValue: height, duration: 115, easing: Easing.linear}
             ),
             Animated.timing(
               this.animatedDJOptionOpacity,
-              {toValue: 1, duration: 230, delay: 115, easing: Easing.linear}
+              {toValue: 1, duration: 115, delay: 58, easing: Easing.linear}
             ),
             Animated.timing(
               this.animatedOpacity,
-              {toValue: 0.7, duration: 230, easing: Easing.linear}
+              {toValue: 0.7, duration: 58, easing: Easing.linear}
             )
           ])
         ]).start();
@@ -528,6 +528,7 @@ class LiveSessionView extends React.Component {
       <SessionFooter
         toggleLike={() => console.log('like pressed')}
         currentUserID={currentUserID}
+        displayName={usersByID[currentUserID].displayName}
         image={profileImage}
         contextQueue={contextTracks}
         context={context}
