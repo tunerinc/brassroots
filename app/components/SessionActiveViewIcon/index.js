@@ -37,31 +37,9 @@ export default class SessionActiveViewIcon extends React.Component<Props, State>
 
     return (
       <TouchableOpacity style={styles.button} onPress={changeActiveView}>
-        {viewingPlayer && renderChat()}
-        {viewingChat && renderPlayer()}
+        {viewingPlayer && <Entypo name='chat' style={styles.icon} />}
+        {viewingChat && <MaterialCommunityIcons name='playlist-play' style={styles.icon} />}
       </TouchableOpacity>
     );
   }
-}
-
-function renderChat(): React.Node {
-  return (
-    <Entypo
-      name='chat'
-      size={35}
-      color='#fefefe'
-      style={styles.icon}
-    />
-  );
-}
-
-function renderPlayer(): React.Node {
-  return (
-    <MaterialCommunityIcons
-      name='playlist-play'
-      size={35}
-      color='#fefefe'
-      style={styles.icon}
-    />
-  );
 }

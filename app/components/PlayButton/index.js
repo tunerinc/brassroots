@@ -34,8 +34,8 @@ export default class PlayButton extends React.PureComponent<Props, State> {
     ];
 
     return (
-      <TouchableOpacity onPress={play} disabled={disabled} style={buttonStyles}>
-        <Foundation name='play' color='#fefefe' style={styles.icon} />
+      <TouchableOpacity onPress={play} disabled={disabled || false} style={buttonStyles}>
+        <Foundation name='play' style={styles.icon} />
       </TouchableOpacity>
     );
   }

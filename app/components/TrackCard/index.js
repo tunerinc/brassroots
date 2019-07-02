@@ -28,6 +28,7 @@ type Props = {|
   image?: string,
   liked?: boolean,
   name: string,
+  onPress?: () => void,
   openModal?: () => void,
   queueError?: boolean,
   showFavoriteIcon?: boolean,
@@ -59,6 +60,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
       image,
       liked,
       name,
+      onPress,
       openModal,
       queueError,
       showFavoriteIcon,
@@ -83,7 +85,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
       <TouchableHighlight
         activeOpacity={0.5}
         underlayColor='#1b1b1e'
-        onPress={() => console.log('track pressed')}
+        onPress={onPress}
         disabled={inQueue || editingFavorite}
         style={[
           styles.track,

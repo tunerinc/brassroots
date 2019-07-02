@@ -19,12 +19,15 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   button: {
-    flex: 2,
+    flex: 1,
+    paddingTop: 5,
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
   icon: {
     textAlign: 'right',
+    fontSize: 25,
+    color: '#fefefe',
   },
 });
 

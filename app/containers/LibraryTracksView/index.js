@@ -50,6 +50,7 @@ class LibraryTracksView extends React.Component {
     this.onScroll = this.onScroll.bind(this);
     this.renderTrack = this.renderTrack.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
+    this.handlePlay = this.handlePlay.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
 
@@ -140,6 +141,7 @@ class LibraryTracksView extends React.Component {
         type='basic'
         context={{id, displayName, type: 'user-tracks', name: displayName}}
         name={name}
+        onPress={this.handlePlay}
         openModal={this.openModal(item)}
         showOptions={true}
         artists={artists.map(a => a.name).join(', ')}
@@ -153,6 +155,27 @@ class LibraryTracksView extends React.Component {
     if (!fetchingTracks || refreshingTracks) return null;
 
     return <LoadingTrack />;
+  }
+
+  handlePlay() {
+    const {
+      createSession,
+      sessions: {currentSessionID, sessionsByID},
+      tracks: {userTracks},
+      users: {currentUserID, usersByID},
+    } = this.props;
+    const currentSession = sessionsByID[currentSessionID];
+    const currentUser = usersByID[currentUserID];
+
+    if (currentSession) {
+      if (currentSession.ownerID === currentUserID) {
+
+      } else {
+
+      }
+    } else {
+      setTimeout(Actions.liveSession, 200);
+    }
   }
 
   handleAddTrack() {

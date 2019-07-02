@@ -97,6 +97,7 @@ class LibrarySingleAlbumView extends React.Component {
         type='album'
         context={{displayName, id: albumToView, name: albumName, type: 'user-album'}}
         name={name}
+        onPress={this.handlePlay}
         openModal={this.openModal(item, 'track')}
         showOptions={true}
         artists={artists.map(a => a.name).join(', ')}
@@ -161,7 +162,24 @@ class LibrarySingleAlbumView extends React.Component {
   }
 
   handlePlay() {
-    console.log('play pressed');
+    const {
+      createSession,
+      sessions: {currentSessionID, sessionsByID},
+      tracks: {userTracks},
+      users: {currentUserID, usersByID},
+    } = this.props;
+    const currentSession = sessionsByID[currentSessionID];
+    const currentUser = usersByID[currentUserID];
+
+    if (currentSession) {
+      if (currentSession.ownerID === currentUserID) {
+
+      } else {
+
+      }
+    } else {
+      setTimeout(Actions.liveSession, 200);
+    }
   }
 
   renderModalContent(type, item) {
@@ -366,7 +384,7 @@ class LibrarySingleAlbumView extends React.Component {
               {opacity: playButtonOpacity, bottom: playButtonOffset},
             ]}
           >
-            <PlayButton play={this.handlePlay} disabled={true} />
+            <PlayButton play={this.handlePlay} />
           </Animated.View>
           <Animated.View
             style={[

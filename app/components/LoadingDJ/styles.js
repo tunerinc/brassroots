@@ -30,7 +30,7 @@ const styles: Styles = StyleSheet.create({
     marginRight: 5,
   },
   name: {
-    width: 100,
+    width: '50%',
     paddingTop: 1,
   },
 });

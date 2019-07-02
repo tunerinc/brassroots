@@ -25,7 +25,7 @@ import SessionTrackModal from '../../components/SessionTrackModal';
 import DJModal from '../../components/DJModal';
 import SessionActiveViewIcon from '../../components/SessionActiveViewIcon';
 import DJCard from '../../components/DJCard';
-import LoadingUser from '../../components/LoadingUser';
+import LoadingDJ from '../../components/LoadingDJ';
 import SessionHeader from '../../components/SessionHeader';
 import SessionFooter from '../../components/SessionFooter';
 import ChatMessage from '../../components/ChatMessage';
@@ -132,55 +132,54 @@ class LiveSessionView extends React.Component {
       users: {currentUserID},
     } = this.props;
     
-    if (currentSessionID) {
-      if (!fetchedChat && !fetchingChat) {
-        this.setState({fetchedChat: true});
-        getChat(currentSessionID);
-      }
+    // if (currentSessionID) {
+    //   if (!fetchedChat && !fetchingChat) {
+    //     this.setState({fetchedChat: true});
+    //     getChat(currentSessionID);
+    //   }
 
-      if (!fetchedInfo && !fetchingInfo) {
-        this.setState({fetchedInfo: true});
-        getSessionInfo(currentSessionID);
-      }
+    //   if (!fetchedInfo && !fetchingInfo) {
+    //     this.setState({fetchedInfo: true});
+    //     getSessionInfo(currentSessionID);
+    //   }
 
-      if (!fetchedQueue && !fetchingQueue) {
-        this.setState({fetchedQueue: true});
-        getSessionQueue(currentUserID, currentSessionID);
-      }
-    }
+    //   if (!fetchedQueue && !fetchingQueue) {
+    //     this.setState({fetchedQueue: true});
+    //     getSessionQueue(currentUserID, currentSessionID);
+    //   }
+    // }
   }
 
   componentDidUpdate() {
-    const {fetchedChat, fetchedInfo, fetchedQueue} = this.state;
+    const {fetchedChat, fetchedInfo, fetchedQueue, editingQueue} = this.state;
     const {
       getChat,
       getSessionInfo,
       getSessionQueue,
       chat: {fetchingChat},
-      queue: {fetchingQueue},
+      queue: {userQueue, fetchingQueue},
       sessions: {currentSessionID, sessionsByID, fetchingInfo},
       users: {currentUserID},
     } = this.props;
-    const {queue} = sessionsByID[currentSessionID];
 
-    if (currentSessionID) {
-      if (!fetchedChat && !fetchingChat) {
-        this.setState({fetchedChat: true});
-        getChat(currentSessionID);
-      }
+    // if (currentSessionID) {
+    //   if (!fetchedChat && !fetchingChat) {
+    //     this.setState({fetchedChat: true});
+    //     getChat(currentSessionID);
+    //   }
 
-      if (!fetchedInfo && !fetchingInfo) {
-        this.setState({fetchedInfo: true});
-        getSessionInfo(currentSessionID);
-      }
+    //   if (!fetchedInfo && !fetchingInfo) {
+    //     this.setState({fetchedInfo: true});
+    //     getSessionInfo(currentSessionID);
+    //   }
 
-      if (!fetchedQueue && !fetchingQueue) {
-        this.setState({fetchedQueue: true});
-        getSessionQueue(currentUserID, currentSessionID);
-      }
-    }
+    //   if (!fetchedQueue && !fetchingQueue) {
+    //     this.setState({fetchedQueue: true});
+    //     getSessionQueue(currentUserID, currentSessionID);
+    //   }
+    // }
 
-    if (isEditing && queue.length === 0) {
+    if (editingQueue && userQueue.length === 0) {
       this.toggleEdit();
     }
   }
@@ -233,58 +232,22 @@ class LiveSessionView extends React.Component {
   }
 
   leave() {
-    const {
-      leaveSession,
-      albums: {albumsByID},
-      chat: {chatUnsubscribe},
-      queue: {unsubscribe: queueUnsubscribe},
-      sessions: {sessionsByID, currentSessionID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
-    } = this.props;
-    const {ownerID, totalListeners, currentTrackID} = sessionsByID[currentSessionID];
-    const {displayName, profileImage} = usersByID[ownerID];
-    const {name, trackNumber, durationMS, albumID, artists} = tracksByID[currentTrackID];
-    const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
-    const owner = {id: ownerID, name: displayName, image: profileImage};
-    const session = {
-      chatUnsubscribe,
-      queueUnsubscribe,
-      id: currentSessionID,
-      total: totalListeners,
-      track: {
-        name,
-        trackNumber,
-        durationMS,
-        id: currentTrackID,
-        album: {
-          small,
-          medium,
-          large,
-          id: albumID,
-          name: albumName,
-          artists: albumArtists,
-        },
-      },
-    };
-
-    setTimeout(Actions.pop, 200);
-    leaveSession(currentUserID, session, owner);
+    console.log('leave');
   }
 
   handleRepeat() {
-    const {toggleRepeat, player: {repeat}, sessions: {currentSessionID}} = this.props;
-    toggleRepeat(currentSessionID, repeat);
+    // const {toggleRepeat, player: {repeat}, sessions: {currentSessionID}} = this.props;
+    // toggleRepeat(currentSessionID, repeat);
   }
 
   handleShuffle() {
-    const {toggleShuffle, player: {shuffle}, sessions: {currentSessionID}} = this.props;
-    toggleShuffle(currentSessionID, shuffle);
+    // const {toggleShuffle, player: {shuffle}, sessions: {currentSessionID}} = this.props;
+    // toggleShuffle(currentSessionID, shuffle);
   }
 
   handleMute() {
-    const {toggleMute, sessions: {currentSessionID, muted}, users: {currentUserID}} = this.props;
-    toggleMute(currentSessionID, currentUserID, muted);
+    // const {toggleMute, sessions: {currentSessionID, muted}, users: {currentUserID}} = this.props;
+    // toggleMute(currentSessionID, currentUserID, muted);
   }
 
   skipNext() {
@@ -439,16 +402,7 @@ class LiveSessionView extends React.Component {
   }
 
   togglePause() {
-    const {
-      togglePause,
-      player: {paused, progress, currentTrackID},
-      sessions: {currentSessionID, sessionsByID},
-      users: {currentUserID},
-    } = this.props;
-    const {ownerID} = sessionsByID[currentSessionID];
-    const session = {progress, id: currentSessionID, current: currentTrackID};
-
-    togglePause(currentUserID, ownerID, session, !paused);
+    console.log('toggle pause');
   }
 
   renderModalContent() {
@@ -465,6 +419,9 @@ class LiveSessionView extends React.Component {
       tracks: {tracksByID, userTracks},
       users: {currentUserID, usersByID},
     } = this.props;
+
+    if (!currentSessionID || !currentTrackID || !sessionsByID[currentSessionID]) return <View></View>;
+
     const {totalListeners, distance, mode, live, ownerID} = sessionsByID[currentSessionID];
     const {albumID, durationMS, name, saved, artists} = tracksByID[currentTrackID];
     const {large} = albumsByID[albumID];
@@ -551,10 +508,14 @@ class LiveSessionView extends React.Component {
   renderFooter() {
     const {
       queue: {contextQueue, context},
+      sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
     const {profileImage} = usersByID[currentUserID];
+
+    if (!currentSessionID || !sessionsByID[currentSessionID]) return <View></View>;
+
     const contextTracks = contextQueue.map(id => {
       return {
         id,
@@ -595,10 +556,10 @@ class LiveSessionView extends React.Component {
       users: {usersByID, currentUserID},
     } = this.props;
     const currentUser = usersByID[currentUserID];
-    const currentSession = sessionsByID[currentSessionID] || null;
-    const currentTrack = tracksByID[currentTrackID] || null;
-    const currentAlbum = albumsByID[currentTrack.albumID] || null;
-    const sessionOwner = usersByID[currentSession.ownerID] || currentUser;
+    const currentSession = currentSessionID ? sessionsByID[currentSessionID] : null;
+    const currentTrack = currentTrackID ? tracksByID[currentTrackID] : null;
+    const currentAlbum = currentTrack ? albumsByID[currentTrack.albumID] : null;
+    const sessionOwner = currentSession ? usersByID[currentSession.ownerID] : currentUser;
 
     return (
       <View style={styles.container}>
@@ -632,7 +593,7 @@ class LiveSessionView extends React.Component {
               style={styles.leftIcon}
               onPress={Actions.pop}
             />
-            {(currentSessionID === '' || !currentSession || !sessionOwner) && <LoadingUser />}
+            {(currentSessionID === '' || !currentSession || !sessionOwner) && <LoadingDJ />}
             {(currentSession && sessionOwner) &&
               <DJCard
                 isMenuOpen={isMenuOpen}
@@ -779,7 +740,6 @@ LiveSessionView.propTypes = {
   getSessionInfo: PropTypes.func.isRequired,
   getSessionQueue: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
-  moveSlider: PropTypes.func.isRequired,
   nextTrack: PropTypes.func.isRequired,
   player: PropTypes.object.isRequired,
   playlists: PropTypes.object.isRequired,
@@ -798,7 +758,6 @@ LiveSessionView.propTypes = {
   toggleMute: PropTypes.func.isRequired,
   toggleRepeat: PropTypes.func.isRequired,
   toggleShuffle: PropTypes.func.isRequired,
-  toggleSlider: PropTypes.func.isRequired,
   toggleTrackLike: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 };

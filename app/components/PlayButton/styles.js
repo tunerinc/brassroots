@@ -32,6 +32,7 @@ const styles: Styles = StyleSheet.create({
     paddingLeft: 7,
     lineHeight: 60,
     fontSize: 60,
+    color: '#fefefe',
   },
 });
 
