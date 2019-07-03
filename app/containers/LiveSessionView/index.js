@@ -402,7 +402,22 @@ class LiveSessionView extends React.Component {
   }
 
   togglePause() {
-    console.log('toggle pause');
+    const {
+      togglePause,
+      player: {paused, currentTrackID, progress},
+      sessions: {currentSessionID, sessionsByID},
+      users: {currentUserID},
+    } = this.props;
+    const currentSession = sessionsByID[currentSessionID];
+
+    if (currentSession) {
+      togglePause(
+        currentUserID,
+        currentSession.ownerID,
+        {progress, id: currentSessionID, current: currentTrackID},
+        !paused,
+      );
+    }
   }
 
   renderModalContent() {
@@ -425,8 +440,9 @@ class LiveSessionView extends React.Component {
     const {totalListeners, distance, mode, live, ownerID} = sessionsByID[currentSessionID];
     const {albumID, durationMS, name, saved, artists} = tracksByID[currentTrackID];
     const {large} = albumsByID[albumID];
-    const {userID} = queueByID[currentQueueID];
-    const {displayName} = usersByID[userID];
+
+    // const {userID} = queueByID[currentQueueID];
+    // const {displayName} = usersByID[userID];
 
     let listenerTotal = 0;
     let formattedDistance = '';
@@ -490,7 +506,7 @@ class LiveSessionView extends React.Component {
         name={name}
         saved={saved}
         artists={artists.map(a => a.name).join(', ')}
-        displayName={displayName}
+        displayName={usersByID[currentUserID].displayName}
       />
     );
   };

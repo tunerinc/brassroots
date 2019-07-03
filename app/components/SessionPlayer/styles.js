@@ -30,7 +30,7 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     marginTop: 10,
   },
   left: {
@@ -38,7 +38,7 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   leftIcon: {
-    fontSize: 60,
+    fontSize: 55,
   },
   center: {
     height: 200,
@@ -78,7 +78,7 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   rightIcon: {
-    fontSize: 60,
+    fontSize: 55,
   },
 });
 

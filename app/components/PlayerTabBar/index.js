@@ -24,6 +24,12 @@ class PlayerTabBar extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      coverOpacity: new Animated.Value(1),
+      shadowOpacity: new Animated.Value(0),
+      coverIndex: new Animated.Value(2),
+    };
+
     this.setProgress = this.setProgress.bind(this);
     this.handleDoneTrack = this.handleDoneTrack.bind(this);
     this.hideCover = this.hideCover.bind(this);
@@ -34,19 +40,21 @@ class PlayerTabBar extends React.Component {
 
     this.progressInterval;
     this.intervalActive = false;
-    this.coverOpacity = new Animated.Value(1);
-    this.coverIndex = new Animated.Value(2);
-    this.shadowOpacity = new Animated.Value(0);
     this.tabBarBGColor = '#28282b'
   }
 
   componentDidMount() {
-    // Spotify.on('play', () => {
-    //   this.progressInterval = BackgroundTimer.setInterval(this.setProgress, 850);
-    // });
+    Spotify.on('play', () => {
+      BackgroundTimer.start();
+      this.progressInterval = setInterval(this.setProgress, 910);
+    });
 
-    // Spotify.on('pause', BackgroundTimer.clearInterval(this.progressInterval));
-    // Spotify.on('trackDelivered', this.handleDoneTrack);
+    Spotify.on('trackDelivered', this.handleDoneTrack);
+    Spotify.on('pause', () => {
+      clearInterval(this.progressInterval);
+      BackgroundTimer.stop();
+    });
+
     this.hideCover();
   }
 
@@ -80,8 +88,8 @@ class PlayerTabBar extends React.Component {
       this.tabBarBGColor = '#28282b';
     }
 
-    if (oldSessionID !== currentSessionID) {
-      // BackgroundTimer.clearInterval(this.progressInterval);
+    if (oldSessionID !== currentSessionID && typeof this.progressInterval === 'number') {
+      BackgroundTimer.clearInterval(this.progressInterval);
     }
 
     if (
@@ -113,46 +121,43 @@ class PlayerTabBar extends React.Component {
   }
 
   setProgress() {
-    const {
-      setProgress,
-      player: {progress, currentTrackID, seeking},
-      sessions: {currentSessionID},
-      tracks: {tracksByID},
-    } = this.props;
-    const {durationMS} = tracksByID[currentTrackID];
+    const {setProgress, player: {progress, seeking, durationMS}} = this.props;
 
-    if (progress && durationMS >= progress + 1000 && !seeking) {
-      setProgress(currentSessionID, progress + 1000);
+    if (typeof progress === 'number' && durationMS >= progress + 1000 && !seeking) {
+      setProgress(progress + 1000);
     }
   }
 
   handleDoneTrack() {
     const {
       nextTrack,
-      stopSession,
+      stopPlayer,
+      queue: {userQueue, contextQueue},
       sessions: {currentSessionID, sessionsByID},
       users: {currentUserID},
     } = this.props;
     
     if (currentSessionID && sessionsByID[currentSessionID]) {
-      const {ownerID, nextToPlay, moreToPlay, previouslyPlayed} = sessionsByID[currentSessionID];
+      const {ownerID} = sessionsByID[currentSessionID];
 
-      // BackgroundTimer.clearInterval(this.progressInterval);
+      BackgroundTimer.clearInterval(this.progressInterval);
+      console.log('timer cleared')
 
       // add seeking edge case when song close to end
 
       if (ownerID === currentUserID) {
-        if (nextToPlay.length !== 0 || moreToPlay.length !== 0) {
-          nextTrack(
-            currentUserID,
-            {
-              id: currentSessionID,
-              moreToPlay,
-              totalNext: nextToPlay.length + 1,
-              totalPlayed: previouslyPlayed.length,
-            },
-          );
+        if (userQueue.length !== 0 || contextQueue.length !== 0) {
+          // nextTrack(
+          //   currentUserID,
+          //   {
+          //     id: currentSessionID,
+          //     moreToPlay,
+          //     totalNext: nextToPlay.length + 1,
+          //     totalPlayed: previouslyPlayed.length,
+          //   },
+          // );
         } else {
+          console.log('stop')
           stopPlayer(currentSessionID);
         }
       }
@@ -160,21 +165,23 @@ class PlayerTabBar extends React.Component {
   }
 
   hideCover() {
-    if (this.coverOpacity !== 0) {
+    const {coverOpacity, shadowOpacity, coverIndex} = this.state;
+
+    if (coverOpacity !== 0) {
       Animated.sequence([
-        Animated.timing(this.coverOpacity, {
+        Animated.timing(coverOpacity, {
           toValue: 0,
           duration: 300,
           delay: 300,
           easing: Easing.lienar,
         }),
-        Animated.timing(this.shadowOpacity, {
+        Animated.timing(shadowOpacity, {
           toValue: 0.25,
           duration: 300,
           delay: 300,
           easing: Easing.linear,
         }),
-        Animated.timing(this.coverIndex, {
+        Animated.timing(coverIndex, {
           toValue: -2,
           duration: 1,
           delay: 600,
@@ -188,9 +195,11 @@ class PlayerTabBar extends React.Component {
     const {sessions: {currentSessionID, sessionsByID}} = this.props;
     const currentSession = sessionsByID[currentSessionID];
 
-    if (currentSession) {
-      Actions.libraryProfileMain({userToView: currentSession.ownerID});
-    }
+    console.log(currentSession.ownerID)
+
+    // if (currentSession) {
+    //   Actions.libraryProfileMain({userToView: currentSession.ownerID});
+    // }
   }
 
   createButton({routeName}) {
@@ -211,20 +220,25 @@ class PlayerTabBar extends React.Component {
   handleTogglePause() {
     const {
       togglePause,
-      player: {paused},
+      player: {paused, currentTrackID, progress},
       sessions: {currentSessionID, sessionsByID},
       users: {currentUserID},
     } = this.props;
     const currentSession = sessionsByID[currentSessionID];
 
     if (currentSession) {
-      togglePause(currentUserID, currentSession.ownerID, currentSessionID, paused);
+      togglePause(
+        currentUserID,
+        currentSession.ownerID,
+        {progress, id: currentSessionID, current: currentTrackID},
+        !paused,
+      );
     }
   }
 
   render() {
-    const animatedCover = {opacity: this.coverOpacity, zIndex: this.coverIndex};
-    const animatedShadowOpacity = {shadowOpacity: this.shadowOpacity};
+    const {coverOpacity, shadowOpacity, coverIndex} = this.state;
+    const animatedCover = {opacity: coverOpacity, zIndex: coverIndex};
     const animatedBGColor = {backgroundColor: this.tabBarBGColor};
     const {
       albums: {albumsByID},
@@ -236,15 +250,15 @@ class PlayerTabBar extends React.Component {
     } = this.props;
 
     return (
-      <Animated.View style={[styles.container, animatedShadowOpacity]}>
-        {currentTrackID && currentSessionID &&
-          <View>
+      <Animated.View style={[styles.container, {shadowOpacity}]}>
+        {(currentTrackID && currentSessionID) &&
+          <View style={styles.wrap}>
             <View style={styles.playerBackgroundWrap}>
               <Image
                 style={styles.playerBackgroundImage}
                 resizeMode='cover'
                 blurRadius={90}
-                source={{uri: albumsByID[tracksByID[currentTrackID].albumID].image}}
+                source={{uri: albumsByID[tracksByID[currentTrackID].albumID].large}}
               />
             </View>
             <MiniPlayer
@@ -276,6 +290,7 @@ PlayerTabBar.propTypes = {
   navigation: PropTypes.object.isRequired,
   nextTrack: PropTypes.func.isRequired,
   pausePlayer: PropTypes.func.isRequired,
+  queue: PropTypes.object.isRequired,
   sessions: PropTypes.object.isRequired,
   setProgress: PropTypes.func.isRequired,
   startPlayer: PropTypes.func.isRequired,

@@ -248,14 +248,14 @@ export function createSession(
       await batch.commit();
       dispatch(actions.createSessionSuccess(session));
       dispatch(addCurrentContext(context));
-      // dispatch(
-      //   playTrack(
-      //     user,
-      //     {...track, id: newTrackID, trackID: track.id},
-      //     {id: session.id, totalPlayed: 0},
-      //     null,
-      //   ),
-      // );
+      dispatch(
+        playTrack(
+          user,
+          {...track, id: newTrackID, trackID: track.id},
+          {id: session.id, totalPlayed: 0},
+          null,
+        ),
+      );
     } catch (err) {
       dispatch(actions.createSessionFailure(err));
     }

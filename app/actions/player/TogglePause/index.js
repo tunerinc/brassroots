@@ -39,7 +39,7 @@ type Session = {|
  * @param    {string}  session.id         The id of the session to pause
  * @param    {string}  session.current    The currently playing track in the session
  * @param    {number}  [session.progress] The current progress of the session the user is pausing
- * @param    {boolean} status             The new pause status for the current user in the now playing session
+ * @param    {boolean} paused             The new pause status for the current user in the now playing session
  *
  * @return   {Promise}
  * @resolves {object}                     The now playing session with the new pause status for the current user
@@ -49,7 +49,7 @@ export function togglePause(
   userID: string,
   ownerID: string,
   session: Session,
-  status: boolean,
+  paused: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.togglePauseRequest());
@@ -63,8 +63,9 @@ export function togglePause(
     let playbackState: {position?: number} = {};
 
     try {
-      if (status) {
+      if (!paused) {
         playbackState = await Spotify.getPlaybackStateAsync();
+        console.log(playbackState)
 
         if (!playbackState || Object.keys(playbackState).length === 0) {
           throw new Error('Unable to retrieve playback state');
@@ -73,19 +74,21 @@ export function togglePause(
 
       if (
         Object.keys(playbackState).length !== 0
-        && status
+        && !paused
         && session.progress
         && playbackState.position !== session.progress
       ) {
         newPosition = session.progress;
-
-        await Spotify.playURI(`spotify:track:${session.current}`, 0, newPosition);
+        console.log('played')
+        await Spotify.setPlaying(true);
       } else {
-        await Spotify.setPlaying(status);
+        console.log('paused')
+        await Spotify.setPlaying(false);
       }
 
-      if (!status) {
+      if (paused) {
         playbackState = await Spotify.getPlaybackStateAsync();
+        console.log(playbackState)
 
         if (!playbackState || Object.keys(playbackState).length === 0) {
           throw new Error('Unable to retrieve playback state');
@@ -98,14 +101,14 @@ export function togglePause(
 
       const timeLastPlayed: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-      batch.update(sessionUserRef, {currentProgressMS: newPosition, paused: !status});
+      batch.update(sessionUserRef, {paused, currentProgressMS: newPosition});
 
       if (ownerID === userID) {
-        batch.update(sessionRef, {timeLastPlayed, currentProgressMS: newPosition, paused: !status});
+        batch.update(sessionRef, {timeLastPlayed, paused, currentProgressMS: newPosition});
       }
 
       await batch.commit();
-      dispatch(actions.togglePauseSuccess(!status, newPosition + 1000));
+      dispatch(actions.togglePauseSuccess(paused, newPosition + 1000));
     } catch (err) {
       dispatch(actions.togglePauseFailure(err));
     };

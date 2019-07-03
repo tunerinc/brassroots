@@ -41,7 +41,6 @@
 		609F7FC92269E25100E1054E /* SpotifyAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609F7FC62269E25100E1054E /* SpotifyAuthentication.framework */; };
 		609F7FCA2269E25100E1054E /* SpotifyMetadata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609F7FC72269E25100E1054E /* SpotifyMetadata.framework */; };
 		609F7FCB2269E25100E1054E /* SpotifyAudioPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609F7FC82269E25100E1054E /* SpotifyAudioPlayback.framework */; };
-		60B7943022C54289003BA051 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 60B7942F22C54289003BA051 /* Default-568h@2x.png */; };
 		60FE8A5F22B0D08A008CFD62 /* Muli-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60FE8A3422B0D089008CFD62 /* Muli-Italic.ttf */; };
 		60FE8A6022B0D08A008CFD62 /* Muli-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60FE8A5C22B0D08A008CFD62 /* Muli-Bold.ttf */; };
 		60FE8A6122B0D08A008CFD62 /* Muli-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 60FE8A5D22B0D08A008CFD62 /* Muli-SemiBold.ttf */; };
@@ -378,7 +377,6 @@
 		609F7FC62269E25100E1054E /* SpotifyAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyAuthentication.framework; path = "../node_modules/rn-spotify-sdk/ios/external/SpotifySDK/SpotifyAuthentication.framework"; sourceTree = "<group>"; };
 		609F7FC72269E25100E1054E /* SpotifyMetadata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyMetadata.framework; path = "../node_modules/rn-spotify-sdk/ios/external/SpotifySDK/SpotifyMetadata.framework"; sourceTree = "<group>"; };
 		609F7FC82269E25100E1054E /* SpotifyAudioPlayback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyAudioPlayback.framework; path = "../node_modules/rn-spotify-sdk/ios/external/SpotifySDK/SpotifyAudioPlayback.framework"; sourceTree = "<group>"; };
-		60B7942F22C54289003BA051 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		60FE8A3422B0D089008CFD62 /* Muli-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Italic.ttf"; sourceTree = "<group>"; };
 		60FE8A5C22B0D08A008CFD62 /* Muli-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-Bold.ttf"; sourceTree = "<group>"; };
 		60FE8A5D22B0D08A008CFD62 /* Muli-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Muli-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -694,7 +692,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				60B7942F22C54289003BA051 /* Default-568h@2x.png */,
 				60FE8A5C22B0D08A008CFD62 /* Muli-Bold.ttf */,
 				60FE8A3422B0D089008CFD62 /* Muli-Italic.ttf */,
 				60FE8A5D22B0D08A008CFD62 /* Muli-SemiBold.ttf */,
@@ -1217,7 +1214,6 @@
 				6042D4C222C374EA006EA32D /* Images.xcassets in Resources */,
 				60FE8A6022B0D08A008CFD62 /* Muli-Bold.ttf in Resources */,
 				60FE8A5F22B0D08A008CFD62 /* Muli-Italic.ttf in Resources */,
-				60B7943022C54289003BA051 /* Default-568h@2x.png in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				609F7F562269DD5000E1054E /* GoogleService-Info.plist in Resources */,
 			);
@@ -1539,6 +1535,7 @@
 			baseConfigurationReference = 2978EFC289257F5D5F734FD9 /* Pods-brassroots.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = DefaultLaunchImage;
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -1573,6 +1570,7 @@
 			baseConfigurationReference = 65C5C85321A7BAA3576A5469 /* Pods-brassroots.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = DefaultLaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;

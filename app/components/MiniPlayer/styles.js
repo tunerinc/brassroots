@@ -34,7 +34,6 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   player: {
     height: 55,
-    paddingHorizontal: 20,
     zIndex: 3,
     backgroundColor: 'rgba(27,27,30,0.7)',
   },
@@ -44,8 +43,8 @@ const styles: Styles = StyleSheet.create({
   },
   playerButton: {
     flex: 1,
-    width: screenWidth,
-    paddingHorizontal: 20,
+    width: '100%',
+    paddingHorizontal: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -62,9 +61,9 @@ const styles: Styles = StyleSheet.create({
   },
   playerTrack: {
     fontFamily: 'Muli',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 24,
+    lineHeight: 20.8,
     textAlign: 'center',
     color: '#888',
     backgroundColor: 'transparent',

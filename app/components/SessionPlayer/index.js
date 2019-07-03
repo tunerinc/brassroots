@@ -68,7 +68,7 @@ export default class SessionPlayer extends React.Component<Props, State> {
             source={{uri: image}}
           />
           <TouchableOpacity style={styles.playPause} onPress={togglePause}>
-            {paused &&
+            {!paused &&
               <FontAwesome
                 name='pause'
                 size={75}
@@ -76,7 +76,7 @@ export default class SessionPlayer extends React.Component<Props, State> {
                 style={styles.centerIcon}
               />
             }
-            {!paused &&
+            {paused &&
               <Entypo
                 name='controller-play'
                 size={125}

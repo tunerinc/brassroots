@@ -172,7 +172,7 @@ export function playTrack(
     const sessionQueueRef: FirestoreDocs = sessionRef.collection('queue');
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(user.id);
     const geoRef: FirestoreRef = firestore.collection('geo');
-    const geoFirestore = new GeoFirestore(geoRef);
+    // const geoFirestore = new GeoFirestore(geoRef);
     const {totalPlayed, current, coords} = session;
 
     let batch = firestore.batch();
@@ -246,25 +246,6 @@ export function playTrack(
       const promises = [
         batch.commit(),
         Spotify.playURI(`spotify:track:${track.trackID}`, 0, 0),
-        ...(coords && context
-          ? [geoFirestore.set(
-            session.id,
-            {
-              id: session.id,
-              currentQueueID: track.id,
-              currentTrackID: track.trackID,
-              coordinates: new firestore.GeoPoint(coords.lat, coords.lon),
-              totalListeners: session.totalUsers,
-              type: 'session',
-              owner: {
-                id: user.id,
-                name: user.displayName,
-                image: user.profileImage,
-              },
-            },
-          )]
-          : []
-        ),
       ];
 
       await Promise.all(promises);

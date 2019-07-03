@@ -26,7 +26,7 @@ type Props = {|
 
 type State = {||};
 
-export default class SessionTrack extends React.PureComponent<Props, State> {
+export default class SessionTrack extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
   }

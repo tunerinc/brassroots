@@ -15,6 +15,7 @@ import {
 
 interface Styles {
   container: ViewStyleProp,
+  wrap: ViewStyleProp,
   tabbar: ViewStyleProp,
   playerBackgroundWrap: ViewStyleProp,
   playerBackgroundImage: ImageStyleProp,
@@ -30,13 +31,17 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#28282B',
     zIndex: 1,
     shadowColor: '#101010',
-    shadowOffset: { width: 0, height: -5 },
+    shadowOffset: {width: 0, height: -5},
     shadowRadius: 5,
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  wrap: {
+    width: '100%',
+  },
   tabbar: {
     flexDirection: 'row',
+    width: '100%',
     height: 60,
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -64,7 +69,7 @@ const styles: Styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 58,
-    width: screenWidth/5,
+    width: screenWidth / 5,
   },
   cover: {
     position: 'absolute',

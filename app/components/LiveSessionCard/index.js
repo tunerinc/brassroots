@@ -30,7 +30,7 @@ type Props = {|
 
 type State = {||};
 
-export default class LiveSessionCard extends React.PureComponent<Props, State> {
+export default class LiveSessionCard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
   }
