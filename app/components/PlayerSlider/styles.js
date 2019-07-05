@@ -25,12 +25,12 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   slider: {},
   seekingSlider: {
     shadowColor: '#fefefe',
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,
     shadowOpacity: .5,
   },
@@ -44,7 +44,7 @@ const styles: Styles = StyleSheet.create({
     width: 8,
     height: 30,
     shadowColor: '#fefefe',
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowRadius: 3,
     shadowOpacity: .7,
   },
@@ -58,7 +58,7 @@ const styles: Styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 16.8,
+    lineHeight: 16.8, // x1.2
   },
   remaining: {
     color: '#fefefe',

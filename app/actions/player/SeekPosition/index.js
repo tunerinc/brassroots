@@ -56,7 +56,7 @@ export function seekPosition(
 
       batch.update(sessionRef, {timeLastPlayed, progress: seekTime});
       batch.update(sessionUserRef, {progress: seekTime});
-          
+
       const promises = [
         batch.commit(),
         Spotify.seek(seconds),
