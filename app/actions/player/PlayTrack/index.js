@@ -145,7 +145,7 @@ type Context = ?{
  * @param    {object}   [session.coords]                     The coordinates of the session the current user is in
  * @param    {number}   session.lat                          The latitude of the gps coordinates
  * @param    {number}   session.lon                          The longitude of the gps coordinates
- * @param    {object}   context                              The context of the tracks the current user wants to play, explicitly playing only
+ * @param    {object}   [context]                            The context of the tracks the current user wants to play, explicitly playing only
  * @param    {string}   context.id                           The id of the context of tracks
  * @param    {string}   context.name                         The name of the context, applicable with playlist, album, artist
  * @param    {string}   context.type                         The type of context, i.e. track, playlist, album, artist
@@ -161,7 +161,7 @@ export function playTrack(
   user: User,
   track: Track,
   session: Session,
-  context: Context,
+  context: ?Context,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.playTrackRequest());

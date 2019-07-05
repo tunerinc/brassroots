@@ -20,27 +20,19 @@ const PartyIcon = createIconSetFromFontello(fontelloConfig);
 type Props = {|mode: string|};
 type State = {||};
 
-export default class SessionModeIcon extends React.Component<Props, State> {
+export default class SessionModeIcon extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
   }
-
-  shouldComponentUpdate(nextProps: Props) {
-    const {mode} = this.props;
-    const {mode: newMode} = nextProps;
-    return mode !== newMode;
-  };
 
   render() {
     const {mode} = this.props;
 
     return (
       <TouchableOpacity style={styles.button} disabled={true}>
-        {mode === 'dj' &&
-          <MaterialCommunityIcons name='headphones' color={'#2b6dc0'} style={styles.icon} />
-        }
-        {mode === 'radio' && <Octicons name='radio-tower' color='#2b6dc0' style={styles.icon} />}
-        {mode === 'party' && <PartyIcon name='party-01' color='#2b6dc0' style={styles.icon} />}
+        {mode === 'dj' && <MaterialCommunityIcons name='headphones' style={styles.icon} />}
+        {mode === 'radio' && <Octicons name='radio-tower' style={styles.icon} />}
+        {mode === 'party' && <PartyIcon name='party-01' style={styles.icon} />}
       </TouchableOpacity>
     );
   }

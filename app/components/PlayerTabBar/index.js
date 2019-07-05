@@ -8,6 +8,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Spotify from 'rn-spotify-sdk';
 import BackgroundTimer from 'react-native-background-timer';
+import TextTicker from 'react-native-text-ticker';
 import styles from './styles';
 import TabIcon from '../TabIcon';
 import MiniPlayer from '../MiniPlayer';
@@ -46,7 +47,7 @@ class PlayerTabBar extends React.Component {
   componentDidMount() {
     Spotify.on('play', () => {
       BackgroundTimer.start();
-      this.progressInterval = setInterval(this.setProgress, 910);
+      this.progressInterval = setInterval(this.setProgress, 982);
     });
 
     Spotify.on('trackDelivered', this.handleDoneTrack);

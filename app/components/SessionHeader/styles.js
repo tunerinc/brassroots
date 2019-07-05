@@ -36,15 +36,17 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
+    marginTop: 5,
     marginBottom: 10,
   },
   sessionLiveText: {
     color: '#c0293b',
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 24,
+    paddingTop: 5,
+    lineHeight: 18,
     textAlign: 'right',
     backgroundColor: 'transparent',
   },
@@ -52,29 +54,33 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   listenersButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 5,
   },
   listenersIcon: {
     marginRight: 10,
     fontSize: 35,
+    height: 35,
   },
   listenersTotal: {
     color: '#fefefe',
     fontSize: 18,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 21.6,
+    lineHeight: 23.4, // x1.3
   },
   distance: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 5,
   },
   distanceIcon: {
     marginRight: 10,
+    height: 35,
     fontSize: 35,
   },
   distanceText: {
@@ -82,14 +88,16 @@ const styles: Styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 21.6,
+    lineHeight: 23.4, // x1.3
   },
   shareButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 5,
   },
   shareIcon: {
     marginRight: 10,
+    height: 35,
     fontSize: 35,
   },
   shareText: {
@@ -97,30 +105,31 @@ const styles: Styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 21.6,
+    lineHeight: 23.4, // x1.3
   },
   queue: {
-    marginTop: 30,
-    paddingHorizontal: 20,
+    marginTop: 10,
+    paddingHorizontal: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   queueTitle: {
     color: '#fefefe',
-    fontSize: 28,
+    fontSize: 24,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 33.6,
+    lineHeight: 28.8,
+    paddingVertical: 10,
   },
   queueOption: {
-
+    paddingVertical: 10,
   },
   queueOptionText: {
     color: '#fefefe',
     fontSize: 20,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 33.6,
+    lineHeight: 24,
   },
 });
 

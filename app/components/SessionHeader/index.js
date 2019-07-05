@@ -32,7 +32,6 @@ type Props = {|
   editingQueue: boolean,
   image: string,
   mode: string,
-  live: boolean,
   prevTrackID: ?string,
   nextTrackID: ?string,
   currentQueueID: string,
@@ -73,7 +72,6 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
       editingQueue,
       image,
       mode,
-      live,
       prevTrackID,
       nextTrackID,
       currentQueueID,
@@ -105,15 +103,7 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
         />
         <View style={styles.sessionLiveMode}>
           <SessionModeIcon mode={mode} />
-          {live && <Text style={styles.sessionLiveText}>LIVE</Text>}
-          {!live &&
-            <Text
-              style={[
-                styles.sessionLiveText,
-                {color: '#888'},
-              ]}
-            >LIVE</Text>
-          }
+          <Text style={styles.sessionLiveText}>LIVE</Text>
         </View>
         <PlayerSlider
           sessionID={sessionID}
@@ -157,13 +147,13 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
         </View>
         <View style={styles.queue}>
           <Text style={styles.queueTitle}>Queue</Text>
-          {ownerID === currentUserID && queueLength !== 0 &&
+          {(ownerID === currentUserID && queueLength !== 0) &&
             <TouchableOpacity style={styles.queueOption} onPress={toggleEdit}>
               {editingQueue && <Text style={styles.queueOptionText}>done</Text>}
               {!editingQueue && <Text style={styles.queueOptionText}>edit</Text>}
             </TouchableOpacity>
           }
-          {ownerID !== currentUserID || queueLength === 0 &&
+          {(ownerID !== currentUserID || queueLength === 0) &&
             <TouchableOpacity style={styles.queueOption} disabled>
               <Text
                 style={[

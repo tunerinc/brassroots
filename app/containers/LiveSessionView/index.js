@@ -75,7 +75,6 @@ class LiveSessionView extends React.Component {
       inputHeight: 64,
       newTrackPosition: 0,
       seekTime: 0,
-      seeking: false,
       editingQueue: false,
       message: '',
 
@@ -150,17 +149,19 @@ class LiveSessionView extends React.Component {
     // }
   }
 
-  componentDidUpdate() {
-    const {fetchedChat, fetchedInfo, fetchedQueue, editingQueue} = this.state;
+  componentDidUpdate(nextProps) {
+    const {fetchedChat, fetchedInfo, fetchedQueue, editingQueue, seekTime} = this.state;
     const {
       getChat,
       getSessionInfo,
       getSessionQueue,
       chat: {fetchingChat},
+      player: {progress},
       queue: {userQueue, fetchingQueue},
       sessions: {currentSessionID, sessionsByID, fetchingInfo},
       users: {currentUserID},
     } = this.props;
+    const {player: {progress: newProgress}} = nextProps;
 
     // if (currentSessionID) {
     //   if (!fetchedChat && !fetchingChat) {
@@ -179,8 +180,13 @@ class LiveSessionView extends React.Component {
     //   }
     // }
 
-    if (editingQueue && userQueue.length === 0) {
-      this.toggleEdit();
+    if (editingQueue && userQueue.length === 0) this.toggleEdit();
+
+    if (
+      (progress === seekTime && newProgress !== seekTime)
+      || (progress !== seekTime && newProgress === seekTime)
+    ) {
+      this.setState({seekTime: 0});
     }
   }
 
@@ -188,15 +194,20 @@ class LiveSessionView extends React.Component {
     const {seekTime} = this.state;;
     const timeDiff = Math.abs(seekTime - pos);
 
-    if (timeDiff >= 1000) {
+    if (timeDiff >= 999) {
       this.setState({seekTime: pos});
     }
   }
 
   seekTrack() {
     const {seekTime} = this.state;
-    const {sessions: {currentSessionID}} = this.props;
-    seekPosition(currentSessionID, seekTime);
+    const {
+      seekPosition,
+      sessions: {currentSessionID},
+      users: {currentUserID},
+    } = this.props;
+
+    seekPosition(currentSessionID, currentUserID, seekTime);
   }
 
   changeActiveView() {
@@ -425,7 +436,7 @@ class LiveSessionView extends React.Component {
   }
 
   renderHeader() {
-    const {seekTime, seeking, editingQueue} = this.state;
+    const {seekTime, editingQueue} = this.state;
     const {
       albums: {albumsByID},
       player: {currentTrackID, currentQueueID, paused, prevTrackID, nextTrackID, progress},
@@ -437,8 +448,8 @@ class LiveSessionView extends React.Component {
 
     if (!currentSessionID || !currentTrackID || !sessionsByID[currentSessionID]) return <View></View>;
 
-    const {totalListeners, distance, mode, live, ownerID} = sessionsByID[currentSessionID];
-    const {albumID, durationMS, name, saved, artists} = tracksByID[currentTrackID];
+    const {totalListeners, distance, mode, ownerID} = sessionsByID[currentSessionID];
+    const {albumID, durationMS, name, artists} = tracksByID[currentTrackID];
     const {large} = albumsByID[albumID];
 
     // const {userID} = queueByID[currentQueueID];
@@ -487,11 +498,10 @@ class LiveSessionView extends React.Component {
         distance={formattedDistance}
         listeners={listenerTotal}
         seekTime={seekTime}
-        seeking={seeking}
+        seeking={seekTime !== 0}
         editingQueue={editingQueue}
         image={large}
         mode={mode}
-        live={live}
         prevTrackID={prevTrackID}
         nextTrackID={nextTrackID}
         currentQueueID={currentQueueID}
@@ -504,7 +514,7 @@ class LiveSessionView extends React.Component {
         progress={progress}
         trackID={currentTrackID}
         name={name}
-        saved={saved}
+        saved={userTracks.includes(currentTrackID)}
         artists={artists.map(a => a.name).join(', ')}
         displayName={usersByID[currentUserID].displayName}
       />
@@ -523,6 +533,7 @@ class LiveSessionView extends React.Component {
 
   renderFooter() {
     const {
+      player: {currentTrackID},
       queue: {contextQueue, context},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
@@ -530,7 +541,7 @@ class LiveSessionView extends React.Component {
     } = this.props;
     const {profileImage} = usersByID[currentUserID];
 
-    if (!currentSessionID || !sessionsByID[currentSessionID]) return <View></View>;
+    if (!currentSessionID || !sessionsByID[currentSessionID] || !currentTrackID) return <View></View>;
 
     const contextTracks = contextQueue.map(id => {
       return {
