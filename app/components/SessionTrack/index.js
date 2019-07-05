@@ -6,7 +6,8 @@
  */
 
 import * as React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Easing} from 'react-native';
+import TextTicker from 'react-native-text-ticker';
 import styles from './styles';
 
 // Icons
@@ -47,7 +48,16 @@ export default class SessionTrack extends React.Component<Props, State> {
           {!saved && <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.plus} />}
         </TouchableOpacity>
         <TouchableOpacity style={styles.info} disabled={true}>
-          <Text numberOfLines={1} style={styles.nameArtists}>
+          <TextTicker
+            numberOfLines={1}
+            style={styles.nameArtists}
+            scroll={false}
+            bounce={false}
+            animationType='bounce'
+            duration={200 * [...name, '•', ...artists].length}
+            marqueeDelay={3000}
+            easing={Easing.linear}
+          >
             <Text style={styles.name}>
               {name}
             </Text>
@@ -55,7 +65,7 @@ export default class SessionTrack extends React.Component<Props, State> {
             <Text style={styles.artists}>
               {artists}
             </Text>
-          </Text>
+          </TextTicker>
           <Text numberOfLines={1} style={styles.user}>
             {displayName}
           </Text>

@@ -7,7 +7,8 @@
 
 import React from 'react';
 import Dimensions from 'Dimensions';
-import {Text, View, Image, TouchableOpacity, Animated} from 'react-native';
+import {Text, View, Image, TouchableOpacity, Animated, Easing} from 'react-native';
+import TextTicker from 'react-native-text-ticker';
 import styles from './styles';
 
 // Icons
@@ -63,7 +64,15 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
             <Image style={styles.playerImage} source={{uri: profileImage}} />
           </TouchableOpacity>
           <View style={styles.playerInfo}>
-            <Text numberOfLines={1} style={styles.playerTrack}>
+            <TextTicker
+              numberOfLines={1}
+              style={styles.playerTrack}
+              scroll={false}
+              bounce={false}
+              animationType='bounce'
+              duration={200 * [...name, '•', ...artists].length}
+              easing={Easing.linear}
+            >
               <Text style={styles.playerTrackName}>
                 {name}
               </Text>
@@ -71,7 +80,7 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
               <Text>
                 {artists}
               </Text>
-            </Text>
+            </TextTicker>
             <Text numberOfLines={1} style={styles.playerSessionOwner}>
               {displayName}
             </Text>

@@ -58,6 +58,7 @@ const styles: Styles = StyleSheet.create({
   },
   playerInfo: {
     flex: 6,
+    alignItems: 'center',
   },
   playerTrack: {
     fontFamily: 'Muli',
