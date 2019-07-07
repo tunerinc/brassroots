@@ -216,7 +216,7 @@ class LibrarySingleAlbumView extends React.Component {
           type: 'user-album',
           total: userTracks.length,
           position: trackIndex,
-          tracks: userTracks.slice(1),
+          tracks: userTracks.slice(trackIndex + 1),
         },
         mode,
       );
@@ -425,7 +425,7 @@ class LibrarySingleAlbumView extends React.Component {
               {opacity: playButtonOpacity, bottom: playButtonOffset},
             ]}
           >
-            <PlayButton play={this.handlePlay} />
+            <PlayButton play={this.handlePlay(userTracks[0], 0)} />
           </Animated.View>
           <Animated.View
             style={[

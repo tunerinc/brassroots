@@ -59,6 +59,7 @@ type Playlist = {
   +topTracks?: Array<string>,
   +totalPlays?: number,
   +userPlays?: number,
+  +total?: number,
 };
 
 type Action = {
@@ -71,6 +72,7 @@ type Action = {
   +members?: Array<string>,
   +topTracks?: Array<string>,
   +playlistCount?: number,
+  +total?: number,
   +trackID?: string,
   +trackCount?: number,
   +mode?: string,
@@ -168,6 +170,7 @@ const singleTrackState: PlaylistTrack = {
  * @property {string[]} topTracks      The Spotify ids of the top tracks of the single playlist
  * @property {number}   totalPlays=0   The total amount of playlist the single playlist has
  * @property {number}   userPlays=0    The amount of plays the current user has on the playlist
+ * @property {number}   total=0        The total amount of tracks in the playlist
  */
 const singlePlaylistState: Playlist = {
   lastUpdated,
@@ -185,6 +188,7 @@ const singlePlaylistState: Playlist = {
   topTracks: [],
   totalPlays: 0,
   userPlays: 0,
+  total: 0,
 };
 
 /**

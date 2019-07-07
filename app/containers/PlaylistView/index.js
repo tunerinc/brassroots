@@ -253,7 +253,7 @@ class PlaylistView extends React.Component {
     const {displayName, profileImage, totalFollowers} = usersByID[currentUserID];
     const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
     const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
-    const {tracks, ownerID, name: playlistName} = playlistsByID[playlistToView];
+    const {tracks, ownerID, name: playlistName, total} = playlistsByID[playlistToView];
 
     if (currentSession) {
       if (currentSession.ownerID === currentUserID) {
@@ -282,12 +282,13 @@ class PlaylistView extends React.Component {
           },
         },
         {
+          total,
           id: playlistToView,
           name: playlistName,
           displayName: ownerID === 'spotify' ? 'spotify' : usersByID[ownerID].displayName,
           type: 'playlist',
-          total: 1,
           position: trackIndex,
+          tracks: [],
         },
         mode,
       );

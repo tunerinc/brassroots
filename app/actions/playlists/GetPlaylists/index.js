@@ -83,6 +83,7 @@ export function getPlaylists(
             ownerID: playlist.owner.id,
             ownerType: playlist.owner.type,
             public: playlist.public,
+            total: playlist.tracks.total,
           },
         });
       }, {});

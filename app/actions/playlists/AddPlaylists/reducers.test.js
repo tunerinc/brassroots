@@ -30,6 +30,7 @@ describe('add playlists reducer', () => {
         large: 'foo',
         mode: 'foo',
         public: true,
+        total: 1,
       },
       bar: {
         id: 'bar',
@@ -41,6 +42,7 @@ describe('add playlists reducer', () => {
         large: 'bar',
         mode: 'bar',
         public: true,
+        total: 1,
       },
     };
 
@@ -66,6 +68,7 @@ describe('add playlists reducer', () => {
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,
+              total: 1,
               lastUpdated: initialState.lastUpdated,
             },
             bar: {
@@ -83,6 +86,7 @@ describe('add playlists reducer', () => {
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,
+              total: 1,
               lastUpdated: initialState.lastUpdated,
             },
           },

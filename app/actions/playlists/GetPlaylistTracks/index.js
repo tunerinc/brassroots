@@ -47,7 +47,7 @@ export function getPlaylistTracks(
     dispatch(actions.getPlaylistTracksRequest(refreshing));
 
     try {
-      const fields = 'items(added_by(id,type),track(id,name,track_number,duration_ms,album(id,name,images,artists),artists))';
+      const fields = 'items(added_by(id,type),track(id,name,track_number,duration_ms,album(id,name,images,artists),artists)),total';
       const options = {limit, offset, fields, market: 'US'};
       const res = await getSpotifyPlaylistTracks(playlistID, options);
       const items = res.items.filter(item => !item.is_local && typeof item.track.id === 'string');
@@ -73,6 +73,7 @@ export function getPlaylistTracks(
         actions.getPlaylistTracksSuccess(
           playlistID,
           items.map(item => `${playlistID}-${item.track.id}`),
+          res.total,
         ),
       );
     } catch (err) {

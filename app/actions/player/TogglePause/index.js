@@ -62,14 +62,9 @@ export function togglePause(
     let batch: FirestoreBatch = firestore.batch();
     let playbackState: {position?: number} = {};
 
-    try {
-      if (!paused) {
-        await Spotify.playURI(`spotify:track:${session.current}`, 0, session.progress / 1000);
-      } else {
-        await Spotify.setPlaying(false);
-      }
-
+    try {  
       if (paused) {
+        await Spotify.setPlaying(false);
         playbackState = await Spotify.getPlaybackStateAsync();
 
         if (!playbackState || typeof playbackState.position !== 'number') {
@@ -82,15 +77,21 @@ export function togglePause(
       const timeLastPlayed: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
       if (typeof playbackState.position === 'number') {
-        batch.update(sessionUserRef, {paused, progress: session.progress});
+        batch.update(sessionUserRef, {paused, progress: session.progress + 1000});
+      } else {
+        batch.update(sessionUserRef, {paused});
       }
 
       if (ownerID === userID && typeof playbackState.position === 'number') {
-        batch.update(sessionRef, {timeLastPlayed, paused, progress: session.progress});
+        batch.update(sessionRef, {timeLastPlayed, paused, progress: session.progress + 1000});
+      }
+
+      if (!paused) {
+        await Spotify.playURI(`spotify:track:${session.current}`, 0, session.progress / 1000);
       }
 
       await batch.commit();
-      dispatch(actions.togglePauseSuccess(paused, session.progress + 1000));
+      dispatch(actions.togglePauseSuccess(paused, session.progress));
     } catch (err) {
       dispatch(actions.togglePauseFailure(err));
     };

@@ -42,6 +42,7 @@ describe('get playlist tracks reducer', () => {
   it('should handle GET_PLAYLIST_TRACKS_SUCCESS', () => {
     const playlistID: string = 'foo';
     const tracks: Array<string> = ['foo-foo', 'foo-bar'];
+    const total: number = 2;
 
     expect(
       reducer(
@@ -62,11 +63,12 @@ describe('get playlist tracks reducer', () => {
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,
+              total: 0,
               lastUpdated: initialState.lastUpdated,
             },
           },
         },
-        actions.getPlaylistTracksSuccess(playlistID, tracks),
+        actions.getPlaylistTracksSuccess(playlistID, tracks, total),
       ),
     )
       .toStrictEqual(
@@ -74,6 +76,8 @@ describe('get playlist tracks reducer', () => {
           ...initialState,
           playlistsByID: {
             [playlistID]: {
+              total,
+              tracks,
               id: 'foo',
               name: 'foo',
               ownerID: 'foo',
@@ -82,7 +86,6 @@ describe('get playlist tracks reducer', () => {
               mode: 'foo',
               public: true,
               members: [],
-              tracks: tracks.map(trackID => `${playlistID}-${trackID}`),
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,
@@ -100,6 +103,7 @@ describe('get playlist tracks reducer', () => {
           refreshingTracks: true,
           playlistsByID: {
             [playlistID]: {
+              total,
               id: 'foo',
               name: 'foo',
               ownerID: 'foo',
@@ -116,7 +120,7 @@ describe('get playlist tracks reducer', () => {
             },
           },
         },
-        actions.getPlaylistTracksSuccess(playlistID, tracks),
+        actions.getPlaylistTracksSuccess(playlistID, tracks, total),
       ),
     )
       .toStrictEqual(
@@ -124,6 +128,8 @@ describe('get playlist tracks reducer', () => {
           ...initialState,
           playlistsByID: {
             [playlistID]: {
+              total,
+              tracks,
               id: 'foo',
               name: 'foo',
               ownerID: 'foo',
@@ -132,7 +138,6 @@ describe('get playlist tracks reducer', () => {
               mode: 'foo',
               public: true,
               members: [],
-              tracks: tracks.map(trackID => `${playlistID}-${trackID}`),
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,
@@ -149,6 +154,7 @@ describe('get playlist tracks reducer', () => {
           fetchingTracks: true,
           playlistsByID: {
             [playlistID]: {
+              total,
               id: 'foo',
               name: 'foo',
               ownerID: 'foo',
@@ -165,7 +171,7 @@ describe('get playlist tracks reducer', () => {
             },
           },
         },
-        actions.getPlaylistTracksSuccess(playlistID, tracks),
+        actions.getPlaylistTracksSuccess(playlistID, tracks, total),
       ),
     )
       .toStrictEqual(
@@ -173,6 +179,7 @@ describe('get playlist tracks reducer', () => {
           ...initialState,
           playlistsByID: {
             [playlistID]: {
+              total,
               id: 'foo',
               name: 'foo',
               ownerID: 'foo',
@@ -181,7 +188,7 @@ describe('get playlist tracks reducer', () => {
               mode: 'foo',
               public: true,
               members: [],
-              tracks: ['foo-xyz', ...tracks.map(trackID => `${playlistID}-${trackID}`)],
+              tracks: ['foo-xyz', ...tracks],
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,

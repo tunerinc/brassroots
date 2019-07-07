@@ -28,15 +28,17 @@ export function addTracks(
   action: Action,
 ): Playlist {
   const {tracks: oldTracks} = state;
-  const {refreshing, tracks, playlistID} = action;
+  const {refreshing, tracks, playlistID, total} = action;
   const updates = (
     Array.isArray(oldTracks)
     && Array.isArray(tracks)
     && typeof refreshing === 'boolean'
     && typeof playlistID === 'string'
+    && typeof total === 'number'
   )
     ? {
       lastUpdated,
+      total,
       tracks: refreshing ? [...tracks] : [...oldTracks, ...tracks],
     }
     : {};
