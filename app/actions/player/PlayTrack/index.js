@@ -184,7 +184,7 @@ export function playTrack(
         track = updateObject(track, {id: queueID});
       }
 
-      batch.update(sessionUserRef, {paued: false, progress: 0});
+      batch.update(sessionUserRef, {paused: false, progress: 0});
       batch.update(
         sessionRef,
         {

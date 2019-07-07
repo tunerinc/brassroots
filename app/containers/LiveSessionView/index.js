@@ -243,7 +243,49 @@ class LiveSessionView extends React.Component {
   }
 
   leave() {
-    console.log('leave');
+    const {
+      leaveSession,
+      albums: {albumsByID},
+      player: {currentTrackID},
+      sessions: {currentSessionID, sessionsByID},
+      tracks: {tracksByID},
+      users: {currentUserID, usersByID},
+    } = this.props;
+    const track = tracksByID[currentTrackID];
+    const owner = usersByID[sessionsByID[currentSessionID].ownerID];
+
+    setTimeout(Actions.pop, 200);
+
+    leaveSession(
+      currentUserID,
+      {
+        id: currentSessionID,
+        total: sessionsByID[currentSessionID].totalListeners,
+        chatUnsubscribe: () => console.log('chat'),
+        infoUnsubscribe: () => console.log('info'),
+        queueUnsubscribe: () => console.log('queue'),
+        track: {
+          id: track.id,
+          name: track.name,
+          trackNumber: track.trackNumber,
+          durationMS: track.durationMS,
+          artists: track.artists,
+          album: {
+            id: track.albumID,
+            name: albumsByID[track.albumID].name,
+            small: albumsByID[track.albumID].small,
+            medium: albumsByID[track.albumID].medium,
+            large: albumsByID[track.albumID].large,
+            artists: albumsByID[track.albumID].artists,
+          },
+        },
+      },
+      {
+        id: owner.id,
+        name: owner.displayName,
+        image: owner.profileImage,
+      },
+    );
   }
 
   handleRepeat() {

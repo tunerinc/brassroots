@@ -11,7 +11,7 @@
 
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
-import GeoFirestore from 'geofirestore';
+// import GeoFirestore from 'geofirestore';
 import * as actions from './actions';
 import {stopSessionInfoListener} from '../StopSessionInfoListener';
 import {resetChat} from '../../chat/ResetChat';
@@ -134,23 +134,23 @@ export function leaveSession(
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.leaveSessionRequest());
-    dispatch(stopChatListener(session.chatUnsubscribe));
-    dispatch(stopSessionInfoListener(session.infoUnsubscribe));
-    dispatch(stopQueueListener(session.queueUnsubscribe));
-    dispatch(addRecentTrack(userID, session.track));
+    // dispatch(stopChatListener(session.chatUnsubscribe));
+    // dispatch(stopSessionInfoListener(session.infoUnsubscribe));
+    // dispatch(stopQueueListener(session.queueUnsubscribe));
+    // dispatch(addRecentTrack(userID, session.track));
 
     const firestore: FirestoreInstance = getFirestore();
     const geoRef: FirestoreRef = firestore.collection('geo');
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
     const userRef: FirestoreDoc = firestore.collection('users').doc(userID);
-    const geoFirestore = new GeoFirestore(geoRef);
+    // const geoFirestore = new GeoFirestore(geoRef);
 
     let batch: FirestoreBatch = firestore.batch();
 
     try {
       if (owner.id === userID) {
         if (session.total === 1) {
-          batch.update(sessionRef, {'live': false, 'totals.listeners': 0});
+          batch.update(sessionRef, {live: false, "totals.listeners": 0, paused: true});
         } else {
           const sessionUsers: FirestoreDocs = await sessionRef.collection('users').where('active', '==', true).get();
           const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random()*sessionUsers.docs.length)];
@@ -158,12 +158,10 @@ export function leaveSession(
           batch.update(
             sessionRef,
             {
-              'totals.listeners': session.total - 1,
-              'owner': {
-                'id': newOwnerDoc.data().id,
-                'name': newOwnerDoc.data().displayName,
-                'image': newOwnerDoc.data().profileImage,
-              },
+              "totals.listeners": session.total - 1,
+              "owner.id": newOwnerDoc.data().id,
+              "owner.name": newOwnerDoc.data().displayName,
+              "owner.image": newOwnerDoc.data().profileImage,
             }
           );
         }
@@ -173,29 +171,13 @@ export function leaveSession(
 
       const timeLeft: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-      batch.update(sessionRef.collection('users').doc(userID), {timeLeft, active: false});
-      batch.update(userRef, {currentSessionID: null, online: false});
+      batch.update(sessionRef.collection('users').doc(userID), {timeLeft, active: false, paused: true});
+      batch.update(userRef, {currentSession: null, online: false});
       batch.update(userRef.collection('sessions').doc(session.id), {timeLeft});
 
       const promises = [
         batch.commit(),
         Spotify.setPlaying(false),
-        ...(session.coords && session.total === 1
-          ? [geoFirestore.remove(session.id)]
-          : session.coords && session.total > 1
-          ? [geoFirestore.set(
-            session.id,
-            {
-              owner,
-              id: session.id,
-              coordinates: new firestore.GeoPoint(session.coords.lat, session.coords.lon),
-              currentlyPlaying: session.track.id,
-              totalListeners: session.total,
-              type: 'session',
-            }
-          )]
-          : []
-        ),
       ];
 
       await Promise.all(promises);
