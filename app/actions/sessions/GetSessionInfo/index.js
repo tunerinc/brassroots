@@ -42,7 +42,22 @@ export function getSessionInfo(
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
     
     try {
-      
+      const sessionRef = firestore.collection('sessions').doc(sessionID);
+      const unsubscribe = sessionRef.onSnapshot(
+        doc => {
+          const session = {
+            id: doc.data().id,
+            currentTrackID: doc.data().currentTrackID,
+            currentQueueID: doc.data().currentQueueID,
+            ownerID: doc.data().owner.id,
+            mode: doc.data().mode,
+            distance: 0,
+            totalListeners: doc.data().totals.listeners,
+          };
+          dispatch(actions.getSessionInfoSuccess(session, unsubscribe));
+        },
+        error => {throw error},
+      );
     } catch (err) {
       dispatch(actions.getSessionInfoFailure(err));
     }

@@ -131,22 +131,22 @@ class LiveSessionView extends React.Component {
       users: {currentUserID},
     } = this.props;
     
-    // if (currentSessionID) {
-    //   if (!fetchedChat && !fetchingChat) {
-    //     this.setState({fetchedChat: true});
-    //     getChat(currentSessionID);
-    //   }
+    if (currentSessionID) {
+      // if (!fetchedChat && !fetchingChat) {
+      //   this.setState({fetchedChat: true});
+      //   getChat(currentSessionID);
+      // }
 
-    //   if (!fetchedInfo && !fetchingInfo) {
-    //     this.setState({fetchedInfo: true});
-    //     getSessionInfo(currentSessionID);
-    //   }
+      if (!fetchedInfo && !fetchingInfo) {
+        this.setState({fetchedInfo: true});
+        getSessionInfo(currentSessionID);
+      }
 
-    //   if (!fetchedQueue && !fetchingQueue) {
-    //     this.setState({fetchedQueue: true});
-    //     getSessionQueue(currentUserID, currentSessionID);
-    //   }
-    // }
+      // if (!fetchedQueue && !fetchingQueue) {
+      //   this.setState({fetchedQueue: true});
+      //   getSessionQueue(currentUserID, currentSessionID);
+      // }
+    }
   }
 
   componentDidUpdate(nextProps) {
@@ -158,27 +158,27 @@ class LiveSessionView extends React.Component {
       chat: {fetchingChat},
       player: {progress},
       queue: {userQueue, fetchingQueue},
-      sessions: {currentSessionID, sessionsByID, fetchingInfo},
+      sessions: {currentSessionID, fetchingInfo},
       users: {currentUserID},
     } = this.props;
     const {player: {progress: newProgress}} = nextProps;
 
-    // if (currentSessionID) {
-    //   if (!fetchedChat && !fetchingChat) {
-    //     this.setState({fetchedChat: true});
-    //     getChat(currentSessionID);
-    //   }
+    if (currentSessionID) {
+      // if (!fetchedChat && !fetchingChat) {
+      //   this.setState({fetchedChat: true});
+      //   getChat(currentSessionID);
+      // }
 
-    //   if (!fetchedInfo && !fetchingInfo) {
-    //     this.setState({fetchedInfo: true});
-    //     getSessionInfo(currentSessionID);
-    //   }
+      if (!fetchedInfo && !fetchingInfo) {
+        this.setState({fetchedInfo: true});
+        getSessionInfo(currentSessionID);
+      }
 
-    //   if (!fetchedQueue && !fetchingQueue) {
-    //     this.setState({fetchedQueue: true});
-    //     getSessionQueue(currentUserID, currentSessionID);
-    //   }
-    // }
+      // if (!fetchedQueue && !fetchingQueue) {
+      //   this.setState({fetchedQueue: true});
+      //   getSessionQueue(currentUserID, currentSessionID);
+      // }
+    }
 
     if (editingQueue && userQueue.length === 0) this.toggleEdit();
 
@@ -247,7 +247,7 @@ class LiveSessionView extends React.Component {
       leaveSession,
       albums: {albumsByID},
       player: {currentTrackID},
-      sessions: {currentSessionID, sessionsByID},
+      sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
@@ -259,10 +259,10 @@ class LiveSessionView extends React.Component {
     leaveSession(
       currentUserID,
       {
+        infoUnsubscribe,
         id: currentSessionID,
         total: sessionsByID[currentSessionID].totalListeners,
         chatUnsubscribe: () => console.log('chat'),
-        infoUnsubscribe: () => console.log('info'),
         queueUnsubscribe: () => console.log('queue'),
         track: {
           id: track.id,

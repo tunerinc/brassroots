@@ -15,6 +15,7 @@ type FirestoreDoc = {
   collection: (string) => FirestoreDocs,
   doc: (?string) => FirestoreDoc,
   delete: () => Promise<void>,
+  onSnapshot: (any, any) => any,
 };
 
 type FirestoreDocs = {

@@ -135,7 +135,7 @@ export function leaveSession(
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.leaveSessionRequest());
     // dispatch(stopChatListener(session.chatUnsubscribe));
-    // dispatch(stopSessionInfoListener(session.infoUnsubscribe));
+    dispatch(stopSessionInfoListener(session.infoUnsubscribe));
     // dispatch(stopQueueListener(session.queueUnsubscribe));
     // dispatch(addRecentTrack(userID, session.track));
 
