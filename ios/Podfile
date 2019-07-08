@@ -1,0 +1,94 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'brassroots' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for brassroots
+
+  # Firebase
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Functions'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/Storage'
+
+  # React Native
+  pod 'React', :path => '../node_modules/react-native', :subspecs => [
+    'Core',
+    'CxxBridge',
+    'DevSupport',
+    'RCTActionSheet',
+    'RCTAnimation',
+    'RCTBlob',
+    'RCTGeolocation',
+    'RCTImage',
+    'RCTLinkingIOS',
+    'RCTNetwork',
+    'RCTSettings',
+    'RCTText',
+    'RCTVibration',
+    'RCTWebSocket'
+  ]
+
+  # Yoga
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga/yoga.podspec'
+
+  # Third Party
+  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+  # React Native Permissions
+  pod 'ReactNativePermissions', :path=> '../node_modules/react-native-permissions'
+
+  # React Native Interactable
+  pod 'Interactable', :path => '../node_modules/react-native-interactable'
+
+  # Background Timer
+  pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
+
+  # Vector Icons
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  # Image Pickers
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+  pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
+
+  # Gradient
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
+  target 'brassrootsTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  # Temporary workaround for https://github.com/invertase/react-native-firebase/issues/395
+  post_install do |installer|
+      `rm -rf Pods/leveldb-library/port/win`
+      installer.pods_project.targets.each do |target|
+          if target.name == 'React'
+              target.remove_from_project
+          end
+
+          if target.name == 'yoga'
+            target.remove_from_project
+          end
+      end
+  end
+
+end
+
+target 'brassroots-tvOS' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for brassroots-tvOS
+
+  target 'brassroots-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
