@@ -60,6 +60,7 @@ type Action = {
   +trackID?: string,
   +trackCount?: number,
   +replace?: boolean,
+  +total?: number,
 };
 
 type State = {
@@ -127,6 +128,7 @@ const singleState: Track = {
  * 
  * @property {string}   lastUpdated                 The date/time the tracks were last updated
  * @property {string[]} userTracks                  The Spotify track ids saved in the current user's library
+ * @property {number}   totalUserTracks=0           The total amount of tracks in the current user's library
  * @property {object}   tracksByID                  The track objects using the Spotify ids as the key
  * @property {number}   totalTracks=0               The total amount of tracks
  * @property {string}   selectedTrack=null          The selected track to view
@@ -144,6 +146,7 @@ const singleState: Track = {
 export const initialState: State = {
   lastUpdated,
   userTracks: [],
+  totalUserTracks: 0,
   tracksByID: {},
   totalTracks: 0,
   selectedTrack: null,

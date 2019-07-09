@@ -41,39 +41,40 @@ describe('get tracks reducer', () => {
 
   it('should handle GET_TRACKS_SUCCESS', () => {
     const userTracks: Array<string> = ['bar', 'xyz'];
+    const totalUserTracks: number = 5;
     const replace: boolean = true;
 
     expect(
       reducer(
         {...initialState, fetchingTracks: true},
-        actions.getTracksSuccess(userTracks),
+        actions.getTracksSuccess(userTracks, totalUserTracks),
       ),
     )
-      .toStrictEqual({...initialState, userTracks});
+      .toStrictEqual({...initialState, totalUserTracks, userTracks});
 
     expect(
       reducer(
         {...initialState, fetchingTracks: true, userTracks: ['foo']},
-        actions.getTracksSuccess(userTracks),
+        actions.getTracksSuccess(userTracks, totalUserTracks),
       ),
     )
-      .toStrictEqual({...initialState, userTracks: ['foo', ...userTracks]});
+      .toStrictEqual({...initialState, totalUserTracks, userTracks: ['foo', ...userTracks]});
 
     expect(
       reducer(
         {...initialState, fetchingTracks: true, userTracks: ['foo']},
-        actions.getTracksSuccess(userTracks, replace),
+        actions.getTracksSuccess(userTracks, totalUserTracks, replace),
       ),
     )
-      .toStrictEqual({...initialState, userTracks});
+      .toStrictEqual({...initialState, totalUserTracks, userTracks});
 
     expect(
       reducer(
         {...initialState, refreshingTracks: true, fetchingTracks: true, userTracks: ['foo']},
-        actions.getTracksSuccess(userTracks),
+        actions.getTracksSuccess(userTracks, totalUserTracks),
       ),
     )
-      .toStrictEqual({...initialState, userTracks});
+      .toStrictEqual({...initialState, totalUserTracks, userTracks});
   });
 
   it('should handle GET_TRACKS_FAILURE', () => {

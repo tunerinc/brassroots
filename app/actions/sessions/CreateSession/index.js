@@ -12,6 +12,7 @@
 import moment from 'moment';
 import Permissions from 'react-native-permissions';
 import GeoFirestore from 'geofirestore';
+import getMySavedTracks from '../../../utils/spotifyAPI/getMySavedTracks';
 import getUserLocation from '../../../utils/getUserLocation';
 import updateObject from '../../../utils/updateObject';
 import {addCurrentLocation} from '../../users/AddCurrentLocation';
@@ -152,6 +153,33 @@ export function createSession(
         });
 
         dispatch(addCurrentLocation(pos.coords));
+      }
+
+      if (
+        context.type === 'user-tracks'
+        && Array.isArray(context.tracks)
+        && context.tracks.length !== 20
+        && typeof context.position === 'number'
+        && typeof context.total === 'number'
+        && (context.tracks.length + context.position + 1) < context.total
+      ) {
+        const options: {
+          limit: number,
+          offset: number,
+          market: string,
+        } = {
+          limit: 20 - context.tracks.length,
+          offset: context.tracks.length + 1,
+          market: 'US',
+        };
+
+        const {items} = await getMySavedTracks(options);
+
+        context = updateObject(context, {
+          tracks: Array.isArray(context.tracks)
+            ? [...context.tracks, ...items.map(item => item.track.id)]
+            : context.tracks,
+        });
       }
 
       const timeJoined: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');

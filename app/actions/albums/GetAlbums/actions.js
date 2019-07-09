@@ -47,17 +47,20 @@ export function getAlbumsRequest(
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @param   {string[]} albums          The Spotify ids of the albums in the current user's library
+ * @param   {number}   total           The total amount of albums in the current user's library
  * @param   {boolean}  [replace=false] Whether the albums need to be replaced
  *
  * @returns {object}                   Redux action with the type of GET_ALBUMS_SUCCESS and the albums to add
  */
 export function getAlbumsSuccess(
   albums: Array<string>,
+  total: number,
   replace?: boolean = false,
 ): Action {
   return {
     type: types.GET_ALBUMS_SUCCESS,
     albums,
+    total,
     replace,
   };
 }

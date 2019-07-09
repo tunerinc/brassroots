@@ -22,15 +22,17 @@ describe('get tracks synchronous action creators', () => {
 
   it('creates get tracks success action', () => {
     const tracks: Array<string> = ['bar', 'xyz'];
+    const total: number = 2;
     const replace: boolean = true;
     const expectedAction: Action = {
       type: types.GET_TRACKS_SUCCESS,
       tracks,
+      total,
       replace,
     };
 
-    expect(actions.getTracksSuccess(tracks)).toStrictEqual({...expectedAction, replace: false});
-    expect(actions.getTracksSuccess(tracks, replace)).toStrictEqual(expectedAction);
+    expect(actions.getTracksSuccess(tracks, total)).toStrictEqual({...expectedAction, replace: false});
+    expect(actions.getTracksSuccess(tracks, total, replace)).toStrictEqual(expectedAction);
   });
 
   it('creates get tracks failure action', () => {

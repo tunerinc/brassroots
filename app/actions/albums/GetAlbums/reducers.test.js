@@ -41,39 +41,40 @@ describe('get albums reducer', () => {
 
   it('should handle GET_ALBUMS_SUCCESS', () => {
     const userAlbums: Array<string> = ['bar', 'xyz'];
+    const totalUserAlbums: number = 5;
     const replace: boolean = true;
 
     expect(
       reducer(
         {...initialState, fetchingAlbums: true},
-        actions.getAlbumsSuccess(userAlbums),
+        actions.getAlbumsSuccess(userAlbums, totalUserAlbums),
       ),
     )
-      .toStrictEqual({...initialState, userAlbums});
+      .toStrictEqual({...initialState, totalUserAlbums, userAlbums});
 
     expect(
       reducer(
         {...initialState, userAlbums: ['xyz'], fetchingAlbums: true},
-        actions.getAlbumsSuccess(userAlbums),
+        actions.getAlbumsSuccess(userAlbums, totalUserAlbums),
       ),
     )
-      .toStrictEqual({...initialState, userAlbums: ['xyz', ...userAlbums]});
+      .toStrictEqual({...initialState, totalUserAlbums, userAlbums: ['xyz', ...userAlbums]});
     
     expect(
       reducer(
         {...initialState, userAlbums: ['xyz'], fetchingAlbums: true},
-        actions.getAlbumsSuccess(userAlbums, replace),
+        actions.getAlbumsSuccess(userAlbums, totalUserAlbums, replace),
       ),
     )
-      .toStrictEqual({...initialState, userAlbums});
+      .toStrictEqual({...initialState, totalUserAlbums, userAlbums});
 
     expect(
       reducer(
         {...initialState, userAlbums: ['xyz'], refreshingAlbums: true, fetchingAlbums: true},
-        actions.getAlbumsSuccess(userAlbums),
+        actions.getAlbumsSuccess(userAlbums, totalUserAlbums),
       ),
     )
-      .toStrictEqual({...initialState, userAlbums});
+      .toStrictEqual({...initialState, totalUserAlbums, userAlbums});
   });
 
   it('should handle GET_ALBUMS_FAILURE', () => {

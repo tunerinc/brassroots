@@ -57,6 +57,7 @@ export function request(
  * @param   {object}   action         The Redux action
  * @param   {string}   action.type    The type of Redux action
  * @param   {string[]} action.albums  The Spotify ids of the albums saved in the current user's library
+ * @param   {number}   action.total   The total number of albums in the current user's library
  * @param   {boolean}  action.replace Whether or not the albums need to be replaced
  * 
  * @returns {object}                  The state with the current user's saved albums added
@@ -66,7 +67,7 @@ export function success(
   action: Action,
 ): State {
   const {refreshingAlbums, userAlbums: oldAlbums} = state;
-  const {albums, replace} = action;
+  const {albums, total, replace} = action;
   const updates = (
     typeof refreshingAlbums === 'boolean'
     && typeof replace === 'boolean'
@@ -75,6 +76,7 @@ export function success(
   )
     ? {
       lastUpdated,
+      totalUserAlbums: total,
       userAlbums: refreshingAlbums || replace
         ? [...albums]
         : [...oldAlbums, ...albums],
