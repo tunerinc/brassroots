@@ -50,14 +50,14 @@ export function getTracks(
     dispatch(actions.getTracksRequest(refreshing));
 
     try {
-      const {items} = await getMySavedTracks(options);
+      const {items, total} = await getMySavedTracks(options);
       const music = addMusicItems(items);
       const tracks: Array<string> = items.map(item => item.track.id)
 
       dispatch(addArtists(music.artists));
       dispatch(addAlbums(music.albums));
       dispatch(addTracks(music.tracks));
-      dispatch(actions.getTracksSuccess(tracks));
+      dispatch(actions.getTracksSuccess(tracks, total));
     } catch (err) {
       dispatch(actions.getTracksFailure(err));
     }

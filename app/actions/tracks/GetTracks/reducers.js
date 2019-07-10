@@ -57,6 +57,7 @@ export function request(
  * @param   {object}   action         The Redux action
  * @param   {string}   action.type    The type of Redux action
  * @param   {string[]} action.tracks  The Spotify ids of the current user's library tracks
+ * @param   {number}   action.total   The total number of tracks in the current user's library
  * @param   {boolean}  action.replace Whether or not all the tracks need to be replaced
  * 
  * @returns {object}                  The state with the library track ids added
@@ -66,7 +67,7 @@ export function success(
   action: Action,
 ): State {
   const {refreshingTracks, userTracks} = state;
-  const {tracks, replace} = action;
+  const {tracks, total, replace} = action;
   const updates = (
     typeof refreshingTracks === 'boolean'
     && typeof replace === 'boolean'
@@ -75,6 +76,7 @@ export function success(
   )
     ? {
       lastUpdated,
+      totalUserTracks: total,
       refreshingTracks: false,
       fetchingTracks: false,
       error: null,

@@ -163,7 +163,7 @@ class LibraryTracksView extends React.Component {
       albums: {albumsByID},
       sessions: {currentSessionID, sessionsByID},
       settings: {preference: {session: mode}},
-      tracks: {tracksByID},
+      tracks: {userTracks, totalUserTracks, tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
     const currentSession = sessionsByID[currentSessionID];
@@ -202,8 +202,9 @@ class LibraryTracksView extends React.Component {
           id: currentUserID,
           name: displayName,
           type: 'user-tracks',
-          total: 1,
+          total: totalUserTracks,
           position: trackIndex,
+          tracks: userTracks.slice(trackIndex + 1),
         },
         mode,
       );

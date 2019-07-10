@@ -76,7 +76,7 @@ export function getAlbums(
     dispatch(actions.getAlbumsRequest(refreshing));
 
     try {
-      const {items} = await getMySavedAlbums({limit, offset, market});
+      const {items, total} = await getMySavedAlbums({limit, offset, market});
       const albumsFromSpotify = items.map(item => item.album);
 
       let artists: Artists = {};
@@ -144,7 +144,7 @@ export function getAlbums(
       dispatch(addArtists(artists));
       dispatch(addAlbums(albums));
       dispatch(addTracks(tracks));
-      dispatch(actions.getAlbumsSuccess(albumsFromSpotify.map(a => a.id)));
+      dispatch(actions.getAlbumsSuccess(albumsFromSpotify.map(a => a.id), total));
     } catch (err) {
       dispatch(actions.getAlbumsFailure(err));
     }

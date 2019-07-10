@@ -65,6 +65,7 @@ type Action = {
   +trackIDs?: Array<string>,
   +albumCount?: number,
   +replace?: boolean,
+  +total?: number,
 };
 
 type State = {
@@ -139,6 +140,7 @@ const singleState: Album = {
  * 
  * @property {string}   lastUpdated             The date/time the albums were last updated
  * @property {string[]} userAlbums              The Spotify album ids saved in the current user's library
+ * @property {number}   totalUserAlbums=0       The total number of albums in the current user's library
  * @property {object}   albumsByID              The album objects using the Spotify id as the key
  * @property {number}   totalAlbums             The total amount of albums
  * @property {string}   selectedAlbum=null      The selected album to view
@@ -155,6 +157,7 @@ const singleState: Album = {
 export const initialState: State = {
   lastUpdated,
   userAlbums: [],
+  totalUserAlbums: 0,
   albumsByID: {},
   totalAlbums: 0,
   selectedAlbum: null,

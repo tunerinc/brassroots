@@ -42,17 +42,20 @@ export function getTracksRequest(
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @param   {string[]} tracks          The Spotify track ids from the current user's library
+ * @param   {number}   total           The total number of tracks in the current user's library
  * @param   {boolean}  [replace=false] Whether or not the tracks need to be replaced
  *
- * @returns {object}                   Redux action with the type of GET_TRACKS_SUCCESS and the tracks from the library
+ * @returns {object}                   Redux action with the type of GET_TRACKS_SUCCESS, the tracks from the library, the total number of tracks, and whether to replace the cached tracks
  */
 export function getTracksSuccess(
   tracks: Array<string>,
+  total: number,
   replace?: boolean = false,
 ): Action {
   return {
     type: types.GET_TRACKS_SUCCESS,
     tracks,
+    total,
     replace,
   };
 }
