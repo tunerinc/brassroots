@@ -18,7 +18,7 @@ import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
 import {addSingleTrack, addQueueTracks} from '../actions/queue/AddQueueTracks/reducers';
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
-import * as getSessionQueue from '../actions/queue/GetSessionQueue/reducers';
+import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
 import * as queueTrack from '../actions/queue/QueueTrack/reducers';
 import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
 import * as stopQueueListener from '../actions/queue/StopQueueListener/reducers';
@@ -204,12 +204,12 @@ export default function reducer(
         return getContextQueue.success(state, action);
       case types.GET_CONTEXT_QUEUE_FAILURE:
         return getContextQueue.failure(state, action);
-      case types.GET_SESSION_QUEUE_REQUEST:
-        return getSessionQueue.request(state);
-      case types.GET_SESSION_QUEUE_SUCCESS:
-        return getSessionQueue.success(state, action);
-      case types.GET_SESSION_QUEUE_FAILURE:
-        return getSessionQueue.failure(state, action);
+      case types.GET_USER_QUEUE_REQUEST:
+        return getUserQueue.request(state);
+      case types.GET_USER_QUEUE_SUCCESS:
+        return getUserQueue.success(state, action);
+      case types.GET_USER_QUEUE_FAILURE:
+        return getUserQueue.failure(state, action);
       case types.QUEUE_TRACK_REQUEST:
         return queueTrack.request(state);
       case types.QUEUE_TRACK_SUCCESS:

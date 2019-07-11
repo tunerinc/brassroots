@@ -6,7 +6,7 @@
  */
 
 /**
- * @module GetSessionQueue
+ * @module GetUserQueue
  */
 
 import Spotify from 'rn-spotify-sdk';
@@ -23,7 +23,7 @@ import {type FirestoreInstance} from '../../../utils/firebaseTypes';
  * Async function which gets the now playing session's queue
  * 
  * @async
- * @function getSessionQueue
+ * @function getUserQueue
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -34,19 +34,19 @@ import {type FirestoreInstance} from '../../../utils/firebaseTypes';
  * @resolves {object}            The queue from the now playing session
  * @reject   {Error}             The error which caused the get session queue failure
  */
-export function getSessionQueue(
+export function getUserQueue(
   userID: string,
   sessionID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getSessionQueueRequest());
+    dispatch(actions.getUserQueueRequest());
 
     const firestore: FirestoreInstance = getFirestore();
 
     try {
-      
+      console.log('get queue');
     } catch (err) {
-      dispatch(actions.getSessionQueueFailure(err));
+      dispatch(actions.getUserQueueFailure(err));
     }
   };
 }

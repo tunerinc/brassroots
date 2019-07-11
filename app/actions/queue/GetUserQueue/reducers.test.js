@@ -8,44 +8,44 @@
 import reducer, {initialState} from '../../../reducers/queue';
 import * as actions from './actions';
 
-describe('get session queue reducer', () => {
+describe('get user queue reducer', () => {
   it('should return initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_SESSION_QUEUE_REQUEST', () => {
-    expect(reducer(initialState, actions.getSessionQueueRequest()))
+  it('should handle GET_USER_QUEUE_REQUEST', () => {
+    expect(reducer(initialState, actions.getUserQueueRequest()))
       .toStrictEqual({...initialState, fetchingQueue: true});
 
     expect(
       reducer(
         {...initialState, error: new Error('error')},
-        actions.getSessionQueueRequest(),
+        actions.getUserQueueRequest(),
       ),
     )
       .toStrictEqual({...initialState, fetchingQueue: true});
   });
 
-  it('should handle GET_SESSION_QUEUE_SUCCESS', () => {
+  it('should handle GET_USER_QUEUE_SUCCESS', () => {
     const userQueue: Array<string> = ['foo', 'bar'];
     const unsubscribe: () => void = () => {return};
 
     expect(
       reducer(
         {...initialState, fetchingQueue: true},
-        actions.getSessionQueueSuccess(userQueue, unsubscribe),
+        actions.getUserQueueSuccess(userQueue, unsubscribe),
       ),
     )
       .toStrictEqual({...initialState, unsubscribe, userQueue});
   });
 
-  it('should handle GET_SESSION_QUEUE_FAILURE', () => {
+  it('should handle GET_USER_QUEUE_FAILURE', () => {
     const error: Error = new Error('error');
 
     expect(
       reducer(
         {...initialState, fetchingQueue: true},
-        actions.getSessionQueueFailure(error),
+        actions.getUserQueueFailure(error),
       ),
     )
       .toStrictEqual({...initialState, error});

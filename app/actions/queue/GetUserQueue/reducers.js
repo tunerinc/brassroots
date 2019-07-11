@@ -6,7 +6,7 @@
  */
 
 /**
- * @module GetSessionQueueReducers
+ * @module GetUserQueueReducers
  */
 
 import updateObject from '../../../utils/updateObject';
