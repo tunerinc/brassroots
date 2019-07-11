@@ -125,9 +125,9 @@ class LiveSessionView extends React.Component {
       getChat,
       getSessionInfo,
       getUserQueue,
-      chat: {fetchingChat},
-      queue: {fetchingQueue},
-      sessions: {currentSessionID, fetchingInfo},
+      chat: {fetchingChat, chatUnsubscribe},
+      queue: {fetchingQueue, unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, fetchingInfo, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     
@@ -137,7 +137,7 @@ class LiveSessionView extends React.Component {
       //   getChat(currentSessionID);
       // }
 
-      if (!fetchedInfo && !fetchingInfo) {
+      if (!fetchedInfo && !fetchingInfo && !infoUnsubscribe) {
         this.setState({fetchedInfo: true});
         getSessionInfo(currentSessionID);
       }
@@ -155,10 +155,10 @@ class LiveSessionView extends React.Component {
       getChat,
       getSessionInfo,
       getUserQueue,
-      chat: {fetchingChat},
+      chat: {fetchingChat, chatUnsubscribe},
       player: {progress},
-      queue: {userQueue, fetchingQueue},
-      sessions: {currentSessionID, fetchingInfo},
+      queue: {userQueue, fetchingQueue, unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, fetchingInfo, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     const {player: {progress: newProgress}} = nextProps;
@@ -169,7 +169,7 @@ class LiveSessionView extends React.Component {
       //   getChat(currentSessionID);
       // }
 
-      if (!fetchedInfo && !fetchingInfo) {
+      if (!fetchedInfo && !fetchingInfo && !infoUnsubscribe) {
         this.setState({fetchedInfo: true});
         getSessionInfo(currentSessionID);
       }
@@ -247,6 +247,7 @@ class LiveSessionView extends React.Component {
       leaveSession,
       albums: {albumsByID},
       player: {currentTrackID},
+      queue: {unsubscribe: queueUnsubscribe},
       sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
