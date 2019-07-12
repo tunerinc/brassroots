@@ -17,7 +17,11 @@ import {addTracks} from '../../tracks/AddTracks';
 import {addPeople} from '../../users/AddPeople';
 import {addQueueTracks} from '../AddQueueTracks';
 import {type ThunkAction} from '../../../reducers/queue';
-import {type FirestoreInstance} from '../../../utils/firebaseTypes';
+import {
+  type FirestoreInstance,
+  type FirestoreDoc,
+  type FirestoreDocs,
+} from '../../../utils/firebaseTypes';
 
 /**
  * Async function which gets the now playing session's queue
@@ -42,9 +46,29 @@ export function getUserQueue(
     dispatch(actions.getUserQueueRequest());
 
     const firestore: FirestoreInstance = getFirestore();
+    const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
+    const queueRef: FirestoreDocs = sessionRef.collection('queue');
 
     try {
-      console.log('get queue');
+      const unsubscribe = queueRef.orderBy('timeAdded', 'desc')
+        .onSnapshot(
+          snapshot => {
+            snapshot.docChanges().forEach(change => {
+              if (change.type === 'added') {
+                console.log('added', change.doc.data());
+              }
+
+              if (change.type === 'modified') {
+                console.log('modified', change.doc.data());
+              }
+
+              if (change.type === 'removed') {
+                console.log('removed', change.doc.data());
+              }
+            });
+          },
+          error => {throw error},
+        );
     } catch (err) {
       dispatch(actions.getUserQueueFailure(err));
     }

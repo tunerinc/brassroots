@@ -54,7 +54,7 @@ export function getUserQueueSuccess(
   return {
     type: types.GET_USER_QUEUE_SUCCESS,
     queue,
-    unsubscribe
+    unsubscribe,
   };
 }
 

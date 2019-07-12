@@ -32,11 +32,40 @@ describe('get user queue reducer', () => {
 
     expect(
       reducer(
-        {...initialState, fetchingQueue: true},
+        {
+          ...initialState,
+          fetchingQueue: true,
+          queueByID: {
+            foo: {
+              seconds: 0,
+              nanoseconds: 0,
+            },
+            bar: {
+              seconds: 0,
+              nanoseconds: 0,
+            },
+          },
+        },
         actions.getUserQueueSuccess(userQueue, unsubscribe),
       ),
     )
-      .toStrictEqual({...initialState, unsubscribe, userQueue});
+      .toStrictEqual(
+        {
+          ...initialState,
+          unsubscribe,
+          userQueue: ['foo', 'bar'],
+          queueByID: {
+            foo: {
+              seconds: 0,
+              nanoseconds: 0,
+            },
+            bar: {
+              seconds: 0,
+              nanoseconds: 0,
+            },
+          },
+        },
+      );
   });
 
   it('should handle GET_USER_QUEUE_FAILURE', () => {

@@ -54,6 +54,8 @@ type QueueTrack = {
   +userID?: ?string,
   +totalLikes?: number,
   +liked?: boolean,
+  +seconds?: number,
+  +nanoseconds?: number,
 };
 
 type Action = {
@@ -106,11 +108,13 @@ export type {
  * @alias singleQueueState
  * @type {object}
  * 
- * @property {string}  id=null      The Brassroots id of the queue track
- * @property {string}  trackID=null The Spotify id of the queue track
- * @property {string}  userID=null  The Brassroots id of the user who queued the track
- * @property {number}  totalLikes=0 The total amount of likes the queue track has
- * @property {boolean} liked=false  Whether the current user has liked the queue track
+ * @property {string}  id=null       The Brassroots id of the queue track
+ * @property {string}  trackID=null  The Spotify id of the queue track
+ * @property {string}  userID=null   The Brassroots id of the user who queued the track
+ * @property {number}  totalLikes=0  The total amount of likes the queue track has
+ * @property {boolean} liked=false   Whether the current user has liked the queue track
+ * @property {number}  seconds=0     The seconds when the track was added
+ * @property {number}  nanoseconds=0 The nanoseconds wehn the track was added
  */
 const singleState: QueueTrack = {
   id: null,
@@ -118,6 +122,8 @@ const singleState: QueueTrack = {
   userID: null,
   totalLikes: 0,
   liked: false,
+  seconds: 0,
+  nanoseconds: 0,
 };
 
 /**
