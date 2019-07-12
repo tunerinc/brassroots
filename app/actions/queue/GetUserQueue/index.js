@@ -10,12 +10,14 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
+import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {addArtists} from '../../artists/AddArtists';
 import {addAlbums} from '../../albums/AddAlbums';
 import {addTracks} from '../../tracks/AddTracks';
 import {addPeople} from '../../users/AddPeople';
 import {addQueueTracks} from '../AddQueueTracks';
+import {removeQueueTrack} from '../RemoveQueueTrack';
 import {type ThunkAction} from '../../../reducers/queue';
 import {
   type FirestoreInstance,
@@ -54,16 +56,78 @@ export function getUserQueue(
         .onSnapshot(
           snapshot => {
             snapshot.docChanges().forEach(change => {
+              const queueTrack = change.doc.data();
+              const user = change.doc.data().user;
+              const track = queueTrack.track;
+              const album = track.album;
+              const artists = [...track.artists, ...album.artists]
+                .reduce((artistList, artist) => {
+                  return updateObject(artistList, {
+                    [artist.id]: {
+                      id: artist.id,
+                      name: artist.name,
+                    },
+                  });
+                }, {});
+
               if (change.type === 'added') {
-                console.log('added', change.doc.data());
+                dispatch(addPeople({[user.id]: user}));
+                dispatch(addArtists(artists));
+                dispatch(addAlbums({[album.id]: album}));
+                dispatch(
+                  addTracks(
+                    {
+                      [track.id]: {
+                        id: track.id,
+                        name: track.name,
+                        albumID: album.id,
+                        artists: track.artists,
+                        trackNumber: track.trackNumber,
+                        durationMS: track.durationMS,
+                      },
+                    },
+                  ),
+                );
+
+                dispatch(
+                  addQueueTracks(
+                    {
+                      [queueTrack.id]: {
+                        id: queueTrack.id,
+                        trackID: track.id,
+                        userID: user.id,
+                        totalLikes: queueTrack.totalLikes,
+                        liked: queueTrack.likes.includes(userID),
+                        seconds: queueTrack.timeAdded.seconds,
+                        nanoseconds: queueTrack.timeAdded.nanoseconds,
+                      },
+                    },
+                  ),
+                );
+
+                dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
               }
 
               if (change.type === 'modified') {
-                console.log('modified', change.doc.data());
+                dispatch(
+                  addQueueTracks(
+                    {
+                      [queueTrack.id]: {
+                        id: queueTrack.id,
+                        trackID: queueTrack.track.id,
+                        userID: queueTrack.user.id,
+                        totalLikes: queueTrack.totalLikes,
+                        liked: queueTrack.likes.includes(userID),
+                        seconds: queueTrack.timeAdded.seconds,
+                        nanoseconds: queueTrack.timeAdded.nanoseconds,
+                      },
+                    },
+                  ),
+                );
               }
 
               if (change.type === 'removed') {
-                console.log('removed', change.doc.data());
+                dispatch(removeQueueTrack(queueTrack.id));
               }
             });
           },
