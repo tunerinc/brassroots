@@ -14,18 +14,21 @@ import {lastUpdated, singleTrack} from '../../../reducers/queue';
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}  state                   The Redux state
- * @param   {object}  action                  The Redux action
- * @param   {string}  action.type             The type of Redux action
- * @param   {object}  action.tracks           The queue tracks to add to Redux
- * @param   {object}  action.track            The single queue track object
- * @param   {string}  action.track.id         The Brassroots id of the single queue track
- * @param   {string}  action.track.trackID    The Spotify id of the single queue track
- * @param   {string}  action.track.userID     The Brassroots id of the user who queued the single track
- * @param   {number}  action.track.totalLikes The total number of likes the single queue track has
- * @param   {boolean} action.track.liked      Whether the current user has liked the single queue track
+ * @param   {object}  state                              The Redux state
+ * @param   {object}  action                             The Redux action
+ * @param   {string}  action.type                        The type of Redux action
+ * @param   {object}  action.tracks                      The queue tracks to add to Redux
+ * @param   {object}  action.track                       The single queue track object
+ * @param   {string}  action.track.id                    The Brassroots id of the single queue track
+ * @param   {string}  action.track.trackID               The Spotify id of the single queue track
+ * @param   {string}  action.track.userID                The Brassroots id of the user who queued the single track
+ * @param   {number}  action.track.totalLikes            The total number of likes the single queue track has
+ * @param   {boolean} action.track.liked                 Whether the current user has liked the single queue track
+ * @param   {object}  action.track.timeAdded             The time when the queue track was added
+ * @param   {number}  action.track.timeAdded.seconds     The seconds when the track was added
+ * @param   {number}  action.track.timeAdded.nanoseconds The nanoseconds wehn the track was added
  * 
- * @returns {object}                          The state of the single queue track updated
+ * @returns {object}                                     The state of the single queue track updated
  */
 export function addSingleTrack(state, action) {
   const {track} = action;

@@ -239,6 +239,7 @@ export function createSession(
           added: true,
           totalLikes: 0,
           likes: [],
+          timeAdded: firestore.FieldValue.serverTimestamp(),
           user: {
             id: user.id,
             displayName: user.displayName,
