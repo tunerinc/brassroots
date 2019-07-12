@@ -142,7 +142,7 @@ class LiveSessionView extends React.Component {
         getSessionInfo(currentSessionID);
       }
 
-      if (!fetchedQueue && !fetchingQueue) {
+      if (!fetchedQueue && !fetchingQueue && !queueUnsubscribe) {
         this.setState({fetchedQueue: true});
         getUserQueue(currentUserID, currentSessionID);
       }
@@ -174,7 +174,7 @@ class LiveSessionView extends React.Component {
         getSessionInfo(currentSessionID);
       }
 
-      if (!fetchedQueue && !fetchingQueue) {
+      if (!fetchedQueue && !fetchingQueue && !queueUnsubscribe) {
         this.setState({fetchedQueue: true});
         getUserQueue(currentUserID, currentSessionID);
       }
@@ -338,7 +338,7 @@ class LiveSessionView extends React.Component {
         name={name}
         queueError={queueError}
         showRoundImage={true}
-        toggleLike={this.toggleLike(item, liked)}
+        toggleLike={() => console.log('toggle like')}
         totalLikes={totalLikes}
         trackID={item}
         type='userQueue'
