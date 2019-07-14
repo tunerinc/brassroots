@@ -26,6 +26,7 @@ type FirestoreDocs = {
   get: () => Promise<FirestoreDocs>,
   doc: (?string | ?number) => FirestoreDoc,
   where: (string, string, string | boolean) => FirestoreQuery,
+  onSnapshot: (any, any) => any,
 };
 
 type FirestoreQuery = {
@@ -33,6 +34,7 @@ type FirestoreQuery = {
   limit: (number) => FirestoreDocs,
   startAfter: (number | string) => FirestoreQuery,
   orderBy: (string, ?string) => FirestoreQuery,
+  onSnapshot: (any, any) => any,
 };
 
 type FirestoreRef = {

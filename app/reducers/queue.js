@@ -18,7 +18,7 @@ import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
 import {addSingleTrack, addQueueTracks} from '../actions/queue/AddQueueTracks/reducers';
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
-import * as getSessionQueue from '../actions/queue/GetSessionQueue/reducers';
+import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
 import * as queueTrack from '../actions/queue/QueueTrack/reducers';
 import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
 import * as stopQueueListener from '../actions/queue/StopQueueListener/reducers';
@@ -54,6 +54,8 @@ type QueueTrack = {
   +userID?: ?string,
   +totalLikes?: number,
   +liked?: boolean,
+  +seconds?: number,
+  +nanoseconds?: number,
 };
 
 type Action = {
@@ -106,11 +108,13 @@ export type {
  * @alias singleQueueState
  * @type {object}
  * 
- * @property {string}  id=null      The Brassroots id of the queue track
- * @property {string}  trackID=null The Spotify id of the queue track
- * @property {string}  userID=null  The Brassroots id of the user who queued the track
- * @property {number}  totalLikes=0 The total amount of likes the queue track has
- * @property {boolean} liked=false  Whether the current user has liked the queue track
+ * @property {string}  id=null       The Brassroots id of the queue track
+ * @property {string}  trackID=null  The Spotify id of the queue track
+ * @property {string}  userID=null   The Brassroots id of the user who queued the track
+ * @property {number}  totalLikes=0  The total amount of likes the queue track has
+ * @property {boolean} liked=false   Whether the current user has liked the queue track
+ * @property {number}  seconds=0     The seconds when the track was added
+ * @property {number}  nanoseconds=0 The nanoseconds wehn the track was added
  */
 const singleState: QueueTrack = {
   id: null,
@@ -118,6 +122,8 @@ const singleState: QueueTrack = {
   userID: null,
   totalLikes: 0,
   liked: false,
+  seconds: 0,
+  nanoseconds: 0,
 };
 
 /**
@@ -204,12 +210,12 @@ export default function reducer(
         return getContextQueue.success(state, action);
       case types.GET_CONTEXT_QUEUE_FAILURE:
         return getContextQueue.failure(state, action);
-      case types.GET_SESSION_QUEUE_REQUEST:
-        return getSessionQueue.request(state);
-      case types.GET_SESSION_QUEUE_SUCCESS:
-        return getSessionQueue.success(state, action);
-      case types.GET_SESSION_QUEUE_FAILURE:
-        return getSessionQueue.failure(state, action);
+      case types.GET_USER_QUEUE_REQUEST:
+        return getUserQueue.request(state);
+      case types.GET_USER_QUEUE_SUCCESS:
+        return getUserQueue.success(state, action);
+      case types.GET_USER_QUEUE_FAILURE:
+        return getUserQueue.failure(state, action);
       case types.QUEUE_TRACK_REQUEST:
         return queueTrack.request(state);
       case types.QUEUE_TRACK_SUCCESS:

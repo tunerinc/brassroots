@@ -42,7 +42,6 @@ export function getSessionInfo(
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
     
     try {
-      const sessionRef = firestore.collection('sessions').doc(sessionID);
       const unsubscribe = sessionRef.onSnapshot(
         doc => {
           const session = {
@@ -54,6 +53,7 @@ export function getSessionInfo(
             distance: 0,
             totalListeners: doc.data().totals.listeners,
           };
+
           dispatch(actions.getSessionInfoSuccess(session, unsubscribe));
         },
         error => {throw error},

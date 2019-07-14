@@ -136,7 +136,7 @@ export function leaveSession(
     dispatch(actions.leaveSessionRequest());
     // dispatch(stopChatListener(session.chatUnsubscribe));
     dispatch(stopSessionInfoListener(session.infoUnsubscribe));
-    // dispatch(stopQueueListener(session.queueUnsubscribe));
+    dispatch(stopQueueListener(session.queueUnsubscribe));
     // dispatch(addRecentTrack(userID, session.track));
 
     const firestore: FirestoreInstance = getFirestore();

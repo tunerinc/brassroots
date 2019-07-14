@@ -109,12 +109,11 @@ const styles: Styles = StyleSheet.create({
     color: '#888',
   },
   user: {
-    flex: 1,
     fontSize: 14,
     fontWeight: '600',
-    lineHeight: 18.2,
+    lineHeight: 14,
     color: '#888',
-    paddingTop: 2,
+    paddingTop: 6,
     fontFamily: 'Muli',
   },
   options: {

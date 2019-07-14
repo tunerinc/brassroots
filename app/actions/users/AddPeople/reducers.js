@@ -20,7 +20,7 @@ import {singleUser, lastUpdated} from '../../../reducers/users';
  * @param   {object} action.people              The people that are being added in total
  * @param   {object} action.user                The user object to add
  * @param   {string} action.user.id             The Brassroots id of the single user
- * @param   {string} [action.user.username]     The username of the single user
+ * @param   {string} [action.user.displayName]  The display name of the single user
  * @param   {string} [action.user.profileImage] The profile image of the single user
  * @param   {string} [action.user.coverImage]   The cover image of the single user
  * @param   {string} [action.user.bio]          The bio of the single user

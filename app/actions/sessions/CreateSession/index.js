@@ -169,7 +169,7 @@ export function createSession(
           market: string,
         } = {
           limit: 20 - context.tracks.length,
-          offset: context.tracks.length + 1,
+          offset: context.tracks.length + context.position + 1,
           market: 'US',
         };
 
@@ -239,6 +239,7 @@ export function createSession(
           added: true,
           totalLikes: 0,
           likes: [],
+          timeAdded: firestore.FieldValue.serverTimestamp(),
           user: {
             id: user.id,
             displayName: user.displayName,

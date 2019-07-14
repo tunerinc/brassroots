@@ -50,7 +50,7 @@ import {toggleShuffle} from '../../actions/player/ToggleShuffle';
 
 // Queue Action Creators
 import {deleteQueueTrack} from '../../actions/queue/DeleteQueueTrack';
-import {getSessionQueue} from '../../actions/queue/GetSessionQueue';
+import {getUserQueue} from '../../actions/queue/GetUserQueue';
 import {queueTrack} from '../../actions/queue/QueueTrack';
 import {stopQueueListener} from '../../actions/queue/StopQueueListener';
 import {toggleTrackLike} from '../../actions/queue/ToggleTrackLike';
@@ -124,10 +124,10 @@ class LiveSessionView extends React.Component {
     const {
       getChat,
       getSessionInfo,
-      getSessionQueue,
-      chat: {fetchingChat},
-      queue: {fetchingQueue},
-      sessions: {currentSessionID, fetchingInfo},
+      getUserQueue,
+      chat: {fetchingChat, chatUnsubscribe},
+      queue: {fetchingQueue, unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, fetchingInfo, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     
@@ -137,15 +137,15 @@ class LiveSessionView extends React.Component {
       //   getChat(currentSessionID);
       // }
 
-      if (!fetchedInfo && !fetchingInfo) {
+      if (!fetchedInfo && !fetchingInfo && !infoUnsubscribe) {
         this.setState({fetchedInfo: true});
         getSessionInfo(currentSessionID);
       }
 
-      // if (!fetchedQueue && !fetchingQueue) {
-      //   this.setState({fetchedQueue: true});
-      //   getSessionQueue(currentUserID, currentSessionID);
-      // }
+      if (!fetchedQueue && !fetchingQueue && !queueUnsubscribe) {
+        this.setState({fetchedQueue: true});
+        getUserQueue(currentUserID, currentSessionID);
+      }
     }
   }
 
@@ -154,11 +154,11 @@ class LiveSessionView extends React.Component {
     const {
       getChat,
       getSessionInfo,
-      getSessionQueue,
-      chat: {fetchingChat},
+      getUserQueue,
+      chat: {fetchingChat, chatUnsubscribe},
       player: {progress},
-      queue: {userQueue, fetchingQueue},
-      sessions: {currentSessionID, fetchingInfo},
+      queue: {userQueue, fetchingQueue, unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, fetchingInfo, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     const {player: {progress: newProgress}} = nextProps;
@@ -169,15 +169,15 @@ class LiveSessionView extends React.Component {
       //   getChat(currentSessionID);
       // }
 
-      if (!fetchedInfo && !fetchingInfo) {
+      if (!fetchedInfo && !fetchingInfo && !infoUnsubscribe) {
         this.setState({fetchedInfo: true});
         getSessionInfo(currentSessionID);
       }
 
-      // if (!fetchedQueue && !fetchingQueue) {
-      //   this.setState({fetchedQueue: true});
-      //   getSessionQueue(currentUserID, currentSessionID);
-      // }
+      if (!fetchedQueue && !fetchingQueue && !queueUnsubscribe) {
+        this.setState({fetchedQueue: true});
+        getUserQueue(currentUserID, currentSessionID);
+      }
     }
 
     if (editingQueue && userQueue.length === 0) this.toggleEdit();
@@ -247,6 +247,7 @@ class LiveSessionView extends React.Component {
       leaveSession,
       albums: {albumsByID},
       player: {currentTrackID},
+      queue: {unsubscribe: queueUnsubscribe},
       sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
@@ -337,7 +338,7 @@ class LiveSessionView extends React.Component {
         name={name}
         queueError={queueError}
         showRoundImage={true}
-        toggleLike={this.toggleLike(item, liked)}
+        toggleLike={() => console.log('toggle like')}
         totalLikes={totalLikes}
         trackID={item}
         type='userQueue'
@@ -808,7 +809,7 @@ LiveSessionView.propTypes = {
   deleteQueueTrack: PropTypes.func.isRequired,
   getChat: PropTypes.func.isRequired,
   getSessionInfo: PropTypes.func.isRequired,
-  getSessionQueue: PropTypes.func.isRequired,
+  getUserQueue: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
   nextTrack: PropTypes.func.isRequired,
   player: PropTypes.object.isRequired,
@@ -855,7 +856,7 @@ function mapDispatchToProps(dispatch) {
     deleteQueueTrack,
     getChat,
     getSessionInfo,
-    getSessionQueue,
+    getUserQueue,
     leaveSession,
     nextTrack,
     playTrack,
