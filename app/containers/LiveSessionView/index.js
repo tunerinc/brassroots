@@ -126,6 +126,7 @@ class LiveSessionView extends React.Component {
       getSessionInfo,
       getUserQueue,
       chat: {fetchingChat, chatUnsubscribe},
+      player: {currentQueueID},
       queue: {fetchingQueue, unsubscribe: queueUnsubscribe},
       sessions: {currentSessionID, fetchingInfo, infoUnsubscribe},
       users: {currentUserID},
@@ -144,7 +145,7 @@ class LiveSessionView extends React.Component {
 
       if (!fetchedQueue && !fetchingQueue && !queueUnsubscribe) {
         this.setState({fetchedQueue: true});
-        getUserQueue(currentUserID, currentSessionID);
+        getUserQueue(currentUserID, currentSessionID, currentQueueID);
       }
     }
   }
@@ -156,7 +157,7 @@ class LiveSessionView extends React.Component {
       getSessionInfo,
       getUserQueue,
       chat: {fetchingChat, chatUnsubscribe},
-      player: {progress},
+      player: {progress, currentQueueID},
       queue: {userQueue, fetchingQueue, unsubscribe: queueUnsubscribe},
       sessions: {currentSessionID, fetchingInfo, infoUnsubscribe},
       users: {currentUserID},
@@ -176,7 +177,7 @@ class LiveSessionView extends React.Component {
 
       if (!fetchedQueue && !fetchingQueue && !queueUnsubscribe) {
         this.setState({fetchedQueue: true});
-        getUserQueue(currentUserID, currentSessionID);
+        getUserQueue(currentUserID, currentSessionID, currentQueueID);
       }
     }
 

@@ -63,6 +63,7 @@ type Session = {
   +mode?: ?string,
   +listeners?: Array<string>,
   +totalListeners?: number,
+  +totalPlayed?: number,
   +timeLastPlayed?: ?string,
   +followingID?: string,
 };
@@ -142,6 +143,7 @@ export type {
  * @property {string}   mode=null           The mode the session is currently in
  * @property {string[]} listeners           The Brassroots ids of the listeners in the session
  * @property {number}   totalListeners=0    The total amount of listeners in the session
+ * @property {number}   totalPlayed=0       The total amount of tracks that have been played
  * @property {string}   timeLastPlayed=null The last time the current track was played
  */
 const singleState: Session = {
@@ -154,6 +156,7 @@ const singleState: Session = {
   mode: null,
   listeners: [],
   totalListeners: 0,
+  totalPlayed: 0,
   timeLastPlayed: null,
 };
 

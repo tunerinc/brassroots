@@ -11,6 +11,7 @@
 
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
+import getMySavedTracks from '../../../utils/spotifyAPI/getMySavedTracks';
 import GeoFirestore from 'geofirestore';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
@@ -91,6 +92,7 @@ type Context = ?{
   displayName: string,
   position: number,
   total: number,
+  tracks: ?Array<string>,
 };
 
 /**
@@ -184,6 +186,34 @@ export function playTrack(
         track = updateObject(track, {id: queueID});
       }
 
+      if (
+        context
+        && context.type === 'user-tracks'
+        && Array.isArray(context.tracks)
+        && context.tracks.length !== 20
+        && typeof context.position === 'number'
+        && typeof context.total === 'number'
+        && (context.tracks.length + context.position + 1) < context.total
+      ) {
+        const options: {
+          limit: number,
+          offset: number,
+          market: string,
+        } = {
+          limit: 20 - context.tracks.length,
+          offset: context.tracks.length + context.position + 1,
+          market: 'US',
+        };
+
+        const {items} = await getMySavedTracks(options);
+
+        context = updateObject(context, {
+          tracks: Array.isArray(context.tracks)
+            ? [...context.tracks, ...items.map(item => item.track.id)]
+            : context.tracks,
+        });
+      }
+
       batch.update(sessionUserRef, {paused: false, progress: 0});
       batch.update(
         sessionRef,
@@ -200,6 +230,7 @@ export function playTrack(
               'context.type': context.type,
               'context.displayName': context.displayName,
               'context.position': context.position,
+              'context.tracks': Array.isArray(context.tracks) ? context.tracks : null,
               'totals.context': context.total,
               'totals.previouslyPlayed': totalPlayed + 1,
             }
@@ -209,8 +240,8 @@ export function playTrack(
       );
 
       if (context && current) {
-        dispatch(addRecentTrack(user.id, current.track));
-
+        // dispatch(addRecentTrack(user.id, current.track));
+        batch.delete(sessionQueueRef.doc(current.id));
         batch.set(
           sessionPrevRef.doc(current.id),
           {
@@ -232,6 +263,7 @@ export function playTrack(
             totalLikes: 0,
             played: true,
             added: true,
+            timeAdded: firestore.FieldValue.serverTimestamp(),
             prevQueueID: current.id,
             nextQueueID: current.nextQueueID || null,
             track: {...track, id: track.trackID, trackID: null},

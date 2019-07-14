@@ -29,6 +29,7 @@ describe('add sessions reducer', () => {
         distance: 0,
         mode: 'foo',
         totalListeners: 0,
+        totalPlayed: 0,
       },
       'bar': {
         id: 'bar',
@@ -38,6 +39,7 @@ describe('add sessions reducer', () => {
         distance: 0,
         mode: 'bar',
         totalListeners: 0,
+        totalPlayed: 0,
       },
     };
 

@@ -165,7 +165,10 @@ class LibrarySingleAlbumView extends React.Component {
     const {
       albumToView,
       createSession,
+      playTrack,
       albums: {albumsByID},
+      player: {prevQueueID, nextQueueID},
+      queue: {queueByID},
       sessions: {currentSessionID, sessionsByID},
       settings: {preference: {session: mode}},
       tracks: {tracksByID},
@@ -182,10 +185,67 @@ class LibrarySingleAlbumView extends React.Component {
       name: albumName,
       artists: albumArtists,
     } = albumsByID[albumID];
+    const user = {displayName, profileImage, id: currentUserID};
+    const track = {
+      name,
+      durationMS,
+      trackNumber,
+      artists,
+      id: trackID,
+      album: {
+        small,
+        medium,
+        large,
+        id: albumID,
+        name: albumName,
+        artists: albumArtists,
+      },
+    };
 
     if (currentSession) {
       if (currentSession.ownerID === currentUserID) {
+        const currentTrack = tracksByID[currentSession.currentTrackID];
+        const currentAlbum = albumsByID[currentTrack.albumID];
+        const currentQueue = queueByID[currentSession.currentQueueID];
 
+        playTrack(
+          user,
+          {...track, id: null, trackID: track.id},
+          {
+            id: currentSession.id,
+            totalPlayed: currentSession.totalPlayed,
+            current: {
+              prevQueueID,
+              nextQueueID,
+              id: currentSession.currentQueueID,
+              totalLikes: currentQueue.totalLikes,
+              userID: currentQueue.userID,
+              track: {
+                id: currentTrack.id,
+                name: currentTrack.name,
+                durationMS: currentTrack.durationMS,
+                artists: currentTrack.artists,
+                album: {
+                  id: currentAlbum.id,
+                  name: currentAlbum.name,
+                  small: currentAlbum.small,
+                  medium: currentAlbum.medium,
+                  large: currentAlbum.large,
+                  artists: currentAlbum.artists,
+                },
+              },
+            },
+          },
+          {
+            displayName,
+            id: albumToView,
+            name: albumName,
+            type: 'user-album',
+            total: userTracks.length,
+            position: trackIndex,
+            tracks: userTracks.slice(trackIndex + 1),
+          },
+        );
       } else {
 
       }
@@ -193,22 +253,8 @@ class LibrarySingleAlbumView extends React.Component {
       setTimeout(Actions.liveSession, 200);
 
       createSession(
-        {displayName, profileImage, totalFollowers, id: currentUserID},
-        {
-          name,
-          durationMS,
-          trackNumber,
-          artists,
-          id: trackID,
-          album: {
-            small,
-            medium,
-            large,
-            id: albumID,
-            name: albumName,
-            artists: albumArtists,
-          },
-        },
+        {...user, totalFollowers},
+        track,
         {
           displayName,
           id: albumToView,

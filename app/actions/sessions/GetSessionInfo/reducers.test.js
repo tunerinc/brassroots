@@ -40,6 +40,7 @@ describe('get session info reducer', () => {
       distance: 0,
       mode: 'foo',
       totalListeners: 0,
+      totalPlayed: 0,
       timeLastPlayed: 'foo',
     };
 

@@ -59,6 +59,7 @@ export function success(
     currentQueueID,
     currentTrackID,
     durationMS,
+    progress: 0,
     prevQueueID: prevQueueID || null,
     prevTrackID: prevTrackID || null,
     attemptingToPlay: false,
