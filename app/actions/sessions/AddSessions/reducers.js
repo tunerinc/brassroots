@@ -11,11 +11,11 @@ type Session = {
   id: string,
   currentTrackID: string,
   currentQueueID: string,
-  ownerID: string,
-  mode: string,
-  distance: number,
-  totalListeners: number,
-  totalPlayed: number,
+  ownerID?: string,
+  mode?: string,
+  distance?: number,
+  totalListeners?: number,
+  totalPlayed?: number,
 };
 
 /**
@@ -25,21 +25,21 @@ type Session = {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state                         The Redux state
- * @param   {object}   action                        The Redux action
- * @param   {string}   action.type                   The type of Redux action
- * @param   {string}   action.userID                 The Brassroots id of the current user
- * @param   {object}   action.session                The newly created session
- * @param   {string}   action.session.id             The Brassroots id of the created session
- * @param   {string}   action.session.currentTrackID The Spotify id of the current queue track playing
- * @param   {string}   action.session.currentQueueID The Brassroots id of the current queue track playing
- * @param   {string}   action.session.ownerID        The Brassroots/Spotify id of the session owner
- * @param   {string}   action.session.mode           The mode the session is currently in
- * @param   {number}   action.session.distance       The distance of the session to the current user
- * @param   {number}   action.session.totalListeners The total amount of listeners in the session
- * @param   {number}   action.session.totalPlayed    The total amount of tracks that have been played
+ * @param   {object}   state                           The Redux state
+ * @param   {object}   action                          The Redux action
+ * @param   {string}   action.type                     The type of Redux action
+ * @param   {string}   action.userID                   The Brassroots id of the current user
+ * @param   {object}   action.session                  The newly created session
+ * @param   {string}   action.session.id               The Brassroots id of the created session
+ * @param   {string}   action.session.currentTrackID   The Spotify id of the current queue track playing
+ * @param   {string}   action.session.currentQueueID   The Brassroots id of the current queue track playing
+ * @param   {string}   [action.session.ownerID]        The Brassroots/Spotify id of the session owner
+ * @param   {string}   [action.session.mode]           The mode the session is currently in
+ * @param   {number}   [action.session.distance]       The distance of the session to the current user
+ * @param   {number}   [action.session.totalListeners] The total amount of listeners in the session
+ * @param   {number}   [action.session.totalPlayed]    The total amount of tracks that have been played
  * 
- * @returns {object}                                 The state of the single session updated
+ * @returns {object}                                   The state of the single session updated
  */
 export function addSingleSession(state, action) {
   const {session} = action;
