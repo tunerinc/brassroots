@@ -52,6 +52,7 @@ export function getSessionInfo(
             mode: doc.data().mode,
             distance: 0,
             totalListeners: doc.data().totals.listeners,
+            totalPlayed: doc.data().totals.previouslyPlayed,
           };
 
           dispatch(actions.getSessionInfoSuccess(session, unsubscribe));

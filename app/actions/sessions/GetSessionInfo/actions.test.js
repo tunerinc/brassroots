@@ -31,6 +31,7 @@ describe('get session info synchronous action creators', () => {
       distance: 0,
       mode: 'foo',
       totalListeners: 0,
+      totalPlayed: 0,
     };
 
     const expectedAction: Action = {

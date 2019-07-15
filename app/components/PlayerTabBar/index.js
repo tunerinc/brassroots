@@ -46,14 +46,18 @@ class PlayerTabBar extends React.Component {
 
   componentDidMount() {
     Spotify.on('play', () => {
-      BackgroundTimer.start();
-      this.progressInterval = setInterval(this.setProgress, 982);
+      if (typeof this.progressInterval !== 'number') {
+        BackgroundTimer.start();
+        this.progressInterval = setInterval(this.setProgress, 985);
+      }
     });
 
     Spotify.on('trackDelivered', this.handleDoneTrack);
     Spotify.on('pause', () => {
-      clearInterval(this.progressInterval);
-      BackgroundTimer.stop();
+      if (typeof this.progressInterval === 'number') {
+        clearInterval(this.progressInterval);
+        this.progressInterval = null;
+      }
     });
 
     this.hideCover();
@@ -90,7 +94,8 @@ class PlayerTabBar extends React.Component {
     }
 
     if (oldSessionID !== currentSessionID && typeof this.progressInterval === 'number') {
-      BackgroundTimer.clearInterval(this.progressInterval);
+      clearInterval(this.progressInterval);
+      this.progressInterval = null;
     }
 
     if (
@@ -119,6 +124,9 @@ class PlayerTabBar extends React.Component {
 
   componentWillUnmount() {
     Spotify.removeAllListeners();
+    clearInterval(this.progressInterval);
+    this.progressInterval = null;
+    BackgroundTimer.stop();
   }
 
   setProgress() {
@@ -141,8 +149,8 @@ class PlayerTabBar extends React.Component {
     if (currentSessionID && sessionsByID[currentSessionID]) {
       const {ownerID} = sessionsByID[currentSessionID];
 
-      BackgroundTimer.clearInterval(this.progressInterval);
-      console.log('timer cleared')
+      clearInterval(this.progressInterval);
+      BackgroundTimer.stop();
 
       // add seeking edge case when song close to end
 

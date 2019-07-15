@@ -22,6 +22,7 @@ describe('play track reducer', () => {
     const currentQueueID: string = 'foo';
     const currentTrackID: string = 'foo';
     const durationMS: number = 0;
+    const prevQueueID: string = 'foo';
 
     expect(
       reducer(
@@ -44,11 +45,10 @@ describe('play track reducer', () => {
       reducer(
         {
           ...initialState,
-          currentQueueID,
           currentTrackID,
           attemptingToPlay: true,
         },
-        actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS),
+        actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS, prevQueueID),
       ),
     )
       .toStrictEqual(
@@ -57,7 +57,7 @@ describe('play track reducer', () => {
           currentQueueID,
           currentTrackID,
           durationMS,
-          prevQueueID: currentQueueID,
+          prevQueueID,
           prevTrackID: currentTrackID,
           attemptingToPlay: false,
           paused: false,

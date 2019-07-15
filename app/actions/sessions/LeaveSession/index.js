@@ -180,11 +180,12 @@ export function leaveSession(
         Spotify.setPlaying(false),
       ];
 
+      dispatch(actions.leaveSessionSuccess(session.id));
+
       await Promise.all(promises);
       dispatch(resetChat());
       dispatch(resetPlayer());
       dispatch(resetQueue());
-      dispatch(actions.leaveSessionSuccess(session.id));
     } catch (err) {
       dispatch(actions.leaveSessionFailure(err));
     }

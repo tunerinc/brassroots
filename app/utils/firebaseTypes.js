@@ -34,7 +34,7 @@ type FirestoreQuery = {
   limit: (number) => FirestoreDocs,
   startAfter: (number | string) => FirestoreQuery,
   orderBy: (string, ?string) => FirestoreQuery,
-  onSnapshot: (any, any) => any,
+  onSnapshot: (any, any, any) => any,
 };
 
 type FirestoreRef = {
@@ -45,7 +45,7 @@ type FirestoreRef = {
 };
 
 type FirestoreBatch = {
-  update: (FirestoreDoc, {[key: string]: ?string | number | boolean | {}}) => void,
+  update: (FirestoreDoc, {[key: string]: ?string | number | boolean | {} | Array<any>}) => void,
   delete: (FirestoreDoc) => void,
   set: (FirestoreDoc, any) => Promise<void>,
   commit: () => Promise<void>,

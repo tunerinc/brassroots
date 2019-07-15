@@ -43,6 +43,7 @@ import {
 export function getUserQueue(
   userID: string,
   sessionID: string,
+  current: ?string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.getUserQueueRequest());
@@ -54,6 +55,7 @@ export function getUserQueue(
     try {
       const unsubscribe = queueRef.orderBy('timeAdded', 'desc')
         .onSnapshot(
+          {includeMetadataChanges: true},
           snapshot => {
             snapshot.docChanges().forEach(change => {
               const queueTrack = change.doc.data();
@@ -89,23 +91,27 @@ export function getUserQueue(
                   ),
                 );
 
-                dispatch(
-                  addQueueTracks(
-                    {
-                      [queueTrack.id]: {
-                        id: queueTrack.id,
-                        trackID: track.id,
-                        userID: user.id,
-                        totalLikes: queueTrack.totalLikes,
-                        liked: queueTrack.likes.includes(userID),
-                        seconds: queueTrack.timeAdded.seconds,
-                        nanoseconds: queueTrack.timeAdded.nanoseconds,
+                if (!change.doc.metadata.hasPendingWrites) {
+                  dispatch(
+                    addQueueTracks(
+                      {
+                        [queueTrack.id]: {
+                          id: queueTrack.id,
+                          trackID: track.id,
+                          userID: user.id,
+                          totalLikes: queueTrack.totalLikes,
+                          liked: queueTrack.likes.includes(userID),
+                          seconds: queueTrack.timeAdded.seconds,
+                          nanoseconds: queueTrack.timeAdded.nanoseconds,
+                        },
                       },
-                    },
-                  ),
-                );
+                    ),
+                  );
 
-                dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
+                  if (typeof current === 'string' && queueTrack.id !== current) {
+                    dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
+                  }
+                }
               }
 
               if (change.type === 'modified') {
@@ -124,6 +130,10 @@ export function getUserQueue(
                     },
                   ),
                 );
+
+                if (typeof current === 'string' && queueTrack.id !== current) {
+                  dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
+                }
               }
 
               if (change.type === 'removed') {

@@ -25,6 +25,7 @@ describe('add sessions action creator', () => {
         distance: 0,
         mode: 'foo',
         totalListeners: 0,
+        totalPlayed: 0,
       },
       'bar': {
         id: 'bar',
@@ -34,6 +35,7 @@ describe('add sessions action creator', () => {
         distance: 0,
         mode: 'bar',
         totalListeners: 0,
+        totalPlayed: 0,
       },
     };
 

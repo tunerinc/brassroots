@@ -22,15 +22,20 @@ describe('play track synchronous action creators', () => {
     const currentQueueID: string = 'foo';
     const currentTrackID: string = 'foo';
     const durationMS: number = 0;
+    const prevQueueID: string = 'foo';
     const expectedAction: Action = {
       type: types.PLAY_TRACK_SUCCESS,
       currentQueueID,
       currentTrackID,
       durationMS,
+      prevQueueID,
     };
 
-    expect(actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS))
+    expect(actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS, prevQueueID))
       .toStrictEqual(expectedAction);
+
+    expect(actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS))
+      .toStrictEqual({...expectedAction, prevQueueID: null});
   });
 
   it('creates play track failure action', () => {
