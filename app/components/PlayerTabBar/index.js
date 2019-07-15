@@ -48,7 +48,7 @@ class PlayerTabBar extends React.Component {
     Spotify.on('play', () => {
       if (typeof this.progressInterval !== 'number') {
         BackgroundTimer.start();
-        this.progressInterval = setInterval(this.setProgress, 982);
+        this.progressInterval = setInterval(this.setProgress, 985);
       }
     });
 
