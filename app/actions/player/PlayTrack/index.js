@@ -63,7 +63,6 @@ type Session = {
     totalLikes: number,
     userID: string,
     prevTrackID: string,
-    prevQueueID?: string,
     nextQueueID?: string,
     track: {
       trackID?: string,
@@ -142,7 +141,6 @@ type Context = ?{
  * @param    {string}   session.current.track.artists.name   The name of the track artist
  * @param    {number}   session.current.totalLikes           The total amount of likes the current track has
  * @param    {string}   session.current.userID               The id of the user who queued the track
- * @param    {string}   session.current.prevQueueID          The Brassroots id of the previous track from the current track
  * @param    {string}   [session.current.nextQueueID]        The Brassroots id of the next track from the current track, if available
  * @param    {object}   [session.coords]                     The coordinates of the session the current user is in
  * @param    {number}   session.lat                          The latitude of the gps coordinates
@@ -178,6 +176,7 @@ export function playTrack(
     const {totalPlayed, current, coords} = session;
 
     let batch = firestore.batch();
+    let prevQueueID: ?string = null;
 
     try {
       if (!track.id) {
@@ -241,15 +240,25 @@ export function playTrack(
 
       if (context && current) {
         // dispatch(addRecentTrack(user.id, current.track));
+        const queueTrack = await sessionQueueRef.doc(current.id).get();
+
+        if (!queueTrack.exists) {
+          throw new Error('Unable to retrieve current track from Firestore');
+        }
+
+        console.log(queueTrack.data());
+
+        prevQueueID = queueTrack.data().prevQueueID;
+
         batch.delete(sessionQueueRef.doc(current.id));
         batch.set(
           sessionPrevRef.doc(current.id),
           {
+            prevQueueID,
             id: current.id,
             trackID: current.track.id,
             userID: current.userID,
             totalLikes: current.totalLikes,
-            prevQueueID: current.prevQueueID,
             nextQueueID: track.id,
           },
         );

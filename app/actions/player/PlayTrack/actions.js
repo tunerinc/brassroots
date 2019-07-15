@@ -36,22 +36,25 @@ export function playTrackRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param  {string} currentQueueID The queue id of the new track playing
- * @param  {string} currentTrackID The Spotify id of the new track playing
- * @param  {number} durationMS     The duration of the track in milliseconds
+ * @param  {string} currentQueueID     The queue id of the new track playing
+ * @param  {string} currentTrackID     The Spotify id of the new track playing
+ * @param  {number} durationMS         The duration of the track in milliseconds
+ * @param  {string} [prevQueueID=null] The queue id of the previous track
  *
- * @return {object}                Redux action with the type of PLAY_TRACK_SUCCESS and the queue id of the new track playing
+ * @return {object}                    Redux action with the type of PLAY_TRACK_SUCCESS and the queue id of the new track playing
  */
 export function playTrackSuccess(
   currentQueueID: ?string,
   currentTrackID: string,
   durationMS: number,
+  prevQueueID?: ?string = null,
 ): Action {
   return {
     type: types.PLAY_TRACK_SUCCESS,
     currentQueueID,
     currentTrackID,
     durationMS,
+    prevQueueID,
   };
 }
 

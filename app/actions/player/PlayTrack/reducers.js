@@ -45,6 +45,7 @@ export function request(
  * @param   {string} action.currentQueueID The currently playing track's queue id
  * @param   {string} action.currentTrackID The currently playing track's Spotify id
  * @param   {number} action.durationMS     The duration of the track in milliseconds
+ * @param   {string} action.prevQueueID    The previous track's queue id
  * 
  * @returns {object}                       The state with the current track updated
  */
