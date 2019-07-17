@@ -52,14 +52,18 @@ export function success(
   state: State,
   action: Action,
 ): State {
-  const {queueByID} = state;
+  const {queueByID, userQueue: oldQueue} = state;
   const {unsubscribe, queue: userQueue} = action;
-  const updates = Array.isArray(userQueue) && typeof unsubscribe === 'function'
+  const updates = (
+    Array.isArray(userQueue)
+    && typeof unsubscribe === 'function'
+    && Array.isArray(oldQueue)
+  )
     ? {
       unsubscribe,
       fetchingQueue: false,
       error: null,
-      userQueue: userQueue
+      userQueue: [...oldQueue, ...userQueue]
         .filter((el, i, arr) => i === arr.indexOf(el))
         .sort((a, b) => {
           if (

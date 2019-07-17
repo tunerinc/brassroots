@@ -24,6 +24,7 @@ import * as toggleMute from '../actions/player/ToggleMute/reducers';
 import * as togglePause from '../actions/player/TogglePause/reducers';
 import * as toggleRepeat from '../actions/player/ToggleRepeat/reducers';
 import * as toggleShuffle from '../actions/player/ToggleShuffle/reducers';
+import {updatePlayer} from '../actions/player/UpdatePlayer/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -32,6 +33,16 @@ type GetState = () => State;
 type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<DispatchAction>) => any;
+
+type Updates = {|
+  attemptingToPlay?: boolean,
+  +prevTrackID?: ?string,
+  +prevQueueID?: ?string,
+  +currentTrackID?: ?string,
+  +currentQueueID?: ?string,
+  +nextTrackID?: ?string,
+  +nextQueueID?: ?string,
+|};
 
 type Action = {
   +type?: string,
@@ -45,6 +56,7 @@ type Action = {
   +prevTrackID?: ?string,
   +progress?: number,
   +status?: boolean,
+  +updates?: Updates,
 };
 
 type State = {
@@ -79,6 +91,7 @@ export type {
   PromiseAction,
   ThunkAction,
   Dispatch,
+  Updates,
   Action,
   State,
 };
@@ -217,6 +230,8 @@ export default function reducer(
         return toggleShuffle.success(state, action);
       case types.TOGGLE_SHUFFLE_FAILURE:
         return toggleShuffle.failure(state, action);
+      case types.UPDATE_PLAYER:
+        return updatePlayer(state, action);
       default:
         return state;
     }

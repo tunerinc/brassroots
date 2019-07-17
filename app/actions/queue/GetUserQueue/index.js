@@ -18,6 +18,7 @@ import {addTracks} from '../../tracks/AddTracks';
 import {addPeople} from '../../users/AddPeople';
 import {addQueueTracks} from '../AddQueueTracks';
 import {removeQueueTrack} from '../RemoveQueueTrack';
+import {updatePlayer} from '../../player/UpdatePlayer';
 import {type ThunkAction} from '../../../reducers/queue';
 import {
   type FirestoreInstance,
@@ -45,7 +46,7 @@ export function getUserQueue(
   sessionID: string,
   current: ?string,
 ): ThunkAction {
-  return async (dispatch, _, {getFirestore}) => {
+  return async (dispatch, getState, {getFirestore}) => {
     dispatch(actions.getUserQueueRequest());
 
     const firestore: FirestoreInstance = getFirestore();
@@ -103,12 +104,13 @@ export function getUserQueue(
                           liked: queueTrack.likes.includes(userID),
                           seconds: queueTrack.timeAdded.seconds,
                           nanoseconds: queueTrack.timeAdded.nanoseconds,
+                          isCurrent: queueTrack.isCurrent,
                         },
                       },
                     ),
                   );
 
-                  if (typeof current === 'string' && queueTrack.id !== current) {
+                  if (!queueTrack.isCurrent) {
                     dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
                   }
                 }
@@ -126,12 +128,13 @@ export function getUserQueue(
                         liked: queueTrack.likes.includes(userID),
                         seconds: queueTrack.timeAdded.seconds,
                         nanoseconds: queueTrack.timeAdded.nanoseconds,
+                        isCurrent: queueTrack.isCurrent,
                       },
                     },
                   ),
                 );
 
-                if (typeof current === 'string' && queueTrack.id !== current) {
+                if (!queueTrack.isCurrent) {
                   dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
                 }
               }

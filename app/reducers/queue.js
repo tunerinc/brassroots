@@ -11,6 +11,7 @@ import * as types from '../actions/queue/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type Action as AlbumAction} from './albums';
 import {type Action as ArtistAction} from './artists';
+import {type Action as PlayerAction} from './player';
 import {type Action as TrackAction} from './tracks';
 
 // Case Functions
@@ -27,7 +28,7 @@ import {updateSingleTrack, updateQueueTrack} from '../actions/queue/UpdateQueueT
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-type DispatchAction = Action | AlbumAction | ArtistAction | TrackAction;
+type DispatchAction = Action | AlbumAction | ArtistAction | PlayerAction | TrackAction;
 type GetState = () => State;
 type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
@@ -56,6 +57,7 @@ type QueueTrack = {
   +liked?: boolean,
   +seconds?: number,
   +nanoseconds?: number,
+  +isCurrent?: boolean,
 };
 
 type Action = {
@@ -108,13 +110,14 @@ export type {
  * @alias singleQueueState
  * @type {object}
  * 
- * @property {string}  id=null       The Brassroots id of the queue track
- * @property {string}  trackID=null  The Spotify id of the queue track
- * @property {string}  userID=null   The Brassroots id of the user who queued the track
- * @property {number}  totalLikes=0  The total amount of likes the queue track has
- * @property {boolean} liked=false   Whether the current user has liked the queue track
- * @property {number}  seconds=0     The seconds when the track was added
- * @property {number}  nanoseconds=0 The nanoseconds wehn the track was added
+ * @property {string}  id=null         The Brassroots id of the queue track
+ * @property {string}  trackID=null    The Spotify id of the queue track
+ * @property {string}  userID=null     The Brassroots id of the user who queued the track
+ * @property {number}  totalLikes=0    The total amount of likes the queue track has
+ * @property {boolean} liked=false     Whether the current user has liked the queue track
+ * @property {number}  seconds=0       The seconds when the track was added
+ * @property {number}  nanoseconds=0   The nanoseconds wehn the track was added
+ * @property {boolean} isCurrent=false Whether the track is the currently playing track
  */
 const singleState: QueueTrack = {
   id: null,
@@ -124,6 +127,7 @@ const singleState: QueueTrack = {
   liked: false,
   seconds: 0,
   nanoseconds: 0,
+  isCurrent: false,
 };
 
 /**
