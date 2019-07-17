@@ -26,6 +26,7 @@ import {lastUpdated, singleTrack} from '../../../reducers/queue';
  * @param   {boolean} action.track.liked       Whether the current user has liked the single queue track
  * @param   {number}  action.track.seconds     The seconds when the track was added
  * @param   {number}  action.track.nanoseconds The nanoseconds wehn the track was added
+ * @param   {boolean} action.track.isCurrent   Whether the track is the currently playing track
  * 
  * @returns {object}                           The state of the single queue track updated
  */

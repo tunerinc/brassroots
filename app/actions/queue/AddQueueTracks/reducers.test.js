@@ -26,10 +26,9 @@ describe('add queue tracks reducer', () => {
         userID: 'foo',
         totalLikes: 0,
         liked: false,
-        timeAdded: {
-          seconds: 0,
-          nanoseconds: 0,
-        },
+        seconds: 0,
+        nanoseconds: 0,
+        isCurrent: false,
       },
       'bar': {
         id: 'bar',
@@ -37,10 +36,9 @@ describe('add queue tracks reducer', () => {
         userID: 'bar',
         totalLikes: 0,
         liked: false,
-        timeAdded: {
-          seconds: 0,
-          nanoseconds: 0,
-        },
+        seconds: 0,
+        nanoseconds: 0,
+        isCurrent: false,
       },
     };
 
