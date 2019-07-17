@@ -46,6 +46,7 @@ type Session = {
     prevQueueID: string,
     prevTrackID: string,
     nextQueueID: string,
+    nextTrackID: string,
     track: {
       trackID?: string,
       timeAdded?: string | number,
@@ -91,6 +92,7 @@ type Session = {
  * @param    {string}   session.current.prevQueueID
  * @param    {string}   session.current.prevTrackID
  * @param    {string}   session.current.nextQueueID
+ * @param    {string}   session.current.nextTrackID
  * @param    {string}   session.current.track.id
  * @param    {string}   session.current.track.name
  * @param    {number}   session.current.track.trackNumber
@@ -174,8 +176,11 @@ export function previousTrack(
           id: queueID,
           added: true,
           prevQueueID: current.id,
+          prevTrackID: current.track.id,
           nextQueueID: current.nextQueueID || null,
+          nextTrackID: current.nextTrackID || null,
           timeAdded: firestore.FieldValue.serverTimestamp(),
+          isCurrent: true,
           totalLikes: 0,
           likes: [],
           track: {
