@@ -62,8 +62,10 @@ type Session = {
     id: string,
     totalLikes: number,
     userID: string,
+    prevQueueID: string,
     prevTrackID: string,
-    nextQueueID?: string,
+    nextQueueID: ?string,
+    nextTrackID: ?string,
     track: {
       trackID?: string,
       timeAdded?: string | number,
@@ -141,7 +143,8 @@ type Context = ?{
  * @param    {string}   session.current.track.artists.name   The name of the track artist
  * @param    {number}   session.current.totalLikes           The total amount of likes the current track has
  * @param    {string}   session.current.userID               The id of the user who queued the track
- * @param    {string}   [session.current.nextQueueID]        The Brassroots id of the next track from the current track, if available
+ * @param    {string}   [session.current.nextQueueID]        The queue id of the next track from the current track
+ * @param    {string}   [session.current.nextTrackID]        The Spotify id of the next track from the current
  * @param    {object}   [session.coords]                     The coordinates of the session the current user is in
  * @param    {number}   session.lat                          The latitude of the gps coordinates
  * @param    {number}   session.lon                          The longitude of the gps coordinates
@@ -163,9 +166,11 @@ export function playTrack(
   session: Session,
   context: ?Context,
 ): ThunkAction {
-  return async (dispatch, _, {getFirestore}) => {
+  return async (dispatch, getState, {getFirestore}) => {
     dispatch(actions.playTrackRequest());
 
+    // $FlowFixMe
+    const {queue: {userQueue, queueByID}} = getState();
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
     const sessionPrevRef: FirestoreDocs = sessionRef.collection('previouslyPlayed');
@@ -176,7 +181,6 @@ export function playTrack(
     const {totalPlayed, current, coords} = session;
 
     let batch = firestore.batch();
-    let prevQueueID: ?string = null;
 
     try {
       if (!track.id) {
@@ -207,7 +211,7 @@ export function playTrack(
         const {items} = await getMySavedTracks(options);
 
         context = updateObject(context, {
-          tracks: Array.isArray(context.tracks)
+          tracks: Array.isArray(context.tracks) && Array.isArray(items)
             ? [...context.tracks, ...items.map(item => item.track.id)]
             : context.tracks,
         });
@@ -246,20 +250,17 @@ export function playTrack(
           throw new Error('Unable to retrieve current track from Firestore');
         }
 
-        console.log(queueTrack.data());
-
-        prevQueueID = queueTrack.data().prevQueueID;
-
-        batch.delete(sessionQueueRef.doc(current.id));
         batch.set(
           sessionPrevRef.doc(current.id),
           {
-            prevQueueID,
             id: current.id,
             trackID: current.track.id,
             userID: current.userID,
             totalLikes: current.totalLikes,
+            prevQueueID: queueTrack.data().prevQueueID,
+            prevTrackID: queueTrack.data().prevTrackID,
             nextQueueID: track.id,
+            nextTrackID: track.trackID,
           },
         );
 
@@ -273,15 +274,27 @@ export function playTrack(
             played: true,
             added: true,
             timeAdded: firestore.FieldValue.serverTimestamp(),
+            isCurrent: true,
             prevQueueID: current.id,
+            prevTrackID: current.track.id,
             nextQueueID: current.nextQueueID || null,
+            nextTrackID: current.nextTrackID || null,
             track: {...track, id: track.trackID, trackID: null},
           },
         );
 
-        if (current.nextQueueID) {
-          batch.update(sessionQueueRef.doc(current.nextQueueID), {prevQueueID: track.id});
+        if (userQueue.length) {
+          const [nextQueueID] = userQueue;
+
+          batch.update(sessionQueueRef.doc(nextQueueID),
+            {
+              prevQueueID: track.id,
+              prevTrackID: track.trackID,
+            },
+          );
         }
+
+        batch.delete(sessionQueueRef.doc(current.id));
       }
 
       const promises = [
