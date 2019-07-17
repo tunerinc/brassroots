@@ -10,6 +10,7 @@
  */
 
 import * as actions from './actions';
+import {updatePlayer} from '../../player/UpdatePlayer';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/queue';
 import {
@@ -22,6 +23,9 @@ import {
 type Session = {|
   +id: string,
   +prevQueueID: string,
+  +prevTrackID: string,
+  +nextQueueID?: ?string,
+  +nextTrackID?: ?string,
   +totalQueue: number
 |};
 
@@ -57,7 +61,8 @@ type User = {|
  * 
  * @param  {object}   session                    The session object to add the track to
  * @param  {string}   session.id                 The session id to queue a track in
- * @param  {string}   session.prevQueueID        The id of the queue track before the to-be-queued track
+ * @param  {string}   session.prevQueueID        The queue id of the track last in the queue
+ * @param  {string}   session.prevTrackID        The Spotify id of the track last in the queue
  * @param  {number}   session.totalQueue         The total amount of tracks left in the queue
  * @param  {object}   track                      The Spotify track object to queue in the session
  * @param  {string}   track.id                   The Spotify id for the track to queue
@@ -89,7 +94,7 @@ export function queueTrack(
   track: Track,
   user: User,
 ): ThunkAction {
-  return async (dispatch, _, {getFirestore}) => {
+  return async (dispatch, getState, {getFirestore}) => {
     dispatch(actions.queueTrackRequest());
 
     const firestore: FirestoreInstance = getFirestore();
@@ -97,28 +102,41 @@ export function queueTrack(
     const queueRef: FirestoreDocs = sessionRef.collection('queue');
     const queueDoc: FirestoreDoc = queueRef.doc();
     const queueID: string = queueDoc.id;
-    const {totalQueue, prevQueueID} = session;
+    const {totalQueue, prevQueueID, prevTrackID} = session;
 
     let batch: FirestoreBatch = firestore.batch();
 
     try {
+      // $FlowFixMe
+      const {queue: {userQueue}} = getState();
+
       batch.update(sessionRef, {'totals.queue': totalQueue + 1});
-      batch.update(queueRef.doc(prevQueueID), {nextQueueID: queueID});
+      batch.update(queueRef.doc(prevQueueID), {nextQueueID: queueID, nextTrackID: track.id});
       batch.set(
         queueRef.doc(queueID),
         {
           track,
           user,
           prevQueueID,
+          prevTrackID,
           id: queueID,
           nextQueueID: null,
+          nextTrackID: null,
           timeAdded: firestore.FieldValue.serverTimestamp(),
+          isCurrent: false,
           added: true,
+          played: false,
           totalLikes: 0,
+          likes: [],
         },
       );
 
       await batch.commit();
+
+      if (!userQueue.length) {
+        dispatch(updatePlayer({nextQueueID: queueID, nextTrackID: track.id}));
+      }
+
       dispatch(actions.queueTrackSuccess());
     } catch (err) {
       dispatch(actions.queueTrackFailure(err))
