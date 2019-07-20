@@ -70,7 +70,15 @@ class PlayerTabBar extends React.Component {
     const {
       pausePlayer,
       startPlayer,
-      player: {paused, seeking, progress, currentQueueID, skippingPrev, error: playerError},
+      player: {
+        paused,
+        seeking,
+        progress,
+        currentQueueID,
+        skippingPrev,
+        skippingNext,
+        error: playerError,
+      },
       queue: {context},
       sessions: {currentSessionID, sessionsByID},
       tracks: {fetchingMostPlayed, error: tracksError},
@@ -84,7 +92,8 @@ class PlayerTabBar extends React.Component {
         seeking: oldSeeking,
         progress: oldProgress,
         currentQueueID: oldCurrentID,
-        skippingPrev: oldSkipping,
+        skippingPrev: oldSkippingPrev,
+        skippingNext: oldSkippingNext,
       },
     } = prevProps;
     const currentSession = sessionsByID[currentSessionID];
@@ -98,7 +107,13 @@ class PlayerTabBar extends React.Component {
       this.tabBarBGColor = '#28282b';
     }
 
-    if (oldSkipping && !skippingPrev && !playerError && !paused) {
+    if (
+      !playerError
+      && !paused
+      && (
+        (oldSkippingPrev && !skippingPrev) || (oldSkippingNext && !skippingNext)
+      )
+    ) {
       clearInterval(this.progressInterval);
       this.progressInterval = null;
       this.progressInterval = setInterval(this.setProgress, 985);
