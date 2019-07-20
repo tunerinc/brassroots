@@ -40,26 +40,29 @@ class PlayerTabBar extends React.Component {
     this.handleTogglePause = this.handleTogglePause.bind(this);
 
     this.progressInterval;
+    this.startedBackgroundTimer = false;
     this.intervalActive = false;
     this.tabBarBGColor = '#28282b'
   }
 
   componentDidMount() {
     Spotify.on('play', () => {
-      if (typeof this.progressInterval !== 'number') {
+      if (!this.startedBackgroundTimer) {
         BackgroundTimer.start();
+        this.startedBackgroundTimer = true;
+      }
+
+      if (typeof this.progressInterval !== 'number') {
         this.progressInterval = setInterval(this.setProgress, 985);
       }
     });
 
-    Spotify.on('trackDelivered', this.handleDoneTrack);
     Spotify.on('pause', () => {
-      if (typeof this.progressInterval === 'number') {
-        clearInterval(this.progressInterval);
-        this.progressInterval = null;
-      }
+      clearInterval(this.progressInterval);
+      this.progressInterval = null;
     });
 
+    Spotify.on('trackDelivered', this.handleDoneTrack);
     this.hideCover();
   }
 
@@ -67,23 +70,25 @@ class PlayerTabBar extends React.Component {
     const {
       pausePlayer,
       startPlayer,
-      player: {paused, seeking, progress},
+      player: {paused, seeking, progress, currentQueueID, skippingPrev, error: playerError},
       queue: {context},
       sessions: {currentSessionID, sessionsByID},
       tracks: {fetchingMostPlayed, error: tracksError},
       users: {currentUserID},
     } = this.props;
     const {
-      player: {paused: oldPaused, seeking: oldSeeking, progress: oldProgress},
       sessions: {sessionsByID: oldSessionsByID, currentSessionID: oldSessionID},
       tracks: {fetchingMostPlayed: oldFetchingMostPlayed},
+      player: {
+        paused: oldPaused,
+        seeking: oldSeeking,
+        progress: oldProgress,
+        currentQueueID: oldCurrentID,
+        skippingPrev: oldSkipping,
+      },
     } = prevProps;
     const currentSession = sessionsByID[currentSessionID];
     const oldSession = oldSessionsByID[currentSessionID];
-
-    // if (!fetchingMostPlayed && oldFetchingMostPlayed && !tracksError) {
-    //   this.hideCover();
-    // };
 
     if (currentSession && this.tabBarBGColor !== 'rgba(27,27,30,0.7)') {
       this.tabBarBGColor = 'rgba(27,27,30,0.7)';
@@ -93,9 +98,10 @@ class PlayerTabBar extends React.Component {
       this.tabBarBGColor = '#28282b';
     }
 
-    if (oldSessionID !== currentSessionID && typeof this.progressInterval === 'number') {
+    if (oldSkipping && !skippingPrev && !playerError && !paused) {
       clearInterval(this.progressInterval);
       this.progressInterval = null;
+      this.progressInterval = setInterval(this.setProgress, 985);
     }
 
     if (
@@ -126,13 +132,14 @@ class PlayerTabBar extends React.Component {
     Spotify.removeAllListeners();
     clearInterval(this.progressInterval);
     this.progressInterval = null;
+    this.startedBackgroundTimer = false;
     BackgroundTimer.stop();
   }
 
   setProgress() {
     const {setProgress, player: {progress, seeking, durationMS}} = this.props;
 
-    if (typeof progress === 'number' && durationMS >= progress + 1000 && !seeking) {
+    if (typeof progress === 'number' && !seeking) {
       setProgress(progress + 1000);
     }
   }
@@ -166,7 +173,6 @@ class PlayerTabBar extends React.Component {
           //   },
           // );
         } else {
-          console.log('stop')
           stopPlayer(currentSessionID);
         }
       }
@@ -203,8 +209,6 @@ class PlayerTabBar extends React.Component {
   navToProfile() {
     const {sessions: {currentSessionID, sessionsByID}} = this.props;
     const currentSession = sessionsByID[currentSessionID];
-
-    console.log(currentSession.ownerID)
 
     // if (currentSession) {
     //   Actions.libraryProfileMain({userToView: currentSession.ownerID});
