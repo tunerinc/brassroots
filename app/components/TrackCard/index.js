@@ -23,6 +23,7 @@ type Props = {|
   albumName?: string,
   artists?: string,
   context: Context,
+  deleteTrack?: () => void,
   deleting?: boolean,
   editing?: boolean,
   image?: string,
@@ -55,6 +56,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
     const {
       albumName,
       artists,
+      deleteTrack,
       deleting,
       editing,
       image,
@@ -155,7 +157,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
           </View>
           {(type === 'userQueue' && editing) &&
             <DeleteQueueTrackButton
-              deleteTrack={() => console.log('delete track pressed')}
+              deleteTrack={deleteTrack}
               deleting={deleting || false}
               disabled={deleting || queueError || false}
               error={queueError || null}

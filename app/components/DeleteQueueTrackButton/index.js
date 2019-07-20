@@ -14,7 +14,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {|
-  deleteTrack: () => any,
+  deleteTrack?: () => any,
   deleting: boolean,
   disabled: boolean,
   error: ?boolean,

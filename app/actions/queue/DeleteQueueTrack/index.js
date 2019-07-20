@@ -56,14 +56,15 @@ export function deleteQueueTrack(
 
     try {
       const queueTrack: FirestoreDoc = await queueRef.doc(queueID).get();
-      const {prevQueueID, nextQueueID} = queueTrack.data();
+      const {prevQueueID, prevTrackID, nextQueueID, nextTrackID} = queueTrack.data();
+
+      if (nextQueueID && nextTrackID) {
+        batch.update(queueRef.doc(prevQueueID), {nextQueueID, nextTrackID});
+      }
 
       batch.delete(queueRef.doc(queueID));
       batch.update(sessionRef, {'totals.queue': session.total - 1});
 
-      if (nextQueueID) {
-        batch.update(queueRef.doc(prevQueueID), {nextQueueID});
-      }
 
       await batch.commit();
       dispatch(actions.deleteQueueTrackSuccess(queueID));

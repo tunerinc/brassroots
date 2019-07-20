@@ -377,6 +377,7 @@ class LiveSessionView extends React.Component {
         artists={artists.map(a => a.name).join(', ')}
         context={{id: ownerID, type: 'userQueue', displayName, name: 'userQueue'}}
         deleting={deleting.includes(item)}
+        deleteTrack={() => console.log('delete')}
         editing={editingQueue}
         image={profileImage}
         liked={liked}
