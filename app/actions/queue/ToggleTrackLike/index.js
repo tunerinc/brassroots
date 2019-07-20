@@ -54,9 +54,11 @@ export function toggleTrackLike(
 
       if (!doc.exists) throw new Error('Unable to retrieve queue track from Brassroots');
 
+      const {totalLikes} = doc.data();
+
       transaction.update(queueTrackRef, {
         totalLikes: liked
-          ? firestore.FieldValue.decrement(1)
+          ? totalLikes - 1
           : firestore.FieldValue.increment(1),
         likes: liked
           ? firestore.FieldValue.arrayRemove(userID)
