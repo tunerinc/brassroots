@@ -26,9 +26,11 @@ import {type Action} from '../../../reducers/queue';
  */
 export function removeQueueTrack(
   queueID: string,
+  removeTrack?: boolean = false,
 ): Action {
   return {
     type: types.REMOVE_QUEUE_TRACK,
     queueID,
+    removeTrack,
   };
 }

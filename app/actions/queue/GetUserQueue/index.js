@@ -112,7 +112,9 @@ export function getUserQueue(
                     ),
                   );
 
-                  if (!queueTrack.isCurrent) {
+                  if (queueTrack.isCurrent) {
+                    dispatch(removeQueueTrack(queueTrack.id));
+                  } else {
                     dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
                   }
                 }
@@ -136,13 +138,15 @@ export function getUserQueue(
                   ),
                 );
 
-                if (!queueTrack.isCurrent) {
+                if (queueTrack.isCurrent) {
+                  dispatch(removeQueueTrack(queueTrack.id));
+                } else {
                   dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
                 }
               }
 
               if (change.type === 'removed') {
-                dispatch(removeQueueTrack(queueTrack.id));
+                dispatch(removeQueueTrack(queueTrack.id, true));
               }
             });
           },
