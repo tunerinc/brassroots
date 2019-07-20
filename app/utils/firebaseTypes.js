@@ -58,6 +58,10 @@ type FirestoreInstance = {
   runTransaction: (any) => Promise<any>,
   FieldValue: {
     serverTimestamp: () => string | number,
+    arrayUnion: (any) => any,
+    arrayRemove: (any) => any,
+    increment: (number) => number,
+    decrement: (number) => number,
   },
 };
 

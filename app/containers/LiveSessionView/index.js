@@ -361,17 +361,17 @@ class LiveSessionView extends React.Component {
   delete = queueID => () => {
     const {
       deleteQueueTrack,
-      queue: {totalUserQueue: total},
+      queue: {userQueue},
       sessions: {currentSessionID: id},
     } = this.props;
 
-    deleteQueueTrack({id, total}, queueID);
+    deleteQueueTrack({id, total: userQueue.length}, queueID);
   }
 
   renderTrack({item, index}) {
     const {editingQueue} = this.state;
     const {
-      queue: {queueByID, deleting, error: queueError},
+      queue: {queueByID, deleting, liking, error: queueError},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
       users: {usersByID},
@@ -391,11 +391,12 @@ class LiveSessionView extends React.Component {
         deleteTrack={this.delete(item)}
         editing={editingQueue}
         image={profileImage}
+        liking={liking.includes(item)}
         liked={liked}
         name={name}
         queueError={queueError}
         showRoundImage={true}
-        toggleLike={() => console.log('toggle like')}
+        toggleLike={this.toggleLike(item, liked)}
         totalLikes={totalLikes}
         trackID={item}
         type='userQueue'
