@@ -33,32 +33,19 @@ const defaultMusic = {
  * @returns {object}                        The music object is returned containing all the aggregated data
  */
 function addMusicItems(tracksToAdd, music = defaultMusic) {
-  let tracks = [];
+  const tracks = tracksToAdd.items ? [...tracksToAdd.items] : [...tracksToAdd];
+
   let musicTracks = {};
   let musicAlbums = {};
   let musicArtists = {};
 
-  if (tracksToAdd.items) {
-    tracks = tracksToAdd.items;
-  } else {
-    tracks = tracksToAdd;
-  }
-
-  for (let item of tracks) {
-    let track = {};
-
-    if (item && item.track) {
-      track = item.track;
-    } else {
-      track = item;      
-    }
-    
-    const album = track.album;
+  tracks.forEach(item => {
+    const {album, ...track} = item && item.track ? {...item.track} : {...item};
     const {images, small, medium, large} = album;
 
-
     if (music.sortedTracks) {
-      music = updateObject(music, {sortedTracks: music.sortedTracks.concat(track.id)});
+      const newSortedTracks: Array<string> = music.sortedTracks.concat(track.id);
+      music = updateObject(music, {sortedTracks: newSortedTracks});
     }
     
     musicTracks = updateObject(musicTracks, {
@@ -66,7 +53,7 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
         id: track.id,
         albumID: album.id,
         name: track.name,
-        trackNumber: track.trackNumber || track.track_number,
+        trackNumber: track.track_number || track.trackNumber || 1,
         durationMS: track.durationMS || track.duration_ms,
         artists: track.artists.map(artist => ({
           id: artist.id,
@@ -124,7 +111,7 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
         });
       });
     }
-  }
+  });
 
   return updateObject(music, {tracks: musicTracks, albums: musicAlbums, artists: musicArtists});
 }
