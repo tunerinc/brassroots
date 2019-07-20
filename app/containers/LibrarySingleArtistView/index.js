@@ -101,52 +101,45 @@ class LibrarySingleArtistView extends React.Component {
     const {
       queueTrack,
       albums: {albumsByID},
-      artists: {artistsByID},
-      player: {prevQueueID},
-      queue: {userQueue, queueByID, contextQueue, totalQueue},
+      player: {currentQueueID},
+      queue: {userQueue, queueByID, totalQueue},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
+    const currentSession = sessionsByID[currentSessionID];
 
-    if (currentSessionID && Object.keys(sessionsByID).indexOf(currentSessionID)) {
-      const {listeners, ownerID} = sessionsByID[currentSessionID];
-      const isListenerOwner = listeners.indexOf(currentUserID) !== -1 || ownerID === currentUserID;
-      const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
+    if (currentSession) {
+      const {listeners, ownerID} = currentSession;
+      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+      const songInQueue = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);
       const {displayName, profileImage} = usersByID[currentUserID];
 
-      if (isListenerOwner && !songQueued && selectedTrack !== '') {
-        const {name, durationMS, albumID, artists} = tracksByID[selectedTrack];
-        const {name: albumName, small, medium, large, artists: albumArtists} = albumsByID[albumID];
-        const trackToQueue = {
+      if (isListenerOwner && !songInQueue) {
+        const {name, durationMS, trackNumber, albumID, artists} = tracksByID[selectedTrack];
+        const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1] : currentQueueID;
+        const {trackID: prevTrackID} = queueByID[prevQueueID];
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
+        const track = {
           name,
           durationMS,
+          trackNumber,
+          artists,
           id: selectedTrack,
-          artists: artists.map(a => a.name).join(', '),
           album: {
             small,
             medium,
             large,
             id: albumID,
             name: albumName,
-            artists: albumArtists.map(a => a.name).join(', '),
+            artists: albumArtists,
           },
         };
 
         this.closeModal();
-        queueTrack(
-          {
-            prevQueueID,
-            totalQueue,
-            id: currentSessionID,
-          },
-          trackToQueue,
-          {
-            displayName,
-            profileImage,
-            id: currentUserID,
-          },
-        );
+        queueTrack(session, track, user);
       }
     }
   }
@@ -208,7 +201,7 @@ class LibrarySingleArtistView extends React.Component {
               track: {
                 id: currentTrack.id,
                 name: currentTrack.name,
-                durationMS: currentTrack.durationMS,
+                trackNumber: currentTrack.trackNumber,
                 artists: currentTrack.artists,
                 album: {
                   id: currentAlbum.id,
@@ -228,7 +221,7 @@ class LibrarySingleArtistView extends React.Component {
             type: 'user-artist',
             total: userTracks.length,
             position: trackIndex,
-            tracks: userTracks.slice(trackIndex + 1),
+            tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
           },
         );
       } else {
@@ -247,7 +240,7 @@ class LibrarySingleArtistView extends React.Component {
           type: 'user-artist',
           total: userTracks.length,
           position: trackIndex,
-          tracks: userTracks.slice(trackIndex + 1),
+          tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
         },
         mode,
       );

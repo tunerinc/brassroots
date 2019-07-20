@@ -74,23 +74,25 @@ export function getUserQueue(
                 }, {});
 
               if (change.type === 'added') {
-                dispatch(addPeople({[user.id]: user}));
-                dispatch(addArtists(artists));
-                dispatch(addAlbums({[album.id]: album}));
-                dispatch(
-                  addTracks(
-                    {
-                      [track.id]: {
-                        id: track.id,
-                        name: track.name,
-                        albumID: album.id,
-                        artists: track.artists,
-                        trackNumber: track.trackNumber,
-                        durationMS: track.durationMS,
+                if (user.id !== userID) {
+                  dispatch(addPeople({[user.id]: user}));
+                  dispatch(addArtists(artists));
+                  dispatch(addAlbums({[album.id]: album}));
+                  dispatch(
+                    addTracks(
+                      {
+                        [track.id]: {
+                          id: track.id,
+                          name: track.name,
+                          albumID: album.id,
+                          artists: track.artists,
+                          trackNumber: track.trackNumber,
+                          durationMS: track.durationMS,
+                        },
                       },
-                    },
-                  ),
-                );
+                    ),
+                  );
+                }
 
                 if (!change.doc.metadata.hasPendingWrites) {
                   dispatch(

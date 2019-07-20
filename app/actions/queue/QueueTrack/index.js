@@ -26,7 +26,7 @@ type Session = {|
   +prevTrackID: string,
   +nextQueueID?: ?string,
   +nextTrackID?: ?string,
-  +totalQueue: number
+  +totalQueue: number,
 |};
 
 type Track = {|
@@ -61,13 +61,14 @@ type User = {|
  * 
  * @param  {object}   session                    The session object to add the track to
  * @param  {string}   session.id                 The session id to queue a track in
- * @param  {string}   session.prevQueueID        The queue id of the track last in the queue
- * @param  {string}   session.prevTrackID        The Spotify id of the track last in the queue
+ * @param  {string}   session.prevQueueID        The queue id of the track previous to the to be queued track
+ * @param  {string}   session.prevTrackID        The Spotify id of the track previous to the to be queued track
  * @param  {number}   session.totalQueue         The total amount of tracks left in the queue
  * @param  {object}   track                      The Spotify track object to queue in the session
  * @param  {string}   track.id                   The Spotify id for the track to queue
  * @param  {string}   track.name                 The name of the track to queue
  * @param  {number}   track.durationMS           The duration of the track in milliseconds
+ * @param  {number}   track.trackNumber          The track number of the song within the album
  * @param  {object}   track.album                The Spotify album object of the track
  * @param  {string}   track.album.id             The Spotify id of the track's album
  * @param  {string}   track.album.name           The name of the track's album
@@ -94,7 +95,7 @@ export function queueTrack(
   track: Track,
   user: User,
 ): ThunkAction {
-  return async (dispatch, getState, {getFirestore}) => {
+  return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.queueTrackRequest());
 
     const firestore: FirestoreInstance = getFirestore();
@@ -107,8 +108,9 @@ export function queueTrack(
     let batch: FirestoreBatch = firestore.batch();
 
     try {
-      // $FlowFixMe
-      const {queue: {userQueue}} = getState();
+      if (totalQueue === 1) {
+        dispatch(updatePlayer({nextQueueID: queueID, nextTrackID: track.id}));
+      }
 
       batch.update(sessionRef, {'totals.queue': totalQueue + 1});
       batch.update(queueRef.doc(prevQueueID), {nextQueueID: queueID, nextTrackID: track.id});
@@ -124,19 +126,12 @@ export function queueTrack(
           nextTrackID: null,
           timeAdded: firestore.FieldValue.serverTimestamp(),
           isCurrent: false,
-          added: true,
-          played: false,
           totalLikes: 0,
           likes: [],
         },
       );
 
       await batch.commit();
-
-      if (!userQueue.length) {
-        dispatch(updatePlayer({nextQueueID: queueID, nextTrackID: track.id}));
-      }
-
       dispatch(actions.queueTrackSuccess());
     } catch (err) {
       dispatch(actions.queueTrackFailure(err))
