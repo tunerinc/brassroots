@@ -313,7 +313,7 @@ class LiveSessionView extends React.Component {
     const {
       previousTrack,
       albums: {albumsByID},
-      player: {prevQueueID, prevTrackID, currentTrackID, currentQueueID, nextQueueID},
+      player: {prevQueueID, prevTrackID, currentTrackID, currentQueueID, nextQueueID, nextTrackID},
       queue: {queueByID},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
@@ -334,6 +334,7 @@ class LiveSessionView extends React.Component {
         prevQueueID,
         prevTrackID,
         nextQueueID,
+        nextTrackID,
         id: currentQueueID,
         track: {
           name,

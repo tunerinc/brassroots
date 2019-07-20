@@ -40,6 +40,7 @@ export function playTrackRequest(): Action {
  * @param  {string} currentTrackID     The Spotify id of the new track playing
  * @param  {number} durationMS         The duration of the track in milliseconds
  * @param  {string} [prevQueueID=null] The queue id of the previous track
+ * @param  {string} [prevTrackID=null] The Spotify id of the previous track
  *
  * @return {object}                    Redux action with the type of PLAY_TRACK_SUCCESS and the queue id of the new track playing
  */
@@ -48,6 +49,7 @@ export function playTrackSuccess(
   currentTrackID: string,
   durationMS: number,
   prevQueueID?: ?string = null,
+  prevTrackID?: ?string = null,
 ): Action {
   return {
     type: types.PLAY_TRACK_SUCCESS,
@@ -55,6 +57,7 @@ export function playTrackSuccess(
     currentTrackID,
     durationMS,
     prevQueueID,
+    prevTrackID,
   };
 }
 

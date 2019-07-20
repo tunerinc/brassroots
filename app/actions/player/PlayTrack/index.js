@@ -132,6 +132,7 @@ type Context = ?{
  * @param    {string}   session.current.track.id             The Spotify track id of the current track
  * @param    {string}   session.current.track.name           The name of the track
  * @param    {number}   session.current.track.durationMS     The duration of the track in milliseconds
+ * @param    {number}   session.current.track.trackNumber    The track number of the track within the album
  * @param    {object}   session.current.track.album          The album the track is in
  * @param    {string}   session.current.track.album.id       The Spotify id of the album
  * @param    {string}   session.current.track.album.name     The name of the album
@@ -166,11 +167,9 @@ export function playTrack(
   session: Session,
   context: ?Context,
 ): ThunkAction {
-  return async (dispatch, getState, {getFirestore}) => {
+  return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.playTrackRequest());
 
-    // $FlowFixMe
-    const {queue: {userQueue, queueByID}} = getState();
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
     const sessionPrevRef: FirestoreDocs = sessionRef.collection('previouslyPlayed');
@@ -193,7 +192,7 @@ export function playTrack(
         context
         && context.type === 'user-tracks'
         && Array.isArray(context.tracks)
-        && context.tracks.length !== 20
+        && context.tracks.length !== 3
         && typeof context.position === 'number'
         && typeof context.total === 'number'
         && (context.tracks.length + context.position + 1) < context.total
@@ -203,7 +202,7 @@ export function playTrack(
           offset: number,
           market: string,
         } = {
-          limit: 20 - context.tracks.length,
+          limit: 3 - context.tracks.length,
           offset: context.tracks.length + context.position + 1,
           market: 'US',
         };
@@ -254,13 +253,13 @@ export function playTrack(
           sessionPrevRef.doc(current.id),
           {
             id: current.id,
-            trackID: current.track.id,
             userID: current.userID,
             totalLikes: current.totalLikes,
             prevQueueID: queueTrack.data().prevQueueID,
             prevTrackID: queueTrack.data().prevTrackID,
             nextQueueID: track.id,
             nextTrackID: track.trackID,
+            track: {...current.track},
           },
         );
 
@@ -271,8 +270,6 @@ export function playTrack(
             id: track.id,
             likes: [],
             totalLikes: 0,
-            played: true,
-            added: true,
             timeAdded: firestore.FieldValue.serverTimestamp(),
             isCurrent: true,
             prevQueueID: current.id,
@@ -283,10 +280,8 @@ export function playTrack(
           },
         );
 
-        if (userQueue.length) {
-          const [nextQueueID] = userQueue;
-
-          batch.update(sessionQueueRef.doc(nextQueueID),
+        if (current.nextQueueID) {
+          batch.update(sessionQueueRef.doc(current.nextQueueID),
             {
               prevQueueID: track.id,
               prevTrackID: track.trackID,

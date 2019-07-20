@@ -132,40 +132,31 @@ export function previousTrack(
 
       const queueDoc = sessionQueueRef.doc();
       const queueID = queueDoc.id;
-      const [prevDoc, prevTrack] = await Promise.all(
+      const [prevDoc, currentDoc] = await Promise.all(
         [
           sessionPrevRef.doc(current.prevQueueID).get(),
-          Spotify.getTrack(current.prevTrackID),
+          sessionQueueRef.doc(current.id).get(),
         ],
       );
 
       let batch: FirestoreBatch = firestore.batch();
 
-      if (!prevDoc.exists) {
-        throw new Error('Unable to retrieve previous track from Firestore.');
+      if (!prevDoc.exists || !currentDoc.exists) {
+        throw new Error('Unable to retrieve tracks from Firestore.');
       }
-
-      const newPrevTrack = typeof prevDoc.data().prevQueueID === 'string'
-        ? await sessionPrevRef.doc(prevDoc.data().prevQueueID).get()
-        : null;
-
-      const hasImages: boolean = Array.isArray(prevTrack.album.images)
-        && prevTrack.album.images.length === 3;
-
-      const large: string = hasImages ? prevTrack.album.images[0].url : '';
-      const medium: string = hasImages ? prevTrack.album.images[1].url : large;
-      const small: string = hasImages ? prevTrack.album.images[2].url : medium;
 
       batch.update(sessionUserRef, {progress: 0, paused: false});
       batch.set(
         sessionPrevRef.doc(current.id),
         {
           id: current.id,
-          trackID: current.track.id,
           userID: current.userID,
           totalLikes: current.totalLikes,
-          prevQueueID: current.prevQueueID,
+          prevQueueID: currentDoc.data().prevQueueID,
+          prevTrackID: currentDoc.data().prevTrackID,
           nextQueueID: queueID,
+          nextTrackID: prevDoc.data().track.id,
+          track: {...current.track},
         }
       );
 
@@ -183,26 +174,15 @@ export function previousTrack(
           isCurrent: true,
           totalLikes: 0,
           likes: [],
-          track: {
-            id: prevTrack.id,
-            name: prevTrack.name,
-            trackNumber: prevTrack.track_number,
-            durationMS: prevTrack.duration_ms,
-            artists: prevTrack.artists.map(a => ({id: a.id, name: a.name})),
-            album: {
-              small,
-              medium,
-              large,
-              id: prevTrack.album.id,
-              name: prevTrack.album.name,
-              artists: prevTrack.album.artists.map(a => ({id: a.id, name: a.name})),
-            },
-          },
+          track: {...prevDoc.data().track},
         }
       );
 
-      if (current.nextQueueID) {
-        batch.update(sessionQueueRef.doc(current.nextQueueID), {prevTrackID: queueID});
+      if (current.nextQueueID && current.nextTrackID) {
+        batch.update(
+          sessionQueueRef.doc(current.nextQueueID),
+          {prevQueueID: queueID, prevTrackID: current.nextTrackID},
+        );
       }
 
       batch.update(
@@ -210,7 +190,7 @@ export function previousTrack(
         {
           progress: 0,
           currentQueueID: queueID,
-          currentTrackID: prevTrack.id,
+          currentTrackID: prevDoc.data().track.id,
           timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
           paused: false,
           'totals.previouslyPlayed': totalPlayed + 1,
@@ -222,7 +202,7 @@ export function previousTrack(
       await Promise.all(
         [
           batch.commit(),
-          Spotify.playURI(`spotify:track:${prevTrack.id}`, 0, 0),
+          Spotify.playURI(`spotify:track:${prevDoc.data().track.id}`, 0, 0),
         ],
       );
 
@@ -231,7 +211,7 @@ export function previousTrack(
           {
             [session.id]: {
               id: session.id,
-              currentTrackID: prevTrack.id,
+              currentTrackID: prevDoc.data().track.id,
               currentQueueID: queueID,
             },
           },
@@ -241,10 +221,10 @@ export function previousTrack(
       dispatch(
         actions.previousTrackSuccess(
           queueID,
-          prevTrack.id,
-          prevTrack.duration_ms,
+          prevDoc.data().track.id,
+          prevDoc.data().track.duration_ms,
           prevDoc.data().prevQueueID,
-          newPrevTrack ? newPrevTrack.data().trackID : null,
+          prevDoc.data().prevTrackID,
         ),
       );
     } catch (err) {
