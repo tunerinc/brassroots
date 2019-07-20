@@ -159,7 +159,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
             <DeleteQueueTrackButton
               deleteTrack={deleteTrack}
               deleting={deleting || false}
-              disabled={deleting || queueError || false}
+              disabled={deleting || queueError !== null || false}
               error={queueError || null}
             />
           }
