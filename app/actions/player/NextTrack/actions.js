@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/player';
  * @returns {object} Redux action with the type of NEXT_TRACK_REQUEST
  */
 export function nextTrackRequest(): Action {
-  return {
-    type: types.NEXT_TRACK_REQUEST,
-  };
+  return {type: types.NEXT_TRACK_REQUEST};
 }
 
 /**
