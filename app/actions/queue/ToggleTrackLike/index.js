@@ -52,24 +52,16 @@ export function toggleTrackLike(
     const toggleLikeTransaction: Promise<number> = firestore.runTransaction(async transaction => {
       const doc: FirestoreDoc = await transaction.get(queueTrackRef);
 
-      if (!doc.exists) {
-        throw new Error('Unable to retrieve queue track from Brassroots');
-      }
+      if (!doc.exists) throw new Error('Unable to retrieve queue track from Brassroots');
 
-      let {totalLikes} = doc.data();
-
-      if (liked) {
-        totalLikes -= 1;
-      } else {
-        totalLikes += 1;
-      }
-
-      transaction.update(
-        queueTrackRef,
-        {totalLikes},
-      );
-
-      return totalLikes;
+      transaction.update(queueTrackRef, {
+        totalLikes: liked
+          ? firestore.FieldValue.decrement(1)
+          : firestore.FieldValue.increment(1),
+        likes: liked
+          ? firestore.FieldValue.arrayRemove(userID)
+          : firestore.FieldValue.arrayUnion(userID)
+      });
     });
 
     try {
