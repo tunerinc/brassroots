@@ -36,6 +36,10 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
   }
+
+  componentDidMount() {
+    this.refs['ticker'].startAnimation(3000);
+  }
   
   render() {
     const {
@@ -50,26 +54,26 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
       displayName,
       paused,
     } = this.props;
+    const width: number = screenWidth * (progress / durationMS);
 
     return (
       <Animated.View style={styles.player}>
-        <Animated.View
-          style={[
-            styles.playerProgress,
-            {width: screenWidth * (progress / durationMS)}
-          ]}
-        ></Animated.View>
+        {(typeof progress === 'number' && typeof durationMS === 'number') &&
+          <Animated.View style={[styles.playerProgress, {width}]}></Animated.View>
+        }
         <TouchableOpacity style={styles.playerButton} onPress={openPlayer}>
           <TouchableOpacity style={styles.playerImageButton} onPress={navToProfile}>
             <Image style={styles.playerImage} source={{uri: profileImage}} />
           </TouchableOpacity>
           <View style={styles.playerInfo}>
             <TextTicker
+              ref='ticker'
               numberOfLines={1}
               style={styles.playerTrack}
               scroll={false}
               bounce={false}
               animationType='bounce'
+              marqueeOnMount={false}
               duration={200 * [...name, '•', ...artists].length}
               easing={Easing.linear}
             >
