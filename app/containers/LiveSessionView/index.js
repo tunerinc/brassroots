@@ -395,7 +395,7 @@ class LiveSessionView extends React.Component {
         name={name}
         queueError={queueError}
         showRoundImage={true}
-        toggleLike={() => console.log('toggle like')}
+        toggleLike={this.toggleLike(item, liked)}
         totalLikes={totalLikes}
         trackID={item}
         type='userQueue'
@@ -622,13 +622,8 @@ class LiveSessionView extends React.Component {
   };
 
   toggleLike = (queueID, liked) => () => {
-    const {
-      toggleTrackLike,
-      sessions: {currentSessionID},
-      users: {currentUserID},
-    } = this.props;
-
-    toggleTrackLike(currentSessionID, queueID, currentUserID, liked);
+    const {queue: {queueByID}, tracks: {tracksByID}} = this.props;
+    console.log('toggle like', tracksByID[queueByID[queueID].trackID])
   }
 
   renderFooter() {
