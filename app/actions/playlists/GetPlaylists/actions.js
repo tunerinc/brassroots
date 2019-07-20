@@ -44,15 +44,18 @@ export function getPlaylistsRequest(
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @param   {string[]} playlists The Spotify ids of the playlists the current user has saved
+ * @param   {number}   total     The total number of playlists in the current user's library
  *
  * @returns {object}             Redux action with the type of GET_PLAYLISTS_SUCCESS and the saved playlists
  */
 export function getPlaylistsSuccess(
   playlists: Array<string>,
+  total: number,
 ): Action {
   return {
     type: types.GET_PLAYLISTS_SUCCESS,
     playlists,
+    total,
   };
 }
 

@@ -41,7 +41,7 @@ export function getTracks(
     offset: number,
     market: string,
   } = {
-    limit: 20,
+    limit: 50,
     offset: existingTracks,
     market: 'US',
   };
@@ -53,7 +53,6 @@ export function getTracks(
       const {items, total} = await getMySavedTracks(options);
       const music = addMusicItems(items);
       const tracks: Array<string> = items.map(item => item.track.id)
-
       dispatch(addArtists(music.artists));
       dispatch(addAlbums(music.albums));
       dispatch(addTracks(music.tracks));

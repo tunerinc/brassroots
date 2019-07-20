@@ -41,46 +41,45 @@ describe('get playlists reducer', () => {
 
   it('should handle GET_PLAYLISTS_SUCCESS', () => {
     const userPlaylists: Array<string> = ['foo', 'bar'];
+    const totalUserPlaylists: number = 10;
 
     expect(
       reducer(
         {...initialState, fetchingPlaylists: true},
-        actions.getPlaylistsSuccess([]),
+        actions.getPlaylistsSuccess([], 0),
       ),
     )
-      .toStrictEqual({...initialState, canPaginate: false});
+      .toStrictEqual(initialState);
 
     expect(
       reducer(
         {...initialState, fetchingPlaylists: true},
-        actions.getPlaylistsSuccess(userPlaylists),
+        actions.getPlaylistsSuccess(userPlaylists, totalUserPlaylists),
       ),
     )
-      .toStrictEqual({...initialState, userPlaylists, canPaginate: false});
+      .toStrictEqual({...initialState, userPlaylists, totalUserPlaylists});
 
     expect(
       reducer(
-        {...initialState, userPlaylists: ['xyz'], fetchingPlaylists: true},
-        actions.getPlaylistsSuccess(userPlaylists),
+        {...initialState, totalUserPlaylists, userPlaylists: ['xyz'],fetchingPlaylists: true},
+        actions.getPlaylistsSuccess(userPlaylists, totalUserPlaylists),
       ),
     )
-      .toStrictEqual({...initialState, userPlaylists: ['xyz', ...userPlaylists], canPaginate: false});
+      .toStrictEqual({...initialState, totalUserPlaylists, userPlaylists: ['xyz', ...userPlaylists]});
 
     expect(
       reducer(
-        {...initialState, userPlaylists: ['xyz'], refreshingPlaylists: true, fetchingPlaylists: true},
-        actions.getPlaylistsSuccess(userPlaylists),
+        {
+          ...initialState,
+          totalUserPlaylists,
+          userPlaylists: ['xyz'],
+          refreshingPlaylists: true,
+          fetchingPlaylists: true,
+        },
+        actions.getPlaylistsSuccess(userPlaylists, totalUserPlaylists),
       ),
     )
-      .toStrictEqual({...initialState, userPlaylists, canPaginate: false});
-
-    expect(
-      reducer(
-        {...initialState, userPlaylists: ['xyz'], refreshingPlaylists: true, fetchingPlaylists: true},
-        actions.getPlaylistsSuccess([]),
-      ),
-    )
-      .toStrictEqual({...initialState, userPlaylists: ['xyz'], canPaginate: false});
+      .toStrictEqual({...initialState, userPlaylists, totalUserPlaylists});
   });
 
   it('should handle GET_PLAYLISTS_FAILURE', () => {

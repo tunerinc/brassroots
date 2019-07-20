@@ -68,7 +68,7 @@ export function getAlbums(
   refreshing: boolean = false,
   existingAlbums: number = 0,
 ): ThunkAction {
-  const limit: number = 20;
+  const limit: number = 50;
   const offset: number = existingAlbums;
   const market: string = 'US';
 

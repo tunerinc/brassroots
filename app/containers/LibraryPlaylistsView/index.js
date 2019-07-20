@@ -39,7 +39,7 @@ class LibraryPlaylistsView extends React.Component {
 
     this.shadowOpacity = new Animated.Value(0);
 
-    this._onEndReached = debounce(this.onEndReached, 1000);
+    this._onEndReached = debounce(this.onEndReached, 0);
   }
 
   componentDidMount() {
@@ -107,11 +107,25 @@ class LibraryPlaylistsView extends React.Component {
   }
 
   renderFooter() {
-    const {playlists: {fetchingPlaylists, refreshingPlaylists}} = this.props;
+    const {
+      playlists: {fetchingPlaylists, refreshingPlaylists, userPlaylists, totalUserPlaylists},
+    } = this.props;
 
-    if (!fetchingPlaylists || refreshingPlaylists) return null;
+    if (
+      !fetchingPlaylists
+      || refreshingPlaylists
+      || !userPlaylists.length
+    ) return null;
 
-    return <LoadingPlaylist />;
+    const total = totalUserPlaylists - userPlaylists.length < 50
+      ? totalUserPlaylists - userPlaylists.length
+      : 50;
+
+    return (
+      <View>
+        {[...Array(total)].map(e => <LoadingPlaylist />)}
+      </View>
+    );
   }
 
   renderCreateButton() {
@@ -125,11 +139,15 @@ class LibraryPlaylistsView extends React.Component {
   onEndReached = () => {
     const {
       getPlaylists,
-      playlists: {fetchingPlaylists, userPlaylists, canPaginate},
+      playlists: {fetchingPlaylists, userPlaylists, totalUserPlaylists},
       users: {currentUserID},
     } = this.props;
 
-    if (fetchingPlaylists || !canPaginate) return;
+    if (
+      fetchingPlaylists
+      || !userPlaylists.length
+      || userPlaylists.length === totalUserPlaylists
+    ) return;
 
     getPlaylists(currentUserID, false, userPlaylists.length);
   }
@@ -184,6 +202,7 @@ class LibraryPlaylistsView extends React.Component {
             refreshing={refreshingPlaylists}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
+            onEndReachedThreshold={0.5}
           />
         }
         {(userPlaylists.length === 0 || !userPlaylists.length) &&

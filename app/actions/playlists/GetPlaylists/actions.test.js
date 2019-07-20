@@ -22,12 +22,14 @@ describe('get playlists synchronous action creators', () => {
 
   it('creates get playlists success action', () => {
     const playlists: Array<string> = ['foo', 'bar'];
+    const total: number = 2;
     const expectedAction: Action = {
       type: types.GET_PLAYLISTS_SUCCESS,
       playlists,
+      total,
     };
 
-    expect(actions.getPlaylistsSuccess(playlists)).toStrictEqual(expectedAction);
+    expect(actions.getPlaylistsSuccess(playlists, total)).toStrictEqual(expectedAction);
   });
 
   it('creates get playlists failure action', () => {

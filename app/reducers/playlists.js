@@ -95,6 +95,7 @@ type Action = {
 type State = {
   +lastUpdated?: string,
   +userPlaylists?: Array<string>,
+  +totalUserPlaylists?: number,
   +playlistsByID?: {+[key: string]: Playlist},
   +totalPlaylists?: number,
   +playlistTracksByID?: {+[key: string]: PlaylistTrack},
@@ -198,12 +199,12 @@ const singlePlaylistState: Playlist = {
  * 
  * @property {string}   lastUpdated                The date/time the playlists were last updated
  * @property {string[]} userPlaylists              The Spoitify ids of the playlists saved in the current user's library
+ * @property {number}   totalUserPlaylists=0       The total amount of playlists the current user has saved in their library
  * @property {object}   playlistsByID              The playlist objects with the Spotify id as the key
  * @property {number}   totalPlaylists=0           The total amount of playlists
  * @property {object}   playlistTracksByID         The playlist track objects with a string of the playlist id and track id as the key
  * @property {number}   totalPlaylistTracks=0      The total amount of playlist tracks
  * @property {string}   selectedPlaylist=null      The selected playlis to view
- * @property {boolean}  canPaginate=true           Whether the playlists can be paginated
  * @property {boolean}  fetchingMembers=false      Whether the current user is fetching members of a playlist
  * @property {boolean}  refreshingPlaylists=false  Whether the current user is refreshing playlists
  * @property {boolean}  fetchingPlaylists=false    Whether the current user is fetching playlists
@@ -224,12 +225,12 @@ const singlePlaylistState: Playlist = {
 export const initialState: State = {
   lastUpdated,
   userPlaylists: [],
+  totalUserPlaylists: 0,
   playlistsByID: {},
   totalPlaylists: 0,
   playlistTracksByID: {},
   totalPlaylistTracks: 0,
   selectedPlaylist: null,
-  canPaginate: true,
   fetchingMembers: false,
   refreshingPlaylists: false,
   fetchingPlaylists: false,

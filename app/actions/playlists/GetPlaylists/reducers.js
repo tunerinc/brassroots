@@ -35,12 +35,10 @@ export function request(
   state: State,
   action: Action,
 ): State {
-  const {canPaginate} = state;
   const {refreshing: refreshingPlaylists} = action;
-  const updates = typeof canPaginate === 'boolean' && typeof refreshingPlaylists === 'boolean'
+  const updates = typeof refreshingPlaylists === 'boolean'
     ? {
       refreshingPlaylists,
-      canPaginate: refreshingPlaylists ? true : canPaginate,
       fetchingPlaylists: true,
       error: null,
     }
@@ -68,7 +66,7 @@ export function success(
   action: Action,
 ): State {
   const {refreshingPlaylists, userPlaylists: oldPlaylists} = state;
-  const {playlists} = action;
+  const {playlists, total: totalUserPlaylists} = action;
   const updates = (
     typeof refreshingPlaylists === 'boolean'
     && Array.isArray(oldPlaylists)
@@ -76,10 +74,10 @@ export function success(
   )
     ? {
       lastUpdated,
+      totalUserPlaylists,
       fetchingPlaylists: false,
       refreshingPlaylists: false,
       error: null,
-      canPaginate: playlists.length === 20 ? true : false,
       userPlaylists: refreshingPlaylists && playlists.length !== 0
         ? [...playlists]
         : [...oldPlaylists, ...playlists]
