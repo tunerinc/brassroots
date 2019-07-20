@@ -60,6 +60,14 @@ export function deleteQueueTrack(
 
       if (nextQueueID && nextTrackID) {
         batch.update(queueRef.doc(prevQueueID), {nextQueueID, nextTrackID});
+      } else {
+        batch.update(
+          queueRef.doc(prevQueueID),
+          {
+            nextQueueID: null,
+            nextTrackID: null,
+          },
+        );
       }
 
       batch.delete(queueRef.doc(queueID));
