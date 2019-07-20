@@ -10,6 +10,7 @@
  */
 
 import * as actions from './actions';
+import {updatePlayer} from '../../player/UpdatePlayer';
 import {type ThunkAction} from '../../../reducers/queue';
 import {
   type FirestoreInstance,
@@ -21,6 +22,7 @@ import {
 type Session = {|
   +id: string,
   +total: number,
+  +isLast: boolean,
 |};
 
 /**
@@ -32,14 +34,15 @@ type Session = {|
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param    {object}  session       The session object to delete a track from the queue
- * @param    {string}  session.id    The session id to delete the track from
- * @param    {number}  session.total The total next to play tracks from the session
- * @param    {string}  queueID       The track's queue id to delete from the queue
+ * @param    {object}  session        The session object to delete a track from the queue
+ * @param    {string}  session.id     The session id to delete the track from
+ * @param    {number}  session.total  The total next to play tracks from the session
+ * @param    {boolean} session.isLast Whether the track to be deleted is the last track in the queue
+ * @param    {string}  queueID        The track's queue id to delete from the queue
  * 
  * @returns  {Promise}
- * @resolves {object}                The track that was deleted from the session's queue
- * @rejects  {Error}                 The error which caused the delete queue track failure
+ * @resolves {object}                 The track that was deleted from the session's queue
+ * @rejects  {Error}                  The error which caused the delete queue track failure
  */
 export function deleteQueueTrack(
   session: Session,
@@ -56,7 +59,7 @@ export function deleteQueueTrack(
 
     try {
       const queueTrack: FirestoreDoc = await queueRef.doc(queueID).get();
-      const {prevQueueID, prevTrackID, nextQueueID, nextTrackID} = queueTrack.data();
+      const {prevQueueID, prevTrackID, nextQueueID, nextTrackID, likes} = queueTrack.data();
 
       if (nextQueueID && nextTrackID) {
         batch.update(queueRef.doc(prevQueueID), {nextQueueID, nextTrackID});
@@ -70,9 +73,17 @@ export function deleteQueueTrack(
         );
       }
 
+      if (session.total === 1) {
+        dispatch(updatePlayer({nextQueueID: null, nextTrackID: null}));
+      }
+
+      likes.forEach(userID => {
+        const likesDoc: FirestoreDoc = queueRef.doc(queueID).collection('likes').doc(userID);
+        batch.delete(likesDoc);
+      });
+
       batch.delete(queueRef.doc(queueID));
       batch.update(sessionRef, {'totals.queue': session.total - 1});
-
 
       await batch.commit();
       dispatch(actions.deleteQueueTrackSuccess(queueID));
