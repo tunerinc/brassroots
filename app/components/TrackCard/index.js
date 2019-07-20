@@ -25,6 +25,7 @@ type Props = {|
   context: Context,
   deleteTrack?: () => void,
   deleting?: boolean,
+  liking?: boolean,
   editing?: boolean,
   image?: string,
   liked?: boolean,
@@ -60,6 +61,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
       deleting,
       editing,
       image,
+      liking,
       liked,
       name,
       onPress,
@@ -163,9 +165,9 @@ export default class TrackCard extends React.PureComponent<Props, State> {
               error={queueError || null}
             />
           }
-          {(inQueue && !editing && toggleLike) &&
+          {(inQueue && !editing && toggleLike && typeof liking === 'boolean') &&
             <LikeButton
-              disabled={type === 'contextQueue'}
+              disabled={type === 'contextQueue' || liking}
               liked={type === 'userQueue' && typeof liked === 'boolean' && liked}
               showCount={inQueue && type !== 'contextQueue'}
               toggleLike={toggleLike}

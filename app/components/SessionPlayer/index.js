@@ -26,15 +26,9 @@ type Props = {|
 
 type State = {||};
 
-export default class SessionPlayer extends React.Component<Props, State> {
+export default class SessionPlayer extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-  }
-
-  shouldComponentUpdate(nextProps: Props) {
-    const {image, paused} = this.props;
-    const {image: newImage, paused: newPaused} = nextProps;
-    return image !== newImage || paused !== newPaused;
   }
 
   render() {
@@ -48,10 +42,10 @@ export default class SessionPlayer extends React.Component<Props, State> {
       paused,
       image,
     } = this.props;
-    const prevExists = isOwner && prevTrackID;
+    const prevExists = isOwner && typeof prevTrackID === 'string';
     const prevDisabled = prevExists ? false : true;
     const prevColor = prevExists ? 'rgba(254,254,254,0.9)' : 'rgba(254,254,254,0.2)';
-    const nextExists = isOwner && nextTrackID;
+    const nextExists = isOwner && typeof nextTrackID === 'string';
     const nextDisabled = nextExists ? false : true;
     const nextColor = nextExists ? 'rgba(254,254,254,0.9)' : 'rgba(254,254,254,0.2)';
 
