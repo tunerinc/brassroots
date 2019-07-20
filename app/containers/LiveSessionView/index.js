@@ -95,6 +95,7 @@ class LiveSessionView extends React.Component {
     this.handleMute = this.handleMute.bind(this);
     this.skipNext = this.skipNext.bind(this);
     this.skipPrev = this.skipPrev.bind(this);
+    this.delete = this.delete.bind(this);
     this.renderTrack = this.renderTrack.bind(this);
     this.renderMessage = this.renderMessage.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
@@ -357,6 +358,16 @@ class LiveSessionView extends React.Component {
     previousTrack(user, session);
   }
 
+  delete = queueID => () => {
+    const {
+      deleteQueueTrack,
+      queue: {totalUserQueue: total},
+      sessions: {currentSessionID: id},
+    } = this.props;
+
+    deleteQueueTrack({id, total}, queueID);
+  }
+
   renderTrack({item, index}) {
     const {editingQueue} = this.state;
     const {
@@ -377,6 +388,7 @@ class LiveSessionView extends React.Component {
         artists={artists.map(a => a.name).join(', ')}
         context={{id: ownerID, type: 'userQueue', displayName, name: 'userQueue'}}
         deleting={deleting.includes(item)}
+        deleteTrack={this.delete(item)}
         editing={editingQueue}
         image={profileImage}
         liked={liked}
