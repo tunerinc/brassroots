@@ -158,7 +158,7 @@ export function createSession(
       if (
         context.type === 'user-tracks'
         && Array.isArray(context.tracks)
-        && context.tracks.length !== 20
+        && context.tracks.length !== 3
         && typeof context.position === 'number'
         && typeof context.total === 'number'
         && (context.tracks.length + context.position + 1) < context.total
@@ -168,7 +168,7 @@ export function createSession(
           offset: number,
           market: string,
         } = {
-          limit: 20 - context.tracks.length,
+          limit: 3 - context.tracks.length,
           offset: context.tracks.length + context.position + 1,
           market: 'US',
         };
@@ -235,11 +235,13 @@ export function createSession(
           track,
           id: newTrackID,
           prevQueueID: null,
+          prevTrackID: null,
           nextQueueID: null,
-          added: true,
+          nextTrackID: null,
           totalLikes: 0,
           likes: [],
           timeAdded: firestore.FieldValue.serverTimestamp(),
+          isCurrent: true,
           user: {
             id: user.id,
             displayName: user.displayName,

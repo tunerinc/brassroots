@@ -23,10 +23,8 @@ describe('add queue tracks action creator', () => {
         userID: 'foo',
         totalLikes: 0,
         liked: false,
-        timeAdded: {
-          seconds: 0,
-          nanoseconds: 0,
-        },
+        seconds: 0,
+        nanoseconds: 0,
       },
       'bar': {
         id: 'bar',
@@ -34,10 +32,8 @@ describe('add queue tracks action creator', () => {
         userID: 'bar',
         totalLikes: 0,
         liked: false,
-        timeAdded: {
-          seconds: 0,
-          nanoseconds: 0,
-        },
+        seconds: 0,
+        nanoseconds: 0,
       },
     };
 

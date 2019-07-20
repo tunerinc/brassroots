@@ -10,6 +10,7 @@
  */
 
 import * as actions from './actions';
+import {updatePlayer} from '../../player/UpdatePlayer';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/queue';
 import {
@@ -22,7 +23,10 @@ import {
 type Session = {|
   +id: string,
   +prevQueueID: string,
-  +totalQueue: number
+  +prevTrackID: string,
+  +nextQueueID?: ?string,
+  +nextTrackID?: ?string,
+  +totalQueue: number,
 |};
 
 type Track = {|
@@ -57,12 +61,14 @@ type User = {|
  * 
  * @param  {object}   session                    The session object to add the track to
  * @param  {string}   session.id                 The session id to queue a track in
- * @param  {string}   session.prevQueueID        The id of the queue track before the to-be-queued track
+ * @param  {string}   session.prevQueueID        The queue id of the track previous to the to be queued track
+ * @param  {string}   session.prevTrackID        The Spotify id of the track previous to the to be queued track
  * @param  {number}   session.totalQueue         The total amount of tracks left in the queue
  * @param  {object}   track                      The Spotify track object to queue in the session
  * @param  {string}   track.id                   The Spotify id for the track to queue
  * @param  {string}   track.name                 The name of the track to queue
  * @param  {number}   track.durationMS           The duration of the track in milliseconds
+ * @param  {number}   track.trackNumber          The track number of the song within the album
  * @param  {object}   track.album                The Spotify album object of the track
  * @param  {string}   track.album.id             The Spotify id of the track's album
  * @param  {string}   track.album.name           The name of the track's album
@@ -97,24 +103,31 @@ export function queueTrack(
     const queueRef: FirestoreDocs = sessionRef.collection('queue');
     const queueDoc: FirestoreDoc = queueRef.doc();
     const queueID: string = queueDoc.id;
-    const {totalQueue, prevQueueID} = session;
+    const {totalQueue, prevQueueID, prevTrackID} = session;
 
     let batch: FirestoreBatch = firestore.batch();
 
     try {
+      if (totalQueue === 1) {
+        dispatch(updatePlayer({nextQueueID: queueID, nextTrackID: track.id}));
+      }
+
       batch.update(sessionRef, {'totals.queue': totalQueue + 1});
-      batch.update(queueRef.doc(prevQueueID), {nextQueueID: queueID});
+      batch.update(queueRef.doc(prevQueueID), {nextQueueID: queueID, nextTrackID: track.id});
       batch.set(
         queueRef.doc(queueID),
         {
           track,
           user,
           prevQueueID,
+          prevTrackID,
           id: queueID,
           nextQueueID: null,
+          nextTrackID: null,
           timeAdded: firestore.FieldValue.serverTimestamp(),
-          added: true,
+          isCurrent: false,
           totalLikes: 0,
+          likes: [],
         },
       );
 

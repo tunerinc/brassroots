@@ -41,7 +41,7 @@ export function getPlaylistTracks(
   refreshing?: boolean = false,
   offset?: number = 0,
 ): ThunkAction {
-  const limit: number = 50;
+  const limit: number = 100;
 
   return async dispatch => {
     dispatch(actions.getPlaylistTracksRequest(refreshing));

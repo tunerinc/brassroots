@@ -59,7 +59,7 @@ export function getPlaylists(
   existingPlaylists?: number = 0,
 ): ThunkAction {
   const options: Options = {
-    limit: 20,
+    limit: 50,
     offset: existingPlaylists,
   };
 
@@ -67,7 +67,7 @@ export function getPlaylists(
     dispatch(actions.getPlaylistsRequest(refreshing));
 
     try {
-      const {items} = await getUserPlaylists(spotifyUserID, options);
+      const {items, total} = await getUserPlaylists(spotifyUserID, options);
       const playlistsFromSpotify: Playlists = items.reduce((obj, playlist) => {
         const large: string = playlist.images.length ? playlist.images[0].url : '';
         const medium: string = playlist.images.length === 3 ? playlist.images[1].url : large;
@@ -99,7 +99,7 @@ export function getPlaylists(
 
       dispatch(addPeople(users));
       dispatch(addPlaylists(playlistsFromSpotify));
-      dispatch(actions.getPlaylistsSuccess(items.map(p => p.id)));
+      dispatch(actions.getPlaylistsSuccess(items.map(p => p.id), total));
     } catch (err) {
       dispatch(actions.getPlaylistsFailure(err));
     }

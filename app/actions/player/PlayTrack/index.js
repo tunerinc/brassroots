@@ -62,8 +62,10 @@ type Session = {
     id: string,
     totalLikes: number,
     userID: string,
+    prevQueueID: string,
     prevTrackID: string,
-    nextQueueID?: string,
+    nextQueueID: ?string,
+    nextTrackID: ?string,
     track: {
       trackID?: string,
       timeAdded?: string | number,
@@ -130,6 +132,7 @@ type Context = ?{
  * @param    {string}   session.current.track.id             The Spotify track id of the current track
  * @param    {string}   session.current.track.name           The name of the track
  * @param    {number}   session.current.track.durationMS     The duration of the track in milliseconds
+ * @param    {number}   session.current.track.trackNumber    The track number of the track within the album
  * @param    {object}   session.current.track.album          The album the track is in
  * @param    {string}   session.current.track.album.id       The Spotify id of the album
  * @param    {string}   session.current.track.album.name     The name of the album
@@ -141,7 +144,8 @@ type Context = ?{
  * @param    {string}   session.current.track.artists.name   The name of the track artist
  * @param    {number}   session.current.totalLikes           The total amount of likes the current track has
  * @param    {string}   session.current.userID               The id of the user who queued the track
- * @param    {string}   [session.current.nextQueueID]        The Brassroots id of the next track from the current track, if available
+ * @param    {string}   [session.current.nextQueueID]        The queue id of the next track from the current track
+ * @param    {string}   [session.current.nextTrackID]        The Spotify id of the next track from the current
  * @param    {object}   [session.coords]                     The coordinates of the session the current user is in
  * @param    {number}   session.lat                          The latitude of the gps coordinates
  * @param    {number}   session.lon                          The longitude of the gps coordinates
@@ -176,7 +180,6 @@ export function playTrack(
     const {totalPlayed, current, coords} = session;
 
     let batch = firestore.batch();
-    let prevQueueID: ?string = null;
 
     try {
       if (!track.id) {
@@ -189,7 +192,7 @@ export function playTrack(
         context
         && context.type === 'user-tracks'
         && Array.isArray(context.tracks)
-        && context.tracks.length !== 20
+        && context.tracks.length !== 3
         && typeof context.position === 'number'
         && typeof context.total === 'number'
         && (context.tracks.length + context.position + 1) < context.total
@@ -199,7 +202,7 @@ export function playTrack(
           offset: number,
           market: string,
         } = {
-          limit: 20 - context.tracks.length,
+          limit: 3 - context.tracks.length,
           offset: context.tracks.length + context.position + 1,
           market: 'US',
         };
@@ -207,7 +210,7 @@ export function playTrack(
         const {items} = await getMySavedTracks(options);
 
         context = updateObject(context, {
-          tracks: Array.isArray(context.tracks)
+          tracks: Array.isArray(context.tracks) && Array.isArray(items)
             ? [...context.tracks, ...items.map(item => item.track.id)]
             : context.tracks,
         });
@@ -246,20 +249,17 @@ export function playTrack(
           throw new Error('Unable to retrieve current track from Firestore');
         }
 
-        console.log(queueTrack.data());
-
-        prevQueueID = queueTrack.data().prevQueueID;
-
-        batch.delete(sessionQueueRef.doc(current.id));
         batch.set(
           sessionPrevRef.doc(current.id),
           {
-            prevQueueID,
             id: current.id,
-            trackID: current.track.id,
             userID: current.userID,
             totalLikes: current.totalLikes,
+            prevQueueID: queueTrack.data().prevQueueID,
+            prevTrackID: queueTrack.data().prevTrackID,
             nextQueueID: track.id,
+            nextTrackID: track.trackID,
+            track: {...current.track},
           },
         );
 
@@ -270,18 +270,26 @@ export function playTrack(
             id: track.id,
             likes: [],
             totalLikes: 0,
-            played: true,
-            added: true,
             timeAdded: firestore.FieldValue.serverTimestamp(),
+            isCurrent: true,
             prevQueueID: current.id,
+            prevTrackID: current.track.id,
             nextQueueID: current.nextQueueID || null,
+            nextTrackID: current.nextTrackID || null,
             track: {...track, id: track.trackID, trackID: null},
           },
         );
 
         if (current.nextQueueID) {
-          batch.update(sessionQueueRef.doc(current.nextQueueID), {prevQueueID: track.id});
+          batch.update(sessionQueueRef.doc(current.nextQueueID),
+            {
+              prevQueueID: track.id,
+              prevTrackID: track.trackID,
+            },
+          );
         }
+
+        batch.delete(sessionQueueRef.doc(current.id));
       }
 
       const promises = [

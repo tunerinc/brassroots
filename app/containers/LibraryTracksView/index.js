@@ -40,7 +40,6 @@ class LibraryTracksView extends React.Component {
       isTrackMenuOpen: false,
       selectedTrack: "",
       shadowOpacity: new Animated.Value(0),
-      canPaginate: true,
     }
     
     this.openModal = this.openModal.bind(this);
@@ -54,7 +53,7 @@ class LibraryTracksView extends React.Component {
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
 
-    this._onEndReached = debounce(this.onEndReached, 1000);
+    this._onEndReached = debounce(this.onEndReached, 0);
   }
 
   componentDidMount() {
@@ -67,18 +66,6 @@ class LibraryTracksView extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const {
-      tracks: {fetchingTracks: oldFetching, userTracks: oldTracks, refreshingTracks: oldRefreshing},
-    } = prevProps;
-    const {tracks: {fetchingTracks, refreshingTracks, userTracks, error}} = this.props;
-
-    if (oldRefreshing && !refreshingTracks) this.setState({canPaginate: true});
-    if (oldFetching && !fetchingTracks && oldTracks.length === userTracks.length && !error) {
-      this.setState({canPaginate: false});
-    }
-  }
-
   openModal = selectedTrack => () => {
     this.setState({selectedTrack, isTrackMenuOpen: true});
   }
@@ -88,10 +75,9 @@ class LibraryTracksView extends React.Component {
   }
 
   onEndReached() {
-    const {canPaginate} = this.state;
-    const {getTracks, tracks: {fetchingTracks, userTracks}} = this.props;
+    const {getTracks, tracks: {fetchingTracks, userTracks, totalUserTracks}} = this.props;
 
-    if (fetchingTracks || !userTracks.length || !canPaginate) return;
+    if (fetchingTracks || !userTracks.length || userTracks.length === totalUserTracks) return;
 
     getTracks(false, userTracks.length);
   }
@@ -150,11 +136,22 @@ class LibraryTracksView extends React.Component {
   }
 
   renderFooter() {
-    const {tracks: {fetchingTracks, refreshingTracks}} = this.props;
+    const {tracks: {fetchingTracks, refreshingTracks, userTracks, totalUserTracks}} = this.props;
 
-    if (!fetchingTracks || refreshingTracks) return null;
+    if (
+      !fetchingTracks
+      || refreshingTracks
+      || !userTracks.length
+      || userTracks.length === totalUserTracks
+    ) return null;
 
-    return <LoadingTrack />;
+    const total = totalUserTracks - userTracks.length < 50 ? totalUserTracks - userTracks.length : 50;
+
+    return (
+      <View>
+        {[...Array(total)].map(e => <LoadingTrack />)}
+      </View>
+    );
   }
 
   handlePlay = (trackID, trackIndex) => () => {
@@ -162,7 +159,7 @@ class LibraryTracksView extends React.Component {
       createSession,
       playTrack,
       albums: {albumsByID},
-      player: {prevQueueID, nextQueueID},
+      player: {prevQueueID, prevTrackID, nextQueueID, nextTrackID, currentQueueID},
       queue: {queueByID},
       sessions: {currentSessionID, sessionsByID},
       settings: {preference: {session: mode}},
@@ -204,8 +201,10 @@ class LibraryTracksView extends React.Component {
             totalPlayed: currentSession.totalPlayed,
             current: {
               prevQueueID,
+              prevTrackID,
               nextQueueID,
-              id: currentSession.currentQueueID,
+              nextTrackID,
+              id: currentQueueID,
               totalLikes: currentQueue.totalLikes,
               userID: currentQueue.userID,
               track: {
@@ -231,7 +230,7 @@ class LibraryTracksView extends React.Component {
             type: 'user-tracks',
             total: totalUserTracks,
             position: trackIndex,
-            tracks: userTracks.slice(trackIndex + 1),
+            tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
           },
         );
       } else {
@@ -250,7 +249,7 @@ class LibraryTracksView extends React.Component {
           type: 'user-tracks',
           total: totalUserTracks,
           position: trackIndex,
-          tracks: userTracks.slice(trackIndex + 1),
+          tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
         },
         mode,
       );
@@ -262,52 +261,45 @@ class LibraryTracksView extends React.Component {
     const {
       queueTrack,
       albums: {albumsByID},
-      artists: {artistsByID},
-      player: {prevQueueID},
-      queue: {userQueue, queueByID, contextQueue, totalQueue},
+      player: {currentQueueID},
+      queue: {userQueue, queueByID, totalQueue},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
+    const currentSession = sessionsByID[currentSessionID];
 
-    if (currentSessionID && Object.keys(sessionsByID).indexOf(currentSessionID)) {
-      const {listeners, ownerID} = sessionsByID[currentSessionID];
-      const isListenerOwner = listeners.indexOf(currentUserID) !== -1 || ownerID === currentUserID;
-      const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
+    if (currentSession) {
+      const {listeners, ownerID} = currentSession;
+      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+      const songInQueue = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);
       const {displayName, profileImage} = usersByID[currentUserID];
 
-      if (isListenerOwner && !songQueued) {
-        const {name, durationMS, albumID, artists} = tracksByID[selectedTrack];
-        const {name: albumName, small, medium, large, artists: albumArtists} = albumsByID[albumID];
-        const trackToQueue = {
+      if (isListenerOwner && !songInQueue) {
+        const {name, durationMS, trackNumber, albumID, artists} = tracksByID[selectedTrack];
+        const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1] : currentQueueID;
+        const {trackID: prevTrackID} = queueByID[prevQueueID];
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
+        const track = {
           name,
           durationMS,
+          trackNumber,
+          artists,
           id: selectedTrack,
-          artists: artists.map(a => a.name).join(', '),
           album: {
             small,
             medium,
             large,
             id: albumID,
             name: albumName,
-            artists: albumArtists.map(a => a.name).join(', '),
+            artists: albumArtists,
           },
         };
 
         this.closeModal();
-        queueTrack(
-          {
-            prevQueueID,
-            totalQueue,
-            id: currentSessionID,
-          },
-          trackToQueue,
-          {
-            displayName,
-            profileImage,
-            id: currentUserID,
-          },
-        );
+        queueTrack(session, track, user);
       }
     }
   }
@@ -392,7 +384,7 @@ class LibraryTracksView extends React.Component {
             refreshing={refreshingTracks}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
-            onEndReachedThreshold={0.7}
+            onEndReachedThreshold={0.5}
           />
         }
         {(userTracks.length === 0 || !userTracks.length) &&

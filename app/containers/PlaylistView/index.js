@@ -63,7 +63,6 @@ class PlaylistView extends React.Component {
       isPlaylistMenuOpen: false,
       isTrackMenuOpen: false,
       selectedTrack: '',
-      canPaginate: true,
     };
 
     this.onEndReached = this.onEndReached.bind(this);
@@ -80,7 +79,7 @@ class PlaylistView extends React.Component {
     this.onPanelDrag = this.onPanelDrag.bind(this);
 
     this._deltaY = new Animated.Value(0);
-    this._onEndReached = debounce(this.onEndReached, 1000);
+    this._onEndReached = debounce(this.onEndReached, 0);
   }
 
   componentDidMount() {
@@ -96,29 +95,14 @@ class PlaylistView extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const {playlists: {fetchingTracks: oldFetching, playlistsByID: oldPlaylists}} = prevProps;
-    const {playlistToView, playlists: {fetchingTracks, playlistsByID, error}} = this.props;
-    if (
-      playlistToView
-      && oldFetching
-      && !fetchingTracks
-      && oldPlaylists[playlistToView].tracks.length === playlistsByID[playlistToView].tracks.length
-      && !error
-    ) {
-      this.setState({canPaginate: false});
-    }
-  }
-
   onEndReached() {
-    const {canPaginate} = this.state;
     const {getPlaylistTracks, playlistToView, playlists: {fetchingTracks, playlistsByID}} = this.props;
 
     if (
       fetchingTracks
       || !playlistToView
       || !playlistsByID[playlistToView].tracks.length
-      || !canPaginate
+      || playlistsByID[playlistToView].tracks.length === playlistsByID[playlistToView].total
     ) return;
 
     getPlaylistTracks(playlistToView, false, playlistsByID[playlistToView].tracks.length);
@@ -133,11 +117,23 @@ class PlaylistView extends React.Component {
   }
 
   renderFooter() {
-    const {playlists: {fetchingTracks, refreshingTracks}} = this.props;
+    const {playlistToView, playlists: {fetchingTracks, refreshingTracks, playlistsByID}} = this.props;
+    const {tracks, total: totalTracks} = playlistsByID[playlistToView];
 
-    if (!fetchingTracks || refreshingTracks) return <View></View>;
+    if (
+      !fetchingTracks
+      || refreshingTracks
+      || !tracks.length
+      || tracks.length === totalTracks
+    ) return <View></View>;
 
-    return <LoadingTrack type='cover' />;
+    const total = totalTracks - tracks.length < 100 ? totalTracks - tracks.length : 100;
+
+    return (
+      <View>
+        {[...Array(total)].map(e => <LoadingTrack type='cover' />)}
+      </View>
+    );
   }
 
   navToDetails = (playlistToView, title) => () => {
@@ -188,51 +184,45 @@ class PlaylistView extends React.Component {
     const {
       queueTrack,
       albums: {albumsByID},
-      player: {prevQueueID},
-      queue: {userQueue, queueByID, contextQueue, totalQueue},
+      player: {currentQueueID},
+      queue: {userQueue, queueByID, totalQueue},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
+    const currentSession = sessionsByID[currentSessionID];
 
-    if (currentSessionID && Object.keys(sessionsByID).indexOf(currentSessionID)) {
-      const {listeners, ownerID} = sessionsByID[currentSessionID];
-      const isListenerOwner = listeners.indexOf(currentUserID) !== -1 || ownerID === currentUserID;
-      const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
+    if (currentSession) {
+      const {listeners, ownerID} = currentSession;
+      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+      const songInQueue = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);
       const {displayName, profileImage} = usersByID[currentUserID];
 
-      if (isListenerOwner && !songQueued && selectedTrack !== '') {
-        const {name, durationMS, albumID, artists} = tracksByID[selectedTrack];
-        const {name: albumName, small, medium, large, artists: albumArtists} = albumsByID[albumID];
-        const trackToQueue = {
+      if (isListenerOwner && !songInQueue) {
+        const {name, durationMS, trackNumber, albumID, artists} = tracksByID[selectedTrack];
+        const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1] : currentQueueID;
+        const {trackID: prevTrackID} = queueByID[prevQueueID];
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
+        const track = {
           name,
           durationMS,
+          trackNumber,
+          artists,
           id: selectedTrack,
-          artists: artists.map(a => a.name).join(', '),
           album: {
             small,
             medium,
             large,
             id: albumID,
             name: albumName,
-            artists: albumArtists.map(a => a.name).join(', '),
+            artists: albumArtists,
           },
         };
 
         this.closeModal();
-        queueTrack(
-          {
-            prevQueueID,
-            totalQueue,
-            id: currentSessionID,
-          },
-          trackToQueue,
-          {
-            displayName,
-            profileImage,
-            id: currentUserID,
-          },
-        );
+        queueTrack(session, track, user);
       }
     }
   }
@@ -296,6 +286,7 @@ class PlaylistView extends React.Component {
                 id: currentTrack.id,
                 name: currentTrack.name,
                 durationMS: currentTrack.durationMS,
+                trackNumber: currentTrack.trackNumber,
                 artists: currentTrack.artists,
                 album: {
                   id: currentAlbum.id,
@@ -540,7 +531,7 @@ class PlaylistView extends React.Component {
               refreshing={refreshingTracks}
               onRefresh={this.handleRefresh}
               onEndReached={this._onEndReached}
-              onEndReachedThreshold={0.7}
+              onEndReachedThreshold={0.5}
               onScroll={Animated.event(
                 [{nativeEvent: {contentOffset: {y}}}],
                 {listener: this.onScroll},

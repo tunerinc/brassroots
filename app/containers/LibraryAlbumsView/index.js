@@ -27,7 +27,6 @@ class LibraryAlbumsView extends React.Component {
 
     this.state = {
       shadowOpacity: new Animated.Value(0),
-      canPaginate: true,
     };
 
     this.onScroll = this.onScroll.bind(this);
@@ -36,7 +35,7 @@ class LibraryAlbumsView extends React.Component {
     this.onEndReached = this.onEndReached.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
 
-    this._onEndReached = debounce(this.onEndReached, 1000);
+    this._onEndReached = debounce(this.onEndReached, 0);
   }
 
   componentDidMount() {
@@ -47,24 +46,10 @@ class LibraryAlbumsView extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const {
-      albums: {fetchingAlbums: oldFetching, userAlbums: oldAlbums, refreshingAlbums: oldRefreshing},
-    } = prevProps;
-    const {albums: {fetchingAlbums, refreshingAlbums, userAlbums, error}} = this.props;
-
-    if (oldRefreshing && !refreshingAlbums) this.setState({canPaginate: true});
-    if (oldFetching && !fetchingAlbums && oldAlbums.length === userAlbums.length && !error) {
-      this.setState({canPaginate: false});
-    }
-
-  }
-
   onEndReached() {
-    const {canPaginate} = this.state;
-    const {getAlbums, albums: {fetchingAlbums, userAlbums}} = this.props;
+    const {getAlbums, albums: {fetchingAlbums, userAlbums, totalUserAlbums}} = this.props;
 
-    if (fetchingAlbums || !userAlbums.length || !canPaginate) return;
+    if (fetchingAlbums || !userAlbums.length || userAlbums.length === totalUserAlbums) return;
 
     getAlbums(false, userAlbums.length);
   }
@@ -117,11 +102,22 @@ class LibraryAlbumsView extends React.Component {
   }
 
   renderFooter() {
-    const {albums: {fetchingAlbums, refreshingAlbums}} = this.props;
+    const {albums: {fetchingAlbums, refreshingAlbums, userAlbums, totalUserAlbums}} = this.props;
 
-    if (!fetchingAlbums || refreshingAlbums) return <View></View>;
+    if (
+      !fetchingAlbums
+      || refreshingAlbums
+      || !userAlbums.length
+      || userAlbums.length === totalUserAlbums
+    ) return <View></View>;
 
-    return <LoadingAlbum />;
+    const total = totalUserAlbums - userAlbums.length < 50 ? totalUserAlbums - userAlbums.length : 50;
+
+    return (
+      <View>
+        {[...Array(total)].map(e => <LoadingAlbum />)}
+      </View>
+    );
   }
 
   render() {
@@ -156,7 +152,7 @@ class LibraryAlbumsView extends React.Component {
             refreshing={refreshingAlbums}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
-            onEndReachedThreshold={0.7}
+            onEndReachedThreshold={0.5}
           />
         }
         {(userAlbums.length === 0 || !userAlbums.length) &&
