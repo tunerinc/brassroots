@@ -15,6 +15,7 @@ import Spotify from 'rn-spotify-sdk';
 // import {addRecentTrack} from '../../tracks/AddRecentTrack';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {removeQueueTrack} from '../../queue/RemoveQueueTrack';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/player';
 import {
@@ -135,10 +136,11 @@ export function nextTrack(
 
       const promises = [
         batch.commit(),
-        Spotify.playURI(`spotify:track:${nextTrack.track.id}`, 0, 0),
+        Spotify.playURI(`spotify:track:${nextDoc.data().track.id}`, 0, 0),
       ];
 
       await Promise.all(promises);
+      dispatch(removeQueueTrack(nextQueueID));
       dispatch(
         actions.nextTrackSuccess(
           nextQueueID,
