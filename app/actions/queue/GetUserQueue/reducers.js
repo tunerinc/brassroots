@@ -54,6 +54,26 @@ export function success(
 ): State {
   const {queueByID, userQueue: oldQueue} = state;
   const {unsubscribe, queue: userQueue} = action;
+  const newQueue: Array<string> = Array.isArray(userQueue) && Array.isArray(oldQueue)
+    ? [...oldQueue, ...userQueue]
+      .filter((el, i, arr) => i === arr.indexOf(el))
+      .sort((a, b) => {
+        if (
+          typeof queueByID !== 'undefined'
+          && typeof queueByID[a].seconds === 'number'
+          && typeof queueByID[b].seconds === 'number'
+          && typeof queueByID[a].nanoseconds === 'number'
+          && typeof queueByID[b].nanoseconds === 'number'
+        ) {
+          const {seconds: secA, nanoseconds: nanoA} = queueByID[a];
+          const {seconds: secB, nanoseconds: nanoB} = queueByID[b];
+          return secA < secB ? -1 : secA > secB ? 1 : nanoA < nanoB ? -1 : nanoA > nanoB ? 1 : 0;
+        } else {
+          return 0;
+        }
+      })
+    : [];
+
   const updates = (
     Array.isArray(userQueue)
     && typeof unsubscribe === 'function'
@@ -63,23 +83,8 @@ export function success(
       unsubscribe,
       fetchingQueue: false,
       error: null,
-      userQueue: [...oldQueue, ...userQueue]
-        .filter((el, i, arr) => i === arr.indexOf(el))
-        .sort((a, b) => {
-          if (
-            typeof queueByID !== 'undefined'
-            && typeof queueByID[a].seconds === 'number'
-            && typeof queueByID[b].seconds === 'number'
-            && typeof queueByID[a].nanoseconds === 'number'
-            && typeof queueByID[b].nanoseconds === 'number'
-          ) {
-            const {seconds: secA, nanoseconds: nanoA} = queueByID[a];
-            const {seconds: secB, nanoseconds: nanoB} = queueByID[b];
-            return secA < secB ? -1 : secA > secB ? 1 : nanoA < nanoB ? -1 : nanoA > nanoB ? 1 : 0;
-          } else {
-            return 0;
-          }
-        }),
+      userQueue: newQueue,
+      totalQueue: newQueue.length,
     }
     : {};
 
