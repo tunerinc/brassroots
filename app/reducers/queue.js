@@ -70,6 +70,7 @@ type Action = {
   +queue?: ?Array<string>,
   +unsubscribe?: () => void,
   +updates?: Updates,
+  +removeTrack?: boolean,
 };
 
 type State = {

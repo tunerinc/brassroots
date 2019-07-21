@@ -108,7 +108,7 @@ export function queueTrack(
     let batch: FirestoreBatch = firestore.batch();
 
     try {
-      if (totalQueue === 1) {
+      if (totalQueue === 0) {
         dispatch(updatePlayer({nextQueueID: queueID, nextTrackID: track.id}));
       }
 

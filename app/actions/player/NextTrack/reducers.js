@@ -56,17 +56,13 @@ export function success(
   action: Action,
 ): State {
   const {currentQueueID: prevQueueID, currentTrackID: prevTrackID} = state;
-  const {durationMS, nextQueueID, nextTrackID, currentQueueID, currentTrackID} = action;
+  const {type, ...rest} = action;
   
   return updateObject(state, {
+    ...rest,
     lastUpdated,
     prevQueueID,
     prevTrackID,
-    currentQueueID,
-    currentTrackID,
-    durationMS,
-    nextQueueID,
-    nextTrackID,
     progress: 0,
     skippingNext: false,
     paused: false,

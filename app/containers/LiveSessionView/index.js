@@ -307,7 +307,21 @@ class LiveSessionView extends React.Component {
   }
 
   skipNext() {
-    console.log('skip next pressed');
+    const {
+      nextTrack,
+      player: {nextQueueID, currentQueueID: current},
+      queue: {totalQueue},
+      sessions: {currentSessionID, sessionsByID},
+      users: {currentUserID, usersByID},
+    } = this.props;
+    const {displayName, profileImage} = usersByID[currentUserID];
+    const {totalPlayed, totalListeners: totalUsers} = sessionsByID[currentSessionID];
+
+    nextTrack(
+      {displayName, profileImage, id: currentUserID},
+      {totalQueue, totalPlayed, totalUsers, current, id: currentSessionID},
+      nextQueueID,
+    );
   }
 
   skipPrev() {

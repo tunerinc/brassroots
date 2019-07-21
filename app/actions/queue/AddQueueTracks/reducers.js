@@ -52,7 +52,7 @@ export function addSingleTrack(state, action) {
 export function addQueueTracks(state, action) {
   const {tracks} = action;
   
-  let {queueByID} = state;
+  let {queueByID, userQueue} = state;
 
   Object.values(tracks).forEach(track => {
     const addedTrack = singleTrack(queueByID[track.id], {...action, track});
@@ -62,7 +62,7 @@ export function addQueueTracks(state, action) {
   return updateObject(state, {
     lastUpdated,
     queueByID,
-    totalQueue: Object.keys(queueByID).length,
+    totalQueue: userQueue.length,
     error: null,
   });
 }
