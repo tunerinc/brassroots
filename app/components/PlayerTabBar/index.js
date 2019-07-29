@@ -163,13 +163,15 @@ class PlayerTabBar extends React.Component {
     const {
       nextTrack,
       stopPlayer,
-      queue: {userQueue, contextQueue},
+      player: {nextQueueID, currentQueueID: current},
+      queue: {userQueue, contextQueue, totalQueue},
       sessions: {currentSessionID, sessionsByID},
-      users: {currentUserID},
+      users: {currentUserID, usersByID},
     } = this.props;
+    const {displayName, profileImage} = usersByID[currentUserID];
     
     if (currentSessionID && sessionsByID[currentSessionID]) {
-      const {ownerID} = sessionsByID[currentSessionID];
+      const {ownerID, totalPlayed, totalListeners: totalUsers} = sessionsByID[currentSessionID];
 
       clearInterval(this.progressInterval);
       BackgroundTimer.stop();
@@ -177,16 +179,12 @@ class PlayerTabBar extends React.Component {
       // add seeking edge case when song close to end
 
       if (ownerID === currentUserID) {
-        if (userQueue.length !== 0 || contextQueue.length !== 0) {
-          // nextTrack(
-          //   currentUserID,
-          //   {
-          //     id: currentSessionID,
-          //     moreToPlay,
-          //     totalNext: nextToPlay.length + 1,
-          //     totalPlayed: previouslyPlayed.length,
-          //   },
-          // );
+        if (typeof nextQueueID === 'string') {
+          nextTrack(
+            {displayName, profileImage, id: currentUserID},
+            {totalQueue, totalPlayed, totalUsers, current, id: currentSessionID},
+            nextQueueID,
+          );
         } else {
           stopPlayer(currentSessionID);
         }
