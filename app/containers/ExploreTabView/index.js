@@ -329,7 +329,7 @@ class ExploreTabView extends React.Component {
         {(trendingSessions.length === 0 || !trendingSessions.length) &&
           <View style={styles.scrollContainer}>
             <View style={styles.scrollWrap}>
-              {!fetchingSessions &&
+              {fetchingSessions &&
                 <View>
                   <LoadingSession />
                   <LoadingSession />
@@ -337,12 +337,12 @@ class ExploreTabView extends React.Component {
                   <LoadingSession />
                 </View>
               }
-              {fetchingSessions &&
+              {!fetchingSessions &&
                 <View style={styles.inner}>
                   {sessionError === 'Unauthorized' && <Text>Allow permission to access location</Text>}
-                  {!userError || !sessionError && <Text>Nothing to show</Text>}
-                  {userError || (sessionError && sessionError !== 'Unauthorized') &&
-                    <Text>Unable to retrieve live sessions</Text>
+                  {(!userError || !sessionError) && <Text>Nothing to show</Text>}
+                  {(userError || (sessionError && sessionError !== 'Unauthorized')) &&
+                    <Text>There was an error</Text>
                   }
                 </View>
               }
