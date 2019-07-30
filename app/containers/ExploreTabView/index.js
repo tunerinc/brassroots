@@ -133,6 +133,10 @@ class ExploreTabView extends React.Component {
       users: {currentUserID, usersByID},
     } = this.props;
     const {following} = usersByID[currentUserID];
+    const sessionExists = typeof sessionsByID[selectedSession] === 'object';
+
+    if (!sessionExists) return <View></View>;
+
     const sessionOwner = usersByID[sessionsByID[selectedSession].ownerID] || null;
 
     return (
@@ -171,6 +175,9 @@ class ExploreTabView extends React.Component {
       users: {usersByID},
     } = this.props;
     const session = sessionsByID[item];
+
+    if (!session) return <View></View>;
+
     const track = tracksByID[session.currentTrackID];
     const album = albumsByID[track.albumID];
     const owner = usersByID[session.ownerID];
