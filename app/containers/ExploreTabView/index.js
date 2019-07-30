@@ -159,66 +159,8 @@ class ExploreTabView extends React.Component {
     });
   }
 
-  joinSession = (sessionID) => () => {
-    const {
-      joinSession,
-      chat: {chatUnsubscribe},
-      queue: {unsubscribe: queueUnsubscribe},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
-    } = this.props;
-    const {displayName, profileImage} = usersByID[currentUserID];
-    const currentSession = sessionsByID[currentSessionID];
-
-    let track = '';
-    let owner = '';
-    let total = 0;
-
-    if (currentSessionID && sessionID === currentSessionID) {
-      Actions.liveSession();
-    } else {
-      if (currentSession) {
-        track = {
-          trackID: currentSession.currentTrackID,
-          id: currentSession.currentQueueID,
-          name: tracksByID[currentSession.currentTrackID].name,
-          trackNumber: tracksByID[currentSession.currentTrackID].trackNumber,
-          durationMS: tracksByID[currentSession.currentTrackID].durationMS,
-          artists: tracksByID[currentSession.currentTrackID].artists,
-          album: {
-            id: tracksByID[currentSession.currentTrackID].albumID,
-            name: albumsByID[tracksByID[currentSession.currentTrackID].albumID].name,
-            small: albumsByID[tracksByID[currentSession.currentTrackID].albumID].small,
-            medium: albumsByID[tracksByID[currentSession.currentTrackID].albumID].medium,
-            large: albumsByID[tracksByID[currentSession.currentTrackID].albumID].large,
-            artists: albumsByID[tracksByID[currentSession.currentTrackID].albumID].artists,
-          },
-        };
-
-        total = currentSession.totalListeners;
-        owner = {
-          id: currentSession.ownerID,
-          name: usersByID[currentSession.ownerID].displayName,
-          image: usersByID[currentSession.ownerID].profileImage,
-        };
-      };
-
-      const session = {
-        id: sessionID,
-        track,
-        total,
-        owner,
-        chatUnsubscribe,
-        queueUnsubscribe,
-      };
-  
-      joinSession(
-        session,
-        {id: currentUserID, displayName, profileImage},
-        currentSessionID ? true : false,
-      );
-    }
+  joinSession = sessionID => () => {
+    console.log(sessionID)
   }
 
   renderSession({item}) {
