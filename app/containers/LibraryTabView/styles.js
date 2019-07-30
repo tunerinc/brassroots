@@ -100,7 +100,7 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
     zIndex: -1,
     backgroundColor: 'transparent',
-    marginTop: 62,
+    marginTop: 65,
   },
   libraryOption: {
     paddingVertical: 5,

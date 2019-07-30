@@ -31,6 +31,7 @@ class ExploreTabView extends React.Component {
       selectedSession: null,
       sessionModalOpen: false,
       selectedFilter: 'trending',
+      shadowOpacity: new Animated.Value(0),
     };
 
     this.changeFilter = this.changeFilter.bind(this);
@@ -45,7 +46,6 @@ class ExploreTabView extends React.Component {
     this.renderFooter = this.renderFooter.bind(this);
     this.refresh = this.refresh.bind(this);
 
-    this.animatedValue = new Animated.Value(0);
     this.animatedHeight = new Animated.Value(0);
     this.animatedOpacity = new Animated.Value(0);
     this.animatedIndex = new Animated.Value(-5);
@@ -68,15 +68,22 @@ class ExploreTabView extends React.Component {
   }
   
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
@@ -98,11 +105,7 @@ class ExploreTabView extends React.Component {
       },
       users: {currentUserID},
     } = this.props;
-    const getSessions = selectedFilter === 'trending'
-      ? getTrendingSessions
-      : selectedFilter === 'following'
-      ? (currentUserID) => () => getFollowingSessions(currentUserID)
-      : getNearbySessions;
+    const getSessions = (selectedFilter) => () => console.log(selectedFilter);
     const lastUpdated = selectedFilter === 'trending'
       ? moment(trendingLastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a')
       : selectedFilter === 'following'
@@ -230,45 +233,7 @@ class ExploreTabView extends React.Component {
   }
 
   paginate() {
-    const {sessionFilter} = this.state;
-    const {
-      paginateFollowingSessions,
-      paginateNearbySessions,
-      paginateTrendingSessions,
-      sessions: {
-        paginatingSessions,
-        explore: {
-          followingSessions,
-          nearbySessions,
-          trendingSessions,
-          followingCanPaginate,
-          nearbyCanPaginate,
-          trendingCanPaginate,
-        },
-      },
-    } = this.props;
-
-    let length = trendingSessions.length;
-    let func = paginateTrendingSessions;
-    let canPaginate = trendingCanPaginate;
-
-    if (sessionFilter === 'following') {
-      length = followingSessions.length;
-      func = paginateFollowingSessions;
-      canPaginate = followingCanPaginate;
-    } else if (sessionFilter === 'nearby') {
-      length = nearbySessions.length;
-      func = paginateNearbySessions;
-      canPaginate = nearbyCanPaginate;
-    }
-
-    if (length % 15 === 0 && canPaginate) {
-      if (!paginatingSessions) {
-        func();
-      }
-    } else {
-
-    }
+    console.log('paginate');
   }
 
   renderFooter() {
@@ -322,41 +287,27 @@ class ExploreTabView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.animatedValue};
-    const {sessionFilter, filterModalOpen, sessionModalOpen} = this.state;
+    const {sessionFilter, filterModalOpen, sessionModalOpen, shadowOpacity} = this.state;
     const {
       users: {error: userError},
       sessions: {
         fetchingSessions,
         refreshingSessions,
         error: sessionError,
-        explore: {followingSessions, nearbySessions, trendingSessions},
+        explore: {trendingSessions},
       },
     } = this.props;
 
-    let sessionsToDisplay = [];
-
-    if (sessionFilter === 'following') {
-      sessionsToDisplay = [...followingSessions];
-    } else if (sessionFilter === 'nearby') {
-      sessionsToDisplay = [...nearbySessions];
-    } else {
-      sessionsToDisplay = [...trendingSessions];
-    }
-
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <View style={styles.leftIcon}></View>
             <Text style={styles.title}>Explore</Text>
-            <TouchableOpacity style={styles.rightIcon} onPress={this.toggleFilters}>
-              {filterModalOpen && <Text style={styles.rightIconText}>close</Text> }
-              {!filterModalOpen && <Text style={styles.rightIconText}>filter</Text> }
-            </TouchableOpacity>
+            <View style={styles.rightIcon} />
           </View>
         </Animated.View>
-        {sessionsToDisplay.length !== 0 &&
+        {trendingSessions.length !== 0 &&
           <VirtualizedList
             style={styles.exploreWrap}
             onScroll={this.onScroll}
@@ -375,24 +326,27 @@ class ExploreTabView extends React.Component {
             refreshing={refreshingSessions}
           />
         }
-        {sessionsToDisplay.length === 0 || !sessionsToDisplay.length &&
-          <View style={styles.exploreWrap}>
-            {fetchingSessions &&
-              <View style={styles.inner}>
-                <LoadingSession />
-                <LoadingSession />
-                <LoadingSession />
-              </View>
-            }
-            {!fetchingSessions &&
-              <View style={styles.inner}>
-                {sessionError === 'Unauthorized' && <Text>Allow permission to access location</Text>}
-                {!userError || !sessionError && <Text>Nothing to show</Text>}
-                {userError || (sessionError && sessionError !== 'Unauthorized') &&
-                  <Text>Unable to retrieve live sessions</Text>
-                }
-              </View>
-            }
+        {(trendingSessions.length === 0 || !trendingSessions.length) &&
+          <View style={styles.scrollContainer}>
+            <View style={styles.scrollWrap}>
+              {!fetchingSessions &&
+                <View>
+                  <LoadingSession />
+                  <LoadingSession />
+                  <LoadingSession />
+                  <LoadingSession />
+                </View>
+              }
+              {fetchingSessions &&
+                <View style={styles.inner}>
+                  {sessionError === 'Unauthorized' && <Text>Allow permission to access location</Text>}
+                  {!userError || !sessionError && <Text>Nothing to show</Text>}
+                  {userError || (sessionError && sessionError !== 'Unauthorized') &&
+                    <Text>Unable to retrieve live sessions</Text>
+                  }
+                </View>
+              }
+            </View>
           </View>
         }
         <Modal
