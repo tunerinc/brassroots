@@ -10,7 +10,7 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/sessions';
 
 describe('join session synchronous action creators', () => {
-  it('creates join session request action', () => {
+  it('creates request action', () => {
     const expectedAction: Action = {
       type: types.JOIN_SESSION_REQUEST,
     };
@@ -18,7 +18,7 @@ describe('join session synchronous action creators', () => {
     expect(actions.joinSessionRequest()).toStrictEqual(expectedAction);
   });
 
-  it('creates join session success action', () => {
+  it('creates success action', () => {
     const sessionID: string = 'foo';
     const userID: string = 'foo';
     const totalListeners: number = 1;
@@ -32,7 +32,7 @@ describe('join session synchronous action creators', () => {
     expect(actions.joinSessionSuccess(sessionID, userID, totalListeners)).toStrictEqual(expectedAction);
   });
 
-  it('creates join session failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.JOIN_SESSION_FAILURE,
