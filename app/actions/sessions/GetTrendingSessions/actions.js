@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/sessions';
  * @returns {object} Redux action with the type of GET_TRENDING_SESSIONS_REQUEST
  */
 export function getTrendingSessionsRequest(): Action {
-  return {
-    type: types.GET_TRENDING_SESSIONS_REQUEST,
-  };
+  return {type: types.GET_TRENDING_SESSIONS_REQUEST};
 }
 
 /**

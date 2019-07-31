@@ -10,7 +10,7 @@ import {View, Text, Image, TouchableHighlight} from 'react-native';
 import styles from './styles';
 
 type Props = {|
-  toggleModal: () => void,
+  closeModal: () => void,
   isFollowing: boolean,
   profileImage?: string,
   displayName?: string,
@@ -24,11 +24,11 @@ export default class SessionModal extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {isFollowing, toggleModal, profileImage, displayName} = this.props;
+    const {isFollowing, closeModal, profileImage, displayName} = this.props;
 
     return (
       <View style={styles.modal}>
-        {displayName && profileImage &&
+        {(displayName && profileImage) &&
           <View style={styles.wrap}>
             <View style={styles.user}>
               <View style={styles.shadow}>
@@ -77,10 +77,10 @@ export default class SessionModal extends React.PureComponent<Props, State> {
             </View>
             <View style={styles.cancel}>
               <TouchableHighlight
-                style={styles.button}
+                style={styles.cancelButton}
                 activeOpacity={0.5}
                 underlayColor='#fefefe'
-                onPress={toggleModal}
+                onPress={closeModal}
               >
                 <Text style={styles.text}>cancel</Text>
               </TouchableHighlight>

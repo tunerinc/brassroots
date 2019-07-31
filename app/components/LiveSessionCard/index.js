@@ -17,7 +17,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {|
   joinSession: () => void,
-  toggleModal: (string) => void,
+  openModal: (string) => void,
   sessionID: string,
   displayName: string,
   profileImage: string,
@@ -44,7 +44,7 @@ export default class LiveSessionCard extends React.Component<Props, State> {
   render() {
     const {
       sessionID,
-      toggleModal,
+      openModal,
       joinSession,
       displayName,
       profileImage,
@@ -90,7 +90,6 @@ export default class LiveSessionCard extends React.Component<Props, State> {
             <View style={styles.action}>
               <MaterialIcons
                 name='group'
-                size={30}
                 style={styles.actionIcon}
                 color='#fefefe'
               />
@@ -101,7 +100,6 @@ export default class LiveSessionCard extends React.Component<Props, State> {
             <View style={styles.action}>
               <Ionicons
                 name='md-pin'
-                size={30}
                 style={styles.actionIcon}
                 color='#888'
               />
@@ -112,7 +110,6 @@ export default class LiveSessionCard extends React.Component<Props, State> {
             <TouchableOpacity style={styles.action}>
               <Ionicons
                 name='md-share-alt'
-                size={30}
                 style={styles.actionIcon}
                 color='#fefefe'
               />
@@ -120,10 +117,8 @@ export default class LiveSessionCard extends React.Component<Props, State> {
             </TouchableOpacity>
             <SimpleLineIcons
               name='options'
-              size={35}
               style={styles.options}
-              color='#fefefe'
-              onPress={toggleModal(sessionID)}
+              onPress={openModal}
             />
           </View>
         </View>

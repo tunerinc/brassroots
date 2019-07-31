@@ -24,8 +24,8 @@ export default class LoadingSession extends React.PureComponent<Props, State> {
           <View style={styles.owner}>
             <Placeholder.Line
               animate='fade'
-              textSize={20}
-              lineSpacing={4}
+              textSize={16}
+              lineSpacing={6.2}
               color='#888'
               width='65%'
             />
@@ -33,8 +33,8 @@ export default class LoadingSession extends React.PureComponent<Props, State> {
           <View style={styles.live}>
             <Placeholder.Line
               animate='fade'
-              textSize={20}
-              lineSpacing={4}
+              textSize={16}
+              lineSpacing={6.2}
               color='#888'
             />
           </View>
@@ -43,12 +43,12 @@ export default class LoadingSession extends React.PureComponent<Props, State> {
           <View style={styles.image}>
             <Placeholder.ImageContent
               animate='fade'
-              size={60}
+              size={55}
               position='left'
               hasRadius={true}
               lineNumber={2}
-              textSize={20}
-              lineSpacing={4}
+              textSize={16}
+              lineSpacing={6.2}
               color='#888'
             />
           </View>
@@ -56,8 +56,8 @@ export default class LoadingSession extends React.PureComponent<Props, State> {
             <Placeholder.Paragraph
               animate='fade'
               lineNumber={2}
-              textSize={20}
-              lineSpacing={4}
+              textSize={16}
+              lineSpacing={6.2}
               color='#888'
               width='100%'
             />
@@ -67,12 +67,7 @@ export default class LoadingSession extends React.PureComponent<Props, State> {
           {renderAction()}
           {renderAction()}
           {renderAction()}
-          <SimpleLineIcons
-            name='options'
-            size={35}
-            style={styles.options}
-            color='#888'
-          />
+          <SimpleLineIcons name='options' style={styles.options} />
         </View>
       </View>
     );
@@ -91,8 +86,8 @@ function renderAction(): React.Node {
       <View style={styles.text}>
         <Placeholder.Line
           animate='fade'
-          textSize={18}
-          lineSpacing={3.6}
+          textSize={14}
+          lineSpacing={2.8}
           color='#888'
         />
       </View>

@@ -85,7 +85,7 @@ export function getTrendingSessions(): ThunkAction {
       if (permission === 'authorized') {
         pos = await getUserLocation();
       } else if (permission === 'undetermined') {
-        await Permissions.request('location', { type: 'whenInUse' });
+        await Permissions.request('location', {type: 'whenInUse'});
         pos = await getUserLocation();
       }
 
@@ -134,7 +134,7 @@ export function getTrendingSessions(): ThunkAction {
           users = updateObject(users, {
             [owner.id]: {
               id: owner.id,
-              username: owner.name,
+              displayName: owner.name,
               profileImage: owner.image
             },
           });
@@ -153,8 +153,8 @@ export function getTrendingSessions(): ThunkAction {
 
         sessions.docs.filter(doc => doc.data().context.type === 'user')
           .forEach(doc => {
-            const {context: {id, name: username}} = doc.data();
-            users = updateObject(users, {[id]: {id, username}});
+            const {context: {id, name: displayName}} = doc.data();
+            users = updateObject(users, {[id]: {id, displayName}});
           });
 
         sessions.docs.filter(doc => doc.data().context.type === 'playlist')
@@ -163,9 +163,7 @@ export function getTrendingSessions(): ThunkAction {
             playlists = updateObject(playlists, {[id]: {id, name, members: [], tracks: []}});
           });
 
-        if (Object.keys(playlists).length !== 0) {
-          dispatch(addPlaylists(playlists));
-        }
+        if (Object.keys(playlists).length !== 0) dispatch(addPlaylists(playlists));
 
         dispatch(addArtists(music.artists));
         dispatch(addAlbums(music.albums));
