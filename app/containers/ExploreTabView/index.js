@@ -6,6 +6,7 @@ import {Text, View, Image, TouchableOpacity, Animated, Easing, VirtualizedList} 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import moment from 'moment';
+import debounce from "lodash.debounce";
 import Modal from 'react-native-modal';
 import LoadingSession from '../../components/LoadingSession';
 import SessionFilterModal from '../../components/SessionFilterModal';
@@ -27,19 +28,15 @@ class ExploreTabView extends React.Component {
     super(props);
 
     this.state = {
-      filterModalOpen: false,
       selectedSession: null,
       sessionModalOpen: false,
-      selectedFilter: 'trending',
       shadowOpacity: new Animated.Value(0),
     };
 
-    this.changeFilter = this.changeFilter.bind(this);
     this.onScroll = this.onScroll.bind(this);
-    this.renderFilterContent = this.renderFilterContent.bind(this);
     this.renderSessionModal = this.renderSessionModal.bind(this);
-    this.toggleFilters = this.toggleFilters.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
     this.joinSession = this.joinSession.bind(this);
     this.renderSession = this.renderSession.bind(this);
     this.paginate = this.paginate.bind(this);
@@ -53,18 +50,16 @@ class ExploreTabView extends React.Component {
   }
 
   componentDidMount() {
-    const {sessionFilter} = this.state;
-    const {getTrendingSessions, sessions: {trendingLastUpdated, trendingSessions}} = this.props;
+    const {
+      getTrendingSessions,
+      sessions: {explore: {trendingLastUpdated, trendingSessions}},
+    } = this.props;
     const lastUpdated = moment(trendingLastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a');
     const timeDiff = moment().diff(lastUpdated, 'minutes', true);
 
-    if (sessionFilter === 'trending' && (timeDiff >= 5 || trendingSessions.length === 0)) {
+    if (timeDiff >= 5 || trendingSessions.length === 0) {
       getTrendingSessions();
     }
-  }
-
-  changeFilter = filter => () => {
-    this.setState({sessionFilter: filter});
   }
   
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -87,46 +82,12 @@ class ExploreTabView extends React.Component {
     }
   }
 
-  renderFilterContent() {
-    const {selectedFilter} = this.state;
-    const {
-      getFollowingSessions,
-      getNearbySessions,
-      getTrendingSessions,
-      sessions: {
-        explore: {
-          trendingLastUpdated,
-          trendingSessions,
-          followingLastUpdated,
-          followingSessions,
-          nearbyLastUpdated,
-          nearbySessions,
-        },
-      },
-      users: {currentUserID},
-    } = this.props;
-    const getSessions = (selectedFilter) => () => console.log(selectedFilter);
-    const lastUpdated = selectedFilter === 'trending'
-      ? moment(trendingLastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a')
-      : selectedFilter === 'following'
-      ? moment(followingLastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a')
-      : moment(nearbyLastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a');
-    const totalSessions = selectedFilter === 'trending'
-      ? trendingSessions.length
-      : selectedFilter === 'following'
-      ? followingSessions.length
-      : nearbySessions.length;
-    const timeDiff = moment().diff(lastUpdated, 'minutes', true);
+  openModal = selectedSession => () => {
+    this.setState({selectedSession, sessionModalOpen: true});
+  }
 
-    return (
-      <SessionFilterModal
-        changeFilter={this.changeFilter}
-        getSessions={getSessions}
-        filter={selectedFilter}
-        timeDiff={timeDiff}
-        totalSessions={totalSessions}
-      />
-    );
+  closeModal() {
+    this.setState({sessionModalOpen: false});
   }
 
   renderSessionModal() {
@@ -144,26 +105,12 @@ class ExploreTabView extends React.Component {
 
     return (
       <SessionModal
-        toggleModal={this.toggleModal}
+        closeModal={this.closeModal}
         isFollowing={following.includes(sessionOwner.id)}
-        profileImage={sessionOwner.image}
-        displayName={sessionOwner.name}
+        profileImage={sessionOwner.profileImage}
+        displayName={sessionOwner.displayName}
       />
     );
-  }
-
-  toggleFilters() {
-    const {filterModalOpen} = this.state;
-    this.setState({filterModalOpen: !filterModalOpen});
-  }
-
-  toggleModal = session => () => {
-    const {sessionModalOpen, selectedSession} = this.state;
-
-    this.setState({
-      selectedSession: session || selectedSession,
-      sessionModalOpen: !sessionModalOpen,
-    });
   }
 
   joinSession = sessionID => () => {
@@ -219,12 +166,12 @@ class ExploreTabView extends React.Component {
     return (
       <LiveSessionCard
         joinSession={this.joinSession(item)}
-        toggleModal={this.toggleModal}
+        openModal={this.openModal(item)}
         sessionID={item}
         displayName={owner.displayName}
         profileImage={owner.profileImage}
         name={track.name}
-        artists={track.artists}
+        artists={track.artists.map(a => a.name).join(', ')}
         album={album.name}
         listeners={listenerTotal}
         distance={formattedDistance}
@@ -237,31 +184,18 @@ class ExploreTabView extends React.Component {
   }
 
   renderFooter() {
-    const {sessionFilter} = this.state;
     const {
       sessions: {
         paginatingSessions,
-        explore: {
-          followingCanPaginate,
-          nearbyCanPaginate,
-          trendingCanPaginate
-        },
+        explore: {trendingCanPaginate},
       },
     } = this.props;
 
-    let canPaginate = trendingCanPaginate;
-    
-    if (sessionFilter === 'following') {
-      canPaginate = followingCanPaginate;
-    } else if (sessionFilter === 'nearby') {
-      canPaginate = nearbyCanPaginate;
-    }
-
-    if (!paginatingSessions || !canPaginate) return null;
+    if (!paginatingSessions || !trendingCanPaginate) return null;
 
     return (
       <View style={styles.footer}>
-        {paginatingSessions && canPaginate &&
+        {(paginatingSessions && trendingCanPaginate) &&
           <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
         }
       </View>
@@ -269,25 +203,16 @@ class ExploreTabView extends React.Component {
   }
 
   refresh() {
-    const {sessionFilter} = this.state;
     const {
-      getFollowingSessions,
-      getNearbySessions,
       getTrendingSessions,
       users: {currentUserID},
     } = this.props;
 
-    if (sessionFilter === 'following') {
-      getFollowingSessions(currentUserID);
-    } else if (sessionFilter === 'nearby') {
-      getNearbySessions();
-    } else {
-      getTrendingSessions();
-    }
+    console.log('refresh')
   }
 
   render() {
-    const {sessionFilter, filterModalOpen, sessionModalOpen, shadowOpacity} = this.state;
+    const {sessionModalOpen, shadowOpacity} = this.state;
     const {
       users: {error: userError},
       sessions: {
@@ -309,10 +234,10 @@ class ExploreTabView extends React.Component {
         </Animated.View>
         {trendingSessions.length !== 0 &&
           <VirtualizedList
-            style={styles.exploreWrap}
+            style={styles.scrollContainer}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
-            data={sessionsToDisplay}
+            data={trendingSessions}
             renderItem={this.renderSession}
             keyExtractor={item => item}
             ListFooterComponent={this.renderFooter}
@@ -350,23 +275,6 @@ class ExploreTabView extends React.Component {
           </View>
         }
         <Modal
-          isVisible={filterModalOpen}
-          backdropColor={'#1b1b1e'}
-          backdropOpacity={0.7}
-          animationIn='slideInUp'
-          animationInTiming={230}
-          backdropTransitionInTiming={230}
-          animationOut='slideOutDown'
-          animationOutTiming={230}
-          backdropTransitionOutTiming={230}
-          hideModalContentWhileAnimating
-          useNativeDriver={true}
-          style={styles.modal}
-          onBackdropPress={this.toggleFilters}
-        >
-          {this.renderFilterContent()}
-        </Modal>
-        <Modal
           isVisible={sessionModalOpen}
           backdropColor={'#1b1b1e'}
           backdropOpacity={0.7}
@@ -379,7 +287,7 @@ class ExploreTabView extends React.Component {
           hideModalContentWhileAnimating
           useNativeDriver={true}
           style={styles.modal}
-          onBackdropPress={this.toggleModal()}
+          onBackdropPress={this.closeModal}
         >
           {this.renderSessionModal()}
         </Modal>
