@@ -205,10 +205,10 @@ class ExploreTabView extends React.Component {
   refresh() {
     const {
       getTrendingSessions,
-      users: {currentUserID},
+      sessions: {refreshingSessions},
     } = this.props;
 
-    console.log('refresh')
+    if (!refreshingSessions) getTrendingSessions();
   }
 
   render() {
