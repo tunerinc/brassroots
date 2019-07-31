@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/sessions';
  * @return {object} Redux action with the type of PAGINATE_TRENDING_SESSIONS_REQUEST
  */
 export function paginateTrendingSessionsRequest(): Action {
-  return {
-    type: types.PAGINATE_TRENDING_SESSIONS_REQUEST,
-  };
+  return {type: types.PAGINATE_TRENDING_SESSIONS_REQUEST};
 }
 
 /**

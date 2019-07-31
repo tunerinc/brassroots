@@ -11,10 +11,7 @@ import {type Action} from '../../../reducers/sessions';
 
 describe('paginate trending sessions synchronous action creators', () => {
   it('creates paginate trending sessions request action', () => {
-    const expectedAction: Action = {
-      type: types.PAGINATE_TRENDING_SESSIONS_REQUEST,
-    };
-
+    const expectedAction: Action = {type: types.PAGINATE_TRENDING_SESSIONS_REQUEST};
     expect(actions.paginateTrendingSessionsRequest()).toStrictEqual(expectedAction);
   });
 
