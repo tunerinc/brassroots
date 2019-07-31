@@ -40,7 +40,7 @@ const styles: Styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 60,
+    height: 65,
     backgroundColor: '#1b1b1e',
     shadowColor: '#101010',
     shadowOffset: {width: 0, height: 8},

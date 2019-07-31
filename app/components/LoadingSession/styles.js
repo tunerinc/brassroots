@@ -28,9 +28,9 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   session: {
-    height: 170,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    height: 150,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     borderColor: '#323232',
     borderBottomWidth: 1,
     opacity: 0.3,
@@ -55,11 +55,12 @@ const styles: Styles = StyleSheet.create({
     paddingBottom: 5,
   },
   image: {
-    flex: 1,
+    width: 55,
+    height: 55,
+    marginRight: 10,
   },
   track: {
-    flex: 4,
-    paddingLeft: 10,
+    flex: 1,
   },
   footer: {
     flex: 1,
@@ -72,7 +73,8 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingRight: 20,
+    marginRight: 20,
+    height: 45,
   },
   text: {
     flex: 1,
@@ -81,6 +83,11 @@ const styles: Styles = StyleSheet.create({
   options: {
     flex: 1,
     textAlign: 'right',
+    height: 45,
+    backgroundColor: '#1b1b1e',
+    paddingTop: 7.5,
+    fontSize: 30,
+    color: '#888',
   },
 });
 
