@@ -27,13 +27,11 @@ const FakerAPI = {
    * 
    * @author Aldo Gonzalez <aldo@tunerinc.com>
    * 
-   * @param    {number}  amt The number of individual users/sessions to create in Firestore
-   * 
    * @returns  {Promise}
-   * @resolves {number}      The status code of the response
-   * @rejects  {Error}       The error which caused the failure
+   * @resolves {number}  The status code of the response
+   * @rejects  {Error}   The error which caused the failure
    */
-  async createSessions(amt) {
+  async createSessions() {
     try {
       const playlistsRef = firestore.collection('playlists');
       const sessionsRef = firestore.collection('sessions');
@@ -73,11 +71,11 @@ const FakerAPI = {
 
       let batch = firestore.batch();
 
-      for (let i = 0; i < amt; i++) {
+      for (let i = 0; i < songIDs.length * 2; i++) {
         const newPlaylistDoc = playlistsRef.doc();
         const newSessionDoc = sessionsRef.doc();
         const newUserDoc = usersRef.doc();
-        const currentTrackID = songIDs[Math.floor(Math.random() * songIDs.length)];
+        const currentTrackID = i < 30 ? songIDs[i] : songIDs[i - 30];
   
         batch.set(
           newSessionDoc,

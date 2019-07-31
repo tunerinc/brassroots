@@ -66,7 +66,7 @@ export function success(
       explore: updateObject(explore, {
         trendingCanPaginate,
         trendingLastUpdated,
-        trendingSessions: explore.trendingSessions.concat(...sessions),
+        trendingSessions: [...explore.trendingSessions, ...sessions],
       }),
     }
     : {};
