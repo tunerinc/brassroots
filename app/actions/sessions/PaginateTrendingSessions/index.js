@@ -64,11 +64,15 @@ type Music = {|
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
+ * @param    {number}  cursor The total number of listeners in the last session retrieved
+ * 
  * @return   {Promise}
- * @resolves {array}   The paginated sessions from Ultrasound
- * @rejects  {Error}   The error which caused the paginate trending sessions failure
+ * @resolves {array}          The paginated sessions from Ultrasound
+ * @rejects  {Error}          The error which caused the paginate trending sessions failure
  */
-export function paginateTrendingSessions(): ThunkAction {
+export function paginateTrendingSessions(
+  cursor: number,
+): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.paginateTrendingSessionsRequest());
 
@@ -95,6 +99,7 @@ export function paginateTrendingSessions(): ThunkAction {
 
       const sessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
         .orderBy('totals.listeners', 'desc')
+        .startAfter(cursor)
         .limit(15)
         .get();
 
@@ -135,7 +140,7 @@ export function paginateTrendingSessions(): ThunkAction {
           users = updateObject(users, {
             [owner.id]: {
               id: owner.id,
-              username: owner.name,
+              displayName: owner.name,
               profileImage: owner.image,
             },
           });
@@ -155,8 +160,8 @@ export function paginateTrendingSessions(): ThunkAction {
 
         sessions.docs.filter(doc => doc.data().context.type === 'user')
           .forEach(doc => {
-            const {context: {id, name: username}} = doc.data();
-            users = updateObject(users, {[id]: {id, username}});
+            const {context: {id, name: displayName}} = doc.data();
+            users = updateObject(users, {[id]: {id, displayName}});
           });
 
         sessions.docs.filter(doc => doc.data().context.type === 'playlist')

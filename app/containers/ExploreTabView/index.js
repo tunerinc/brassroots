@@ -180,7 +180,20 @@ class ExploreTabView extends React.Component {
   }
 
   paginate() {
-    console.log('paginate');
+    const {
+      paginateTrendingSessions,
+      sessions: {
+        sessionsByID,
+        paginatingSessions,
+        explore: {trendingCanPaginate, trendingSessions},
+      },
+    } = this.props;
+
+    if (trendingSessions.length !== 0 && trendingCanPaginate && !paginatingSessions) {
+      const sessionID = trendingSessions[trendingSessions.length - 1];
+      const cursor = sessionsByID[sessionID].totalListeners;
+      paginateTrendingSessions(cursor);
+    }
   }
 
   renderFooter() {
