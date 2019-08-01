@@ -15,10 +15,11 @@ import GeoFirestore from 'geofirestore';
 import getMySavedTracks from '../../../utils/spotifyAPI/getMySavedTracks';
 import getUserLocation from '../../../utils/getUserLocation';
 import updateObject from '../../../utils/updateObject';
+import * as actions from './actions';
 import {addCurrentLocation} from '../../users/AddCurrentLocation';
 import {playTrack} from '../../player/PlayTrack';
 import {addCurrentContext} from '../../queue/AddCurrentContext';
-import * as actions from './actions';
+import {addPeople} from '../../users/AddPeople';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {
   type ThunkAction,
@@ -278,6 +279,7 @@ export function createSession(
 
       await batch.commit();
       dispatch(actions.createSessionSuccess(session));
+      dispatch(addPeople({[user.id]: {...user, currentSessionID: session.id}}));
       dispatch(addCurrentContext(context));
       dispatch(
         playTrack(

@@ -40,7 +40,11 @@ export function join(
 ): Session {
   const {listeners} = state;
   const {userID, totalListeners} = action;
-  const updates = typeof userID === 'string' && typeof totalListeners === 'number' && Array.isArray(listeners)
+  const updates = (
+    typeof userID === 'string'
+    && typeof totalListeners === 'number'
+    && Array.isArray(listeners)
+  )
     ? {
       totalListeners,
       listeners: listeners.concat(userID),

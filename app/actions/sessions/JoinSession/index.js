@@ -10,7 +10,7 @@
  */
 
 import moment from 'moment';
-import GeoFirestore from 'geofirestore';
+// import GeoFirestore from 'geofirestore';
 import {Actions} from 'react-native-router-flux';
 import {leaveSession} from '../LeaveSession';
 import * as actions from './actions';
@@ -75,27 +75,43 @@ type User = {|
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param    {object}  session             The session the current user is trying to join
- * @param    {string}  session.id          The id of the session
- * @param    {object}  [session.owner]     The user object of the owner of the session the user is leaving
+ * @param    {object}  session                           The session the current user is trying to join
+ * @param    {string}  session.id                        The id of the session
+ * @param    {object}  [session.owner]                   The user object of the owner of the session the user is leaving
  * @param    {string}  session.owner.id
  * @param    {string}  session.owner.name
- * @param    {string}  session.owner.image The 
- * @param    {string}  [session.current]   The id of the current session if the user is leaving
- * @param    {number}  [session.total]     The total amount of listeners in the session the user is leaving
- * @param    {string}  [session.track]     The track id of the currently playing song in the session the user is leaving   
- * @param    {object}  [session.coords]    The coordinates object of the session the user is leaving
+ * @param    {string}  session.owner.image               The 
+ * @param    {string}  [session.current]                 The id of the current session if the user is leaving
+ * @param    {number}  [session.total]                   The total amount of listeners in the session the user is leaving
+ * @param    {object}  [session.track]                   The track object of the currently playing song in the session the user is leaving
+ * @param    {string}   session.track.id                 The Spotify id of the track
+ * @param    {string}   session.track.name               The name of the track
+ * @param    {number}   session.track.trackNumber        The track number of the track within the album
+ * @param    {number}   session.track.durationMS         The duration of the track in milliseconds
+ * @param    {object}   session.track.album              The album the track is apart of
+ * @param    {string}   session.track.album.id           The Spotify id of the track's album
+ * @param    {string}   session.track.album.name         The name of the track's album
+ * @param    {string}   session.track.album.small        A small image of the track's album artwork
+ * @param    {string}   session.track.album.medium       A medium image of the track's album artwork
+ * @param    {string}   session.track.album.large        A large image of the track's album artwork
+ * @param    {object[]} session.track.album.artists      The artists on the album
+ * @param    {string}   session.track.album.artists.id   The Spotify id of the album artist
+ * @param    {string}   session.track.album.artists.name The name of the album artist
+ * @param    {object[]} session.track.artists            The artists on the track
+ * @param    {string}   session.track.artists.id         The Spotify id of the track artist
+ * @param    {string}   session.track.artists.name       The name of the track artist
+ * @param    {object}  [session.coords]                  The coordinates object of the session the user is leaving
  * @param    {number}  session.coords.lat 
  * @param    {number}  session.coords.lon
- * @param    {object}  user                The current user object
- * @param    {string}  user.id             The id of the current user
- * @param    {string}  user.displayName    The username of the current user
- * @param    {string}  user.profileImage   The profile image URL of the current user
- * @param    {boolean} leaving             Whether or not the current user is leaving a session to join a new one
+ * @param    {object}  user                              The current user object
+ * @param    {string}  user.id                           The id of the current user
+ * @param    {string}  user.displayName                  The username of the current user
+ * @param    {string}  user.profileImage                 The profile image URL of the current user
+ * @param    {boolean} leaving                           Whether or not the current user is leaving a session to join a new one
  *
  * @returns  {Promise}
- * @resolves {string}                      The session id the current user has successfully joined
- * @rejects  {Error}                       The error which caused the join session failure
+ * @resolves {string}                                    The session id the current user has successfully joined
+ * @rejects  {Error}                                     The error which caused the join session failure
  */
 export function joinSession(
   session: Session,
@@ -115,6 +131,8 @@ export function joinSession(
         queueUnsubscribe,
       } = session;
 
+      console.log(session)
+
       if (
         owner
         && current
@@ -127,7 +145,6 @@ export function joinSession(
         const sessionToLeave = {
           coords,
           total,
-          owner,
           track,
           chatUnsubscribe,
           infoUnsubscribe,
@@ -135,13 +152,7 @@ export function joinSession(
           id: current,
         };
 
-        dispatch(
-          leaveSession(
-            user.id,
-            sessionToLeave,
-            owner,
-          )
-        );
+        dispatch(leaveSession(user.id, sessionToLeave, owner));
       }
     }
 
@@ -150,8 +161,8 @@ export function joinSession(
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
     const userRef: FirestoreDoc = firestore.collection('users').doc(user.id);
-    const geoRef: FirestoreRef = firestore.collection('geo');
-    const geoFirestore = new GeoFirestore(geoRef);
+    // const geoRef: FirestoreRef = firestore.collection('geo');
+    // const geoFirestore = new GeoFirestore(geoRef);
 
     let batch: FirestoreBatch = firestore.batch();
 
@@ -168,7 +179,7 @@ export function joinSession(
           currentTrackID,
           currentQueueID,
           owner: newOwner,
-          totals: {listeners, users},
+          totals: {listeners, users, previouslyPlayed},
         } = doc.data();
 
         transaction.update(
@@ -181,6 +192,7 @@ export function joinSession(
           currentTrackID,
           currentQueueID,
           totalListeners: listeners + 1,
+          totalPlayed: previouslyPlayed,
           owner: newOwner,
         };
       });
@@ -201,25 +213,7 @@ export function joinSession(
         }
       );
 
-      const promises = [
-        batch.commit(),
-        ...(newSession.coords
-          ? [geoFirestore.set(
-            session.id,
-            {
-              id: session.id,
-              coordinates: new firestore.GeoPoint(newSession.coords.lat, newSession.coords.lon),
-              currentlyPlaying: newSession.currentTrackID,
-              totalListeners: newSession.totalListeners,
-              type: 'session',
-              owner: newSession.owner,
-            }
-          )]
-          : []
-        ),
-      ];
-
-      await Promise.all(promises);
+      await batch.commit();
       dispatch(actions.joinSessionSuccess(session.id, user.id, parseInt(newSession.totalListeners)));
 
       Actions.liveSession();
