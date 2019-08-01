@@ -43,6 +43,7 @@ type Updates = {|
   +currentQueueID?: ?string,
   +nextTrackID?: ?string,
   +nextQueueID?: ?string,
+  +durationMS?: number,
 |};
 
 type Action = {

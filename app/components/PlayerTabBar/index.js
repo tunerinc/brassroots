@@ -128,7 +128,8 @@ class PlayerTabBar extends React.Component {
         || (oldSession.currentTrackID !== currentSession.currentTrackID)
       )
     ) {
-      startPlayer(currentSessionID, currentUserID, currentSession.currentTrackID, progress);
+      console.log('start')
+      // startPlayer(currentSessionID, currentUserID, currentSession.currentTrackID, progress);
     }
 
     if (
@@ -139,7 +140,8 @@ class PlayerTabBar extends React.Component {
       && !oldPaused
       && paused
     ) {
-      pausePlayer(currentSessionID, currentUserID, oldProgress);
+      console.log('pause')
+      // pausePlayer(currentSessionID, currentUserID, oldProgress);
     }
   }
 
@@ -274,17 +276,19 @@ class PlayerTabBar extends React.Component {
       tracks: {tracksByID},
       users: {usersByID},
     } = this.props;
+    const session = sessionsByID[currentSessionID];
+    const track = tracksByID[currentTrackID];
 
     return (
       <Animated.View style={[styles.container, {shadowOpacity}]}>
-        {(currentTrackID && currentSessionID) &&
+        {(track && session) &&
           <View style={styles.wrap}>
             <View style={styles.playerBackgroundWrap}>
               <Image
                 style={styles.playerBackgroundImage}
                 resizeMode='cover'
                 blurRadius={90}
-                source={{uri: albumsByID[tracksByID[currentTrackID].albumID].large}}
+                source={{uri: albumsByID[track.albumID].large}}
               />
             </View>
             <MiniPlayer
@@ -293,10 +297,10 @@ class PlayerTabBar extends React.Component {
               togglePause={this.handleTogglePause}
               progress={progress}
               durationMS={durationMS}
-              profileImage={usersByID[sessionsByID[currentSessionID].ownerID].profileImage}
-              name={tracksByID[currentTrackID].name}
-              artists={tracksByID[currentTrackID].artists.map(a => a.name).join(', ')}
-              displayName={usersByID[sessionsByID[currentSessionID].ownerID].displayName}
+              profileImage={usersByID[session.ownerID].profileImage}
+              name={track.name}
+              artists={track.artists.map(a => a.name).join(', ')}
+              displayName={usersByID[session.ownerID].displayName}
               paused={paused}
             />
           </View>
