@@ -276,7 +276,7 @@ class PlayerTabBar extends React.Component {
       player: {currentTrackID, durationMS, paused, progress},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
-      users: {usersByID},
+      users: {usersByID, currentUserID},
     } = this.props;
     const session = sessionsByID[currentSessionID];
     const track = tracksByID[currentTrackID];
@@ -304,6 +304,7 @@ class PlayerTabBar extends React.Component {
               artists={track.artists.map(a => a.name).join(', ')}
               displayName={usersByID[session.ownerID].displayName}
               paused={paused}
+              isOwner={session.ownerID === currentUserID}
             />
           </View>
         }
