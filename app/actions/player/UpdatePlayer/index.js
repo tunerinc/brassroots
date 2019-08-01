@@ -32,6 +32,7 @@ import {
  * @param   {string}  [updates.nextQueueID]      The queue id of the new next track
  * @param   {number}  [updates.durationMS]       The duration of the current track in milliseconds
  * @param   {number}  [updates.progress]         The progress of the current track in milliseconds
+ * @param   {boolean} [updates.paused]           Whether the player is paused
  * 
  * @returns {object}                             Redux action with the type of UPDATE_PLAYER and the updates to make to the player
  */

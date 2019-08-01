@@ -12,6 +12,7 @@
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {addPeople} from '../../users/AddPeople';
+import {updatePlayer} from '../../player/UpdatePlayer';
 import {type ThunkAction} from '../../../reducers/sessions';
 import {
   type FirestoreInstance,
@@ -55,6 +56,7 @@ export function getSessionInfo(
             totalPlayed: doc.data().totals.previouslyPlayed,
           };
 
+          dispatch(updatePlayer({paused: doc.data().paused}));
           dispatch(actions.getSessionInfoSuccess(session, unsubscribe));
         },
         error => {throw error},

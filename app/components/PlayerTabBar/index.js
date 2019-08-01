@@ -74,6 +74,7 @@ class PlayerTabBar extends React.Component {
         paused,
         seeking,
         progress,
+        durationMS,
         currentQueueID,
         skippingPrev,
         skippingNext,
@@ -87,10 +88,12 @@ class PlayerTabBar extends React.Component {
     const {
       sessions: {sessionsByID: oldSessionsByID, currentSessionID: oldSessionID},
       tracks: {fetchingMostPlayed: oldFetchingMostPlayed},
+      queue: {context: oldContext},
       player: {
         paused: oldPaused,
         seeking: oldSeeking,
         progress: oldProgress,
+        durationMS: oldDuration,
         currentQueueID: oldCurrentID,
         skippingPrev: oldSkippingPrev,
         skippingNext: oldSkippingNext,
@@ -119,29 +122,28 @@ class PlayerTabBar extends React.Component {
       this.progressInterval = setInterval(this.setProgress, 985);
     }
 
-    if (
-      currentSession && currentSession.ownerID !== currentUserID && !paused && context
-      && (
-        oldPaused
-        || !oldSession.context
+    if (currentSession && currentUserID !== currentSession.ownerID) {
+      if (
+        (
+          (!oldSessionID || oldSessionID !== currentSessionID)
+          && typeof progress === 'number'
+          && durationMS !== 0
+          && !paused
+        )
         || (oldSeeking && !seeking)
-        || (oldSession.currentTrackID !== currentSession.currentTrackID)
-      )
-    ) {
-      console.log('start')
-      // startPlayer(currentSessionID, currentUserID, currentSession.currentTrackID, progress);
-    }
-
-    if (
-      currentSession
-      && currentSession.ownerID !== currentUserID
-      && context
-      && !seeking
-      && !oldPaused
-      && paused
-    ) {
-      console.log('pause')
-      // pausePlayer(currentSessionID, currentUserID, oldProgress);
+        || (oldPaused && !paused)
+      ) {
+        startPlayer(currentSessionID, currentUserID, currentSession.currentTrackID, progress / 1000);
+      }
+  
+      if (
+        currentSession
+        && !seeking
+        && !oldPaused
+        && paused
+      ) {
+        pausePlayer(currentSessionID, currentUserID, oldProgress);
+      }
     }
   }
 

@@ -27,6 +27,7 @@ describe('update player reducer', () => {
       nextQueueID: 'foo',
       durationMS: 0,
       progress: 0,
+      paused: true,
     };
 
     expect(reducer(initialState, actions.updatePlayer(updates)))

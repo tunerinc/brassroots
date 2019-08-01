@@ -13,10 +13,12 @@ import moment from 'moment';
 // import GeoFirestore from 'geofirestore';
 import {Actions} from 'react-native-router-flux';
 import {leaveSession} from '../LeaveSession';
+import {addCurrentContext} from '../../queue/AddCurrentContext';
 import {updatePlayer} from '../../player/UpdatePlayer';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/sessions';
 import {type TrackArtist} from '../../../reducers/tracks';
+import {type Context} from '../../../reducers/queue';
 import {type BRSession} from '../../../utils/brassrootsTypes';
 import {
   type FirestoreInstance,
@@ -32,6 +34,7 @@ type Session = {
   +timeLastPlayed?: string,
   +progress?: number,
   +paused?: boolean,
+  +context?: Context,
   +owner?: {
     +id: string,
     +name: string,
@@ -180,6 +183,7 @@ export function joinSession(
 
         const {
           coords,
+          context,
           currentTrackID,
           currentQueueID,
           timeLastPlayed,
@@ -196,6 +200,7 @@ export function joinSession(
 
         return {
           coords,
+          context,
           currentTrackID,
           currentQueueID,
           timeLastPlayed,
@@ -230,6 +235,9 @@ export function joinSession(
       );
 
       await batch.commit();
+
+      if (newSession.context) dispatch(addCurrentContext(newSession.context));
+
       dispatch(updatePlayer({progress}));
       dispatch(actions.joinSessionSuccess(session.id, user.id, parseInt(newSession.totalListeners)));
 
