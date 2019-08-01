@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/player';
  * @return {object} Redux action with the type of PAUSE_PLAYER_REQUEST
  */
 export function pausePlayerRequest(): Action {
-  return {
-    type: types.PAUSE_PLAYER_REQUEST,
-  };
+  return {type: types.PAUSE_PLAYER_REQUEST};
 }
 
 /**
@@ -39,9 +37,7 @@ export function pausePlayerRequest(): Action {
  * @return {object} Redux action with the type of PAUSE_PLAYER_SUCCESS
  */
 export function pausePlayerSuccess(): Action {
-  return {
-    type: types.PAUSE_PLAYER_SUCCESS,
-  };
+  return {type: types.PAUSE_PLAYER_SUCCESS};
 }
 
 /**
