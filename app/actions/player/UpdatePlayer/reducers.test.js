@@ -25,6 +25,7 @@ describe('update player reducer', () => {
       currentQueueID: 'foo',
       nextTrackID: 'foo',
       nextQueueID: 'foo',
+      durationMS: 0,
     };
 
     expect(reducer(initialState, actions.updatePlayer(updates)))
