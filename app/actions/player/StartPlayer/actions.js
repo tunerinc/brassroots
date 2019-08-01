@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/player';
  * @return {object} Redux action with the type of START_PLAYER_REQUEST
  */
 export function startPlayerRequest(): Action {
-  return {
-    type: types.START_PLAYER_REQUEST,
-  };
+  return {type: types.START_PLAYER_REQUEST};
 }
 
 /**
@@ -39,9 +37,7 @@ export function startPlayerRequest(): Action {
  * @return {object} Redux action with the type of START_PLAYER_SUCCESS
  */
 export function startPlayerSuccess(): Action {
-  return {
-    type: types.START_PLAYER_SUCCESS,
-  };
+  return {type: types.START_PLAYER_SUCCESS};
 }
 
 /**

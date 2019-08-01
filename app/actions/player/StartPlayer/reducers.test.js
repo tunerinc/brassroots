@@ -5,7 +5,10 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/player';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/player';
 import * as actions from './actions';
 
 describe('start player reducer', () => {
@@ -14,29 +17,20 @@ describe('start player reducer', () => {
   });
 
   it('should handle START_PLAYER_REQUEST', () => {
-    expect(reducer(initialState, actions.startPlayerRequest()))
-      .toStrictEqual({...initialState, attemptingToPlay: true});
+    const expectedState: State = {...initialState, attemptingToPlay: true};
+    expect(reducer(initialState, actions.startPlayerRequest())).toStrictEqual(expectedState);
   });
 
   it('should handle START_PLAYER_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, attemptingToPlay: true},
-        actions.startPlayerSuccess(),
-      ),
-    )
-      .toStrictEqual({...initialState, attemptingToPlay: false, paused: false});
+    const state: State = {...initialState, attemptingToPlay: true};
+    const expectedState: State = {...initialState, attemptingToPlay: false, paused: false};
+    expect(reducer(state, actions.startPlayerSuccess())).toStrictEqual(expectedState);
   });
 
   it('should handle START_PLAYER_FAILURE', () => {
+    const state: State = {...initialState, attemptingToPlay: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, attemptingToPlay: true},
-        actions.startPlayerFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, attemptingToPlay: false});
+    const expectedState: State = {...initialState, error, attemptingToPlay: false};
+    expect(reducer(state, actions.startPlayerFailure(error))).toStrictEqual(expectedState);
   });
 });
