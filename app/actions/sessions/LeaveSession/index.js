@@ -172,7 +172,7 @@ export function leaveSession(
       const timeLeft: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
       batch.update(sessionRef.collection('users').doc(userID), {timeLeft, active: false, paused: true});
-      batch.update(userRef, {currentSession: null, online: false});
+      batch.update(userRef, {currentSessionID: null, online: false});
       batch.update(userRef.collection('sessions').doc(session.id), {timeLeft});
 
       const promises = [

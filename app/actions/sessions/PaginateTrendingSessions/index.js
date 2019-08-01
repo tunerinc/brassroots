@@ -142,6 +142,7 @@ export function paginateTrendingSessions(
               id: owner.id,
               displayName: owner.name,
               profileImage: owner.image,
+              currentSessionID: id,
             },
           });
           
