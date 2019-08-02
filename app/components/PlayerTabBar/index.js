@@ -20,6 +20,7 @@ import {setProgress} from '../../actions/player/SetProgress';
 import {startPlayer} from '../../actions/player/StartPlayer';
 import {stopPlayer} from '../../actions/player/StopPlayer';
 import {togglePause} from '../../actions/player/TogglePause';
+import {updatePlayer} from '../../actions/player/UpdatePlayer';
 
 class PlayerTabBar extends React.Component {
   constructor(props) {
@@ -70,6 +71,7 @@ class PlayerTabBar extends React.Component {
     const {
       pausePlayer,
       startPlayer,
+      updatePlayer,
       player: {
         paused,
         seeking,
@@ -123,6 +125,22 @@ class PlayerTabBar extends React.Component {
     }
 
     if (currentSession && currentUserID !== currentSession.ownerID) {
+      if (
+        oldSession
+        && oldSession.progress !== currentSession.progress
+      ) {
+        updatePlayer({progress: currentSession.progress});
+
+        if (!paused) {
+          startPlayer(
+            currentSessionID,
+            currentUserID,
+            currentSession.currentTrackID,
+            currentSession.progress / 1000,
+          );
+        }
+      }
+
       if (
         (
           (!oldSessionID || oldSessionID !== currentSessionID)
@@ -331,6 +349,7 @@ PlayerTabBar.propTypes = {
   togglePause: PropTypes.func.isRequired,
   tracks: PropTypes.object.isRequired,
   title: PropTypes.string,
+  updatePlayer: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 };
 
@@ -354,6 +373,7 @@ function mapDispatchToProps(dispatch) {
     startPlayer,
     stopPlayer,
     togglePause,
+    updatePlayer,
   }, dispatch);
 }
 
