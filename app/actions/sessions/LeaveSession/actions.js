@@ -36,16 +36,19 @@ export function leaveSessionRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} sessionID The session id the current user has successfully left
+ * @param   {string}  sessionID The session id the current user has successfully left
+ * @param   {boolean} isOwner   Whether the current user is the owner of the session they're leaving
  *
- * @returns {string}           Redux action with the type of LEAVE_SESSION_SUCCESS and the session the current user left
+ * @returns {string}            Redux action with the type of LEAVE_SESSION_SUCCESS and the session the current user left
  */
 export function leaveSessionSuccess(
   sessionID: string,
+  isOwner: boolean,
 ): Action {
   return {
     type: types.LEAVE_SESSION_SUCCESS,
     sessionID,
+    isOwner,
   };
 }
 

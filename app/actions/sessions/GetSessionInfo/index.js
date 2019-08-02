@@ -49,6 +49,8 @@ export function getSessionInfo(
             id: doc.data().id,
             currentTrackID: doc.data().currentTrackID,
             currentQueueID: doc.data().currentQueueID,
+            progress: doc.data().progress,
+            timeLastPlayed: doc.data().timeLastPlayed,
             ownerID: doc.data().owner.id,
             mode: doc.data().mode,
             distance: 0,

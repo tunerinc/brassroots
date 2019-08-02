@@ -7,6 +7,7 @@
 
 import reducer, {
   initialState,
+  type State,
   type Session,
 } from '../../../reducers/sessions';
 import * as actions from './actions';
@@ -17,20 +18,15 @@ describe('leave session reducer', () => {
   });
 
   it('should handle LEAVE_SESSION_REQUEST', () => {
-    expect(reducer(initialState, actions.leaveSessionRequest()))
-      .toStrictEqual({...initialState, leavingSession: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.leaveSessionRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, leavingSession: true});
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, leavingSession: true};
+    expect(reducer(initialState, actions.leaveSessionRequest())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.leaveSessionRequest())).toStrictEqual(expectedState);
   });
 
   it('should handle LEAVE_SESSION_SUCCESS', () => {
     const sessionID: string = 'foo';
+    const isOwner: boolean = true;
     const totalListeners: number = 100;
     const session: Session = {
       id: 'foo',
@@ -48,7 +44,7 @@ describe('leave session reducer', () => {
     expect(
       reducer(
         {...initialState, leavingSession: true, sessionsByID: {[sessionID]: session}},
-        actions.leaveSessionSuccess(sessionID),
+        actions.leaveSessionSuccess(sessionID, isOwner),
       ),
     )
       .toStrictEqual(
@@ -70,7 +66,7 @@ describe('leave session reducer', () => {
             bar: session,
           },
         },
-        actions.leaveSessionSuccess(sessionID),
+        actions.leaveSessionSuccess(sessionID, isOwner),
       ),
     )
       .toStrictEqual(
@@ -85,14 +81,9 @@ describe('leave session reducer', () => {
   });
 
   it('should handle LEAVE_SESSION_FAILURE', () => {
+    const state: State = {...initialState, leavingSession: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, leavingSession: true},
-        actions.leaveSessionFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.leaveSessionFailure(error))).toStrictEqual(expectedState);
   });
 });
