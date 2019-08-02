@@ -127,7 +127,10 @@ class PlayerTabBar extends React.Component {
     if (currentSession && currentUserID !== currentSession.ownerID) {
       if (
         oldSession
-        && oldSession.progress !== currentSession.progress
+        && (
+          oldSession.progress !== currentSession.progress
+          || oldSession.currentTrackID !== currentSession.currentTrackID
+        )
       ) {
         updatePlayer({progress: currentSession.progress});
 
