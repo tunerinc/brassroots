@@ -44,6 +44,8 @@ type Updates = {|
   +nextTrackID?: ?string,
   +nextQueueID?: ?string,
   +durationMS?: number,
+  +progress?: number,
+  +paused?: boolean,
 |};
 
 type Action = {

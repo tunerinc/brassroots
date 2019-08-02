@@ -183,8 +183,10 @@ class PlaylistView extends React.Component {
     const {selectedTrack} = this.state;
     const {
       queueTrack,
+      playlistToView,
       albums: {albumsByID},
       player: {currentQueueID},
+      playlists: {playlistTracksByID},
       queue: {userQueue, queueByID, totalQueue},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
@@ -194,12 +196,13 @@ class PlaylistView extends React.Component {
 
     if (currentSession) {
       const {listeners, ownerID} = currentSession;
+      const {trackID} = playlistTracksByID[selectedTrack];
       const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-      const songInQueue = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);
+      const songInQueue = userQueue.map(id => queueByID[id].trackID).includes(trackID);
       const {displayName, profileImage} = usersByID[currentUserID];
 
       if (isListenerOwner && !songInQueue) {
-        const {name, durationMS, trackNumber, albumID, artists} = tracksByID[selectedTrack];
+        const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
         const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
         const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1] : currentQueueID;
         const {trackID: prevTrackID} = queueByID[prevQueueID];
@@ -210,7 +213,7 @@ class PlaylistView extends React.Component {
           durationMS,
           trackNumber,
           artists,
-          id: selectedTrack,
+          id: trackID,
           album: {
             small,
             medium,
@@ -232,17 +235,21 @@ class PlaylistView extends React.Component {
       createSession,
       playlistToView,
       playTrack,
+      leaveSession,
       albums: {albumsByID},
       player: {prevQueueID, nextQueueID},
       playlists: {playlistsByID},
-      queue: {queueByID},
-      sessions: {currentSessionID, sessionsByID},
+      queue: {queueByID, unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
       settings: {preference: {session: mode}},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
     const trackID = playlistTrackID.split(`${playlistToView}-`).pop();
     const currentSession = sessionsByID[currentSessionID];
+    const currentTrack = currentSession ? tracksByID[currentSession.currentTrackID] : null;
+    const currentAlbum = currentSession ? albumsByID[currentTrack.albumID] : null;
+    const currentQueue = currentSession ? queueByID[currentSession.currentQueueID] : null;
     const {displayName, profileImage, totalFollowers} = usersByID[currentUserID];
     const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
     const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
@@ -264,12 +271,10 @@ class PlaylistView extends React.Component {
       },
     };
 
-    if (currentSession) {
-      if (currentSession.ownerID === currentUserID) {
-        const currentTrack = tracksByID[currentSession.currentTrackID];
-        const currentAlbum = albumsByID[currentTrack.albumID];
-        const currentQueue = queueByID[currentSession.currentQueueID];
-
+    if (currentSession && currentSession.ownerID === currentUserID) {
+      if (currentSession.currentTrackID === trackID) {
+        Actions.liveSession();
+      } else {
         playTrack(
           user,
           {...track, id: null, trackID: track.id},
@@ -309,10 +314,41 @@ class PlaylistView extends React.Component {
             tracks: [],
           },
         );
-      } else {
-
       }
     } else {
+      if (currentSession) {
+        leaveSession(
+          currentUserID,
+          {
+            infoUnsubscribe,
+            queueUnsubscribe,
+            id: currentSessionID,
+            total: sessionsByID[currentSessionID].totalListeners,
+            chatUnsubscribe: () => console.log('chat'),
+            track: {
+              id: currentTrack.id,
+              name: currentTrack.name,
+              trackNumber: currentTrack.trackNumber,
+              durationMS: currentTrack.durationMS,
+              artists: currentTrack.artists,
+              album: {
+                id: currentAlbum.id,
+                name: currentAlbum.name,
+                small: currentAlbum.small,
+                medium: currentAlbum.medium,
+                large: currentAlbum.large,
+                artists: currentAlbum.artists,
+              },
+            },
+          },
+          {
+            id: currentSession.ownerID,
+            name: usersByID[currentSession.ownerID].displayName,
+            image: usersByID[currentSession.ownerID].profileImage,
+          },
+        );
+      }
+
       setTimeout(Actions.liveSession, 200);
 
       createSession(

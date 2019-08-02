@@ -20,6 +20,7 @@ import {setProgress} from '../../actions/player/SetProgress';
 import {startPlayer} from '../../actions/player/StartPlayer';
 import {stopPlayer} from '../../actions/player/StopPlayer';
 import {togglePause} from '../../actions/player/TogglePause';
+import {updatePlayer} from '../../actions/player/UpdatePlayer';
 
 class PlayerTabBar extends React.Component {
   constructor(props) {
@@ -70,10 +71,12 @@ class PlayerTabBar extends React.Component {
     const {
       pausePlayer,
       startPlayer,
+      updatePlayer,
       player: {
         paused,
         seeking,
         progress,
+        durationMS,
         currentQueueID,
         skippingPrev,
         skippingNext,
@@ -87,10 +90,12 @@ class PlayerTabBar extends React.Component {
     const {
       sessions: {sessionsByID: oldSessionsByID, currentSessionID: oldSessionID},
       tracks: {fetchingMostPlayed: oldFetchingMostPlayed},
+      queue: {context: oldContext},
       player: {
         paused: oldPaused,
         seeking: oldSeeking,
         progress: oldProgress,
+        durationMS: oldDuration,
         currentQueueID: oldCurrentID,
         skippingPrev: oldSkippingPrev,
         skippingNext: oldSkippingNext,
@@ -119,29 +124,47 @@ class PlayerTabBar extends React.Component {
       this.progressInterval = setInterval(this.setProgress, 985);
     }
 
-    if (
-      currentSession && currentSession.ownerID !== currentUserID && !paused && context
-      && (
-        oldPaused
-        || !oldSession.context
-        || (oldSeeking && !seeking)
-        || (oldSession.currentTrackID !== currentSession.currentTrackID)
-      )
-    ) {
-      console.log('start')
-      // startPlayer(currentSessionID, currentUserID, currentSession.currentTrackID, progress);
-    }
+    if (currentSession && currentUserID !== currentSession.ownerID) {
+      if (
+        oldSession
+        && (
+          oldSession.progress !== currentSession.progress
+          || oldSession.currentTrackID !== currentSession.currentTrackID
+        )
+      ) {
+        updatePlayer({progress: currentSession.progress});
 
-    if (
-      currentSession
-      && currentSession.ownerID !== currentUserID
-      && context
-      && !seeking
-      && !oldPaused
-      && paused
-    ) {
-      console.log('pause')
-      // pausePlayer(currentSessionID, currentUserID, oldProgress);
+        if (!paused) {
+          startPlayer(
+            currentSessionID,
+            currentUserID,
+            currentSession.currentTrackID,
+            currentSession.progress / 1000,
+          );
+        }
+      }
+
+      if (
+        (
+          (!oldSessionID || oldSessionID !== currentSessionID)
+          && typeof progress === 'number'
+          && durationMS !== 0
+          && !paused
+        )
+        || (oldSeeking && !seeking)
+        || (oldPaused && !paused)
+      ) {
+        startPlayer(currentSessionID, currentUserID, currentSession.currentTrackID, progress / 1000);
+      }
+  
+      if (
+        currentSession
+        && !seeking
+        && !oldPaused
+        && paused
+      ) {
+        pausePlayer(currentSessionID, currentUserID, oldProgress);
+      }
     }
   }
 
@@ -274,7 +297,7 @@ class PlayerTabBar extends React.Component {
       player: {currentTrackID, durationMS, paused, progress},
       sessions: {currentSessionID, sessionsByID},
       tracks: {tracksByID},
-      users: {usersByID},
+      users: {usersByID, currentUserID},
     } = this.props;
     const session = sessionsByID[currentSessionID];
     const track = tracksByID[currentTrackID];
@@ -302,6 +325,7 @@ class PlayerTabBar extends React.Component {
               artists={track.artists.map(a => a.name).join(', ')}
               displayName={usersByID[session.ownerID].displayName}
               paused={paused}
+              isOwner={session.ownerID === currentUserID}
             />
           </View>
         }
@@ -328,6 +352,7 @@ PlayerTabBar.propTypes = {
   togglePause: PropTypes.func.isRequired,
   tracks: PropTypes.object.isRequired,
   title: PropTypes.string,
+  updatePlayer: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 };
 
@@ -351,6 +376,7 @@ function mapDispatchToProps(dispatch) {
     startPlayer,
     stopPlayer,
     togglePause,
+    updatePlayer,
   }, dispatch);
 }
 

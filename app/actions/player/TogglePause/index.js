@@ -78,12 +78,16 @@ export function togglePause(
 
       if (typeof playbackState.position === 'number') {
         batch.update(sessionUserRef, {paused, progress: session.progress + 1000});
+
+        if (ownerID === userID) {
+          batch.update(sessionRef, {timeLastPlayed, paused, progress: session.progress + 1000});
+        }
       } else {
         batch.update(sessionUserRef, {paused});
-      }
 
-      if (ownerID === userID && typeof playbackState.position === 'number') {
-        batch.update(sessionRef, {timeLastPlayed, paused, progress: session.progress + 1000});
+        if (ownerID === userID) {
+          batch.update(sessionRef, {timeLastPlayed, paused});
+        }
       }
 
       if (!paused) {

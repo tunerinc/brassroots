@@ -5,62 +5,33 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/player';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/player';
 import * as actions from './actions';
 
 describe('pause player reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle PAUSE_PLAYER_REQUEST', () => {
-    expect(
-      reducer(
-        {...initialState, paused: false},
-        actions.pausePlayerRequest(),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          pausing: true,
-          paused: false,
-        },
-      );
+  it('handles PAUSE_PLAYER_REQUEST', () => {
+    const state: State = {...initialState, paused: false};
+    const expectedState: State = {...initialState, pausing: true, paused: false};
+    expect(reducer(state, actions.pausePlayerRequest())).toStrictEqual(expectedState);
   });
 
-  it('should handle PAUSE_PLAYER_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, pausing: true, paused: false},
-        actions.pausePlayerSuccess(),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          pausing: false,
-          paused: true,
-        },
-      );
+  it('handles PAUSE_PLAYER_SUCCESS', () => {
+    const state: State = {...initialState, pausing: true, paused: false};
+    const expectedState: State = {...initialState, pausing: false, paused: true};
+    expect(reducer(state, actions.pausePlayerSuccess())).toStrictEqual(expectedState);
   });
 
-  it('should handle PAUSE_PLAYER_FAILURE', () => {
+  it('handles PAUSE_PLAYER_FAILURE', () => {
+    const state: State = {...initialState, pausing: true, paused: false};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, pausing: true, paused: false},
-        actions.pausePlayerFailure(error),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          error,
-          pausing: false,
-          paused: false,
-        },
-      );
+    const expectedState: State = {...initialState, error, pausing: false, paused: false};
+    expect(reducer(state, actions.pausePlayerFailure(error))).toStrictEqual(expectedState);
   });
 });

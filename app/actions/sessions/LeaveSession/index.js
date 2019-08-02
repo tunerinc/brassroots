@@ -180,7 +180,7 @@ export function leaveSession(
         Spotify.setPlaying(false),
       ];
 
-      dispatch(actions.leaveSessionSuccess(session.id));
+      dispatch(actions.leaveSessionSuccess(session.id, owner.id === userID));
 
       await Promise.all(promises);
       dispatch(resetChat());

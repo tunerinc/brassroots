@@ -390,6 +390,9 @@ class LiveSessionView extends React.Component {
       tracks: {tracksByID},
       users: {usersByID},
     } = this.props;
+
+    if (!currentSessionID || !queueByID[item] || !tracksByID[queueByID[item].trackID]) return <View></View>;
+
     const {ownerID} = sessionsByID[currentSessionID];
     const {trackID, liked, totalLikes, userID} = queueByID[item];
     const {name, artists} = tracksByID[trackID];
@@ -711,7 +714,7 @@ class LiveSessionView extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.headerBackground}>
-          {(currentSession && currentAlbum) &&
+          {(currentSession && currentTrack && currentAlbum) &&
             <Image
               style={styles.headerBackgroundImage}
               source={{uri: currentAlbum.large}}
@@ -723,7 +726,7 @@ class LiveSessionView extends React.Component {
         <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
           <View style={styles.shadowBackground}>
             <View style={styles.shadowBackgroundWrap}>
-              {(currentSession && currentAlbum) &&
+              {(currentSession && currentTrack && currentAlbum) &&
                 <Image
                   style={styles.shadowBackgroundImage}
                   blurRadius={90}
@@ -757,7 +760,7 @@ class LiveSessionView extends React.Component {
             />
           </View>
         </Animated.View>
-        {(currentSession && viewingPlayer) &&
+        {(currentSession && currentTrack && viewingPlayer) &&
           <VirtualizedList
             data={userQueue}
             renderItem={this.renderTrack}
@@ -774,7 +777,7 @@ class LiveSessionView extends React.Component {
             style={styles.playerWrap}
           />
         }
-        {(currentSession && viewingChat) &&
+        {(currentSession && currentTrack && viewingChat) &&
           <View style={styles.chatWrap}>
             <AnimatedVirtualizedList
               data={currentChat}
@@ -792,7 +795,7 @@ class LiveSessionView extends React.Component {
               style={[styles.chatList, animatedBottomMargin]}
             />
             <View style={styles.chatMessageBar}>
-              {currentAlbum &&
+              {(currentTrack && currentAlbum) &&
                 <TouchableOpacity
                   style={styles.chatMessageArtButton}
                   onPress={this.changeActiveView}
@@ -800,7 +803,7 @@ class LiveSessionView extends React.Component {
                   <Image style={styles.chatMessageArt} source={{uri: currentAlbum.small}} />
                 </TouchableOpacity>
               }
-              {!currentAlbum &&
+              {(!currentTrack || !currentAlbum) &&
                 <View style={styles.chatMessageArt}>
                   <Placeholder.Media
                     animate='fade'

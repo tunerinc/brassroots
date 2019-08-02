@@ -13,9 +13,12 @@ import moment from 'moment';
 // import GeoFirestore from 'geofirestore';
 import {Actions} from 'react-native-router-flux';
 import {leaveSession} from '../LeaveSession';
+import {addCurrentContext} from '../../queue/AddCurrentContext';
+import {updatePlayer} from '../../player/UpdatePlayer';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/sessions';
 import {type TrackArtist} from '../../../reducers/tracks';
+import {type Context} from '../../../reducers/queue';
 import {type BRSession} from '../../../utils/brassrootsTypes';
 import {
   type FirestoreInstance,
@@ -28,6 +31,10 @@ type Session = {
   +id: string,
   +currentTrackID?: string,
   +totalListeners?: number,
+  +timeLastPlayed?: string,
+  +progress?: number,
+  +paused?: boolean,
+  +context?: Context,
   +owner?: {
     +id: string,
     +name: string,
@@ -176,8 +183,12 @@ export function joinSession(
 
         const {
           coords,
+          context,
           currentTrackID,
           currentQueueID,
+          timeLastPlayed,
+          progress,
+          paused,
           owner: newOwner,
           totals: {listeners, users, previouslyPlayed},
         } = doc.data();
@@ -189,8 +200,12 @@ export function joinSession(
 
         return {
           coords,
+          context,
           currentTrackID,
           currentQueueID,
+          timeLastPlayed,
+          progress,
+          paused,
           totalListeners: listeners + 1,
           totalPlayed: previouslyPlayed,
           owner: newOwner,
@@ -198,6 +213,12 @@ export function joinSession(
       });
 
       const timeJoined: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+      const timeLastPlayed = newSession.timeLastPlayed
+        ? newSession.timeLastPlayed
+        : moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').subtract(10, 'seconds');
+
+      const diff = moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').diff(timeLastPlayed, 'seconds');
+      const progress = newSession.progress + (diff * 1000);
 
       batch.update(userRef, {live: true, currentSessionID: session.id});
       batch.set(userRef.collection('sessions').doc(session.id), {timeJoined, id: session.id});
@@ -205,15 +226,19 @@ export function joinSession(
         sessionRef.collection('users').doc(user.id),
         {
           ...user,
+          progress,
           timeJoined,
           active: true,
-          progress: 0,
           muted: false,
-          paused: false,
+          paused: newSession.paused,
         }
       );
 
       await batch.commit();
+
+      if (newSession.context) dispatch(addCurrentContext(newSession.context));
+
+      dispatch(updatePlayer({progress}));
       dispatch(actions.joinSessionSuccess(session.id, user.id, parseInt(newSession.totalListeners)));
 
       Actions.liveSession();
