@@ -60,7 +60,7 @@ export function getUserQueue(
           snapshot => {
             snapshot.docChanges().forEach(change => {
               const queueTrack = change.doc.data();
-              const user = change.doc.data().user;
+              const user = queueTrack.user;
               const track = queueTrack.track;
               const album = track.album;
               const artists = [...track.artists, ...album.artists]
@@ -95,6 +95,7 @@ export function getUserQueue(
                 }
 
                 if (!change.doc.metadata.hasPendingWrites) {
+                  dispatch(actions.getUserQueueSuccess([], unsubscribe));
                   dispatch(
                     addQueueTracks(
                       {
@@ -114,6 +115,15 @@ export function getUserQueue(
 
                   if (queueTrack.isCurrent) {
                     dispatch(removeQueueTrack(queueTrack.id));
+                    dispatch(
+                      updatePlayer(
+                        {
+                          currentTrackID: track.id,
+                          currentQueueID: queueTrack.id,
+                          durationMS: track.durationMS,
+                        },
+                      ),
+                    );
                   } else {
                     dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
                   }
@@ -126,8 +136,8 @@ export function getUserQueue(
                     {
                       [queueTrack.id]: {
                         id: queueTrack.id,
-                        trackID: queueTrack.track.id,
-                        userID: queueTrack.user.id,
+                        trackID: track.id,
+                        userID: user.id,
                         totalLikes: queueTrack.totalLikes,
                         liked: queueTrack.likes.includes(userID),
                         seconds: queueTrack.timeAdded.seconds,
@@ -140,6 +150,15 @@ export function getUserQueue(
 
                 if (queueTrack.isCurrent) {
                   dispatch(removeQueueTrack(queueTrack.id));
+                  dispatch(
+                    updatePlayer(
+                      {
+                        currentTrackID: track.id,
+                        currentQueueID: queueTrack.id,
+                        durationMS: track.durationMS,
+                      },
+                    ),
+                  );
                 } else {
                   dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
                 }

@@ -49,6 +49,8 @@ export default class PlayerSlider extends React.Component<Props, State> {
       updateSlider,
     } = this.props;
     const currentTime: string = seeking ? convertMillisTime(seekTime) : convertMillisTime(progress);
+    const isOwner = currentUserID === ownerID;
+    const thumbColor: string = isOwner ? '#fefefe' : '#888';
     const remTime: string = seeking
       ? convertMillisTime(durationMS - seekTime)
       : convertMillisTime(durationMS - progress);
@@ -60,7 +62,7 @@ export default class PlayerSlider extends React.Component<Props, State> {
           disabled={sessionID && ownerID !== currentUserID}
           minimumTrackTintColor='#fefefe'
           maximumTrackTintColor='#888'
-          thumbTintColor='#fefefe'
+          thumbTintColor={thumbColor}
           style={seeking ? styles.seekingSlider : styles.slider}
           thumbStyle={seeking ? styles.seekingThumb : styles.thumb}
           step={1000}

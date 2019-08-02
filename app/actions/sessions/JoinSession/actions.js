@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/sessions';
  * @returns {object} Redux action with the type of JOIN_SESSION_REQUEST
  */
 export function joinSessionRequest(): Action {
-  return {
-    type: types.JOIN_SESSION_REQUEST,
-  };
+  return {type: types.JOIN_SESSION_REQUEST};
 }
 
 /**

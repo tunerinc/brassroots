@@ -38,6 +38,10 @@ export function removeQueueTrack(
   const {userQueue: oldQueue, queueByID} = state;
   const {queueID, removeTrack} = action;
   const userQueue = Array.isArray(oldQueue) ? oldQueue.filter(id => id !== queueID) : oldQueue;
+  const queueIDs = typeof queueByID === 'object'
+    ? Object.keys(queueByID).filter(id => id !== queueID)
+    : [];
+
   const updates = Array.isArray(userQueue) && typeof queueID === 'string' && typeof queueByID === 'object'
     ? {
       userQueue,
@@ -45,7 +49,7 @@ export function removeQueueTrack(
       totalQueue: userQueue.length,
       error: null,
       queueByID: removeTrack
-        ? userQueue.reduce((obj, key) => updateObject(obj, {[key]: queueByID[key]}), {})
+        ? queueIDs.reduce((obj, key) => updateObject(obj, {[key]: queueByID[key]}), {})
         : {...queueByID},
     }
     : {};

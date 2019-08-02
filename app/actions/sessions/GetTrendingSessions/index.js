@@ -113,7 +113,7 @@ export function getTrendingSessions(): ThunkAction {
             currentTrackID,
             owner,
             id,
-            totals: {listeners: totalListeners},
+            totals: {listeners: totalListeners, previouslyPlayed: totalPlayed},
           } = doc.data();
 
           let distance: number = -1;
@@ -135,7 +135,8 @@ export function getTrendingSessions(): ThunkAction {
             [owner.id]: {
               id: owner.id,
               displayName: owner.name,
-              profileImage: owner.image
+              profileImage: owner.image,
+              currentSessionID: id,
             },
           });
           
@@ -146,10 +147,11 @@ export function getTrendingSessions(): ThunkAction {
               currentTrackID,
               distance,
               totalListeners,
+              totalPlayed,
               ownerID: owner.id,
             },
           });
-        });
+        }, {});
 
         sessions.docs.filter(doc => doc.data().context.type === 'user')
           .forEach(doc => {

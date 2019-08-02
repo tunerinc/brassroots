@@ -263,10 +263,10 @@ class LiveSessionView extends React.Component {
       currentUserID,
       {
         infoUnsubscribe,
+        queueUnsubscribe,
         id: currentSessionID,
         total: sessionsByID[currentSessionID].totalListeners,
         chatUnsubscribe: () => console.log('chat'),
-        queueUnsubscribe: () => console.log('queue'),
         track: {
           id: track.id,
           name: track.name,
@@ -561,14 +561,18 @@ class LiveSessionView extends React.Component {
       users: {currentUserID, usersByID},
     } = this.props;
 
-    if (!currentSessionID || !currentTrackID || !sessionsByID[currentSessionID]) return <View></View>;
+    if (
+      !currentSessionID
+      || !currentTrackID
+      || !sessionsByID[currentSessionID]
+      || !queueByID[currentQueueID]
+    ) return <View></View>;
 
     const {totalListeners, distance, mode, ownerID} = sessionsByID[currentSessionID];
     const {albumID, durationMS, name, artists} = tracksByID[currentTrackID];
     const {large} = albumsByID[albumID];
-
-    // const {userID} = queueByID[currentQueueID];
-    // const {displayName} = usersByID[userID];
+    const {userID} = queueByID[currentQueueID];
+    const {displayName} = usersByID[userID];
 
     let listenerTotal = 0;
     let formattedDistance = '';
@@ -631,7 +635,7 @@ class LiveSessionView extends React.Component {
         name={name}
         saved={userTracks.includes(currentTrackID)}
         artists={artists.map(a => a.name).join(', ')}
-        displayName={usersByID[currentUserID].displayName}
+        displayName={displayName}
       />
     );
   };

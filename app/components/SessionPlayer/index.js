@@ -45,6 +45,7 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
     const prevExists = isOwner && typeof prevTrackID === 'string';
     const prevDisabled = prevExists ? false : true;
     const prevColor = prevExists ? 'rgba(254,254,254,0.9)' : 'rgba(254,254,254,0.2)';
+    const currentColor = isOwner ? 'rgba(254,254,254,0.9)' : 'rgba(254,254,254,0.5)';
     const nextExists = isOwner && typeof nextTrackID === 'string';
     const nextDisabled = nextExists ? false : true;
     const nextColor = nextExists ? 'rgba(254,254,254,0.9)' : 'rgba(254,254,254,0.2)';
@@ -61,12 +62,12 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
             resizeMethod='scale'
             source={{uri: image}}
           />
-          <TouchableOpacity style={styles.playPause} onPress={togglePause}>
+          <TouchableOpacity style={styles.playPause} onPress={togglePause} disabled={!isOwner}>
             {!paused &&
               <FontAwesome
                 name='pause'
                 size={75}
-                color='rgba(254,254,254,0.9)'
+                color={currentColor}
                 style={styles.centerIcon}
               />
             }
@@ -74,7 +75,7 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
               <Entypo
                 name='controller-play'
                 size={125}
-                color='rgba(254,254,254,0.9)'
+                color={currentColor}
                 style={styles.centerIcon}
               />
             }

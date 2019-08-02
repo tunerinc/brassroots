@@ -71,11 +71,17 @@ const FakerAPI = {
 
       let batch = firestore.batch();
 
-      for (let i = 0; i < songIDs.length * 2; i++) {
+      for (let i = 0; i < 1; i++) {
         const newPlaylistDoc = playlistsRef.doc();
         const newSessionDoc = sessionsRef.doc();
         const newUserDoc = usersRef.doc();
         const currentTrackID = i < 30 ? songIDs[i] : songIDs[i - 30];
+        const nextTrackID = i < 30 ? songIDs[i + 1] : songIDs[i - 29];
+        const owner = {
+          id: newUserDoc.id,
+          name: internet.userName(),
+          image: internet.avatar(),
+        };
   
         batch.set(
           newSessionDoc,
@@ -103,12 +109,7 @@ const FakerAPI = {
               position: 0,
               tracks: [],
             },
-            owner: {
-              id: newUserDoc.id,
-              name: internet.userName(),
-              image: internet.avatar(),
-              followers: [],
-            },
+            owner: {...owner, followers: []},
             totals: {
               context: 1,
               followers: 0,
@@ -117,6 +118,114 @@ const FakerAPI = {
               previouslyPlayed: 0,
               queue: 1,
               users: random.number(),
+            },
+          }
+        );
+
+        batch.set(
+          newSessionDoc.collection('queue').doc(currentTrackID),
+          {
+            nextTrackID,
+            id: currentTrackID,
+            prevQueueID: null,
+            prevTrackID: null,
+            nextQueueID: nextTrackID,
+            totalLikes: random.number(),
+            likes: [],
+            timeAdded: {
+              seconds: 1,
+              nanoseconds: 1,
+            },
+            isCurrent: true,
+            user: {
+              id: owner.id,
+              displayName: owner.name,
+              profileImage: owner.image,
+            },
+            track: {
+              id: currentTrackID,
+              name: 'No Place',
+              durationMS: 237986,
+              trackNumber: 1,
+              artists: [
+                {
+                  id: '5Pb27ujIyYb33zBqVysBkj',
+                  name: 'RÜFÜS DU SOL',
+                }
+              ],
+              album: {
+                id: '5BvrJjbQqxu8YbcT4F6SwO',
+                name: 'No Place',
+                small: 'https://i.scdn.co/image/9bfb43b2c0d87c2f1a9194311bb17d6eb8f4e023',
+                medium: 'https://i.scdn.co/image/d5708728a744d9f8c6277fd8f43a3768c58f7548',
+                large: 'https://i.scdn.co/image/0210a425ae18443bf878a877c48e45bc328676c5',
+                artists: [
+                  {
+                    id: '5Pb27ujIyYb33zBqVysBkj',
+                    name: 'RÜFÜS DU SOL',
+                  }
+                ],
+              },
+            },
+          }
+        );
+  
+        batch.set(
+          newSessionDoc.collection('queue').doc(nextTrackID),
+          {
+            id: nextTrackID,
+            prevQueueID: currentTrackID,
+            prevTrackID: currentTrackID,
+            nextQueueID: null,
+            nextTrackID: null,
+            totalLikes: random.number(),
+            likes: [],
+            timeAdded: {
+              seconds: 2,
+              nanoseconds: 2,
+            },
+            isCurrent: false,
+            user: {
+              id: owner.id,
+              displayName: owner.name,
+              profileImage: owner.image,
+            },
+            track: {
+              id: nextTrackID,
+              name: 'Pearl Magnolia',
+              durationMS: 241540,
+              trackNumber: 7,
+              artists: [
+                {
+                  id: '1XwAo9UCt90soyw5V7U6LV',
+                  name: 'Alexander Lewis',
+                },
+                {
+                  id: '5sKvgmG84C0bIMWeS2SRPr',
+                  name: 'Brasstracks',
+                },
+                {
+                  id: '2qAwMsiIjTzlmfAkXKvhVA',
+                  name: 'Armani White',
+                },
+                {
+                  id: '5aqZZKgeZ8UxRseZWBhc7D',
+                  name: 'BXRBER',
+                },
+              ],
+              album: {
+                id: '17My8qJrxLwS53OR6VmU5Y',
+                name: 'OMNI.',
+                small: 'https://i.scdn.co/image/86c8f155d9433501ebedb5a5f58937380db0fc83',
+                medium: 'https://i.scdn.co/image/9028f522cde33e9be840616b8f08c12a0d218605',
+                large: 'https://i.scdn.co/image/4f07a188aa3ee5e47578d8c080d7ba3247fe5627',
+                artists: [
+                  {
+                    id: '1XwAo9UCt90soyw5V7U6LV',
+                    name: 'Alexander Lewis',
+                  }
+                ],
+              },
             },
           }
         );

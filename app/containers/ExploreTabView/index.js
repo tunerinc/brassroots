@@ -2,7 +2,17 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, Image, TouchableOpacity, Animated, Easing, VirtualizedList} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Animated,
+  Easing,
+  VirtualizedList,
+  ScrollView,
+  RefreshControl,
+} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import moment from 'moment';
@@ -57,7 +67,7 @@ class ExploreTabView extends React.Component {
     const lastUpdated = moment(trendingLastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a');
     const timeDiff = moment().diff(lastUpdated, 'minutes', true);
 
-    if (timeDiff >= 5 || trendingSessions.length === 0) {
+    if (timeDiff >= 1 || trendingSessions.length === 0) {
       getTrendingSessions();
     }
   }
@@ -114,7 +124,52 @@ class ExploreTabView extends React.Component {
   }
 
   joinSession = sessionID => () => {
-    console.log(sessionID)
+    const {
+      joinSession,
+      albums: {albumsByID},
+      player: {currentTrackID},
+      queue: {unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
+      tracks: {tracksByID},
+      users: {currentUserID, usersByID},
+    } = this.props;
+    const inSession = typeof currentSessionID === 'string';
+    const track = inSession ? tracksByID[currentTrackID] : null;
+    const album = inSession ? albumsByID[track.albumID] : null;
+    const owner = inSession ? usersByID[sessionsByID[currentSessionID].ownerID] : null;
+    const user = usersByID[currentUserID];
+    const session = {
+      queueUnsubscribe,
+      infoUnsubscribe,
+      chatUnsubscribe: inSession ? () => console.log('chat unsub') : null,
+      id: sessionID,
+      owner: inSession ? {id: owner.id, name: owner.displayName, image: owner.profileImage} : null,
+      current: inSession ? currentSessionID : null,
+      total: inSession ? sessionsByID[currentSessionID].totalListeners : null,
+      track: inSession
+        ? {
+          id: track.id,
+          name: track.name,
+          trackNumber: track.trackNumber,
+          durationMS: track.durationMS,
+          artists: track.artists,
+          album: {
+            id: album.id,
+            name: album.name,
+            small: album.small,
+            medium: album.medium,
+            large: album.large,
+            artists: album.artists,
+          },
+        }
+        : null,
+    };
+
+    joinSession(
+      session,
+      {id: user.id, displayName: user.displayName, profileImage: user.profileImage},
+      inSession,
+    );
   }
 
   renderSession({item}) {
@@ -265,7 +320,17 @@ class ExploreTabView extends React.Component {
           />
         }
         {(trendingSessions.length === 0 || !trendingSessions.length) &&
-          <View style={styles.scrollContainer}>
+          <ScrollView
+            style={styles.scrollContainer}
+            onScroll={this.onScroll}
+            scrollEventThrottle={16}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshingSessions}
+                onRefresh={this.refresh}
+              />
+            }
+          >
             <View style={styles.scrollWrap}>
               {fetchingSessions &&
                 <View>
@@ -285,7 +350,7 @@ class ExploreTabView extends React.Component {
                 </View>
               }
             </View>
-          </View>
+          </ScrollView>
         }
         <Modal
           isVisible={sessionModalOpen}
@@ -319,15 +384,19 @@ ExploreTabView.propTypes = {
   paginateFollowingSessions: PropTypes.func.isRequired,
   paginateNearbySessions: PropTypes.func.isRequired,
   paginateTrendingSessions: PropTypes.func.isRequired,
+  player: PropTypes.object.isRequired,
+  queue: PropTypes.object.isRequired,
   sessions: PropTypes.object.isRequired,
   tracks: PropTypes.object,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, sessions, tracks, users}) {
+function mapStateToProps({albums, artists, player, queue, sessions, tracks, users}) {
   return {
     albums,
     artists,
+    player,
+    queue,
     sessions,
     tracks,
     users,
