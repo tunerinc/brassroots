@@ -11,10 +11,7 @@ import {type Action} from '../../../reducers/player';
 
 describe('reset player action creator', () => {
   it('creates action to reset the redux player state object', () => {
-    const expectedAction: Action = {
-      type: types.RESET_PLAYER,
-    };
-    
+    const expectedAction: Action = {type: types.RESET_PLAYER};
     expect(actions.resetPlayer()).toEqual(expectedAction);
   });
 });

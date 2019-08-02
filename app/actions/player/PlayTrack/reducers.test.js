@@ -5,24 +5,28 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/player';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/player';
 import * as actions from './actions';
 
 describe('play track reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle PLAY_TRACK_REQUEST', () => {
-    expect(reducer(initialState, actions.playTrackRequest()))
-      .toStrictEqual({...initialState, attemptingToPlay: true});
+  it('handles PLAY_TRACK_REQUEST', () => {
+    const expectedState: State = {...initialState, attemptingToPlay: true};
+    expect(reducer(initialState, actions.playTrackRequest())).toStrictEqual(expectedState);
   });
 
-  it('should handle PLAY_TRACK_SUCCESS', () => {
+  it('handles PLAY_TRACK_SUCCESS', () => {
     const currentQueueID: string = 'foo';
     const currentTrackID: string = 'foo';
     const durationMS: number = 0;
-    const prevQueueID: string = 'foo';
+    const prevQueueID: string = 'bar';
+    const prevTrackID: string = 'bar';
 
     expect(
       reducer(
@@ -38,7 +42,7 @@ describe('play track reducer', () => {
           durationMS,
           attemptingToPlay: false,
           paused: false,
-        }
+        },
       );
 
     expect(
@@ -46,9 +50,10 @@ describe('play track reducer', () => {
         {
           ...initialState,
           currentTrackID,
+          currentQueueID,
           attemptingToPlay: true,
         },
-        actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS, prevQueueID),
+        actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS),
       ),
     )
       .toStrictEqual(
@@ -57,23 +62,40 @@ describe('play track reducer', () => {
           currentQueueID,
           currentTrackID,
           durationMS,
-          prevQueueID,
-          prevTrackID: currentTrackID,
           attemptingToPlay: false,
           paused: false,
-        }
+        },
       );
-  });
-
-  it('should handle PLAY_TRACK_FAILURE', () => {
-    const error: Error = new Error('error');
 
     expect(
       reducer(
-        {...initialState, attemptingToPlay: true},
-        actions.playTrackFailure(error),
+        {
+          ...initialState,
+          currentTrackID,
+          currentQueueID,
+          attemptingToPlay: true,
+        },
+        actions.playTrackSuccess(prevQueueID, prevTrackID, durationMS),
       ),
     )
-      .toStrictEqual({...initialState, error, attemptingToPlay: false});
+      .toStrictEqual(
+        {
+          ...initialState,
+          durationMS,
+          currentQueueID: prevQueueID,
+          currentTrackID: prevTrackID,
+          prevQueueID: currentQueueID,
+          prevTrackID: currentTrackID,
+          attemptingToPlay: false,
+          paused: false,
+        },
+      );
+  });
+
+  it('handles PLAY_TRACK_FAILURE', () => {
+    const state: State = {...initialState, attemptingToPlay: true};
+    const error: Error = new Error('error');
+    const expectedState: State = {...initialState, error, attemptingToPlay: false};
+    expect(reducer(state, actions.playTrackFailure(error))).toStrictEqual(expectedState);
   });
 });
