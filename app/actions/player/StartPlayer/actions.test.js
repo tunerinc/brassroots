@@ -10,23 +10,17 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/player';
 
 describe('start player synchronous action creators', () => {
-  it('creates start player request action', () => {
-    const expectedAction: Action = {
-      type: types.START_PLAYER_REQUEST,
-    };
-
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.START_PLAYER_REQUEST};
     expect(actions.startPlayerRequest()).toStrictEqual(expectedAction);
   });
 
-  it('creates start player success action', () => {
-    const expectedAction: Action = {
-      type: types.START_PLAYER_SUCCESS,
-    };
-
+  it('creates success action', () => {
+    const expectedAction: Action = {type: types.START_PLAYER_SUCCESS};
     expect(actions.startPlayerSuccess()).toStrictEqual(expectedAction);
   });
 
-  it('creates start player failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.START_PLAYER_FAILURE,

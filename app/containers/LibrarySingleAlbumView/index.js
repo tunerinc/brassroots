@@ -159,15 +159,19 @@ class LibrarySingleAlbumView extends React.Component {
       albumToView,
       createSession,
       playTrack,
+      leaveSession,
       albums: {albumsByID},
       player: {prevQueueID, nextQueueID},
-      queue: {queueByID},
-      sessions: {currentSessionID, sessionsByID},
+      queue: {queueByID, unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
       settings: {preference: {session: mode}},
       tracks: {tracksByID},
       users: {currentUserID, usersByID},
     } = this.props;
     const currentSession = sessionsByID[currentSessionID];
+    const currentTrack = currentSession ? tracksByID[currentSession.currentTrackID] : null;
+    const currentAlbum = currentSession ? albumsByID[currentTrack.albumID] : null;
+    const currentQueue = currentSession ? queueByID[currentSession.currentQueueID] : null;
     const {displayName, profileImage, totalFollowers} = usersByID[currentUserID];
     const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
     const {
@@ -195,12 +199,10 @@ class LibrarySingleAlbumView extends React.Component {
       },
     };
 
-    if (currentSession) {
-      if (currentSession.ownerID === currentUserID) {
-        const currentTrack = tracksByID[currentSession.currentTrackID];
-        const currentAlbum = albumsByID[currentTrack.albumID];
-        const currentQueue = queueByID[currentSession.currentQueueID];
-
+    if (currentSession && currentSession.ownerID === currentUserID) {
+      if (currentSession.currentTrackID === trackID) {
+        Actions.liveSession();
+      } else {
         playTrack(
           user,
           {...track, id: null, trackID: track.id},
@@ -240,10 +242,41 @@ class LibrarySingleAlbumView extends React.Component {
             tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
           },
         );
-      } else {
-
       }
     } else {
+      if (currentSession) {
+        leaveSession(
+          currentUserID,
+          {
+            infoUnsubscribe,
+            queueUnsubscribe,
+            id: currentSessionID,
+            total: sessionsByID[currentSessionID].totalListeners,
+            chatUnsubscribe: () => console.log('chat'),
+            track: {
+              id: currentTrack.id,
+              name: currentTrack.name,
+              trackNumber: currentTrack.trackNumber,
+              durationMS: currentTrack.durationMS,
+              artists: currentTrack.artists,
+              album: {
+                id: currentAlbum.id,
+                name: currentAlbum.name,
+                small: currentAlbum.small,
+                medium: currentAlbum.medium,
+                large: currentAlbum.large,
+                artists: currentAlbum.artists,
+              },
+            },
+          },
+          {
+            id: currentSession.ownerID,
+            name: usersByID[currentSession.ownerID].displayName,
+            image: usersByID[currentSession.ownerID].profileImage,
+          },
+        );
+      }
+
       setTimeout(Actions.liveSession, 200);
 
       createSession(

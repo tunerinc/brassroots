@@ -20,12 +20,13 @@ describe('leave session synchronous action creators', () => {
 
   it('creates leave session success action', () => {
     const sessionID: string = 'foo';
+    const isOwner: boolean = true;
     const expectedAction: Action = {
       type: types.LEAVE_SESSION_SUCCESS,
-      sessionID
-      
+      sessionID,
+      isOwner,
     };
-    expect(actions.leaveSessionSuccess(sessionID)).toStrictEqual(expectedAction);
+    expect(actions.leaveSessionSuccess(sessionID, isOwner)).toStrictEqual(expectedAction);
   });
 
   it('creates leave session failure action', () => {

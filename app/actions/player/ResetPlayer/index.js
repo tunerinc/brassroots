@@ -22,7 +22,5 @@ import {type Action} from '../../../reducers/player';
  * @returns {object} Redux action with the type of RESET_PLAYER
  */
 export function resetPlayer(): Action {
-  return {
-    type: types.RESET_PLAYER,
-  };
+  return {type: types.RESET_PLAYER};
 }

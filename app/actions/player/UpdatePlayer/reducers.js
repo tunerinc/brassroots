@@ -34,6 +34,8 @@ import {
  * @param   {string}  [action.updates.nextTrackID]     The Spotify id for the new next track
  * @param   {string}  [action.updates.nextQueueID]     The queue id for the new next track
  * @param   {number}  [action.updates.durationMS]      The duration of the current track in milliseconds
+ * @param   {number}  [action.updates.progress]        The progress of the current track in milliseconds
+ * @param   {boolean} [action.updates.paused]          Whether the player is paused
  * 
  * @returns {object}                                   The state with new updates added
  */

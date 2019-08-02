@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {Actions} from 'react-native-router-flux';
 import moment from 'moment';
 import debounce from "lodash.debounce";
 import Modal from 'react-native-modal';
@@ -165,11 +166,15 @@ class ExploreTabView extends React.Component {
         : null,
     };
 
-    joinSession(
-      session,
-      {id: user.id, displayName: user.displayName, profileImage: user.profileImage},
-      inSession,
-    );
+    if (currentSessionID === sessionID) {
+      Actions.liveSession();
+    } else {
+      joinSession(
+        session,
+        {id: user.id, displayName: user.displayName, profileImage: user.profileImage},
+        inSession,
+      );
+    }
   }
 
   renderSession({item}) {

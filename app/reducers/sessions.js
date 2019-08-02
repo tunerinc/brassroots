@@ -84,6 +84,7 @@ type Action = {
   +totalListeners?: number,
   +sessionID?: string,
   +updates?: Session,
+  +isOwner?: boolean,
 };
 
 type State = {

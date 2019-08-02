@@ -26,6 +26,7 @@ type Props = {|
   artists: string,
   displayName: string,
   paused: boolean,
+  isOwner: boolean,
 |};
 
 type State = {||};
@@ -53,8 +54,10 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
       artists,
       displayName,
       paused,
+      isOwner,
     } = this.props;
     const width: number = screenWidth * (progress / durationMS);
+    const color: string = isOwner ? '#fefefe' : '#888';
 
     return (
       <Animated.View style={styles.player}>
@@ -89,9 +92,9 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
               {displayName}
             </Text>
           </View>
-          <TouchableOpacity style={styles.playerAction} onPress={togglePause}>
-            {paused && <Entypo name='controller-play' color='#fefefe' style={styles.playIcon} />}
-            {!paused && <Ionicons name='md-pause' color='#fefefe' style={styles.pauseIcon} />}
+          <TouchableOpacity style={styles.playerAction} onPress={togglePause} disabled={!isOwner}>
+            {paused && <Entypo name='controller-play' color={color} style={styles.playIcon} />}
+            {!paused && <Ionicons name='md-pause' color={color} style={styles.pauseIcon} />}
           </TouchableOpacity>
         </TouchableOpacity>
       </Animated.View>

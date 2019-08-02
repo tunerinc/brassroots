@@ -23,6 +23,8 @@ describe('update player synchronous action creator', () => {
       nextTrackID: 'foo',
       nextQueueID: 'foo',
       durationMS: 0,
+      progress: 0,
+      paused: true,
     };
 
     const expectedAction: Action = {
