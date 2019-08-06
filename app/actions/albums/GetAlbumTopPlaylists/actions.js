@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/albums';
  * @returns {object}         Redux action with the type of GET_ALBUM_TOP_PLAYLISTS_REQUEST
  */
 export function getAlbumTopPlaylistsRequest(): Action {
-  return {
-    type: types.GET_ALBUM_TOP_PLAYLISTS_REQUEST,
-  };
+  return {type: types.GET_ALBUM_TOP_PLAYLISTS_REQUEST};
 }
 
 /**
@@ -36,20 +34,10 @@ export function getAlbumTopPlaylistsRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {string}   albumID     The Spotify album id to get the top playlists for
- * @param   {string[]} playlistIDs The top playlist ids of the album in order of plays
- * 
- * @returns {object}               Redux action with the type of GET_ALBUM_TOP_PLAYLISTS_SUCCESS and the top playlist ids for the album
+ * @returns {object} Redux action with the type of GET_ALBUM_TOP_PLAYLISTS_SUCCESS
  */
-export function getAlbumTopPlaylistsSuccess(
-  albumID: string,
-  playlistIDs: Array<string>,
-): Action {
-  return {
-    type: types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS,
-    albumID,
-    playlistIDs,
-  };
+export function getAlbumTopPlaylistsSuccess(): Action {
+  return {type: types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS};
 }
 
 /**
@@ -60,9 +48,9 @@ export function getAlbumTopPlaylistsSuccess(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {Error}  error   The error which caused the get album top playlists failure
+ * @param   {Error}  error The error which caused the get album top playlists failure
  * 
- * @returns {object}         Redux action with the type of GET_ALBUM_TOP_PLAYLISTS_FAILURE and the error which caused the failure
+ * @returns {object}       Redux action with the type of GET_ALBUM_TOP_PLAYLISTS_FAILURE and the error which caused the failure
  */
 export function getAlbumTopPlaylistsFailure(
   error: Error,

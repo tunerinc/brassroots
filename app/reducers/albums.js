@@ -204,13 +204,13 @@ export default function reducer(
       case types.GET_ALBUM_TOP_LISTENERS_REQUEST:
         return getAlbumTopListeners.request(state);
       case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
-        return getAlbumTopListeners.success(state, action);
+        return getAlbumTopListeners.success(state);
       case types.GET_ALBUM_TOP_LISTENERS_FAILURE:
         return getAlbumTopListeners.failure(state, action);
       case types.GET_ALBUM_TOP_PLAYLISTS_REQUEST:
         return getAlbumTopPlaylists.request(state);
       case types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS:
-        return getAlbumTopPlaylists.success(state, action);
+        return getAlbumTopPlaylists.success(state);
       case types.GET_ALBUM_TOP_PLAYLISTS_FAILURE:
         return getAlbumTopPlaylists.failure(state, action);
       case types.GET_ALBUM_TOP_TRACKS_REQUEST:

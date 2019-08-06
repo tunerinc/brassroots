@@ -34,10 +34,7 @@ export function getAlbumTopListenersRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string}   albumID   The album id to get the top listeners of
- * @param   {string[]} listeners The Brassroots ids of the top 3 listeners with the most plays of the album
- *
- * @returns {object}             Redux action with the type of GET_ALBUM_TOP_LISTENERS_SUCCESS and the top album listener ids
+ * @returns {object} Redux action with the type of GET_ALBUM_TOP_LISTENERS_SUCCESS
  */
 export function getAlbumTopListenersSuccess(): Action {
   return {type: types.GET_ALBUM_TOP_LISTENERS_SUCCESS};

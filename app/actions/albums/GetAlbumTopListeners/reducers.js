@@ -69,15 +69,12 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state            The Redux state
- * @param   {object}   action           The Redux action
- * @param   {string}   action.type      The type of Redux action
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                    The state with the album's top listeners updated
+ * @returns {object}       The state with the fetchingListeners prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
   return updateObject(state, {fetchingListeners: false, error: null});
 }
