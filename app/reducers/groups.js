@@ -60,8 +60,7 @@ type Action = {
 type State = {
   +lastUpdated: string,
   +userGroups: Array<string>,
-  +groupsByID: {+[key: string]: Group},
-  +totalGroups: number,
+  +totalUserGroups: number,
   +selectedGroup: ?string,
   +fetchingGroups: boolean,
   +searchingGroups: boolean,
@@ -141,8 +140,7 @@ const singleState: Group = {
  * 
  * @property {string}   lastUpdated           The date/time the groups were last updated
  * @property {string[]} userGroups            The Brassroots ids of the groups the current user is a member of
- * @property {object}   groupsByID            The group objects with the Brassroots ids as the key
- * @property {number}   totalGroups=0         The total amount of groups
+ * @property {number}   totalUserGroups=0     The total amount of user groups
  * @property {string}   selectedGroup=null    The selected group to view
  * @property {boolean}  fetchingGroups=false  Whether the current user is fetching groups
  * @property {boolean}  searchingGroups=false Whether the current user is searching groups
@@ -160,8 +158,7 @@ const singleState: Group = {
 export const initialState: State = {
   lastUpdated,
   userGroups: [],
-  groupsByID: {},
-  totalGroups: 0,
+  totalUserGroups: 0,
   selectedGroup: null,
   fetchingGroups: false,
   searchingGroups: false,

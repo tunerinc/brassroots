@@ -71,8 +71,7 @@ type Action = {
 type State = {
   +lastUpdated?: string,
   +userAlbums?: Array<string>,
-  +albumsByID?: {[key: string]: Album},
-  +totalAlbums?: number,
+  +totalUserAlbums?: number,
   +selectedAlbum?: ?string,
   +searchingAlbums?: boolean,
   +refreshingAlbums?: boolean,
@@ -141,8 +140,6 @@ const singleState: Album = {
  * @property {string}   lastUpdated             The date/time the albums were last updated
  * @property {string[]} userAlbums              The Spotify album ids saved in the current user's library
  * @property {number}   totalUserAlbums=0       The total number of albums in the current user's library
- * @property {object}   albumsByID              The album objects using the Spotify id as the key
- * @property {number}   totalAlbums             The total amount of albums
  * @property {string}   selectedAlbum=null      The selected album to view
  * @property {boolean}  searchingAlbums=false   Whether the current user is searching albums
  * @property {boolean}  refreshingAlbums=false  Whether the current user is refreshing their saved albums
@@ -158,8 +155,6 @@ export const initialState: State = {
   lastUpdated,
   userAlbums: [],
   totalUserAlbums: 0,
-  albumsByID: {},
-  totalAlbums: 0,
   selectedAlbum: null,
   searchingAlbums: false,
   refreshingAlbums: false,

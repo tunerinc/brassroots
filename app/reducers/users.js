@@ -89,8 +89,6 @@ type Action = {
 type State = {
   +lastUpdated?: string,
   +currentUserID?: ?string,
-  +usersByID?: {+[key: string]: User},
-  +totalUsers?: number,
   +searchingUsers?: boolean,
   +fetchingUsers?: boolean,
   +fetchingImages?: boolean,
@@ -165,8 +163,6 @@ const singleState: User = {
  * 
  * @property {string}  lastUpdated          The date/time the users state was last updated
  * @property {string}  currentUserID        The Spotify id of the current user
- * @property {object}  usersByID            The user objects saved in Redux
- * @property {number}  totalUsers=0         The total amount of users in Redux
  * @property {boolean} searchingUsers=false Whether the current user is searching for users
  * @property {boolean} fetchingUsers=false  Whether the current user is fetching users
  * @property {boolean} fetchingImages=false Whether the current user is fetching images of users
@@ -177,8 +173,6 @@ const singleState: User = {
 export const initialState: State = {
   lastUpdated,
   currentUserID: '',
-  usersByID: {},
-  totalUsers: 0,
   searchingUsers: false,
   fetchingUsers: false,
   fetchingImages: false,

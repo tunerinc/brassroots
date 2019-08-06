@@ -66,8 +66,7 @@ type Action = {
 type State = {
   +lastUpdated?: string,
   +userArtists?: Array<string>,
-  +artistsByID?: {+[key: string]: Artist},
-  +totalArtists?: number,
+  +totalUserArtists?: number,
   +selectedArtist?: ?string,
   +searchingArtists?: boolean,
   +fetchingAlbums?: boolean,
@@ -138,8 +137,7 @@ const singleState: Artist = {
  * 
  * @property {string}   lastUpdated             The date/time the artists were last updated
  * @property {string[]} userArtists             The Spotify ids of the artists saved in the current user's library
- * @property {object}   artistsByID             The artist objects with the Spotify ids as the key
- * @property {number}   totalArtists=0          The total amount of artists
+ * @property {number}   totalUserArtists=0      The total amount of artists in the currrent user's library
  * @property {string}   selectedArtist=null     The selected artist to view
  * @property {boolean}  searchingArtists=false  Whether the current user is searching artists
  * @property {boolean}  fetchingAlbums=false    Whether the current user is fetching albums of an artist
@@ -155,8 +153,7 @@ const singleState: Artist = {
 export const initialState: State = {
   lastUpdated,
   userArtists: [],
-  artistsByID: {},
-  totalArtists: 0,
+  totalUserArtists: 0,
   selectedArtist: null,
   searchingArtists: false,
   fetchingAlbums: false,

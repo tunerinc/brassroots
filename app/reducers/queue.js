@@ -76,9 +76,8 @@ type Action = {
 type State = {
   +lastUpdated?: string,
   +userQueue?: Array<string>,
+  +totalUserQueue?: number,
   +contextQueue?: Array<string>,
-  +queueByID?: {+[key: string]: QueueTrack},
-  +totalQueue?: number,
   +fetchingQueue?: boolean,
   +fetchingContext?: boolean,
   +liking?: Array<string>,
@@ -138,9 +137,8 @@ const singleState: QueueTrack = {
  * 
  * @property {string}          lastUpdated           The date/time the queue was last updated
  * @property {string[]}        userQueue             The Brassroots ids of the tracks next up in the queue
+ * @property {number}          totalUserQueue=0      The total amount of tracks in the user queue
  * @property {string[]}        contextQueue          The Spotify ids of the tracks next up in the queue from the context
- * @property {object}          queueByID             The queue track objects with the Brassroots id as the key
- * @property {number}          totalQueue=0          The total amount of tracks in the queue
  * @property {boolean}         fetchingQueue=false   Whether the current user is fetching the queue of the session
  * @property {boolean}         fetchingContext=false Whether the current user is fetching the context queue of the session
  * @property {string[]}        liking                The Brassroots ids of the tracks in the queue the current user is liking
@@ -159,9 +157,8 @@ const singleState: QueueTrack = {
 export const initialState: State = {
   lastUpdated,
   userQueue: [],
+  totalUserQueue: 0,
   contextQueue: [],
-  queueByID: {},
-  totalQueue: 0,
   fetchingQueue: false,
   fetchingContext: false,
   liking: [],

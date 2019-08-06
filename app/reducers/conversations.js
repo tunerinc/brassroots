@@ -61,8 +61,7 @@ type Action = {
 type State = {
   +lastUpdated?: string,
   +userConversations?: Array<string>,
-  +conversationsByID?: {+[key: string]: SingleConversation},
-  +totalConversations?: number,
+  +totalUserConversations?: number,
   +messagesByID?: {+[key: string]: SingleMessage},
   +totalMessages?: number,
   +selectedConversation?: ?string,
@@ -148,10 +147,7 @@ const singleConversationState: SingleConversation = {
  * 
  * @property {string}   lastUpdated                  The date/time the conversations were last updated
  * @property {string[]} userConversations            The Brassroots ids of the current user's conversations
- * @property {object}   conversationsByID            The conversation objects with the Brassroots ids as the key
- * @property {number}   totalConversations=0         The total amount of conversations
- * @property {object}   messagesByID                 The message objects with the Brassroots ids as the key
- * @property {number}   totalMessages=0              The total amount of messages
+ * @property {number}   totalUserConversations=0     The total amount of user conversations
  * @property {string}   selectedConversation=null    The selected conversation to view
  * @property {boolean}  searchingConversations=false Whether the current user is searching conversations
  * @property {boolean}  fetchingConversations=false  Whether the current user is fetching conversations
@@ -164,10 +160,7 @@ const singleConversationState: SingleConversation = {
 export const initialState: State = {
   lastUpdated,
   userConversations: [],
-  conversationsByID: {},
-  totalConversations: 0,
-  messagesByID: {},
-  totalMessages: 0,
+  totalUserConversations: 0,
   selectedConversation: null,
   searchingConversations: false,
   fetchingConversations: false,

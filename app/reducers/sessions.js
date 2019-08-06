@@ -90,8 +90,6 @@ type Action = {
 type State = {
   +lastUpdated?: string,
   +currentSessionID?: ?string,
-  +sessionsByID?: {+[key: string]: Session},
-  +totalSessions?: number,
   +fetchingListeners?: boolean,
   +changingMode?: boolean,
   +fetchingInfo?: boolean,
@@ -104,13 +102,13 @@ type State = {
   +infoUnsubscribe?: ?() => void,
   +error?: ?Error | SpotifyError,
   +explore?: {
-    +trendingSessions?: Array<string>,
+    +trendingIDs?: Array<string>,
     +trendingCanPaginate?: boolean,
     +trendingLastUpdated?: string,
-    +followingSessions?: Array<string>,
+    +followingIDs?: Array<string>,
     +followingCanPaginate?: boolean,
     +followingLastUpdated?: string,
-    +nearbySessions?: Array<string>,
+    +nearbyIDs?: Array<string>,
     +nearbyCanPaginate?: boolean,
     +nearbyLastUpdated?: string,
   },
@@ -168,8 +166,6 @@ const singleState: Session = {
  * 
  * @property {string}    lastUpdated                       The date/time the sessions were last updated
  * @property {string}    currentSessionID=null             The Brassroots id of the session the current user is in
- * @property {object}    sessionsByID                      The session objects with the session id as the keey
- * @property {number}    totalSessions=0                   The total amount of sessions
  * @property {boolean}   fetchingListeners=false           Whether the current user is fetching the lisetners of a session
  * @property {boolean}   changingMode=false                Whether the current user is changing the mode of a session
  * @property {boolean}   fetchingInfo=false                Whether the current user is fetching session info
@@ -182,21 +178,19 @@ const singleState: Session = {
  * @property {infoUnsub} infoUnsubscribe=null              The function to invoke to unsubscribe the session info listener
  * @property {Error}     error=null                        The error related to sessions actions
  * @property {object}    explore                           The explore view
- * @property {string[]}  explore.trendingSessions          The Brassroots ids of the sessions trending on the app
+ * @property {string[]}  explore.trendingIDs               The Brassroots ids of the sessions trending on the app
  * @property {boolean}   explore.trendingCanPaginate=true  Whether the trending sessions can paginate
  * @property {string}    explore.trendingLastUpdated       The date/time the trending sessions were last updated
- * @property {string[]}  explore.followingSessions         The Brassroots ids of the sessions of users the current user follows
+ * @property {string[]}  explore.followingIDs              The Brassroots ids of the sessions of users the current user follows
  * @property {boolean}   explore.followingCanPaginate=true Whether the following sessions can paginate
  * @property {string}    explore.followingLastUpdated      The date/time the following sessions were last updated
- * @property {string[]}  explore.nearbySessions            The Brassroots ids of the sessions nearby to the current user
+ * @property {string[]}  explore.nearbyIDs                 The Brassroots ids of the sessions nearby to the current user
  * @property {boolean}   explore.nearbyCanPaginate=true    Whether the nearby sessions can paginate
  * @property {string}    explore.nearbyLastUpdated         The date/time the nearby sessions were last updated
  */
 export const initialState: State = {
   lastUpdated,
   currentSessionID: null,
-  sessionsByID: {},
-  totalSessions: 0,
   fetchingListeners: false,
   changingMode: false,
   fetchingInfo: false,
@@ -209,13 +203,13 @@ export const initialState: State = {
   infoUnsubscribe: null,
   error: null,
   explore: {
-    trendingSessions: [],
+    trendingIDs: [],
     trendingCanPaginate: true,
     trendingLastUpdated: lastUpdated,
-    followingSessions: [],
+    followingIDs: [],
     followingCanPaginate: true,
     followingLastUpdated: lastUpdated,
-    nearbySessions: [],
+    nearbyIDs: [],
     nearbyCanPaginate: true,
     nearbyLastUpdated: lastUpdated,
   },

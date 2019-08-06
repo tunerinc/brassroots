@@ -58,8 +58,7 @@ type State = {
   +lastUpdated?: string,
   +message?: string,
   +currentChat?: Array<string>,
-  +chatByID?: {+[key: string]: ChatMessage},
-  +totalChatMessages?: number,
+  +totalCurrentChat?: number,
   +sendingMessage?: boolean,
   +fetchingChat?: boolean,
   +chatUnsubscribe?: ?() => void,
@@ -107,8 +106,7 @@ export const singleState: ChatMessage = {
  * @property {string}    lastUpdated          The date/time the chat was last updated
  * @property {string}    message              The current message from the current user in the session
  * @property {string[]}  currentChat          The Brassroots ids of the chat messages in the session
- * @property {object}    chatByID             The chat message objects with the message id as the key
- * @property {number}    totalChatMessages=0  The total amount of chat messages in the session
+ * @property {number}    totalCurrentChat=0   The total amount of chat messages in the session
  * @property {boolean}   sendingMessage=false Whether the current user is sending the current chat message
  * @property {boolean}   fetchingChat=false   Whether the current user is fetching the chat of a session
  * @property {chatUnsub} chatUnsubscribe=null The function to invoke to unsubscribe the chat listener
@@ -117,8 +115,7 @@ export const initialState: State = {
   lastUpdated,
   message: '',
   currentChat: [],
-  chatByID: {},
-  totalChatMessages: 0,
+  totalCurrentChat: 0,
   sendingMessage: false,
   fetchingChat: false,
   chatUnsubscribe: null,
