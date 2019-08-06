@@ -8,6 +8,7 @@
 import reducer, {
   initialState,
   type Album,
+  type State,
 } from '../../../reducers/albums';
 import * as actions from './actions';
 
@@ -17,56 +18,22 @@ describe('get album top listeners reducer', () => {
   });
 
   it('should handle GET_ALBUM_TOP_LISTENERS_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, fetchingListeners: true};
+    expect(reducer(state, actions.getAlbumTopListenersRequest())).toStrictEqual(expectedState);
     expect(reducer(initialState, actions.getAlbumTopListenersRequest()))
-      .toStrictEqual({...initialState, fetchingListeners: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.getAlbumTopListenersRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, fetchingListeners: true});
+      .toStrictEqual(expectedState);
   });
 
   it('should handle GET_ALBUM_TOP_LISTENERS_SUCCESS', () => {
-    const topListeners: Array<string> = ['foo', 'bar'];
-    const albumID: string = 'foo';
-    const album: Album = {
-      id: 'foo',
-      name: null,
-      small: null,
-      medium: null,
-      large: null,
-      artists: [],
-      tracks: [],
-      totalPlays: 0,
-      userPlays: 0,
-      userTracks: [],
-      topListeners: [],
-      topPlaylists: [],
-      topTracks: [],
-      lastUpdated: initialState.lastUpdated,
-    };
-
-    expect(
-      reducer(
-        {...initialState, fetchingListeners: true, albumsByID: {[albumID]: album}},
-        actions.getAlbumTopListenersSuccess(albumID, topListeners),
-      ),
-    )
-      .toStrictEqual({...initialState, albumsByID: {[albumID]: {...album, topListeners}}});
+    const state: State = {...initialState, fetchingListeners: true};
+    expect(reducer(state, actions.getAlbumTopListenersSuccess())).toStrictEqual(initialState);
   });
 
   it('should handle GET_ALBUM_TOP_LISTENERS_FAILURE', () => {
+    const state: State = {...initialState, fetchingListeners: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, fetchingListeners: true},
-        actions.getAlbumTopListenersFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.getAlbumTopListenersFailure(error))).toStrictEqual(expectedState);
   });
 });

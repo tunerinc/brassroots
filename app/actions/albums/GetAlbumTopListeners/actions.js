@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/albums';
  * @returns {object} Redux action with the type of GET_ALBUM_TOP_LISTENERS_REQUEST
  */
 export function getAlbumTopListenersRequest(): Action {
-  return {
-    type: types.GET_ALBUM_TOP_LISTENERS_REQUEST,
-  };
+  return {type: types.GET_ALBUM_TOP_LISTENERS_REQUEST};
 }
 
 /**
@@ -41,15 +39,8 @@ export function getAlbumTopListenersRequest(): Action {
  *
  * @returns {object}             Redux action with the type of GET_ALBUM_TOP_LISTENERS_SUCCESS and the top album listener ids
  */
-export function getAlbumTopListenersSuccess(
-  albumID: string,
-  listeners: Array<string>,
-): Action {
-  return {
-    type: types.GET_ALBUM_TOP_LISTENERS_SUCCESS,
-    albumID,
-    listeners,
-  };
+export function getAlbumTopListenersSuccess(): Action {
+  return {type: types.GET_ALBUM_TOP_LISTENERS_SUCCESS};
 }
 
 /**

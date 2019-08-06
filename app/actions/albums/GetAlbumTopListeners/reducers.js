@@ -72,8 +72,6 @@ export function request(
  * @param   {object}   state            The Redux state
  * @param   {object}   action           The Redux action
  * @param   {string}   action.type      The type of Redux action
- * @param   {string}   action.albumID   The Spotify id of the album
- * @param   {string[]} action.listeners The top listeners of the album and their user ids
  * 
  * @returns {object}                    The state with the album's top listeners updated
  */
@@ -81,19 +79,7 @@ export function success(
   state: State,
   action: Action,
 ): State {
-  const {albumsByID: oldAlbums} = state;
-  const {albumID} = action;
-  const updates = typeof albumID === 'string' && typeof oldAlbums === 'object'
-    ? {
-      fetchingListeners: false,
-      error: null,
-      albumsByID: updateObject(oldAlbums, {
-        [albumID]: singleAlbum(oldAlbums[albumID], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {fetchingListeners: false, error: null});
 }
 
 /**

@@ -56,7 +56,7 @@ export function getAlbumTopListeners(
       const topUserDocs: FirestoreDocs = await albumUsersRef.orderBy('plays', 'desc').limit(3).get();
 
       if (topUserDocs.empty) {
-        dispatch(actions.getAlbumTopListenersSuccess(albumID, []));
+        dispatch(actions.getAlbumTopListenersSuccess());
       } else {
         const promises: Array<FirestoreDoc> = topUserDocs.docs.map(doc => usersRef.doc(doc.id).get());
         const userDocs = await Promise.all(promises);
@@ -70,7 +70,7 @@ export function getAlbumTopListeners(
         }, {});
 
         dispatch(addPeople(users));
-        dispatch(actions.getAlbumTopListenersSuccess(albumID, topUserDocs.docs.map(doc => doc.id)));
+        dispatch(actions.getAlbumTopListenersSuccess());
       }
     } catch (err) {
       dispatch(actions.getAlbumTopListenersFailure(err));
