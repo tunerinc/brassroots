@@ -8,65 +8,31 @@
 import reducer, {
   initialState,
   type Album,
+  type State,
 } from '../../../reducers/albums';
 import * as actions from './actions';
 
 describe('get album top tracks reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_ALBUM_TOP_TRACKS_REQUEST', () => {
-    expect(reducer(initialState, actions.getAlbumTopTracksRequest()))
-      .toStrictEqual({...initialState, fetchingTracks: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.getAlbumTopTracksRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, fetchingTracks: true});
+  it('handles GET_ALBUM_TOP_TRACKS_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, fetchingTracks: true};
+    expect(reducer(initialState, actions.getAlbumTopTracksRequest())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.getAlbumTopTracksRequest())).toStrictEqual(expectedState);
   });
 
-  it('should handle GET_ALBUM_TOP_TRACKS_SUCCESS', () => {
-    const topTracks: Array<string> = ['foo', 'bar'];
-    const albumID: string = 'foo';
-    const album: Album = {
-      id: 'foo',
-      name: null,
-      small: null,
-      medium: null,
-      large: null,
-      artists: [],
-      tracks: [],
-      totalPlays: 0,
-      userPlays: 0,
-      userTracks: [],
-      topListeners: [],
-      topPlaylists: [],
-      topTracks: [],
-      lastUpdated: initialState.lastUpdated,
-    };
-
-    expect(
-      reducer(
-        {...initialState, fetchingTracks: true, albumsByID: {[albumID]: album}},
-        actions.getAlbumTopTracksSuccess(albumID, topTracks),
-      ),
-    )
-      .toStrictEqual({...initialState, albumsByID: {[albumID]: {...album, topTracks}}});
+  it('handles GET_ALBUM_TOP_TRACKS_SUCCESS', () => {
+    const state: State = {...initialState, fetchingTracks: true};
+    expect(reducer(state, actions.getAlbumTopTracksSuccess())).toStrictEqual(initialState);
   });
 
-  it('should handle GET_ALBUM_TOP_TRACKS_FAILURE', () => {
+  it('handles GET_ALBUM_TOP_TRACKS_FAILURE', () => {
+    const state: State = {...initialState, fetchingTracks: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, fetchingTracks: true},
-        actions.getAlbumTopTracksFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.getAlbumTopTracksFailure(error))).toStrictEqual(expectedState);
   });
 });

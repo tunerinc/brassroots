@@ -13,11 +13,11 @@ import reducer, {
 import * as actions from './actions';
 
 describe('get album top playlists reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_ALBUM_TOP_PLAYLISTS_REQUEST', () => {
+  it('handles GET_ALBUM_TOP_PLAYLISTS_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
     const expectedState: State = {...initialState, fetchingPlaylists: true};
     expect(reducer(state, actions.getAlbumTopPlaylistsRequest())).toStrictEqual(expectedState);
@@ -25,12 +25,12 @@ describe('get album top playlists reducer', () => {
       .toStrictEqual(expectedState);
   });
 
-  it('should handle GET_ALBUM_TOP_PLAYLISTS_SUCCESS', () => {
+  it('handles GET_ALBUM_TOP_PLAYLISTS_SUCCESS', () => {
     const state: State = {...initialState, fetchingPlaylists: true};
     expect(reducer(state, actions.getAlbumTopPlaylistsSuccess())).toStrictEqual(initialState);
   });
 
-  it('should handle GET_ALBUM_TOP_PLAYLISTS_FAILURE', () => {
+  it('handles GET_ALBUM_TOP_PLAYLISTS_FAILURE', () => {
     const state: State = {...initialState, fetchingPlaylists: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};

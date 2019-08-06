@@ -216,7 +216,7 @@ export default function reducer(
       case types.GET_ALBUM_TOP_TRACKS_REQUEST:
         return getAlbumTopTracks.request(state);
       case types.GET_ALBUM_TOP_TRACKS_SUCCESS:
-        return getAlbumTopTracks.success(state, action);
+        return getAlbumTopTracks.success(state);
       case types.GET_ALBUM_TOP_TRACKS_FAILURE:
         return getAlbumTopTracks.failure(state, action);
       case types.INCREMENT_ALBUM_PLAYS_REQUEST:

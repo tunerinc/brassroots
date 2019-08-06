@@ -13,11 +13,11 @@ import reducer, {
 import * as actions from './actions';
 
 describe('get album top listeners reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_ALBUM_TOP_LISTENERS_REQUEST', () => {
+  it('handles GET_ALBUM_TOP_LISTENERS_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
     const expectedState: State = {...initialState, fetchingListeners: true};
     expect(reducer(state, actions.getAlbumTopListenersRequest())).toStrictEqual(expectedState);
@@ -25,12 +25,12 @@ describe('get album top listeners reducer', () => {
       .toStrictEqual(expectedState);
   });
 
-  it('should handle GET_ALBUM_TOP_LISTENERS_SUCCESS', () => {
+  it('handles GET_ALBUM_TOP_LISTENERS_SUCCESS', () => {
     const state: State = {...initialState, fetchingListeners: true};
     expect(reducer(state, actions.getAlbumTopListenersSuccess())).toStrictEqual(initialState);
   });
 
-  it('should handle GET_ALBUM_TOP_LISTENERS_FAILURE', () => {
+  it('handles GET_ALBUM_TOP_LISTENERS_FAILURE', () => {
     const state: State = {...initialState, fetchingListeners: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};

@@ -10,17 +10,17 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/albums';
 
 describe('get album top playlists synchronous action creators', () => {
-  it('creates get album top playlists request action', () => {
+  it('creates request action', () => {
     const expectedAction: Action = {type: types.GET_ALBUM_TOP_PLAYLISTS_REQUEST};
     expect(actions.getAlbumTopPlaylistsRequest()).toStrictEqual(expectedAction);
   });
 
-  it('creates get album top playlists success action', () => {
+  it('creates success action', () => {
     const expectedAction: Action = {type: types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS};
     expect(actions.getAlbumTopPlaylistsSuccess()).toStrictEqual(expectedAction);
   });
 
-  it('creates get album top playlists failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.GET_ALBUM_TOP_PLAYLISTS_FAILURE,

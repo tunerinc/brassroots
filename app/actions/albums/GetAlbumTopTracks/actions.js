@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/albums';
  * @returns {object} Redux action with the type of GET_ALBUM_TOP_TRACKS_REQUEST
  */
 export function getAlbumTopTracksRequest(): Action {
-  return {
-    type: types.GET_ALBUM_TOP_TRACKS_REQUEST,
-  };
+  return {type: types.GET_ALBUM_TOP_TRACKS_REQUEST};
 }
 
 /**
@@ -36,20 +34,10 @@ export function getAlbumTopTracksRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} albumID  The album id to get the top songs of
- * @param   {array}  trackIDs The top 3 most played tracks from the album
- *
- * @returns {object}          Redux action with the type of GET_ALBUM_TOP_TRACKS_SUCCESS and the top album tracks
+ * @returns {object} Redux action with the type of GET_ALBUM_TOP_TRACKS_SUCCESS
  */
-export function getAlbumTopTracksSuccess(
-  albumID: string,
-  trackIDs: Array<string>,
-): Action {
-  return {
-    type: types.GET_ALBUM_TOP_TRACKS_SUCCESS,
-    albumID,
-    trackIDs,
-  };
+export function getAlbumTopTracksSuccess(): Action {
+  return {type: types.GET_ALBUM_TOP_TRACKS_SUCCESS};
 }
 
 /**

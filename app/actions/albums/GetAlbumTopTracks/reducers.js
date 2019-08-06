@@ -69,31 +69,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state           The Redux state
- * @param   {object}   action          The Redux action
- * @param   {string}   action.type     The type of Redux action
- * @param   {string}   action.albumID  The Spotify id of the album
- * @param   {string[]} action.trackIDs The top tracks of the album and their Spotify ids
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                   The state with the album's top tracks updated
+ * @returns {object}       The state with the fetchingTracks prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {albumsByID: oldAlbums} = state;
-  const {albumID} = action;
-  const updates = typeof albumID === 'string' && typeof oldAlbums === 'object'
-    ? {
-      fetchingTracks: false,
-      error: null,
-      albumsByID: updateObject(oldAlbums, {
-        [albumID]: singleAlbum(oldAlbums[albumID], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {fetchingTracks: false, error: null});
 }
 
 /**
