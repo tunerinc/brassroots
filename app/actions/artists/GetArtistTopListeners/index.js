@@ -59,7 +59,7 @@ export function getArtistTopListeners(
         .get();
 
       if (topUserDocs.empty) {
-        dispatch(actions.getArtistTopListenersSuccess(artistID, []));
+        dispatch(actions.getArtistTopListenersSuccess());
       } else {
         const promises: Array<Promise<FirestoreDoc>> = topUserDocs.docs.map(doc => usersRef.doc(doc.id).get());
         const userDocs: Array<FirestoreDoc> = await Promise.all(promises);
@@ -73,7 +73,7 @@ export function getArtistTopListeners(
         }, {});
 
         dispatch(addPeople(users));
-        dispatch(actions.getArtistTopListenersSuccess(artistID, topUserDocs.docs.map(doc => doc.id)));
+        dispatch(actions.getArtistTopListenersSuccess());
       }
     } catch (err) {
       dispatch(actions.getArtistTopListenersFailure(err));

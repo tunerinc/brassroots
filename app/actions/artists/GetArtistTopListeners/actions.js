@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/artists';
  * @returns {object} Redux action with the type of GET_ARTIST_TOP_LISTENERS_REQUEST
  */
 export function getArtistTopListenersRequest(): Action {
-  return {
-    type: types.GET_ARTIST_TOP_LISTENERS_REQUEST,
-  };
+  return {type: types.GET_ARTIST_TOP_LISTENERS_REQUEST};
 }
 
 /**
@@ -36,20 +34,10 @@ export function getArtistTopListenersRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string}   artistID  The artist id to get top listeners of
- * @param   {string[]} listeners The artist's top 3 listeners' user ids
- *
- * @returns {object}             Redux action with the type of GET_ARTIST_TOP_LISTENERS_SUCCESS and the top artist listeners
+ * @returns {object} Redux action with the type of GET_ARTIST_TOP_LISTENERS_SUCCESS
  */
-export function getArtistTopListenersSuccess(
-  artistID: string,
-  listeners: Array<string>,
-): Action {
-  return {
-    type: types.GET_ARTIST_TOP_LISTENERS_SUCCESS,
-    artistID,
-    listeners,
-  };
+export function getArtistTopListenersSuccess(): Action {
+  return {type: types.GET_ARTIST_TOP_LISTENERS_SUCCESS};
 }
 
 /**
