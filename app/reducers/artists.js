@@ -226,7 +226,7 @@ export default function reducer(
       case types.GET_ARTIST_TOP_PLAYLISTS_REQUEST:
         return getArtistTopPlaylists.request(state);
       case types.GET_ARTIST_TOP_PLAYLISTS_SUCCESS:
-        return getArtistTopPlaylists.success(state, action);
+        return getArtistTopPlaylists.success(state);
       case types.GET_ARTIST_TOP_PLAYLISTS_FAILURE:
         return getArtistTopPlaylists.failure(state, action);
       case types.GET_ARTIST_TOP_TRACKS_REQUEST:

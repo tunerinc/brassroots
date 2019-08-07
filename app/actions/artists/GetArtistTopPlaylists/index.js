@@ -80,7 +80,7 @@ export function getArtistTopPlaylists(
       const playlistDocs: FirestoreDocs = await artistPlaylistsRef.orderBy('plays', 'desc').limit(3).get();
 
       if (playlistDocs.empty) {
-        dispatch(actions.getArtistTopPlaylistsSuccess(artistID, []));
+        dispatch(actions.getArtistTopPlaylistsSuccess());
       } else {
         const playlistIDs: Array<string> = playlistDocs.docs.map(doc => doc.id);
         const playlistsRes = await Promise.all(
@@ -129,7 +129,7 @@ export function getArtistTopPlaylists(
 
         dispatch(addPlaylists(playlists));
         dispatch(addPeople(users));
-        dispatch(actions.getArtistTopPlaylistsSuccess(artistID, playlistIDs));
+        dispatch(actions.getArtistTopPlaylistsSuccess());
       }
     } catch (err) {
       dispatch(actions.getArtistTopPlaylistsFailure(err));
