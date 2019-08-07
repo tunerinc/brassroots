@@ -307,7 +307,7 @@ export default function reducer(
       case types.GET_PLAYLIST_TRACKS_REQUEST:
         return getPlaylistTracks.request(state, action);
       case types.GET_PLAYLIST_TRACKS_SUCCESS:
-        return getPlaylistTracks.success(state, action);
+        return getPlaylistTracks.success(state);
       case types.GET_PLAYLIST_TRACKS_FAILURE:
         return getPlaylistTracks.failure(state, action);
       case types.GET_TOP_PLAYLISTS_REQUEST:

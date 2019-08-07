@@ -43,23 +43,10 @@ export function getPlaylistTracksRequest(
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {string}   playlistID The Spotify id of the playlist
- * @param   {string[]} tracks     The Spotify ids of the playlist tracks
- * @param   {number}   total      The total amount of tracks in the playlist
- * 
- * @returns {object}              Redux action with the type of GET_PLAYLIST_TRACKS_SUCCESS and the tracks from the playlist
+ * @returns {object} Redux action with the type of GET_PLAYLIST_TRACKS_SUCCESS
  */
-export function getPlaylistTracksSuccess(
-  playlistID: string,
-  tracks: Array<string>,
-  total: number,
-): Action {
-  return {
-    type: types.GET_PLAYLIST_TRACKS_SUCCESS,
-    playlistID,
-    tracks,
-    total,
-  };
+export function getPlaylistTracksSuccess(): Action {
+  return {type: types.GET_PLAYLIST_TRACKS_SUCCESS};
 }
 
 /**

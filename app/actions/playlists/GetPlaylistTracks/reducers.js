@@ -19,9 +19,19 @@ import {
 } from '../../../reducers/playlists';
 
 /**
+ * Confirms the success of getting the tracks of a single playlist
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function addTracks
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}   state             The Redux state
+ * @param   {object}   action            The Redux action
+ * @param   {string}   action.type       The type of Redux action
+ * @param   {string}   action.playlistID The Spotify id of the single playlist
+ * @param   {string[]} action.tracks     The Spotify ids of the tracks from the playlist
+ * 
+ * @returns {object}                     The state of the single playlist with the new tracks added
  */
 export function addTracks(
   state: Playlist,
@@ -47,9 +57,18 @@ export function addTracks(
 }
 
 /**
+ * Starts the request to get the tracks of a playlist
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function request
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}  state             The Redux state
+ * @param   {object}  action            The Redux action
+ * @param   {string}  action.type       The type of Redux action
+ * @param   {boolean} action.refreshing Whether the current user is refreshing the playlist tracks
+ * 
+ * @returns {object}                    The state with the refreshingTracks/fetchingTracks prop updated
  */
 export function request(
   state: State,
@@ -68,37 +87,35 @@ export function request(
 }
 
 /**
+ * Confirms the success of getting the tracks of a playlist
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function success
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state The Redux state
+ * 
+ * @returns {object}       The state with the refreshingTracks/fetchingTracks props updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {refreshingTracks, playlistsByID: oldPlaylists} = state;
-  const {playlistID} = action;
-  const updates = typeof playlistID === 'string' && typeof oldPlaylists === 'object'
-    ? {
-      refreshingTracks: false,
-      fetchingTracks: false,
-      error: null,
-      playlistsByID: updateObject(oldPlaylists, {
-        [playlistID]: singlePlaylist(
-          oldPlaylists[playlistID],
-          {...action, refreshing: refreshingTracks},
-        ),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {refreshingTracks: false, fetchingTracks: false, error: null});
 }
 
 /**
+ * Adds the error which caused the get playlist tracks failure
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function failure
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state        The Redux state
+ * @param   {object} action       The Redux action
+ * @param   {string} action.type  The type of Redux action
+ * @param   {Error}  action.error The error which caused the get playlist tracks failure
+ * 
+ * @returns {object}              The state with the error prop updated
  */
 export function failure(
   state: State,

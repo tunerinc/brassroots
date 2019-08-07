@@ -69,13 +69,7 @@ export function getPlaylistTracks(
       dispatch(addAlbums(music.albums));
       dispatch(addTracks(music.tracks));
       dispatch(addPlaylistTracks(playlistID, playlistTracks));
-      dispatch(
-        actions.getPlaylistTracksSuccess(
-          playlistID,
-          items.map(item => `${playlistID}-${item.track.id}`),
-          res.total,
-        ),
-      );
+      dispatch(actions.getPlaylistTracksSuccess());
     } catch (err) {
       dispatch(actions.getPlaylistTracksFailure(err));
     }
