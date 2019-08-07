@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/artists';
  * @returns {object} Redux action with the type of GET_ARTIST_TOP_ALBUMS_REQUEST
  */
 export function getArtistTopAlbumsRequest(): Action {
-  return {
-    type: types.GET_ARTIST_TOP_ALBUMS_REQUEST,
-  };
+  return {type: types.GET_ARTIST_TOP_ALBUMS_REQUEST};
 }
 
 /**
@@ -36,20 +34,10 @@ export function getArtistTopAlbumsRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {string}   artistID  The Spotify id of the artist
- * @param   {string[]} topAlbums The artist's top Spotify album ids
- * 
- * @returns {object}             Redux action with the type of GET_ARTIST_TOP_ALBUMS_SUCCESS and the top albums for the artist
+ * @returns {object} Redux action with the type of GET_ARTIST_TOP_ALBUMS_SUCCESS
  */
-export function getArtistTopAlbumsSuccess(
-  artistID: string,
-  topAlbums: Array<string>,
-): Action {
-  return {
-    type: types.GET_ARTIST_TOP_ALBUMS_SUCCESS,
-    artistID,
-    topAlbums,
-  };
+export function getArtistTopAlbumsSuccess(): Action {
+  return {type: types.GET_ARTIST_TOP_ALBUMS_SUCCESS};
 }
 
 /**

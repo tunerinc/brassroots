@@ -214,7 +214,7 @@ export default function reducer(
       case types.GET_ARTIST_TOP_ALBUMS_REQUEST:
         return getArtistTopAlbums.request(state);
       case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:
-        return getArtistTopAlbums.success(state, action);
+        return getArtistTopAlbums.success(state);
       case types.GET_ARTIST_TOP_ALBUMS_FAILURE:
         return getArtistTopAlbums.failure(state, action);
       case types.GET_ARTIST_TOP_LISTENERS_REQUEST:

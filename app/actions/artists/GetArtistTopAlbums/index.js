@@ -67,7 +67,7 @@ export function getArtistTopAlbums(
         .get();
       
       if (artistAlbumDocs.empty) {
-        dispatch(actions.getArtistTopAlbumsSuccess(artistID, []));
+        dispatch(actions.getArtistTopAlbumsSuccess());
       } else {
         const albumIDs: Array<string> = artistAlbumDocs.docs.map(doc => doc.id);
         const albumsRes = await Spotify.getAlbums(albumIDs, {});
@@ -109,7 +109,7 @@ export function getArtistTopAlbums(
 
         dispatch(addAlbums(albums));
         dispatch(addArtists(artists));
-        dispatch(actions.getArtistTopAlbumsSuccess(artistID, albumIDs));
+        dispatch(actions.getArtistTopAlbumsSuccess());
       }
     } catch (err) {
       dispatch(actions.getArtistTopAlbumsFailure(err));
