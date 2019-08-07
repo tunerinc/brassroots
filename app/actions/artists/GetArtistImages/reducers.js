@@ -78,38 +78,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state                   The Redux state
- * @param   {object} action                  The Redux action
- * @param   {string} action.type             The type of Redux action
- * @param   {object} action.artists          The images of the artists to add
- * @param   {string} action.artists[].small  64x64 size image of the artist, if available
- * @param   {string} action.artists[].medium 300x300 size image of the artist, if available
- * @param   {string} action.artists[].large  640x640 size image of the artist, if available
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                         The state with the images added for the artists
+ * @returns {object}       The state with the fetchingImages prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {artists} = action;
-
-  let {artistsByID} = state;
-
-  if (typeof artists === 'object' && !Array.isArray(artists)) {
-    Object.keys(artists).forEach(artistID => {
-      if (typeof artistsByID === 'object' && artistsByID[artistID]) {
-        const updatedArtist: Artist = singleArtist(artistsByID[artistID], {
-          ...action,
-          artistID,
-        });
-  
-        artistsByID = updateObject(artistsByID, {[artistID]: updatedArtist});
-      }
-    });
-  }
-
-  return updateObject(state, {artistsByID, fetchingImages: false, error: null});
+  return updateObject(state, {fetchingImages: false, error: null});
 }
 
 /**

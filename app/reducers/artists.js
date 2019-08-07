@@ -202,7 +202,7 @@ export default function reducer(
       case types.GET_ARTIST_IMAGES_REQUEST:
         return getArtistImages.request(state);
       case types.GET_ARTIST_IMAGES_SUCCESS:
-        return getArtistImages.success(state, action);
+        return getArtistImages.success(state);
       case types.GET_ARTIST_IMAGES_FAILURE:
         return getArtistImages.failure(state, action);
       case types.GET_ARTISTS_REQUEST:

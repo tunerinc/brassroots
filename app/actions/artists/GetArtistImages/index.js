@@ -37,7 +37,7 @@ export function getArtistImages(
         return updateObject(artistList, {[id]: {small, medium, large}});
       }, {});
 
-      dispatch(actions.getArtistImagesSuccess(artistsToAdd));
+      dispatch(actions.getArtistImagesSuccess());
     } catch (err) {
       dispatch(actions.getArtistImagesFailure(err));
     }

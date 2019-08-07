@@ -26,9 +26,7 @@ import {
  * @returns {object} Redux action with the type of GET_ARTIST_IMAGES_REQUEST
  */
 export function getArtistImagesRequest() {
-  return {
-    type: types.GET_ARTIST_IMAGES_REQUEST,
-  };
+  return {type: types.GET_ARTIST_IMAGES_REQUEST};
 }
 
 /**
@@ -46,13 +44,8 @@ export function getArtistImagesRequest() {
  * 
  * @returns {object}                  Redux action with the type of GET_ARTIST_IMAGES_SUCCESS and artist images to add
  */
-export function getArtistImagesSuccess(
-  artists: {+[id: string]: Artist},
-): Action {
-  return {
-    type: types.GET_ARTIST_IMAGES_SUCCESS,
-    artists,
-  };
+export function getArtistImagesSuccess(): Action {
+  return {type: types.GET_ARTIST_IMAGES_SUCCESS};
 }
 
 /**
