@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/playlists';
  * @returns {object} Redux action with the type of GET_PLAYLIST_TOP_MEMBERS
  */
 export function getPlaylistTopMembersRequest(): Action {
-  return {
-    type: types.GET_PLAYLIST_TOP_MEMBERS_REQUEST,
-  };
+  return {type: types.GET_PLAYLIST_TOP_MEMBERS_REQUEST};
 }
 
 /**
@@ -36,20 +34,10 @@ export function getPlaylistTopMembersRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string}   playlistID The playlist id to get the top members of
- * @param   {string[]} members    The top 3 members who listen to the playlist the most
- *
- * @returns {object}              Redux action with the type of GET_PLAYLIST_TOP_MEMBERS and the top members of the playlist
+ * @returns {object} Redux action with the type of GET_PLAYLIST_TOP_MEMBERS
  */
-export function getPlaylistTopMembersSuccess(
-  playlistID: string,
-  members: Array<string>,
-): Action {
-  return {
-    type: types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS,
-    playlistID,
-    members,
-  };
+export function getPlaylistTopMembersSuccess(): Action {
+  return {type: types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS};
 }
 
 /**

@@ -11,23 +11,13 @@ import {type Action} from '../../../reducers/playlists';
 
 describe('get playlist top members synchronous action creators', () => {
   it('creates get playlist top members request action', () => {
-    const expectedAction: Action = {
-      type: types.GET_PLAYLIST_TOP_MEMBERS_REQUEST,
-    };
-
+    const expectedAction: Action = {type: types.GET_PLAYLIST_TOP_MEMBERS_REQUEST};
     expect(actions.getPlaylistTopMembersRequest()).toStrictEqual(expectedAction);
   });
 
   it('creates get playlist top members success action', () => {
-    const playlistID: string = 'foo';
-    const members: Array<string> = ['foo', 'bar'];
-    const expectedAction: Action = {
-      type: types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS,
-      playlistID,
-      members,
-    };
-
-    expect(actions.getPlaylistTopMembersSuccess(playlistID, members)).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS};
+    expect(actions.getPlaylistTopMembersSuccess()).toStrictEqual(expectedAction);
   });
 
   it('creates get playlist top members failure action', () => {

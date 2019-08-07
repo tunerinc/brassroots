@@ -295,7 +295,7 @@ export default function reducer(
       case types.GET_PLAYLIST_TOP_MEMBERS_REQUEST:
         return getPlaylistTopMembers.request(state);
       case types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS:
-        return getPlaylistTopMembers.success(state, action);
+        return getPlaylistTopMembers.success(state);
       case types.GET_PLAYLIST_TOP_MEMBERS_FAILURE:
         return getPlaylistTopMembers.failure(state, action);
       case types.GET_PLAYLIST_TOP_TRACKS_REQUEST:

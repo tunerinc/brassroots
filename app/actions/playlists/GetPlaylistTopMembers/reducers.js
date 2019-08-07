@@ -69,31 +69,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state             The Redux state
- * @param   {object} action            The Redux action
- * @param   {string} action.type       The type of Redux action
- * @param   {string} action.playlistID The Spotify id of the playlist the top members were fetched for
- * @param   {string} action.members    The Brassroots ids of the top members of the playlist
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                   The state with the top members added to the playlist
+ * @returns {object}       The state with the fetchingMembers prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {playlistsByID: oldPlaylists} = state;
-  const {playlistID} = action;
-  const updates = typeof playlistID === 'string' && typeof oldPlaylists === 'object'
-    ? {
-      fetchingMembers: false,
-      error: null,
-      playlistsByID: updateObject(oldPlaylists, {
-        [playlistID]: singlePlaylist(oldPlaylists[playlistID], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {fetchingMembers: false, error: null});
 }
 
 /**
