@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/artists';
   * @returns {object} Redux action with the type of INCREMENT_ARTIST_PLAYS_REQUEST
   */
 export function incrementArtistPlaysRequest(): Action {
-  return {
-    type: types.INCREMENT_ARTIST_PLAYS_REQUEST,
-  };
+  return {type: types.INCREMENT_ARTIST_PLAYS_REQUEST};
 }
 
 /**
@@ -36,20 +34,10 @@ export function incrementArtistPlaysRequest(): Action {
   * 
   * @author Aldo Gonzalez <aldo@tunerinc.com>
   *
-  * @param   {string[]} artists      The Spotify id of the artist to increment
-  * @param   {number[]} artistCounts The new amount of plays for the artist
-  *
-  * @returns {object}                Redux action with the type of INCREMENT_ARTIST_PLAYS_SUCCESS and the new amount of artist plays
+  * @returns {object} Redux action with the type of INCREMENT_ARTIST_PLAYS_SUCCESS
   */
-export function incrementArtistPlaysSuccess(
-  artists: Array<string>,
-  artistCounts: Array<number>,
-): Action {
-  return {
-    type: types.INCREMENT_ARTIST_PLAYS_SUCCESS,
-    artists,
-    artistCounts,
-  };
+export function incrementArtistPlaysSuccess(): Action {
+  return {type: types.INCREMENT_ARTIST_PLAYS_SUCCESS};
 }
 
 /**

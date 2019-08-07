@@ -70,41 +70,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state               The Redux state
- * @param   {object}   action              The Redux action
- * @param   {string}   action.type         The type of Redux action
- * @param   {string[]} action.artists      The Spotify ids of the artists to increment the play counts for
- * @param   {number[]} action.artistCounts The play counts the current user has for the artists
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                       The state with the new play counts added for the artists
+ * @returns {object}       The state with the incrementingCount prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {artists, artistCounts} = action;
-
-  let {artistsByID} = state;
-
-  if (Array.isArray(artists) && Array.isArray(artistCounts) && typeof artists === 'object') {
-    artists.forEach((artistID, index) => {
-      if (typeof artistsByID === 'object' && typeof artistID === 'string') {
-        const updatedArtist = singleArtist(artistsByID[artistID], {
-          ...action,
-          artistCount: artistCounts[index],
-        });
-    
-        artistsByID = updateObject(artistsByID, {[artistID]: updatedArtist});
-      }
-    });
-  }
-
-  return updateObject(state, {
-    artistsByID,
-    lastUpdated,
-    incrementingCount: false,
-    error: null,
-  });
+  return updateObject(state, {incrementingCount: false, error: null});
 }
 
 /**

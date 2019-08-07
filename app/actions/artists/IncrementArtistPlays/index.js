@@ -63,7 +63,7 @@ export function incrementArtistPlays(
 
       const totals: Array<number> = await Promise.all(promises);
       
-      dispatch(actions.incrementArtistPlaysSuccess(artists, totals));
+      dispatch(actions.incrementArtistPlaysSuccess());
     } catch (err) {
       dispatch(actions.incrementArtistPlaysFailure(err));
     }
