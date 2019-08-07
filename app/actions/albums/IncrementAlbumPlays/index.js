@@ -56,7 +56,7 @@ export function incrementAlbumPlays(
         return plays + 1;
       });
 
-      dispatch(actions.incrementAlbumPlaysSuccess(albumID, total));
+      dispatch(actions.incrementAlbumPlaysSuccess());
     } catch (err) {
       dispatch(actions.incrementAlbumPlaysFailure(err));
     }

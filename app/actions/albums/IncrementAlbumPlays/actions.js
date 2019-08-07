@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/albums';
  * @returns {object} Redux action with the type of INCREMENT_ALBUM_PLAYS_REQUEST
  */
 export function incrementAlbumPlaysRequest(): Action {
-  return {
-    type: types.INCREMENT_ALBUM_PLAYS_REQUEST,
-  };
+  return {type: types.INCREMENT_ALBUM_PLAYS_REQUEST};
 }
 
 /**
@@ -36,20 +34,10 @@ export function incrementAlbumPlaysRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} albumID    The Spotify id of the album that was incremented
- * @param   {number} albumCount The new amount of plays the album has
- *
- * @returns {object}            Redux action with the type of INCREMENT_ALBUM_PLAYS_SUCCESS and the new amount of album plays
+ * @returns {object} Redux action with the type of INCREMENT_ALBUM_PLAYS_SUCCESS
  */
-export function incrementAlbumPlaysSuccess(
-  albumID: string,
-  albumCount: number,
-): Action {
-  return {
-    type: types.INCREMENT_ALBUM_PLAYS_SUCCESS,
-    albumID,
-    albumCount,
-  };
+export function incrementAlbumPlaysSuccess(): Action {
+  return {type: types.INCREMENT_ALBUM_PLAYS_SUCCESS};
 }
 
 /**

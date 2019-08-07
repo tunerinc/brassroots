@@ -69,32 +69,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state             The Redux state
- * @param   {object} action            The Redux action
- * @param   {string} action.type       The type of Redux action
- * @param   {string} action.albumID    The Spotify id of the album to increment
- * @param   {number} action.albumCount The new total amount of plays for the current user on the album
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                   The state with the new play count added for the single album
+ * @returns {object}       The state with the incrementingCount prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {albumsByID: oldAlbums} = state;
-  const {albumID} = action;
-  const updates = typeof albumID === 'string' && typeof oldAlbums === 'object'
-    ? {
-      lastUpdated,
-      incrementingCount: false,
-      error: null,
-      albumsByID: updateObject(oldAlbums, {
-        [albumID]: singleAlbum(oldAlbums[albumID], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {incrementingCount: false, error: null});
 }
 
 /**
