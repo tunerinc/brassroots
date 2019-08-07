@@ -319,7 +319,7 @@ export default function reducer(
       case types.INCREMENT_PLAYLIST_PLAYS_REQUEST:
         return incrementPlaylistPlays.request(state);
       case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
-        return incrementPlaylistPlays.success(state, action);
+        return incrementPlaylistPlays.success(state);
       case types.INCREMENT_PLAYLIST_PLAYS_FAILURE:
         return incrementPlaylistPlays.failure(state, action);
       case types.REMOVE_NEW_PLAYLIST_USER:

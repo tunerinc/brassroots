@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/playlists';
  * @returns {object} Redux action with the type of INCREMENT_PLAYLIST_PLAYS_REQUEST
  */
 export function incrementPlaylistPlaysRequest(): Action {
-  return {
-    type: types.INCREMENT_PLAYLIST_PLAYS_REQUEST,
-  };
+  return {type: types.INCREMENT_PLAYLIST_PLAYS_REQUEST};
 }
 
 /**
@@ -36,26 +34,10 @@ export function incrementPlaylistPlaysRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} playlistID    The Spotify id of the playlist to increment plays for
- * @param   {number} playlistCount The new total amount of plays the user has for the playlist
- * @param   {string} trackID       The Spotify id of the track to increment plays for within the playlist
- * @param   {number} trackCount    The new total amount of plays the user has for the track in the playlist
- *
- * @returns {object}               Redux action with the type of INCREMENT_PLAYLIST_PLAYS_SUCCESS and the new totals for the playlist/playlist track
+ * @returns {object} Redux action with the type of INCREMENT_PLAYLIST_PLAYS_SUCCESS
  */
-export function incrementPlaylistPlaysSuccess(
-  playlistID: string,
-  playlistCount: number,
-  trackID: string,
-  trackCount: number,
-): Action {
-  return {
-    type: types.INCREMENT_PLAYLIST_PLAYS_SUCCESS,
-    playlistID,
-    playlistCount,
-    trackID,
-    trackCount,
-  };
+export function incrementPlaylistPlaysSuccess(): Action {
+  return {type: types.INCREMENT_PLAYLIST_PLAYS_SUCCESS};
 }
 
 /**

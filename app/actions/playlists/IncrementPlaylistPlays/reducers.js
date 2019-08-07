@@ -102,42 +102,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state                The Redux state
- * @param   {object} action               The Redux action
- * @param   {string} action.type          The type of Redux action
- * @param   {string} action.playlistID    The Spotify id of the playlist with an incremented play count
- * @param   {number} action.playlistCount The new play count for the current user on the playlist
- * @param   {string} action.trackID       The Spotify id of the track within the playlist with an incremented play count
- * @param   {number} action.trackCount    The new play count for the current user on a single track within the playlist
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                      The state with the new counts added for the playlist & playlist track
+ * @returns {object}       The state with the incrementingCount prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {playlistsByID: oldPlaylists, playlistTracksByID: oldTracks} = state;
-  const {playlistID, trackID} = action;
-  const updates: State = (
-    typeof oldPlaylists === 'object'
-    && typeof oldTracks === 'object'
-    && typeof playlistID === 'string'
-    && typeof trackID === 'string'
-  )
-    ? {
-      lastUpdated,
-      incrementingCount: false,
-      error: null,
-      playlistsByID: updateObject(oldPlaylists, {
-        [playlistID]: singlePlaylist(oldPlaylists[playlistID], action),
-      }),
-      playlistTracksByID: updateObject(oldTracks, {
-        [`${playlistID}-${trackID}`]: singleTrack(oldTracks[`${playlistID}-${trackID}`], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {incrementingCount: false, error: null});
 }
 
 /**

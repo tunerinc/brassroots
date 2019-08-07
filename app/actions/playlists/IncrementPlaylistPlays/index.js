@@ -78,7 +78,7 @@ export function incrementPlaylistPlays(
     const totals: Array<number> = await Promise.all(promises);
     const [playlistCount, trackCount] = totals;
 
-    dispatch(actions.incrementPlaylistPlaysSuccess(playlistID, playlistCount, trackID, trackCount));
+    dispatch(actions.incrementPlaylistPlaysSuccess());
     } catch (err) {
       dispatch(actions.incrementPlaylistPlaysFailure(err));
     }
