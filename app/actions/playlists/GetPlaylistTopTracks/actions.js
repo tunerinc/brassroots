@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/playlists';
  * @returns {object} Redux action with the type of GET_PLAYLIST_TOP_TRACKS_REQUEST
  */
 export function getPlaylistTopTracksRequest(): Action {
-  return {
-    type: types.GET_PLAYLIST_TOP_TRACKS_REQUEST,
-  };
+  return {type: types.GET_PLAYLIST_TOP_TRACKS_REQUEST};
 }
 
 /**
@@ -36,20 +34,10 @@ export function getPlaylistTopTracksRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string}   playlistID The playlist id the top tracks need to be getd from
- * @param   {string[]} topTracks  The Spotify ids of the top 3 most played tracks from the playlist
- *
- * @returns {object}              Redux action with the type of GET_PLAYLIST_TOP_TRACKS_SUCCESS and the top tracks from a playlist
+ * @returns {object} Redux action with the type of GET_PLAYLIST_TOP_TRACKS_SUCCESS
  */
-export function getPlaylistTopTracksSuccess(
-  playlistID: string,
-  topTracks: Array<string>,
-): Action {
-  return {
-    type: types.GET_PLAYLIST_TOP_TRACKS_SUCCESS,
-    playlistID,
-    topTracks,
-  };
+export function getPlaylistTopTracksSuccess(): Action {
+  return {type: types.GET_PLAYLIST_TOP_TRACKS_SUCCESS};
 }
 
 /**
