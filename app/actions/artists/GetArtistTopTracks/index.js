@@ -51,7 +51,7 @@ export function getArtistTopTracks(
       const trackDocs: FirestoreDocs = await artistTracksRef.orderBy('plays', 'desc').limit(3).get();
 
       if (trackDocs.empty) {
-        dispatch(actions.getArtistTopTracksSuccess(artistID, []));
+        dispatch(actions.getArtistTopTracksSuccess());
       } else {
         const trackIDs = trackDocs.docs.map(doc => doc.id);
         const tracksRes = await Spotify.getTracks(trackIDs, {});
@@ -67,7 +67,7 @@ export function getArtistTopTracks(
         dispatch(addAlbums(music.albums));
         dispatch(addArtists(music.artists));
         dispatch(addTracks(music.tracks));
-        dispatch(actions.getArtistTopTracksSuccess(artistID, trackIDs));
+        dispatch(actions.getArtistTopTracksSuccess());
       }
     } catch (err) {
       dispatch(actions.getArtistTopTracksFailure(err));

@@ -69,31 +69,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state           The Redux state
- * @param   {object}   action          The Redux action
- * @param   {string}   action.type     The type of Redux action
- * @param   {string}   action.artistID The Spotify id of the artist
- * @param   {string[]} action.trackIDs The top tracks of the artist and their Spotify ids
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                   The state with the artist's top tracks updated
+ * @returns {object}       The state with the fetchingTracks prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {artistsByID: oldArtists} = state;
-  const {artistID} = action;
-  const updates = typeof artistID === 'string' && typeof oldArtists === 'object'
-    ? {
-      fetchingTracks: false,
-      error: null,
-      artistsByID: updateObject(oldArtists, {
-        [artistID]: singleArtist(oldArtists[artistID], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {fetchingTracks: false, error: null});
 }
 
 /**
