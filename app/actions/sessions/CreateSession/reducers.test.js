@@ -7,72 +7,34 @@
 
 import reducer, {
   initialState,
-  type Session,
+  type State,
 } from '../../../reducers/sessions';
 import * as actions from './actions';
 
 describe('create session reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CREATE_SESSION_REQUEST', () => {
-    expect(reducer(initialState, actions.createSessionRequest()))
-      .toStrictEqual({...initialState, joiningSession: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.createSessionRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, joiningSession: true});
+  it('handles CREATE_SESSION_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, joiningSession: true};
+    expect(reducer(initialState, actions.createSessionRequest())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.createSessionRequest())).toStrictEqual(expectedState);
   });
 
-  it('should handle CREATE_SESSION_SUCCESS', () => {
+  it('handles CREATE_SESSION_SUCCESS', () => {
     const currentSessionID: string = 'foo';
-    const session: Session = {
-      id: 'foo',
-      currentQueueID: 'foo',
-      currentTrackID: 'foo',
-      ownerID: 'foo',
-      mode: 'foo',
-      distance: 0,
-      totalListeners: 0,
-    };
-
-    expect(
-      reducer(
-        {...initialState, joiningSession: true},
-        actions.createSessionSuccess(session),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          totalSessions: 1,
-          currentSessionID,
-          sessionsByID: {
-            [currentSessionID]: {
-              ...session,
-              listeners: [],
-              timeLastPlayed: null,
-              lastUpdated: initialState.lastUpdated,
-            },
-          },
-        },
-      );
+    const state: State = {...initialState, joiningSession: true};
+    const expectedState: State = {...initialState, currentSessionID};
+    expect(reducer(state, actions.createSessionSuccess(currentSessionID)))
+      .toStrictEqual(expectedState);
   });
 
-  it('should handle CREATE_SESSION_FAILURE', () => {
+  it('handles CREATE_SESSION_FAILURE', () => {
+    const state: State = {...initialState, joiningSession: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, joiningSession: true},
-        actions.createSessionFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.createSessionFailure(error))).toStrictEqual(expectedState);
   });
 });

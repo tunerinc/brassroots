@@ -278,7 +278,7 @@ export function createSession(
       });
 
       await batch.commit();
-      dispatch(actions.createSessionSuccess(session));
+      dispatch(actions.createSessionSuccess(session.id));
       dispatch(addPeople({[user.id]: {...user, currentSessionID: session.id}}));
       dispatch(addCurrentContext(context));
       dispatch(

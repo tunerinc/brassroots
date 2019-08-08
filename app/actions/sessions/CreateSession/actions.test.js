@@ -13,34 +13,22 @@ import {
 } from '../../../reducers/sessions';
 
 describe('create session synchronous action creators', () => {
-  it('creates create session request action', () => {
-    const expectedAction: Action = {
-      type: types.CREATE_SESSION_REQUEST,
-    };
-
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CREATE_SESSION_REQUEST};
     expect(actions.createSessionRequest()).toStrictEqual(expectedAction);
   });
 
-  it('creates create session success action', () => {
-    const session: Session = {
-      id: 'foo',
-      currentQueueID: 'foo',
-      currentTrackID: 'foo',
-      ownerID: 'foo',
-      mode: 'foo',
-      distance: 0,
-      totalListeners: 0,
-    };
-
+  it('creates success action', () => {
+    const sessionID: string = 'foo';
     const expectedAction: Action = {
       type: types.CREATE_SESSION_SUCCESS,
-      session,
+      sessionID,
     };
 
-    expect(actions.createSessionSuccess(session)).toStrictEqual(expectedAction);
+    expect(actions.createSessionSuccess(sessionID)).toStrictEqual(expectedAction);
   });
 
-  it('creates create session failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CREATE_SESSION_FAILURE,

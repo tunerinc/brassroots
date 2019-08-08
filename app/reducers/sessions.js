@@ -72,7 +72,7 @@ type Action = {
   +type?: string,
   +error?: Error,
   +sessions?: {+[id: string]: Session} | Array<string>,
-  +session?: Session,
+  +sessionID?: string,
   +followingSessions?: Array<string>,
   +followingCanPaginate?: boolean,
   +nearbySessions?: Array<string>,
