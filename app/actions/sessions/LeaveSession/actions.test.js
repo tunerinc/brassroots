@@ -10,15 +10,12 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/sessions';
 
 describe('leave session synchronous action creators', () => {
-  it('creates leave session request action', () => {
-    const expectedAction: Action = {
-      type: types.LEAVE_SESSION_REQUEST,
-    };
-
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.LEAVE_SESSION_REQUEST};
     expect(actions.leaveSessionRequest()).toStrictEqual(expectedAction);
   });
 
-  it('creates leave session success action', () => {
+  it('creates success action', () => {
     const sessionID: string = 'foo';
     const isOwner: boolean = true;
     const expectedAction: Action = {
@@ -29,7 +26,7 @@ describe('leave session synchronous action creators', () => {
     expect(actions.leaveSessionSuccess(sessionID, isOwner)).toStrictEqual(expectedAction);
   });
 
-  it('creates leave session failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.LEAVE_SESSION_FAILURE,

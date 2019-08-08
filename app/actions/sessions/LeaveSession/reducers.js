@@ -80,26 +80,22 @@ export function success(
   state: State,
   action: Action,
 ): State {
-  const {sessionsByID, explore} = state;
+  const {explore} = state;
   const {sessionID, isOwner} = action;
   const updates = (
     typeof sessionID === 'string'
-    && typeof sessionsByID === 'object'
     && typeof explore === 'object'
     && typeof isOwner === 'boolean'
-    && Array.isArray(explore.trendingSessions)
+    && Array.isArray(explore.trendingIDs)
   )
     ? {
       currentSessionID: null,
       leavingSession: false,
       error: null,
       explore: updateObject(explore, {
-        trendingSessions: isOwner
-          ? explore.trendingSessions.filter(id => id !== sessionID)
-          : [...explore.trendingSessions],
-      }),
-      sessionsByID: updateObject(sessionsByID, {
-        [sessionID]: singleSession(sessionsByID[sessionID], action),
+        trendingIDs: isOwner
+          ? explore.trendingIDs.filter(id => id !== sessionID)
+          : [...explore.trendingIDs],
       }),
     }
     : {};

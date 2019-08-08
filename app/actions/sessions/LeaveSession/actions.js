@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/sessions';
  * @returns {object} Redux action with the type of LEAVE_SESSION_REQUEST
  */
 export function leaveSessionRequest(): Action {
-  return {
-    type: types.LEAVE_SESSION_REQUEST,
-  };
+  return {type: types.LEAVE_SESSION_REQUEST};
 }
 
 /**
