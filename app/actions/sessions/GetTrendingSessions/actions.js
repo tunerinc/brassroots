@@ -34,18 +34,18 @@ export function getTrendingSessionsRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string[]} trendingSessions=[]       The Brassroots ids of the trending sessions
+ * @param   {string[]} trendingIDs=[]            The Brassroots ids of the trending sessions
  * @param   {boolean}  trendingCanPaginate=false Whether the trending sessions can paginate
  *
  * @returns {object}                             Redux action with the type of GET_TRENDING_SESSIONS_SUCCESS and the trending sessions
  */
 export function getTrendingSessionsSuccess(
-  trendingSessions?: Array<string> = [],
+  trendingIDs?: Array<string> = [],
   trendingCanPaginate?: boolean = false,
 ): Action {
   return {
     type: types.GET_TRENDING_SESSIONS_SUCCESS,
-    trendingSessions,
+    trendingIDs,
     trendingCanPaginate,
   };
 }

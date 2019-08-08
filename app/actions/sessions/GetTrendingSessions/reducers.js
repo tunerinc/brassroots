@@ -31,9 +31,9 @@ export function request(
   state: State,
 ): State {
   const {explore} = state;
-  const updates = explore && Array.isArray(explore.trendingSessions)
+  const updates = explore && Array.isArray(explore.trendingIDs)
     ? {
-      refreshingSessions: explore.trendingSessions.length !== 0,
+      refreshingSessions: explore.trendingIDs.length !== 0,
       fetchingSessions: true,
       error: null,
     }
@@ -49,27 +49,27 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state                       The Redux state
- * @param   {object}   action                      The Redux action
- * @param   {string}   action.type                 The type of Redux action
- * @param   {string[]} action.trendingSessions    The Brassroots ids of the trending sessions
+ * @param   {object}   state                      The Redux state
+ * @param   {object}   action                     The Redux action
+ * @param   {string}   action.type                The type of Redux action
+ * @param   {string[]} action.trendingIDs         The Brassroots ids of the trending sessions
  * @param   {boolean}  action.trendingCanPaginate Whether the current user can paginate the trending sessions
  * 
- * @returns {object}                               The state with the trending sessions added
+ * @returns {object}                              The state with the trending sessions added
  */
 export function success(
   state: State,
   action: Action,
 ): State {
   const {explore} = state;
-  const {trendingSessions, trendingCanPaginate} = action;
-  const updates = explore && Array.isArray(trendingSessions) && typeof trendingCanPaginate === 'boolean'
+  const {trendingIDs, trendingCanPaginate} = action;
+  const updates = explore && Array.isArray(trendingIDs) && typeof trendingCanPaginate === 'boolean'
     ? {
       refreshingSessions: false,
       fetchingSessions: false,
       error: null,
       explore: updateObject(explore, {
-        trendingSessions,
+        trendingIDs,
         trendingCanPaginate,
         trendingLastUpdated: lastUpdated,
       }),

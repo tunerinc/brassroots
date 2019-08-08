@@ -10,25 +10,25 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/sessions';
 
 describe('get trending sessions synchronous action creators', () => {
-  it('creates get trending sessions request action', () => {
+  it('creates request action', () => {
     const expectedAction: Action = {type: types.GET_TRENDING_SESSIONS_REQUEST};
     expect(actions.getTrendingSessionsRequest()).toStrictEqual(expectedAction);
   });
 
-  it('creates get trending sessions success action', () => {
-    const trendingSessions: Array<string> = ['foo', 'bar'];
+  it('creates success action', () => {
+    const trendingIDs: Array<string> = ['foo', 'bar'];
     const trendingCanPaginate: boolean = true;
     const expectedAction: Action = {
       type: types.GET_TRENDING_SESSIONS_SUCCESS,
-      trendingSessions,
+      trendingIDs,
       trendingCanPaginate,
     };
 
-    expect(actions.getTrendingSessionsSuccess(trendingSessions, trendingCanPaginate))
+    expect(actions.getTrendingSessionsSuccess(trendingIDs, trendingCanPaginate))
       .toStrictEqual(expectedAction);
   });
 
-  it('creates get trending sessions failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.GET_TRENDING_SESSIONS_FAILURE,
