@@ -7,7 +7,6 @@
 
 import reducer, {
   initialState,
-  type Session,
   type State,
 } from '../../../reducers/sessions';
 import * as actions from './actions';
@@ -26,37 +25,9 @@ describe('join session reducer', () => {
 
   it('handles JOIN_SESSION_SUCCESS', () => {
     const currentSessionID: string = 'foo';
-    const userID: string = 'foo';
-    const totalListeners: number = 100;
-    const session: Session = {
-      id: 'foo',
-      currentTrackID: 'foo',
-      currentQueueID: 'foo',
-      ownerID: 'foo',
-      distance: 0,
-      mode: 'foo',
-      timeLastPlayed: 'foo',
-      listeners: ['bar'],
-      totalListeners: totalListeners - 1,
-      totalPlayed: 0,
-      lastUpdated: initialState.lastUpdated,
-    };
-
-    expect(
-      reducer(
-        {...initialState, joiningSession: true, sessionsByID: {[currentSessionID]: session}},
-        actions.joinSessionSuccess(currentSessionID, userID, totalListeners),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          currentSessionID,
-          sessionsByID: {
-            [currentSessionID]: {...session, totalListeners, listeners: ['bar', 'foo']},
-          },
-        },
-      );
+    const state: State = {...initialState, joiningSession: true};
+    const expectedState: State = {...initialState, currentSessionID};
+    expect(reducer(state, actions.joinSessionSuccess(currentSessionID))).toStrictEqual(expectedState);
   });
 
   it('handles JOIN_SESSION_FAILURE', () => {

@@ -239,8 +239,7 @@ export function joinSession(
       if (newSession.context) dispatch(addCurrentContext(newSession.context));
 
       dispatch(updatePlayer({progress}));
-      dispatch(actions.joinSessionSuccess(session.id, user.id, parseInt(newSession.totalListeners)));
-
+      dispatch(actions.joinSessionSuccess(session.id));
       Actions.liveSession();
     } catch (err) {
       dispatch(actions.joinSessionFailure(err));

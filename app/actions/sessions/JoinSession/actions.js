@@ -34,22 +34,16 @@ export function joinSessionRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} sessionID      The id of the session the current user has joined
- * @param   {string} userID         The id of the current user
- * @param   {number} totalListeners The updated total amount of listeners in the session
+ * @param   {string} sessionID The id of the session the current user has joined
  *
- * @returns {object}                Redux action with the type of JOIN_SESSION_SUCCESS, the session id, and the current user's id
+ * @returns {object}           Redux action with the type of JOIN_SESSION_SUCCESS and the session id
  */
 export function joinSessionSuccess(
   sessionID: string,
-  userID: string,
-  totalListeners: number,
 ): Action {
   return {
     type: types.JOIN_SESSION_SUCCESS,
     sessionID,
-    userID,
-    totalListeners,
   };
 }
 

@@ -78,30 +78,20 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state                 The Redux state
- * @param   {object} action                The Redux action
- * @param   {string} action.type           The type of Redux action
- * @param   {string} action.sessionID      The Brassroots id of the session the current user has joined
- * @param   {string} action.userID         The Brassroots id of the current user
- * @param   {number} action.totalListeners The new total amount of listeners after the current user has joined
+ * @param   {object} state            The Redux state
+ * @param   {object} action           The Redux action
+ * @param   {string} action.type      The type of Redux action
+ * @param   {string} action.sessionID The Brassroots id of the session the current user has joined
  * 
- * @returns {object}                       The state with the current user joined as a listener
+ * @returns {object}                  The state with the current user joined as a listener
  */
 export function success(
   state: State,
   action: Action,
 ): State {
-  const {sessionsByID} = state;
   const {sessionID: currentSessionID} = action;
-  const updates = typeof currentSessionID === 'string' && typeof sessionsByID === 'object'
-    ? {
-      currentSessionID,
-      joiningSession: false,
-      error: null,
-      sessionsByID: updateObject(sessionsByID, {
-        [currentSessionID]: singleSession(sessionsByID[currentSessionID], action),
-      }),
-    }
+  const updates = typeof currentSessionID === 'string'
+    ? {currentSessionID, joiningSession: false, error: null}
     : {};
 
   return updateObject(state, updates);
