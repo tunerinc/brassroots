@@ -12,11 +12,11 @@ import reducer, {
 import * as actions from './actions';
 
 describe('get following sessions reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_FOLLOWING_SESSIONS_REQUEST', () => {
+  it('handles GET_FOLLOWING_SESSIONS_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
     const sessionState: State = {...state, explore: {followingIDs: ['foo']}};
     const expectedState: State = {...initialState, fetchingSessions: true};
@@ -34,7 +34,7 @@ describe('get following sessions reducer', () => {
       );
   });
 
-  it('should handle GET_FOLLOWING_SESSIONS_SUCCESS', () => {
+  it('handles GET_FOLLOWING_SESSIONS_SUCCESS', () => {
     const followingIDs: Array<string> = ['foo', 'bar'];
     const followingCanPaginate: boolean = true;
     const state: State = {...initialState, fetchingSessions: true};
@@ -53,7 +53,7 @@ describe('get following sessions reducer', () => {
       );
   });
 
-  it('should handle GET_FOLLOWING_SESSIONS_FAILURE', () => {
+  it('handles GET_FOLLOWING_SESSIONS_FAILURE', () => {
     const state: State = {...initialState, refreshingSessions: true, fetchingSessions: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};

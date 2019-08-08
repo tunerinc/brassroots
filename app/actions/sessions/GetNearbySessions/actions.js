@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/sessions';
  * @returns {object} Redux action with the type of GET_NEARBY_SESSIONS_REQUEST
  */
 export function getNearbySessionsRequest(): Action {
-  return {
-    type: types.GET_NEARBY_SESSIONS_REQUEST,
-  };
+  return {type: types.GET_NEARBY_SESSIONS_REQUEST};
 }
 
 /**
@@ -36,18 +34,18 @@ export function getNearbySessionsRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string[]} nearbySessions    The Brassroots ids of the nearby sessions
+ * @param   {string[]} nearbyIDs         The Brassroots ids of the nearby sessions
  * @param   {boolean}  nearbyCanPaginate Whether the nearby sessions can paginate
  *
  * @returns {object}                     Redux action with the type of GET_NEARBY_SESSIONS_SUCCESS and the nearby sessions
  */
 export function getNearbySessionsSuccess(
-  nearbySessions: Array<string>,
+  nearbyIDs: Array<string>,
   nearbyCanPaginate: boolean,
 ): Action {
   return {
     type: types.GET_NEARBY_SESSIONS_SUCCESS,
-    nearbySessions,
+    nearbyIDs,
     nearbyCanPaginate,
   };
 }

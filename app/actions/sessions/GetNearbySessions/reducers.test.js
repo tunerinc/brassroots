@@ -5,7 +5,10 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/sessions';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/sessions';
 import * as actions from './actions';
 
 describe('get nearby sessions reducer', () => {
@@ -14,49 +17,34 @@ describe('get nearby sessions reducer', () => {
   });
 
   it('should handle GET_NEARBY_SESSIONS_REQUEST', () => {
-    expect(reducer(initialState, actions.getNearbySessionsRequest()))
-      .toStrictEqual({...initialState, fetchingSessions: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.getNearbySessionsRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, fetchingSessions: true});
-
-    expect(
-      reducer(
-        {...initialState, explore: {nearbySessions: ['foo']}},
-        actions.getNearbySessionsRequest(),
-      ),
-    )
+    const state: State = {...initialState, error: new Error('error')};
+    const sessionState: State = {...initialState, explore: {nearbyIDs: ['foo']}};
+    const expectedState: State = {...initialState, fetchingSessions: true};
+    expect(reducer(initialState, actions.getNearbySessionsRequest())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.getNearbySessionsRequest())).toStrictEqual(expectedState);
+    expect(reducer(sessionState, actions.getNearbySessionsRequest()))
       .toStrictEqual(
         {
           ...initialState,
           refreshingSessions: true,
           fetchingSessions: true,
-          explore: {nearbySessions: ['foo']},
+          explore: {nearbyIDs: ['foo']},
         },
       );
   });
 
   it('should handle GET_NEARBY_SESSIONS_SUCCESS', () => {
-    const nearbySessions: Array<string> = ['foo', 'bar'];
+    const nearbyIDs: Array<string> = ['foo', 'bar'];
     const nearbyCanPaginate: boolean = true;
+    const state: State = {...initialState, fetchingSessions: true};
 
-    expect(
-      reducer(
-        {...initialState, fetchingSessions: true},
-        actions.getNearbySessionsSuccess(nearbySessions, nearbyCanPaginate),
-      ),
-    )
+    expect(reducer(state, actions.getNearbySessionsSuccess(nearbyIDs, nearbyCanPaginate)))
       .toStrictEqual(
         {
           ...initialState,
           explore: {
             ...initialState.explore,
-            nearbySessions,
+            nearbyIDs,
             nearbyCanPaginate,
             nearbyLastUpdated: initialState.lastUpdated,
           },
@@ -65,14 +53,9 @@ describe('get nearby sessions reducer', () => {
   });
 
   it('should handle GET_NEARBY_SESSIONS_FAILURE', () => {
+    const state: State = {...initialState, refreshingSessions: true, fetchingSessions: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, refreshingSessions: true, fetchingSessions: true},
-        actions.getNearbySessionsFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.getNearbySessionsFailure(error))).toStrictEqual(expectedState);
   });
 });

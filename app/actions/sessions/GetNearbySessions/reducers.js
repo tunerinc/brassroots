@@ -31,9 +31,9 @@ export function request(
   state: State,
 ): State {
   const {explore} = state;
-  const updates = explore && Array.isArray(explore.nearbySessions)
+  const updates = explore && Array.isArray(explore.nearbyIDs)
     ? {
-      refreshingSessions: explore.nearbySessions.length !== 0,
+      refreshingSessions: explore.nearbyIDs.length !== 0,
       fetchingSessions: true,
       error: null,
     }
@@ -52,7 +52,7 @@ export function request(
  * @param   {object}   state                    The Redux state
  * @param   {object}   action                   The Redux action
  * @param   {string}   action.type              The type of Redux action
- * @param   {string[]} action.nearbySessions    The Brassroots ids of the nearby sessions
+ * @param   {string[]} action.nearbyIDs         The Brassroots ids of the nearby sessions
  * @param   {boolean}  action.nearbyCanPaginate Whether the current user can paginate the nearby sessions
  * 
  * @returns {object}                            The state with the nearby sessions added
@@ -62,14 +62,14 @@ export function success(
   action: Action,
 ): State {
   const {explore} = state;
-  const {nearbySessions, nearbyCanPaginate} = action;
-  const updates = explore && Array.isArray(nearbySessions) && typeof nearbyCanPaginate === 'boolean'
+  const {nearbyIDs, nearbyCanPaginate} = action;
+  const updates = explore && Array.isArray(nearbyIDs) && typeof nearbyCanPaginate === 'boolean'
     ? {
       refreshingSessions: false,
       fetchingSessions: false,
       error: null,
       explore: updateObject(explore, {
-        nearbySessions,
+        nearbyIDs,
         nearbyCanPaginate,
         nearbyLastUpdated: lastUpdated,
       }),
