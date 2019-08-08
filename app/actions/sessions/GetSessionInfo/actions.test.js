@@ -13,37 +13,22 @@ import {
 } from '../../../reducers/sessions';
 
 describe('get session info synchronous action creators', () => {
-  it('creates get session info request action', () => {
-    const expectedAction: Action = {
-      type: types.GET_SESSION_INFO_REQUEST,
-    };
-
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.GET_SESSION_INFO_REQUEST};
     expect(actions.getSessionInfoRequest()).toStrictEqual(expectedAction);
   });
 
-  it('creates get session info success action', () => {
+  it('creates success action', () => {
     const unsubscribe: () => void = () => {return};
-    const session: Session = {
-      id: 'foo',
-      currentQueueID: 'foo',
-      currentTrackID: 'foo',
-      ownerID: 'foo',
-      distance: 0,
-      mode: 'foo',
-      totalListeners: 0,
-      totalPlayed: 0,
-    };
-
     const expectedAction: Action = {
       type: types.GET_SESSION_INFO_SUCCESS,
-      session,
       unsubscribe,
     };
 
-    expect(actions.getSessionInfoSuccess(session, unsubscribe)).toStrictEqual(expectedAction);
+    expect(actions.getSessionInfoSuccess(unsubscribe)).toStrictEqual(expectedAction);
   });
 
-  it('creates get session info failure action', () => {
+  it('creates failure action', () => {
     const error = new Error('error');
     const expectedAction: Action = {
       type: types.GET_SESSION_INFO_FAILURE,

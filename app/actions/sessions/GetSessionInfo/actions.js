@@ -26,9 +26,7 @@ import {
  * @return {object} Redux action with the type of GET_SESSION_INFO_REQUEST
  */
 export function getSessionInfoRequest(): Action {
-  return {
-    type: types.GET_SESSION_INFO_REQUEST,
-  };
+  return {type: types.GET_SESSION_INFO_REQUEST};
 }
 
 /**
@@ -45,18 +43,15 @@ export function getSessionInfoRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param  {object}      session     The session info retrieved from Ultrasound
  * @param  {unsubscribe} unsubscribe The function to invoke to unsubscribe from the info listener
  * 
  * @return {object}                  Redux action with the type of GET_SESSION_INFO_SUCCESS and the retrieved session info
  */
 export function getSessionInfoSuccess(
-  session: Session,
   unsubscribe: () => void,
 ): Action {
   return {
     type: types.GET_SESSION_INFO_SUCCESS,
-    session,
     unsubscribe,
   };
 }

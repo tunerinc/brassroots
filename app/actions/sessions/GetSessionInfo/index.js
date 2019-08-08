@@ -59,7 +59,7 @@ export function getSessionInfo(
           };
 
           dispatch(updatePlayer({paused: doc.data().paused}));
-          dispatch(actions.getSessionInfoSuccess(session, unsubscribe));
+          dispatch(actions.getSessionInfoSuccess(unsubscribe));
         },
         error => {throw error},
       );

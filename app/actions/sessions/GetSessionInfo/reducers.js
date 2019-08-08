@@ -41,42 +41,19 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}    state                         The Redux state
- * @param   {object}    action                        The Redux action
- * @param   {string}    action.type                   The type of Redux action
- * @param   {object}    action.session                The newly created session
- * @param   {string}    action.session.id             The Brassroots id of the created session
- * @param   {string}    action.session.currentTrackID The Spotify id of the current queue track playing
- * @param   {string}    action.session.currentQueueID The Brassroots id of the current queue track playing
- * @param   {string}    action.session.ownerID        The Brassroots/Spotify id of the session owner
- * @param   {string}    action.session.mode           The mode the session is currently in
- * @param   {number}    action.session.distance       The distance of the session to the current user
- * @param   {number}    action.session.totalListeners The total amount of listeners in the session
- * @param   {number}    action.session.totalPlayed    The total amount of tracks that have been played
- * @param   {infoUnsub} action.unsubscribe            The function to invoke to unsubscribe the chat listener
+ * @param   {object}    state              The Redux state
+ * @param   {object}    action             The Redux action
+ * @param   {string}    action.type        The type of Redux action
+ * @param   {infoUnsub} action.unsubscribe The function to invoke to unsubscribe the chat listener
  * 
- * @returns {object}                                  The state with the session info added/updated
+ * @returns {object}                       The state with the unsubscribe method added
  */
 export function success(
   state: State,
   action: Action,
 ): State {
-  const {sessionsByID} = state;
-  const {session, unsubscribe: infoUnsubscribe} = action;
-  const updates = session && typeof session.id === 'string' && typeof sessionsByID === 'object'
-    ? {
-      lastUpdated,
-      infoUnsubscribe,
-      currentSessionID: session.id,
-      fetchingInfo: false,
-      error: null,
-      sessionsByID: updateObject(sessionsByID, {
-        [session.id]: singleSession(sessionsByID[session.id], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  const {unsubscribe: infoUnsubscribe} = action;
+  return updateObject(state, {lastUpdated, infoUnsubscribe, fetchingInfo: false, error: null});
 }
 
 /**
