@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/users';
  * @returns {object} Redux action with the type of CHANGE_COVER_PHOTO_REQUEST
  */
 export function changeCoverPhotoRequest() {
-  return {
-    type: types.CHANGE_COVER_PHOTO_REQUEST,
-  };
+  return {type: types.CHANGE_COVER_PHOTO_REQUEST};
 }
 
 /**
@@ -36,17 +34,10 @@ export function changeCoverPhotoRequest() {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} [photo=null] The cover photo uri to save for the current user
- *
- * @returns {object}              Redux action with the type of CHANGE_COVER_PHOTO_SUCCESS and the cover photo uri to save
+ * @returns {object} Redux action with the type of CHANGE_COVER_PHOTO_SUCCESS
  */
-export function changeCoverPhotoSuccess(
-  photo: ?string = null,
-): Action {
-  return {
-    type: types.CHANGE_COVER_PHOTO_SUCCESS,
-    photo,
-  };
+export function changeCoverPhotoSuccess(): Action {
+  return {type: types.CHANGE_COVER_PHOTO_SUCCESS};
 }
 
 /**

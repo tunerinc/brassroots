@@ -72,29 +72,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state        The Redux state
- * @param   {object} action       The Redux action
- * @param   {string} action.type  The type of Redux action
- * @param   {string} action.photo The cover photo to add for the current user
+ * @param   {object} state The Redux state
  * 
- * @returns {object}              The state with the cover photo changed for the current user
+ * @returns {object}       The state with the changingImage prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {currentUserID, usersByID} = state;
-  const updates = typeof currentUserID === 'string' && typeof usersByID === 'object'
-    ? {
-      changingImage: null,
-      error: null,
-      usersByID: updateObject(usersByID, {
-        [currentUserID]: singleUser(usersByID[currentUserID], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {changingImage: null, error: null});
 }
 
 /**

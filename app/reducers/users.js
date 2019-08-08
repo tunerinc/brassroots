@@ -283,7 +283,7 @@ export default function reducer(
       case types.CHANGE_COVER_PHOTO_REQUEST:
         return changeCoverPhoto.request(state);
       case types.CHANGE_COVER_PHOTO_SUCCESS:
-        return changeCoverPhoto.success(state, action);
+        return changeCoverPhoto.success(state);
       case types.CHANGE_COVER_PHOTO_FAILURE:
         return changeCoverPhoto.failure(state, action);
       case types.CHANGE_PROFILE_PHOTO_REQUEST:

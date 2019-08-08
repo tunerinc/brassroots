@@ -71,10 +71,9 @@ export function changeCoverPhoto(
         ];
 
         await Promise.all(promises);
-        dispatch(actions.changeCoverPhotoSuccess(coverImage));
-      } else {
-        dispatch(actions.changeCoverPhotoSuccess());
       }
+
+      dispatch(actions.changeCoverPhotoSuccess());
     } catch (err) {
       dispatch(actions.changeCoverPhotoFailure(err));
     }
