@@ -56,7 +56,7 @@ export function success(
   const {sessions, nearbyCanPaginate} = action;
   const updates = (
     explore
-    && Array.isArray(explore.nearbySessions)
+    && Array.isArray(explore.nearbyIDs)
     && Array.isArray(sessions)
     && typeof nearbyCanPaginate === 'boolean'
   )
@@ -66,7 +66,7 @@ export function success(
       explore: updateObject(explore, {
         nearbyCanPaginate,
         nearbyLastUpdated,
-        nearbySessions: explore.nearbySessions.concat(...sessions),
+        nearbyIDs: explore.nearbyIDs.concat(...sessions),
       }),
     }
     : {};

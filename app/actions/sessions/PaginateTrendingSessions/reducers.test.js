@@ -5,7 +5,10 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/sessions';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/sessions';
 import * as actions from './actions';
 
 describe('paginate trending sessions reducer', () => {
@@ -14,16 +17,11 @@ describe('paginate trending sessions reducer', () => {
   });
 
   it('should handle PAGINATE_TRENDING_SESSIONS_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, paginatingSessions: true};
+    expect(reducer(state, actions.paginateTrendingSessionsRequest())).toStrictEqual(expectedState);
     expect(reducer(initialState, actions.paginateTrendingSessionsRequest()))
-      .toStrictEqual({...initialState, paginatingSessions: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.paginateTrendingSessionsRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, paginatingSessions: true});
+      .toStrictEqual(expectedState);
   });
 
   it('should handle PAGINATE_TRENDING_SESSIONS_SUCCESS', () => {
@@ -32,7 +30,7 @@ describe('paginate trending sessions reducer', () => {
 
     expect(
       reducer(
-        {...initialState, paginatingSessions: true, explore: {trendingSessions: ['foo']}},
+        {...initialState, paginatingSessions: true, explore: {trendingIDs: ['foo']}},
         actions.paginateTrendingSessionsSuccess(sessions, trendingCanPaginate),
       ),
     )
@@ -41,7 +39,7 @@ describe('paginate trending sessions reducer', () => {
           ...initialState,
           explore: {
             trendingCanPaginate,
-            trendingSessions: ['foo', ...sessions],
+            trendingIDs: ['foo', ...sessions],
             trendingLastUpdated: initialState.lastUpdated,
           },
         },
@@ -49,14 +47,10 @@ describe('paginate trending sessions reducer', () => {
   });
 
   it('should handle PAGINATE_TRENDING_SESSIONS_FAILURE', () => {
+    const state: State = {...initialState, paginatingSessions: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, paginatingSessions: true},
-        actions.paginateTrendingSessionsFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.paginateTrendingSessionsFailure(error)))
+      .toStrictEqual(expectedState);
   });
 });

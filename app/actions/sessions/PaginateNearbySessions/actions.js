@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/sessions';
  * @return {object} Redux action with the type of PAGINATE_NEARBY_SESSIONS_REQUEST
  */
 export function paginateNearbySessionsRequest(): Action {
-  return {
-    type: types.PAGINATE_NEARBY_SESSIONS_REQUEST,
-  };
+  return {type: types.PAGINATE_NEARBY_SESSIONS_REQUEST};
 }
 
 /**

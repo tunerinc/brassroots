@@ -56,7 +56,7 @@ export function success(
   const {sessions, trendingCanPaginate} = action;
   const updates = (
     explore
-    && Array.isArray(explore.trendingSessions)
+    && Array.isArray(explore.trendingIDs)
     && Array.isArray(sessions)
     && typeof trendingCanPaginate === 'boolean'
   )
@@ -66,7 +66,7 @@ export function success(
       explore: updateObject(explore, {
         trendingCanPaginate,
         trendingLastUpdated,
-        trendingSessions: [...explore.trendingSessions, ...sessions],
+        trendingIDs: [...explore.trendingIDs, ...sessions],
       }),
     }
     : {};

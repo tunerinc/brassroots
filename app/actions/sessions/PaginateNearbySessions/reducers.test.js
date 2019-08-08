@@ -5,7 +5,10 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/sessions';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/sessions';
 import * as actions from './actions';
 
 describe('paginate nearby sessions reducer', () => {
@@ -14,16 +17,11 @@ describe('paginate nearby sessions reducer', () => {
   });
 
   it('should handle PAGINATE_NEARBY_SESSIONS_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, paginatingSessions: true};
+    expect(reducer(state, actions.paginateNearbySessionsRequest())).toStrictEqual(expectedState);
     expect(reducer(initialState, actions.paginateNearbySessionsRequest()))
-      .toStrictEqual({...initialState, paginatingSessions: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.paginateNearbySessionsRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, paginatingSessions: true});
+      .toStrictEqual(expectedState);
   });
 
   it('should handle PAGINATE_NEARBY_SESSIONS_SUCCESS', () => {
@@ -32,7 +30,7 @@ describe('paginate nearby sessions reducer', () => {
 
     expect(
       reducer(
-        {...initialState, paginatingSessions: true, explore: {nearbySessions: ['foo']}},
+        {...initialState, paginatingSessions: true, explore: {nearbyIDs: ['foo']}},
         actions.paginateNearbySessionsSuccess(sessions, nearbyCanPaginate),
       ),
     )
@@ -41,7 +39,7 @@ describe('paginate nearby sessions reducer', () => {
           ...initialState,
           explore: {
             nearbyCanPaginate,
-            nearbySessions: ['foo', ...sessions],
+            nearbyIDs: ['foo', ...sessions],
             nearbyLastUpdated: initialState.lastUpdated,
           },
         },
@@ -49,14 +47,9 @@ describe('paginate nearby sessions reducer', () => {
   });
 
   it('should handle PAGINATE_NEARBY_SESSIONS_FAILURE', () => {
+    const state: State = {...initialState, paginatingSessions: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, paginatingSessions: true},
-        actions.paginateNearbySessionsFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.paginateNearbySessionsFailure(error))).toStrictEqual(expectedState);
   });
 });

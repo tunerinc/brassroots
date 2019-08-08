@@ -56,7 +56,7 @@ export function success(
   const {sessions, followingCanPaginate} = action;
   const updates = (
     explore
-    && Array.isArray(explore.followingSessions)
+    && Array.isArray(explore.followingIDs)
     && Array.isArray(sessions)
     && typeof followingCanPaginate === 'boolean'
   )
@@ -66,7 +66,7 @@ export function success(
       explore: updateObject(explore, {
         followingCanPaginate,
         followingLastUpdated,
-        followingSessions: explore.followingSessions.concat(...sessions),
+        followingIDs: explore.followingIDs.concat(...sessions),
       }),
     }
     : {};

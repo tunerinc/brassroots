@@ -10,12 +10,12 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/sessions';
 
 describe('paginate trending sessions synchronous action creators', () => {
-  it('creates paginate trending sessions request action', () => {
+  it('creates request action', () => {
     const expectedAction: Action = {type: types.PAGINATE_TRENDING_SESSIONS_REQUEST};
     expect(actions.paginateTrendingSessionsRequest()).toStrictEqual(expectedAction);
   });
 
-  it('creates paginate trending sessions success action', () => {
+  it('creates success action', () => {
     const sessions: Array<string> = ['foo', 'bar'];
     const trendingCanPaginate: boolean = true;
     const expectedAction: Action = {
@@ -28,7 +28,7 @@ describe('paginate trending sessions synchronous action creators', () => {
       .toStrictEqual(expectedAction);
   });
 
-  it('creates paginate trending sessions failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.PAGINATE_TRENDING_SESSIONS_FAILURE,

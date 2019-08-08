@@ -5,34 +5,32 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/sessions';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/sessions';
 import * as actions from './actions';
 
 describe('paginate following sessions reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle PAGINATE_FOLLOWING_SESSIONS_REQUEST', () => {
+  it('handles PAGINATE_FOLLOWING_SESSIONS_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, paginatingSessions: true};
+    expect(reducer(state, actions.paginateFollowingSessionsRequest())).toStrictEqual(expectedState);
     expect(reducer(initialState, actions.paginateFollowingSessionsRequest()))
-      .toStrictEqual({...initialState, paginatingSessions: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.paginateFollowingSessionsRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, paginatingSessions: true});
+      .toStrictEqual(expectedState);
   });
 
-  it('should handle PAGINATE_FOLLOWING_SESSIONS_SUCCESS', () => {
+  it('handles PAGINATE_FOLLOWING_SESSIONS_SUCCESS', () => {
     const sessions: Array<string> = ['bar', 'xyz'];
     const followingCanPaginate: boolean = true;
 
     expect(
       reducer(
-        {...initialState, paginatingSessions: true, explore: {followingSessions: ['foo']}},
+        {...initialState, paginatingSessions: true, explore: {followingIDs: ['foo']}},
         actions.paginateFollowingSessionsSuccess(sessions, followingCanPaginate),
       ),
     )
@@ -41,22 +39,18 @@ describe('paginate following sessions reducer', () => {
           ...initialState,
           explore: {
             followingCanPaginate,
-            followingSessions: ['foo', ...sessions],
+            followingIDs: ['foo', ...sessions],
             followingLastUpdated: initialState.lastUpdated,
           },
         },
       );
   });
 
-  it('should handle PAGINATE_FOLLOWING_SESSIONS_FAILURE', () => {
+  it('handles PAGINATE_FOLLOWING_SESSIONS_FAILURE', () => {
+    const state: State = {...initialState, paginatingSessions: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, paginatingSessions: true},
-        actions.paginateFollowingSessionsFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.paginateFollowingSessionsFailure(error)))
+      .toStrictEqual(expectedState);
   });
 });
