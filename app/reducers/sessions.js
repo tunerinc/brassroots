@@ -32,9 +32,7 @@ import * as leaveSession from '../actions/sessions/LeaveSession/reducers';
 import * as paginateFollowingSessions from '../actions/sessions/PaginateFollowingSessions/reducers';
 import * as paginateNearbySessions from '../actions/sessions/PaginateNearbySessions/reducers';
 import * as paginateTrendingSessions from '../actions/sessions/PaginateTrendingSessions/reducers';
-import {removeSession} from '../actions/sessions/RemoveSession/reducers';
 import * as stopSessionInfoListener from '../actions/sessions/StopSessionInfoListener/reducers';
-import {updateSingleSession, updateSession} from '../actions/sessions/UpdateSession/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -230,8 +228,6 @@ export function singleSession(
       return joinSession.join(state, action);
     case types.LEAVE_SESSION_SUCCESS:
       return leaveSession.leave(state);
-    case types.UPDATE_SESSION:
-      return updateSingleSession(state, action);
     default:
       return state;
   }
@@ -311,8 +307,6 @@ export default function reducer(
         return paginateTrendingSessions.success(state, action);
       case types.PAGINATE_TRENDING_SESSIONS_FAILURE:
         return paginateTrendingSessions.failure(state, action);
-      case types.REMOVE_SESSION:
-        return removeSession(state, action);
       case types.RESET_SESSIONS:
         return initialState;
       case types.STOP_SESSION_INFO_LISTENER_REQUEST:
@@ -321,8 +315,6 @@ export default function reducer(
         return stopSessionInfoListener.success(state);
       case types.STOP_SESSION_INFO_LISTENER_FAILURE:
         return stopSessionInfoListener.failure(state, action);
-      case types.UPDATE_SESSION:
-        return updateSession(state, action);
       default:
         return state;
     }
