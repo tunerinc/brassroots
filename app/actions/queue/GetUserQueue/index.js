@@ -191,7 +191,7 @@ export function getUserQueue(
               }
 
               if (change.type === 'removed') {
-                dispatch(removeQueueTrack(queueTrack.id, true));
+                dispatch(removeQueueTrack(queueTrack.id));
               }
             });
           },

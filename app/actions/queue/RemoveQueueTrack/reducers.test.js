@@ -6,139 +6,28 @@
  */
 
 import moment from 'moment';
-import reducer, {initialState} from '../../../reducers/queue';
+import reducer, {
+  initialState,
+  type State,
+  type QueueTrack,
+} from '../../../reducers/queue';
 import * as actions from '../RemoveQueueTrack';
 
 describe('remove queue track reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle REMOVE_QUEUE_TRACK', () => {
+  it('handles REMOVE_QUEUE_TRACK', () => {
     const queueID: string = 'foo';
-    const removeTrack: boolean = true;
-
-    expect(
-      reducer(
-        {
-          ...initialState,
-          userQueue: ['foo', 'bar', 'xyz'],
-          totalQueue: 3,
-          queueByID: {
-            'foo': {
-              id: 'foo',
-              trackID: 'foo',
-              userID: 'foo',
-              totalLikes: 0,
-              liked: false,
-            },
-            'bar': {
-              id: 'bar',
-              trackID: 'bar',
-              userID: 'bar',
-              totalLikes: 0,
-              liked: false,
-            },
-            'xyz': {
-              id: 'xyz',
-              trackID: 'xyz',
-              userID: 'xyz',
-              totalLikes: 0,
-              liked: false,
-            },
-          },
-        },
-        actions.removeQueueTrack(queueID),
-      )
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          userQueue: ['bar', 'xyz'],
-          totalQueue: 2,
-          lastUpdated: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
-          queueByID: {
-            'foo': {
-              id: 'foo',
-              trackID: 'foo',
-              userID: 'foo',
-              totalLikes: 0,
-              liked: false,
-            },
-            'bar': {
-              id: 'bar',
-              trackID: 'bar',
-              userID: 'bar',
-              totalLikes: 0,
-              liked: false,
-            },
-            'xyz': {
-              id: 'xyz',
-              trackID: 'xyz',
-              userID: 'xyz',
-              totalLikes: 0,
-              liked: false,
-            },
-          },
-        },
-      );
-
-    expect(
-      reducer(
-        {
-          ...initialState,
-          userQueue: ['foo', 'bar', 'xyz'],
-          totalQueue: 3,
-          queueByID: {
-            'foo': {
-              id: 'foo',
-              trackID: 'foo',
-              userID: 'foo',
-              totalLikes: 0,
-              liked: false,
-            },
-            'bar': {
-              id: 'bar',
-              trackID: 'bar',
-              userID: 'bar',
-              totalLikes: 0,
-              liked: false,
-            },
-            'xyz': {
-              id: 'xyz',
-              trackID: 'xyz',
-              userID: 'xyz',
-              totalLikes: 0,
-              liked: false,
-            },
-          },
-        },
-        actions.removeQueueTrack(queueID, removeTrack),
-      )
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          userQueue: ['bar', 'xyz'],
-          totalQueue: 2,
-          lastUpdated: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
-          queueByID: {
-            'bar': {
-              id: 'bar',
-              trackID: 'bar',
-              userID: 'bar',
-              totalLikes: 0,
-              liked: false,
-            },
-            'xyz': {
-              id: 'xyz',
-              trackID: 'xyz',
-              userID: 'xyz',
-              totalLikes: 0,
-              liked: false,
-            },
-          },
-        },
-      );
+    const trackOne: QueueTrack = {id: 'foo', seconds: 0, nanoseconds: 0};
+    const trackTwo: QueueTrack = {id: 'bar', seconds: 0, nanoseconds: 0};
+    const trackThree: QueueTrack = {id: 'xyz', seconds: 0, nanoseconds: 0};
+    const userQueue: Array<QueueTrack> = [trackOne, trackTwo, trackThree];
+    const newQueue: Array<QueueTrack> = [trackTwo, trackThree];
+    const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+    const state: State = {...initialState, userQueue, totalUserQueue: 3};
+    const newState: State = {...initialState, lastUpdated, userQueue: newQueue, totalUserQueue: 2};
+    expect(reducer(state, actions.removeQueueTrack(queueID))).toStrictEqual(newState);
   });
 });

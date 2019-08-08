@@ -20,18 +20,15 @@ import {type Action} from '../../../reducers/queue';
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {string}  queueID     The Brassroots id of the queue track to remove
- * @param   {boolean} removeTrack Whether or not to remove the cached track information as well
+ * @param   {string} queueID The Brassroots id of the queue track to remove
  * 
- * @returns {object}              Redux action with the type of REMOVE_QUEUE_TRACK and the id of the queue track to remove
+ * @returns {object}         Redux action with the type of REMOVE_QUEUE_TRACK and the id of the queue track to remove
  */
 export function removeQueueTrack(
   queueID: string,
-  removeTrack?: boolean = false,
 ): Action {
   return {
     type: types.REMOVE_QUEUE_TRACK,
     queueID,
-    removeTrack,
   };
 }

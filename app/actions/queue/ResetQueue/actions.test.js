@@ -11,10 +11,7 @@ import {type Action} from '../../../reducers/queue';
 
 describe('reset queue action creator', () => {
   it('creates action to reset the redux queue state object', () => {
-    const expectedAction: Action = {
-      type: types.RESET_QUEUE,
-    };
-    
+    const expectedAction: Action = {type: types.RESET_QUEUE};
     expect(actions.resetQueue()).toEqual(expectedAction);
   });
 });

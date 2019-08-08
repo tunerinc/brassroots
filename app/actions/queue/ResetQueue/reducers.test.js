@@ -5,21 +5,17 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/queue';
+import reducer, {
+  initialState,
+  type State,
+  type QueueTrack,
+} from '../../../reducers/queue';
 import * as actions from '../ResetQueue';
 
 describe('reset queue reducer', () => {
   it('should handle RESET_QUEUE', () => {
-    expect(
-      reducer(
-        {
-          ...initialState,
-          userQueue: ['foo', 'bar'],
-          contextQueue: ['foo'],
-        },
-        actions.resetQueue()
-      )
-    )
-      .toEqual(initialState);
+    const track: QueueTrack = {id: 'foo', seconds: 0, nanoseconds: 0};
+    const state: State = {...initialState, userQueue: [track], contextQueue: ['foo']};
+    expect(reducer(state, actions.resetQueue())).toEqual(initialState);
   });
 });

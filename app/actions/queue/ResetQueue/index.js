@@ -23,7 +23,5 @@ import {type Action} from '../../../reducers/queue';
  * @returns {object} Redux action with the type of RESET_QUEUE
  */
 export function resetQueue(): Action {
-  return {
-    type: types.RESET_QUEUE,
-  };
+  return {type: types.RESET_QUEUE};
 }

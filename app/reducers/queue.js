@@ -24,7 +24,6 @@ import * as queueTrack from '../actions/queue/QueueTrack/reducers';
 import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
 import * as stopQueueListener from '../actions/queue/StopQueueListener/reducers';
 import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
-import {updateSingleTrack, updateQueueTrack} from '../actions/queue/UpdateQueueTrack/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -184,8 +183,6 @@ export function singleTrack(
   switch (action.type) {
     case types.ADD_QUEUE_TRACKS:
       return addSingleTrack(state, action);
-    case types.UPDATE_QUEUE_TRACK:
-      return updateSingleTrack(state, action);
     default:
       return state;
   }
@@ -241,8 +238,6 @@ export default function reducer(
         return toggleTrackLike.success(state, action);
       case types.TOGGLE_TRACK_LIKE_FAILURE:
         return toggleTrackLike.failure(state, action);
-      case types.UPDATE_QUEUE_TRACK:
-        return updateQueueTrack(state, action);
       default:
         return state;
     }
