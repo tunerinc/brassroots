@@ -55,8 +55,8 @@ type QueueTrack = {
   +userID?: ?string,
   +totalLikes?: number,
   +liked?: boolean,
-  +seconds?: number,
-  +nanoseconds?: number,
+  +seconds?: ?number,
+  +nanoseconds?: ?number,
   +isCurrent?: boolean,
 };
 
@@ -67,7 +67,7 @@ type Action = {
   +tracks?: {+[id: string]: QueueTrack},
   +track?: QueueTrack,
   +queueID?: string,
-  +queue?: ?Array<string>,
+  +queue?: ?Array<QueueTrack>,
   +unsubscribe?: () => void,
   +updates?: Updates,
   +removeTrack?: boolean,
@@ -75,7 +75,7 @@ type Action = {
 
 type State = {
   +lastUpdated?: string,
-  +userQueue?: Array<string>,
+  +userQueue?: Array<QueueTrack>,
   +totalUserQueue?: number,
   +contextQueue?: Array<string>,
   +fetchingQueue?: boolean,
@@ -84,7 +84,7 @@ type State = {
   +deleting?: Array<string>,
   +failed?: Array<string>,
   +queueing?: boolean,
-  +unsubscribe?: ?() => Promise<void>,
+  +unsubscribe?: ?() => any,
   +error?: ?Error,
   +context?: Context,
 };

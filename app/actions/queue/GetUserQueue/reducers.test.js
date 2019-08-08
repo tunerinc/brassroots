@@ -5,7 +5,11 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/queue';
+import reducer, {
+  initialState,
+  type State,
+  type QueueTrack,
+} from '../../../reducers/queue';
 import * as actions from './actions';
 
 describe('get user queue reducer', () => {
@@ -14,69 +18,50 @@ describe('get user queue reducer', () => {
   });
 
   it('should handle GET_USER_QUEUE_REQUEST', () => {
-    expect(reducer(initialState, actions.getUserQueueRequest()))
-      .toStrictEqual({...initialState, fetchingQueue: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.getUserQueueRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, fetchingQueue: true});
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, fetchingQueue: true};
+    expect(reducer(initialState, actions.getUserQueueRequest())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.getUserQueueRequest())).toStrictEqual(expectedState);
   });
 
   it('should handle GET_USER_QUEUE_SUCCESS', () => {
-    const userQueue: Array<string> = ['foo', 'bar'];
+    const trackOne: QueueTrack = {id: 'foo', seconds: 0, nanoseconds: 0};
+    const trackTwo: QueueTrack = {id: 'bar', seconds: 1, nanoseconds: 1};
+    const userQueue: Array<QueueTrack> = [trackOne, trackTwo];
+    const totalUserQueue: number = 2;
     const unsubscribe: () => void = () => {return};
+    const state: State = {...initialState, fetchingQueue: true};
+    const expectedState: State = {...initialState, unsubscribe, userQueue, totalUserQueue};
+    expect(reducer(state, actions.getUserQueueSuccess(userQueue, unsubscribe)))
+      .toStrictEqual(expectedState);
 
-    expect(
-      reducer(
-        {
-          ...initialState,
-          fetchingQueue: true,
-          queueByID: {
-            foo: {
-              seconds: 0,
-              nanoseconds: 0,
-            },
-            bar: {
-              seconds: 0,
-              nanoseconds: 0,
-            },
+      expect(
+        reducer(
+          state,
+          actions.getUserQueueSuccess(
+            [
+              {...trackOne, seconds: 1},
+              {...trackTwo, seconds: 0},
+            ],
+            unsubscribe,
+          ),
+        ),
+      )
+        .toStrictEqual(
+          {
+            ...expectedState,
+            userQueue: [
+              {...trackTwo, seconds: 0},
+              {...trackOne, seconds: 1},
+            ],
           },
-        },
-        actions.getUserQueueSuccess(userQueue, unsubscribe),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          unsubscribe,
-          userQueue: ['foo', 'bar'],
-          queueByID: {
-            foo: {
-              seconds: 0,
-              nanoseconds: 0,
-            },
-            bar: {
-              seconds: 0,
-              nanoseconds: 0,
-            },
-          },
-        },
-      );
+        );
   });
 
   it('should handle GET_USER_QUEUE_FAILURE', () => {
+    const state: State = {...initialState, fetchingQueue: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, fetchingQueue: true},
-        actions.getUserQueueFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.getUserQueueFailure(error))).toStrictEqual(expectedState);
   });
 });

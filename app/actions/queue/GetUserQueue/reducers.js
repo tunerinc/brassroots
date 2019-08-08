@@ -52,21 +52,20 @@ export function success(
   state: State,
   action: Action,
 ): State {
-  const {queueByID, userQueue: oldQueue} = state;
+  const {userQueue: oldQueue} = state;
   const {unsubscribe, queue: userQueue} = action;
-  const newQueue: Array<string> = Array.isArray(userQueue) && Array.isArray(oldQueue)
+  const newQueue: Array<QueueTrack> = Array.isArray(userQueue) && Array.isArray(oldQueue)
     ? [...oldQueue, ...userQueue]
       .filter((el, i, arr) => i === arr.indexOf(el))
       .sort((a, b) => {
         if (
-          typeof queueByID !== 'undefined'
-          && typeof queueByID[a].seconds === 'number'
-          && typeof queueByID[b].seconds === 'number'
-          && typeof queueByID[a].nanoseconds === 'number'
-          && typeof queueByID[b].nanoseconds === 'number'
+          typeof a.seconds === 'number'
+          && typeof a.nanoseconds === 'number'
+          && typeof b.seconds === 'number'
+          && typeof b.nanoseconds === 'number'
         ) {
-          const {seconds: secA, nanoseconds: nanoA} = queueByID[a];
-          const {seconds: secB, nanoseconds: nanoB} = queueByID[b];
+          const {seconds: secA, nanoseconds: nanoA} = a;
+          const {seconds: secB, nanoseconds: nanoB} = b;
           return secA < secB ? -1 : secA > secB ? 1 : nanoA < nanoB ? -1 : nanoA > nanoB ? 1 : 0;
         } else {
           return 0;
@@ -84,7 +83,7 @@ export function success(
       fetchingQueue: false,
       error: null,
       userQueue: newQueue,
-      totalQueue: newQueue.length,
+      totalUserQueue: newQueue.length,
     }
     : {};
 

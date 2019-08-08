@@ -10,7 +10,10 @@
  */
 
 import * as types from '../types';
-import {type Action} from '../../../reducers/queue';
+import {
+  type Action,
+  type QueueTrack,
+} from '../../../reducers/queue';
 
 /**
  * Notify the app of a get session queue request
@@ -23,9 +26,7 @@ import {type Action} from '../../../reducers/queue';
  * @return {object} Redux action with the type of GET_USER_QUEUE_REQUEST
  */
 export function getUserQueueRequest(): Action {
-  return {
-    type: types.GET_USER_QUEUE_REQUEST,
-  };
+  return {type: types.GET_USER_QUEUE_REQUEST};
 }
 
 /**
@@ -48,7 +49,7 @@ export function getUserQueueRequest(): Action {
  * @return {object}                  Redux action with the type of GET_USER_QUEUE_SUCCESS, the queue track ids, and the unsubscribe functions for the listener
  */
 export function getUserQueueSuccess(
-  queue: Array<string>,
+  queue: Array<QueueTrack>,
   unsubscribe: () => void,
 ): Action {
   return {

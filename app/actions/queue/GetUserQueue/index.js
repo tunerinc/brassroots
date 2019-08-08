@@ -19,7 +19,10 @@ import {addPeople} from '../../users/AddPeople';
 import {addQueueTracks} from '../AddQueueTracks';
 import {removeQueueTrack} from '../RemoveQueueTrack';
 import {updatePlayer} from '../../player/UpdatePlayer';
-import {type ThunkAction} from '../../../reducers/queue';
+import {
+  type ThunkAction,
+  type QueueTrack,
+} from '../../../reducers/queue';
 import {
   type FirestoreInstance,
   type FirestoreDoc,
@@ -126,7 +129,18 @@ export function getUserQueue(
                       ),
                     );
                   } else {
-                    dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
+                    dispatch(
+                      actions.getUserQueueSuccess(
+                        [
+                          {
+                            id: queueTrack.id,
+                            seconds: queueTrack.timeAdded.seconds,
+                            nanoseconds: queueTrack.timeAdded.nanoseconds,
+                          },
+                        ],
+                        unsubscribe,
+                      ),
+                    );
                   }
                 }
               }
@@ -161,7 +175,18 @@ export function getUserQueue(
                     ),
                   );
                 } else {
-                  dispatch(actions.getUserQueueSuccess([queueTrack.id], unsubscribe));
+                  dispatch(
+                    actions.getUserQueueSuccess(
+                      [
+                        {
+                          id: queueTrack.id,
+                          seconds: queueTrack.timeAdded.seconds,
+                          nanoseconds: queueTrack.timeAdded.nanoseconds,
+                        },
+                      ],
+                      unsubscribe,
+                    ),
+                  );
                 }
               }
 
