@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/tracks';
  * @returns {object} Redux action with the type of INCREMENT_TRACK_PLAYS_REQUEST
  */
 export function incrementTrackPlaysRequest(): Action {
-  return {
-    type: types.INCREMENT_TRACK_PLAYS_REQUEST,
-  };
+  return {type: types.INCREMENT_TRACK_PLAYS_REQUEST};
 }
 
 /**
@@ -37,20 +35,10 @@ export function incrementTrackPlaysRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} trackID    The Spotify id of the track that got incremented
- * @param   {number} trackCount The new amount of plays the track has
- *
- * @returns {object}            Redux action with the type of INCREMENT_TRACK_PLAYS_SUCCESS and the new amount of plays for a track
+ * @returns {object} Redux action with the type of INCREMENT_TRACK_PLAYS_SUCCESS
  */
-export function incrementTrackPlaysSuccess(
-  trackID: string,
-  trackCount: number,
-): Action {
-  return {
-    type: types.INCREMENT_TRACK_PLAYS_SUCCESS,
-    trackID,
-    trackCount,
-  };
+export function incrementTrackPlaysSuccess(): Action {
+  return {type: types.INCREMENT_TRACK_PLAYS_SUCCESS};
 }
 
 /**

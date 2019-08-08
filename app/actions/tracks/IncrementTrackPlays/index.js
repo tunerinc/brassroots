@@ -57,7 +57,7 @@ export function incrementTrackPlays(
         return plays + 1;
       });
 
-      dispatch(actions.incrementTrackPlaysSuccess(trackID, total));
+      dispatch(actions.incrementTrackPlaysSuccess());
     } catch (err) {
       dispatch(actions.incrementTrackPlaysFailure(err));
     }

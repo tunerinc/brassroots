@@ -224,7 +224,7 @@ export default function reducer(
         case types.INCREMENT_TRACK_PLAYS_REQUEST:
           return incrementTrackPlays.request(state);
         case types.INCREMENT_TRACK_PLAYS_SUCCESS:
-          return incrementTrackPlays.success(state, action);
+          return incrementTrackPlays.success(state);
         case types.INCREMENT_TRACK_PLAYS_FAILURE:
           return incrementTrackPlays.failure(state, action);
         case types.RESET_TRACKS:

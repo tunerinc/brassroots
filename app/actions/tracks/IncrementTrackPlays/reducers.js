@@ -69,32 +69,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state             The Redux state
- * @param   {object} action            The Redux action
- * @param   {string} action.type       The type of Redux action
- * @param   {string} action.trackID    The Spotify id of the track with the new play count
- * @param   {number} action.trackCount The new play count for the track
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                   The state with the play count updated for the single track
+ * @returns {object}       The state with the incrementingCount prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {tracksByID} = state;
-  const {trackID} = action;
-  const updates = typeof tracksByID === 'object' && typeof trackID === 'string'
-    ? {
-      lastUpdated,
-      incrementingCount: false,
-      error: null,
-      tracksByID: updateObject(tracksByID, {
-        [trackID]: singleTrack(tracksByID[trackID], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {incrementingCount: false, error: null});
 }
 
 /**
