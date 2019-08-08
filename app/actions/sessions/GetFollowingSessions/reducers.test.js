@@ -5,7 +5,10 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/sessions';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/sessions';
 import * as actions from './actions';
 
 describe('get following sessions reducer', () => {
@@ -14,49 +17,35 @@ describe('get following sessions reducer', () => {
   });
 
   it('should handle GET_FOLLOWING_SESSIONS_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const sessionState: State = {...state, explore: {followingIDs: ['foo']}};
+    const expectedState: State = {...initialState, fetchingSessions: true};
+    expect(reducer(state, actions.getFollowingSessionsRequest())).toStrictEqual(expectedState);
     expect(reducer(initialState, actions.getFollowingSessionsRequest()))
-      .toStrictEqual({...initialState, fetchingSessions: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.getFollowingSessionsRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, fetchingSessions: true});
-
-    expect(
-      reducer(
-        {...initialState, explore: {followingSessions: ['foo']}},
-        actions.getFollowingSessionsRequest(),
-      ),
-    )
+      .toStrictEqual(expectedState);
+    expect(reducer(sessionState, actions.getFollowingSessionsRequest()))
       .toStrictEqual(
         {
           ...initialState,
           refreshingSessions: true,
           fetchingSessions: true,
-          explore: {followingSessions: ['foo']},
+          explore: {followingIDs: ['foo']},
         },
       );
   });
 
   it('should handle GET_FOLLOWING_SESSIONS_SUCCESS', () => {
-    const followingSessions: Array<string> = ['foo', 'bar'];
+    const followingIDs: Array<string> = ['foo', 'bar'];
     const followingCanPaginate: boolean = true;
+    const state: State = {...initialState, fetchingSessions: true};
 
-    expect(
-      reducer(
-        {...initialState, fetchingSessions: true},
-        actions.getFollowingSessionsSuccess(followingSessions, followingCanPaginate),
-      ),
-    )
+    expect(reducer(state, actions.getFollowingSessionsSuccess(followingIDs, followingCanPaginate)))
       .toStrictEqual(
         {
           ...initialState,
           explore: {
             ...initialState.explore,
-            followingSessions,
+            followingIDs,
             followingCanPaginate,
             followingLastUpdated: initialState.lastUpdated,
           },
@@ -65,14 +54,9 @@ describe('get following sessions reducer', () => {
   });
 
   it('should handle GET_FOLLOWING_SESSIONS_FAILURE', () => {
+    const state: State = {...initialState, refreshingSessions: true, fetchingSessions: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, refreshingSessions: true, fetchingSessions: true},
-        actions.getFollowingSessionsFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.getFollowingSessionsFailure(error))).toStrictEqual(expectedState);
   });
 });

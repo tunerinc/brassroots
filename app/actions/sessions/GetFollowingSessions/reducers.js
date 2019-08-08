@@ -31,9 +31,9 @@ export function request(
   state: State,
 ): State {
   const {explore} = state;
-  const updates = explore && Array.isArray(explore.followingSessions)
+  const updates = explore && Array.isArray(explore.followingIDs)
     ? {
-      refreshingSessions: explore.followingSessions.length !== 0,
+      refreshingSessions: explore.followingIDs.length !== 0,
       fetchingSessions: true,
       error: null,
     }
@@ -52,7 +52,7 @@ export function request(
  * @param   {object}   state                       The Redux state
  * @param   {object}   action                      The Redux action
  * @param   {string}   action.type                 The type of Redux action
- * @param   {string[]} action.followingSessions    The Brassroots ids of the following sessions
+ * @param   {string[]} action.followingIDs         The Brassroots ids of the following sessions
  * @param   {boolean}  action.followingCanPaginate Whether the current user can paginate the following sessions
  * 
  * @returns {object}                               The state with the following sessions added
@@ -62,14 +62,14 @@ export function success(
   action: Action,
 ): State {
   const {explore} = state;
-  const {followingSessions, followingCanPaginate} = action;
-  const updates = explore && Array.isArray(followingSessions) && typeof followingCanPaginate === 'boolean'
+  const {followingIDs, followingCanPaginate} = action;
+  const updates = explore && Array.isArray(followingIDs) && typeof followingCanPaginate === 'boolean'
     ? {
       refreshingSessions: false,
       fetchingSessions: false,
       error: null,
       explore: updateObject(explore, {
-        followingSessions,
+        followingIDs,
         followingCanPaginate,
         followingLastUpdated: lastUpdated,
       }),

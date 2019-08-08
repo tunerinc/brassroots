@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/sessions';
  * @returns {object} Redux action with the type of GET_FOLLOWING_SESSIONS_REQUEST
  */
 export function getFollowingSessionsRequest(): Action {
-  return {
-    type: types.GET_FOLLOWING_SESSIONS_REQUEST,
-  };
+  return {type: types.GET_FOLLOWING_SESSIONS_REQUEST};
 }
 
 /**
@@ -36,18 +34,18 @@ export function getFollowingSessionsRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string[]} followingSessions    The Brassroots ids of the sessions of users the current user follows
+ * @param   {string[]} followingIDs         The Brassroots ids of the sessions of users the current user follows
  * @param   {boolean}  followingCanPaginate Whether the following sessions can paginate
  *
  * @returns {object}                        Redux action with the type of GET_FOLLOWING_SESSIONS_SUCCESS and the following sessions
  */
 export function getFollowingSessionsSuccess(
-  followingSessions?: Array<string> = [],
+  followingIDs?: Array<string> = [],
   followingCanPaginate?: boolean = false,
 ): Action {
   return {
     type: types.GET_FOLLOWING_SESSIONS_SUCCESS,
-    followingSessions,
+    followingIDs,
     followingCanPaginate,
   };
 }
