@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/queue';
  * @returns {object} Redux action with the type of GET_CONTEXT_QUEUE_REQUEST
  */
 export function getContextQueueRequest(): Action {
-  return {
-    type: types.GET_CONTEXT_QUEUE_REQUEST,
-  };
+  return {type: types.GET_CONTEXT_QUEUE_REQUEST};
 }
 
 /**
@@ -36,16 +34,16 @@ export function getContextQueueRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {string[]} [queue=null] The Spotify ids of the context queue tracks
+ * @param   {string[]} [contextQueue=[]] The Spotify ids of the context queue tracks
  * 
- * @returns {object}                Redux action with the type of GET_CONTEXT_QUEUE_SUCCESS and the context queue
+ * @returns {object}                     Redux action with the type of GET_CONTEXT_QUEUE_SUCCESS and the context queue
  */
 export function getContextQueueSuccess(
-  queue: ?Array<string> = null,
+  contextQueue: Array<string> = [],
 ): Action {
   return {
     type: types.GET_CONTEXT_QUEUE_SUCCESS,
-    queue,
+    contextQueue,
   };
 }
 

@@ -40,26 +40,30 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state          The Redux state
- * @param   {object}   action         The Redux action
- * @param   {string}   action.type    The type of Redux action
- * @param   {string[]} [action.queue] The Spotify ids of the tracks from the context
+ * @param   {object}   state               The Redux state
+ * @param   {object}   action              The Redux action
+ * @param   {string}   action.type         The type of Redux action
+ * @param   {string[]} action.contextQueue The Spotify ids of the tracks from the context
  * 
- * @returns {object}                  The state with the updated contextQueue
+ * @returns {object}                       The state with the updated contextQueue
  */
 export function success(
   state: State,
   action: Action,
 ): State {
-  const {contextQueue} = state;
-  const {queue} = action;
-  const isFullQueue: boolean = queue && queue.length === 3 ? true : false;
-  const updates = Array.isArray(contextQueue)
+  const {contextQueue: oldQueue} = state;
+  const {contextQueue} = action;
+  const isFullQueue: boolean = contextQueue && contextQueue.length === 3 ? true : false;
+  const updates = Array.isArray(oldQueue)
     ? {
       lastUpdated,
-      contextQueue: isFullQueue ? queue : queue ? contextQueue.concat(...queue) : contextQueue,
       fetchingContext: false,
       error: null,
+      contextQueue: isFullQueue
+        ? contextQueue
+        : contextQueue
+        ? oldQueue.concat(...contextQueue)
+        : oldQueue,
     }
     : {};
 

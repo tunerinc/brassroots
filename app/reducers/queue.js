@@ -68,6 +68,7 @@ type Action = {
   +track?: QueueTrack,
   +queueID?: string,
   +queue?: ?Array<QueueTrack>,
+  +contextQueue?: ?Array<string>,
   +unsubscribe?: () => void,
   +updates?: Updates,
   +removeTrack?: boolean,

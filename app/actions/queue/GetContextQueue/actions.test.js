@@ -11,28 +11,25 @@ import {type Action} from '../../../reducers/queue';
 
 describe('get context queue synchronous action creators', () => {
   it('creates get context queue request action', () => {
-    const expectedAction: Action = {
-      type: types.GET_CONTEXT_QUEUE_REQUEST,
-    };
-
+    const expectedAction: Action = {type: types.GET_CONTEXT_QUEUE_REQUEST};
     expect(actions.getContextQueueRequest()).toStrictEqual(expectedAction);
   });
 
   it('creates get context queue success action', () => {
-    const queue: Array<string> = ['foo', 'bar'];
+    const contextQueue: Array<string> = ['foo', 'bar'];
     const expectedAction: Action = {
       type: types.GET_CONTEXT_QUEUE_SUCCESS,
-      queue: null,
+      contextQueue: [],
     };
 
     expect(actions.getContextQueueSuccess()).toStrictEqual(expectedAction);
 
     const expectedActionWithQueue: Action = {
       type: types.GET_CONTEXT_QUEUE_SUCCESS,
-      queue,
+      contextQueue,
     };
 
-    expect(actions.getContextQueueSuccess(queue)).toStrictEqual(expectedActionWithQueue);
+    expect(actions.getContextQueueSuccess(contextQueue)).toStrictEqual(expectedActionWithQueue);
   });
 
   it('creates get context queue failure action', () => {
