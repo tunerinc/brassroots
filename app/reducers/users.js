@@ -289,7 +289,7 @@ export default function reducer(
       case types.CHANGE_PROFILE_PHOTO_REQUEST:
         return changeProfilePhoto.request(state);
       case types.CHANGE_PROFILE_PHOTO_SUCCESS:
-        return changeProfilePhoto.success(state, action);
+        return changeProfilePhoto.success(state);
       case types.CHANGE_PROFILE_PHOTO_FAILURE:
         return changeProfilePhoto.failure(state, action);
       case types.GET_USER_IMAGE_REQUEST:

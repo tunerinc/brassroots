@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/users';
  * @returns {object} Redux action with the type of CHANGE_PROFILE_PHOTO_REQUEST
  */
 export function changeProfilePhotoRequest(): Action {
-  return {
-    type: types.CHANGE_PROFILE_PHOTO_REQUEST,
-  };
+  return {type: types.CHANGE_PROFILE_PHOTO_REQUEST};
 }
 
 /**
@@ -36,17 +34,10 @@ export function changeProfilePhotoRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} [photo=null] The profile photo uri to save from the camera roll of the current user
- *
- * @returns {object}              Redux action with the type of CHANGE_PROFILE_PHOTO_SUCCESS and the new profile photo uri to save
+ * @returns {object} Redux action with the type of CHANGE_PROFILE_PHOTO_SUCCESS
  */
-export function changeProfilePhotoSuccess(
-  photo: ?string = null,
-): Action {
-  return {
-    type: types.CHANGE_PROFILE_PHOTO_SUCCESS,
-    photo,
-  };
+export function changeProfilePhotoSuccess(): Action {
+  return {type: types.CHANGE_PROFILE_PHOTO_SUCCESS};
 }
 
 /**

@@ -71,10 +71,10 @@ export function changeProfilePhoto(
         ];
 
         await Promise.all(promises);
-        dispatch(actions.changeProfilePhotoSuccess(profileImage));
-      } else {
-        dispatch(actions.changeProfilePhotoSuccess(null));
+        dispatch(actions.changeProfilePhotoSuccess());
       }
+
+      dispatch(actions.changeProfilePhotoSuccess());
     } catch (err) {
       dispatch(actions.changeProfilePhotoFailure(err));
     }
