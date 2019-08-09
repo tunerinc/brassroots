@@ -295,7 +295,7 @@ export default function reducer(
       case types.GET_USER_IMAGE_REQUEST:
         return getUserImage.request(state);
       case types.GET_USER_IMAGE_SUCCESS:
-        return getUserImage.success(state, action);
+        return getUserImage.success(state);
       case types.GET_USER_IMAGE_FAILURE:
         return getUserImage.failure(state, action);
       case types.RESET_USERS:

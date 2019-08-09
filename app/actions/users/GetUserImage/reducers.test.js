@@ -7,98 +7,32 @@
 
 import reducer, {
   initialState,
-  type User,
+  type State,
 } from '../../../reducers/users';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 
 describe('get user image reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_USER_IMAGE_REQUEST', () => {
-    expect(reducer(initialState, actions.getUserImageRequest()))
-      .toStrictEqual({...initialState, fetchingImages: true});
+  it('handles GET_USER_IMAGE_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, fetchingImages: true};
+    expect(reducer(initialState, actions.getUserImageRequest())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.getUserImageRequest())).toStrictEqual(expectedState);
   });
 
-  it('should handle GET_USER_IMAGE_SUCCESS', () => {
-    const userID: string = 'foo';
-    const photo: string = 'foo';
-
-    expect(
-      reducer(
-        {
-          ...initialState,
-          usersByID: {
-            [userID]: {
-              lastUpdated: 'foo',
-              id: userID,
-              displayName: 'foo',
-              profileImage: 'bar',
-              coverImage: 'foo',
-              bio: 'foo',
-              location: 'foo',
-              website: 'foo',
-              spotifyAccountStatus: 'foo',
-              coords: null,
-              currentSessionID: null,
-              favoriteTrackID: 'foo',
-              topPlaylists: [],
-              recentlyPlayed: [],
-              mostPlayed: [],
-              followers: [],
-              totalFollowers: 0,
-              following: [],
-              totalFollowing: 0,
-            },
-          },
-        },
-        actions.getUserImageSuccess(userID, photo),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          usersByID: {
-            [userID]: {
-              lastUpdated: 'foo',
-              id: userID,
-              displayName: 'foo',
-              profileImage: photo,
-              coverImage: 'foo',
-              bio: 'foo',
-              location: 'foo',
-              website: 'foo',
-              spotifyAccountStatus: 'foo',
-              coords: null,
-              currentSessionID: null,
-              favoriteTrackID: 'foo',
-              topPlaylists: [],
-              recentlyPlayed: [],
-              mostPlayed: [],
-              followers: [],
-              totalFollowers: 0,
-              following: [],
-              totalFollowing: 0,
-            },
-          },
-        },
-      );
+  it('handles GET_USER_IMAGE_SUCCESS', () => {
+    const state: State = {...initialState, fetchingImages: true};
+    expect(reducer(state, actions.getUserImageSuccess())).toStrictEqual(initialState);
   });
 
-  it('should handle GET_USER_IMAGE_FAILURE', () => {
+  it('handles GET_USER_IMAGE_FAILURE', () => {
+    const state: State = {...initialState, fetchingImages: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {
-          ...initialState,
-          fetchingImages: true,
-        },
-        actions.getUserImageFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.getUserImageFailure(error))).toStrictEqual(expectedState);
   });
 });

@@ -31,11 +31,11 @@ import {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param    {string} userID The user id of the current user
+ * @param    {string}  userID The user id of the current user
  *
  * @returns  {Promise}
- * @resolves {string}        The profile photo uri to save for the current user
- * @rejects  {Error}         The error which caused the change profile photo failure
+ * @resolves {string}         The profile photo uri to save for the current user
+ * @rejects  {Error}          The error which caused the change profile photo failure
  */
 export function changeProfilePhoto(
   userID: string,
