@@ -303,7 +303,7 @@ export default function reducer(
       case types.SAVE_PROFILE_REQUEST:
         return saveProfile.request(state);
       case types.SAVE_PROFILE_SUCCESS:
-        return saveProfile.success(state, action);
+        return saveProfile.success(state);
       case types.SAVE_PROFILE_FAILURE:
         return saveProfile.failure(state, action);
       case types.SET_CAMERA_ROLL_PHOTO_INDEX:

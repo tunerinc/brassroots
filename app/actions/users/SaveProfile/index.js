@@ -57,13 +57,10 @@ export function saveProfile(
     try {
       await usersRef.doc(restOfUser.id).update({...restOfUser});
       dispatch(setOnboarding(false));
-      dispatch(actions.saveProfileSuccess(restOfUser));
+      dispatch(actions.saveProfileSuccess());
 
-      if (onboarding) {
-        Actions.root({type: ActionConst.RESET});
-      } else {
-        Actions.pop();
-      }
+      if (onboarding) Actions.root({type: ActionConst.RESET});
+      if (!onboarding) Actions.pop();
     } catch (err) {
       dispatch(actions.saveProfileFailure(err));
     }

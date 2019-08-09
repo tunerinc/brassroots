@@ -73,33 +73,14 @@ export function request(
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object} state                   The Redux state
- * @param   {object} action                  The Redux action
- * @param   {string} action.type             The type of Redux action
- * @param   {object} action.user             The current user's profile information to add
- * @param   {string} action.user.id          The Brassroots id of the current user
- * @param   {string} [action.user.bio]       The bio of the current user
- * @param   {string} [action.user.location]  The location of the current user
- * @param   {string} [action.user.website]   The website of the current user
+ * @param   {object} state The Redux state
  * 
- * @returns {object}                         The state with the current user's profile information saved
+ * @returns {object}       The state with the savingUser prop updated
  */
 export function success(
   state: State,
-  action: Action,
 ): State {
-  const {currentUserID, usersByID} = state;
-  const updates = typeof currentUserID === 'string' && typeof usersByID === 'object'
-    ? {
-      savingUser: false,
-      error: null,
-      usersByID: updateObject(usersByID, {
-        [currentUserID]: singleUser(usersByID[currentUserID], action),
-      }),
-    }
-    : {};
-
-  return updateObject(state, updates);
+  return updateObject(state, {savingUser: false, error: null});
 }
 
 /**
