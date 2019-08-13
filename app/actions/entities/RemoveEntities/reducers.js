@@ -59,11 +59,7 @@ export function removeEntity(
     ? {
       allIDs,
       total: allIDs.length,
-      byID: allIDs.reduce((obj, key) => {
-        return updateObject(obj, {
-          [key]: {...byID[key]},
-        });
-      }, {}),
+      byID: allIDs.reduce((obj, key) => updateObject(obj, {[key]: {...byID[key]}}), {}),
     }
     : {};
 
@@ -109,16 +105,14 @@ export function removeEntities(
 
     entityTypes.forEach(type => {
       if (typeof entities[type] === 'object') {
-        newState = updateObject(newState, {
-          [type]: removeEntity(state[type], {...action, ids: Object.keys(entities[type])}),
-        });
+        const newAction: Action = {...action, ids: Object.keys(entities[type])};
+        const entity: Entity = removeEntity(state[type], newAction);
+        newState = updateObject(newState, {[type]: {...entity}});
       }
     });
 
     typesToCopy.forEach(type => {
-      newState = updateObject(newState, {
-        [type]: {...state[type]},
-      });
+      newState = updateObject(newState, {[type]: {...state[type]}});
     });
   }
 
