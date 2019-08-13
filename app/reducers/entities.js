@@ -25,8 +25,10 @@ import {type QueueTrack} from './queue';
 import {type Session} from './sessions';
 import {type Track} from './tracks';
 import {type User} from './users';
+import {type Entities} from '../actions/entities/RemoveEntities';
 
 // Case Functions
+import {removeEntities} from '../actions/entities/RemoveEntities/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -35,78 +37,71 @@ type PromiseAction = Promise<Action>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
 
-type Action = {|
+type EntityType =
+  | Album
+  | Artist
+  | SingleConversation
+  | Group
+  | ChatMessage
+  | SingleMessage
+  | Playlist
+  | PlaylistTrack
+  | QueueTrack
+  | Session
+  | Track
+  | User;
+
+type Entity = {|
+  +allIDs?: Array<string>,
+  +total?: number,
+  +byID?: {[string]: EntityType},
+|};
+
+type Action = {
   +type?: string,
   +error?: Error,
-|};
+  +entities?: Entities,
+  +ids?: Array<string>,
+};
 
-type State = {|
-  +albums: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: Album},
-  },
-  +artists: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: Artist},
-  },
-  +conversations: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: SingleConversation},
-  },
-  +groups: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: Group},
-  },
-  +messages: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: ChatMessage | SingleMessage},
-  },
-  +playlists: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: Playlist},
-  },
-  +playlistTracks: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: PlaylistTrack},
-  },
-  +queueTracks: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: QueueTrack},
-  },
-  +sessions: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: Session},
-  },
-  +tracks: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: Track},
-  },
-  +users: {
-    +allIDs?: Array<string>,
-    +total?: number,
-    +byID?: {[string]: User},
-  },
-|};
-
-
+type State = {
+  +albums?: Entity,
+  +artists?: Entity,
+  +conversations?: Entity,
+  +groups?: Entity,
+  +messages?: Entity,
+  +playlists?: Entity,
+  +playlistTracks?: Entity,
+  +queueTracks?: Entity,
+  +sessions?: Entity,
+  +tracks?: Entity,
+  +users?: Entity,
+};
 
 export type {
   GetState,
   PromiseAction,
   ThunkAction,
   Dispatch,
+  EntityType,
+  Entity,
   Action,
   State,
+};
+
+/**
+ * @constant
+ * @alias singleEntitiesState
+ * @type {object}
+ * 
+ * @property {string[]} allIDs=[]
+ * @property {number}   total=0
+ * @property {object}   byID
+ */
+export const singleState: Entity = {
+  allIDs: [],
+  total: 0,
+  byID: {},
 };
 
 /**
@@ -160,59 +155,29 @@ export type {
  * @property {object}   users.byID
  */
 export const initialState: State = {
-  albums: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  artists: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  conversations: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  groups: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  messages: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  playlists: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  playlistTracks: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  queueTracks: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  sessions: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  tracks: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
-  users: {
-    allIDs: [],
-    total: 0,
-    byID: {},
-  },
+  albums: {...singleState},
+  artists: {...singleState},
+  conversations: {...singleState},
+  groups: {...singleState},
+  messages: {...singleState},
+  playlists: {...singleState},
+  playlistTracks: {...singleState},
+  queueTracks: {...singleState},
+  sessions: {...singleState},
+  tracks: {...singleState},
+  users: {...singleState},
 };
+
+export default function reducer(
+  state: State = initialState,
+  action: Action = {},
+): State {
+  if (typeof action.type === 'string') {
+    switch (action.type) {
+      case types.REMOVE_ENTITIES:
+        return removeEntities(state, action);
+    }
+  }
+
+  return state;
+}
