@@ -14,13 +14,33 @@ import {
   type Action,
   type State,
   type Entity,
-  type EntityType,
 } from '../../../reducers/entities';
 
 /**
+ * Removes entities from a single node in the entities state
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function removeEntity
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}   state                     The Redux state
+ * @param   {object}   action                    The Redux action
+ * @param   {string}   action.type               The type of Redux action
+ * @param   {string[]} action.ids                The ids of the entities to remove from the node
+ * @param   {object}   action.entities           The entities to remove
+ * @param   {object}   [entities.albums]         The album entities to remove
+ * @param   {object}   [entities.artists]        The artist entities to remove
+ * @param   {object}   [entities.conversations]  The conversation entities to remove
+ * @param   {object}   [entities.groups]         The group entities to remove
+ * @param   {object}   [entities.messages]       The message entities to remove
+ * @param   {object}   [entities.playlists]      The playlist entities to remove
+ * @param   {object}   [entities.playlistTracks] The playlist track entities to remove
+ * @param   {object}   [entities.queueTracks]    The queue track entities to remove
+ * @param   {object}   [entities.sessions]       The session entities to remove
+ * @param   {object}   [entities.tracks]         The track entities to remove
+ * @param   {object}   [entities.users]          The user entities to remove
+ * 
+ * @returns {object}                             The single entities node with the entities removed
  */
 export function removeEntity(
   state: Entity,
@@ -35,7 +55,7 @@ export function removeEntity(
     ? oldIDs.filter(id => !ids.includes(id))
     : [];
 
-  const updates = Array.isArray(ids) && typeof byID === 'object'
+  const updates: Entity = Array.isArray(ids) && typeof byID === 'object'
     ? {
       allIDs,
       total: allIDs.length,
@@ -51,9 +71,29 @@ export function removeEntity(
 }
 
 /**
+ * Removes entities from Redux
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function removeEntities
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state                     The Redux state
+ * @param   {object} action                    The Redux action
+ * @param   {string} action.type               The type of Redux action
+ * @param   {object} action.entities           The entities to remove
+ * @param   {object} [entities.albums]         The album entities to add
+ * @param   {object} [entities.artists]        The artist entities to add
+ * @param   {object} [entities.conversations]  The conversation entities to add
+ * @param   {object} [entities.groups]         The group entities to add
+ * @param   {object} [entities.messages]       The message entities to add
+ * @param   {object} [entities.playlists]      The playlist entities to add
+ * @param   {object} [entities.playlistTracks] The playlist track entities to add
+ * @param   {object} [entities.queueTracks]    The queue track entities to add
+ * @param   {object} [entities.sessions]       The session entities to add
+ * @param   {object} [entities.tracks]         The track entities to add
+ * @param   {object} [entities.users]          The user entities to add
+ * 
+ * @returns {object}                           The state with the entities removed
  */
 export function removeEntities(
   state: State,
@@ -65,7 +105,7 @@ export function removeEntities(
 
   if (typeof entities === 'object' && typeof state === 'object') {
     const entityTypes: Array<string> = Object.keys(entities);
-    const typesToKeep: Array<string> = Object.keys(state).filter(ley => !entityTypes.includes(ley));
+    const typesToCopy: Array<string> = Object.keys(state).filter(ley => !entityTypes.includes(ley));
 
     entityTypes.forEach(type => {
       if (typeof entities[type] === 'object') {
@@ -75,7 +115,7 @@ export function removeEntities(
       }
     });
 
-    typesToKeep.forEach(type => {
+    typesToCopy.forEach(type => {
       newState = updateObject(newState, {
         [type]: {...state[type]},
       });

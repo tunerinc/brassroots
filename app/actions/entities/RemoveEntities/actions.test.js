@@ -13,14 +13,8 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/entities';
 
 describe('remove entities action creator', () => {
-  it('creates action to remove an entity', () => {
-    const foo: string = 'foo';
-    const entities: Entities = {
-      albums: {[foo]: true},
-      tracks: {[foo]: true},
-      users: {[foo]: true},
-    };
-
+  it('creates action to remove entities', () => {
+    const entities: Entities = {albums: {'foo': true}, tracks: {'foo': true}, users: {'foo': true}};
     const expectedAction: Action = {
       type: types.REMOVE_ENTITIES,
       entities,

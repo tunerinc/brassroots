@@ -28,6 +28,7 @@ import {type User} from './users';
 import {type Entities} from '../actions/entities/RemoveEntities';
 
 // Case Functions
+import {addEntities} from '../actions/entities/AddEntities/reducers';
 import {removeEntities} from '../actions/entities/RemoveEntities/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -51,17 +52,18 @@ type EntityType =
   | Track
   | User;
 
-type Entity = {|
+type Entity = {
   +allIDs?: Array<string>,
   +total?: number,
   +byID?: {[string]: EntityType},
-|};
+};
 
 type Action = {
   +type?: string,
   +error?: Error,
-  +entities?: Entities,
+  +entities?: Entities | {[type: string]: EntityType},
   +ids?: Array<string>,
+  +items?: Array<EntityType>,
 };
 
 type State = {
@@ -174,6 +176,8 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
+      case types.ADD_ENTITIES:
+        return addEntities(state, action);
       case types.REMOVE_ENTITIES:
         return removeEntities(state, action);
     }
