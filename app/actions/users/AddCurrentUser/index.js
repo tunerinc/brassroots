@@ -10,10 +10,7 @@
  */
 
 import * as types from '../types';
-import {
-  type User,
-  type Action,
-} from '../../../reducers/users';
+import {type Action} from '../../../reducers/users';
 
 /**
  * Adds the current user's profile information
@@ -23,15 +20,15 @@ import {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {object} user The current user's profile retrieved from Brassroots
+ * @param   {string} currentUserID The current user's Spotify id
  *
- * @returns {object}      Redux action with the type of ADD_CURRENT_USER and the current user
+ * @returns {object}               Redux action with the type of ADD_CURRENT_USER and the current user's Spotify id
  */
 export function addCurrentUser(
-  user: User,
+  currentUserID: string,
 ): Action {
   return {
     type: types.ADD_CURRENT_USER,
-    user,
+    currentUserID,
   };
 }
