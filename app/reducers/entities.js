@@ -11,10 +11,9 @@ import * as types from '../actions/entities/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type Album} from './albums';
 import {type Artist} from './artists';
-import {type ChatMessage} from './chat';
 import {
-  type SingleConversation,
-  type SingleMessage,
+  type Conversation,
+  type Message,
 } from './conversations';
 import {type Group} from './groups';
 import {
@@ -28,7 +27,7 @@ import {type User} from './users';
 import {type Entities} from '../actions/entities/RemoveEntities';
 
 // Case Functions
-import {addEntities} from '../actions/entities/AddEntities/reducers';
+import {addEntityType, addEntities} from '../actions/entities/AddEntities/reducers';
 import {removeEntities} from '../actions/entities/RemoveEntities/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -41,10 +40,9 @@ type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) =
 type EntityType =
   | Album
   | Artist
-  | SingleConversation
+  | Conversation
   | Group
-  | ChatMessage
-  | SingleMessage
+  | Message
   | Playlist
   | PlaylistTrack
   | QueueTrack
@@ -64,6 +62,8 @@ type Action = {
   +entities?: Entities | {[type: string]: EntityType},
   +ids?: Array<string>,
   +items?: Array<EntityType>,
+  +updates?: {[string]: {[string]: EntityType}},
+  +entityType?: string,
 };
 
 type State = {
@@ -93,14 +93,14 @@ export type {
 
 /**
  * @constant
- * @alias singleEntitiesState
+ * @alias entityTypeState
  * @type {object}
  * 
  * @property {string[]} allIDs=[]
  * @property {number}   total=0
  * @property {object}   byID
  */
-export const singleState: Entity = {
+export const entityTypeState: Entity = {
   allIDs: [],
   total: 0,
   byID: {},
@@ -157,18 +157,30 @@ export const singleState: Entity = {
  * @property {object}   users.byID
  */
 export const initialState: State = {
-  albums: {...singleState},
-  artists: {...singleState},
-  conversations: {...singleState},
-  groups: {...singleState},
-  messages: {...singleState},
-  playlists: {...singleState},
-  playlistTracks: {...singleState},
-  queueTracks: {...singleState},
-  sessions: {...singleState},
-  tracks: {...singleState},
-  users: {...singleState},
+  albums: entityTypeState,
+  artists: entityTypeState,
+  conversations: entityTypeState,
+  groups: entityTypeState,
+  messages: entityTypeState,
+  playlists: entityTypeState,
+  playlistTracks: entityTypeState,
+  queueTracks: entityTypeState,
+  sessions: entityTypeState,
+  tracks: entityTypeState,
+  users: entityTypeState,
 };
+
+export function entityType(
+  state: Entity = entityTypeState,
+  action: Action,
+): Entity {
+  switch (action.type) {
+    case types.ADD_ENTITIES:
+      return addEntityType(state, action);
+    default:
+      return state;
+  }
+}
 
 export default function reducer(
   state: State = initialState,
