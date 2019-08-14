@@ -6,7 +6,6 @@
  */
 
 import reducer, {
-  singleState,
   initialState,
   type State,
   type Entity,
