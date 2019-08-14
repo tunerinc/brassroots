@@ -8,11 +8,13 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/queue/types';
+import * as entitiesTypes from '../actions/entities/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type Action as AlbumAction} from './albums';
 import {type Action as ArtistAction} from './artists';
 import {type Action as PlayerAction} from './player';
 import {type Action as TrackAction} from './tracks';
+import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
 import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
@@ -27,9 +29,16 @@ import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-type DispatchAction = Action | AlbumAction | ArtistAction | PlayerAction | TrackAction;
+type DispatchAction =
+  | Action
+  | AlbumAction
+  | ArtistAction
+  | PlayerAction
+  | TrackAction
+  | EntitiesAction;
+
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
@@ -176,12 +185,13 @@ export const initialState: State = {
   },
 };
 
-export function singleTrack(
+export function singleQueueTrack(
   state: QueueTrack = singleState,
   action: Action,
 ): QueueTrack {
   switch (action.type) {
     case types.ADD_QUEUE_TRACKS:
+    case entitiesTypes.ADD_ENTITIES:
       return addSingleTrack(state, action);
     default:
       return state;

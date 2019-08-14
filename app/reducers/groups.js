@@ -8,7 +8,9 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import {type Firebase} from '../utils/firebaseTypes';
+import {type Action as EntitiesAction} from './entities';
 import * as types from '../actions/groups/types';
+import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
 import {setNewGroupBio} from '../actions/groups/SetNewGroupBio/reducers';
@@ -19,10 +21,11 @@ import {setNewGroupWebsite} from '../actions/groups/SetNewGroupWebsite/reducers'
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction = Action | EntitiesAction;
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type Group = {
   +lastUpdated: string,

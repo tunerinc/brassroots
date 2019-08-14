@@ -8,16 +8,16 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/users/types';
+import * as entitiesTypes from '../actions/entities/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 import {type Action as OnboardingAction} from './onboarding';
+import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import {addSingleCoverImage, addCoverImage} from '../actions/users/AddCoverImage/reducers';
-import {addSingleLocation, addCurrentLocation} from '../actions/users/AddCurrentLocation/reducers';
-import {addSingleCurrentUser, addCurrentUser} from '../actions/users/AddCurrentUser/reducers';
+import {addCurrentUser} from '../actions/users/AddCurrentUser/reducers';
 import {addFavoriteTrack} from '../actions/users/AddFavoriteTrack/reducers';
-import {addSinglePeople, addPeople} from '../actions/users/AddPeople/reducers';
+import {addSingleUser, addUsers} from '../actions/users/AddUsers/reducers';
 import {addUserMostPlayed} from '../actions/users/AddUserMostPlayed/reducers';
 import {addUserRecentlyPlayed} from '../actions/users/AddUserRecentlyPlayed/reducers';
 import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUserRecentTrack/reducers';
@@ -30,10 +30,11 @@ import {setCameraRollPhotoIndex} from '../actions/users/SetCameraRollPhotoIndex/
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction = Action | OnboardingAction | EntitiesAction;
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | OnboardingAction | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type User = {
   +lastUpdated?: string,
@@ -68,8 +69,9 @@ type Action = {
   +mostPlayed?: Array<string>,
   +recentlyPlayed?: Array<string>,
   +topPlaylists?: Array<string>,
-  +people?: {+[id: string]: User},
+  +users?: {+[id: string]: User},
   +userID?: string,
+  +currentUserID?: string,
   +trackID?: string,
   +index?: number,
   +location?: {
@@ -225,16 +227,11 @@ export function singleUser(
   action: Action,
 ): User {
   switch (action.type) {
-    case types.ADD_COVER_IMAGE:
-      return addSingleCoverImage(state, action);
-    case types.ADD_CURRENT_LOCATION:
-      return addSingleLocation(state, action);
-    case types.ADD_CURRENT_USER:
-      return addSingleCurrentUser(state, action);
     case types.ADD_FAVORITE_TRACK:
       return addSingleUserMusic(state, action);
-    case types.ADD_PEOPLE:
-      return addSinglePeople(state, action);
+    case types.ADD_USERS:
+    case entitiesTypes.ADD_ENTITIES:
+      return addSingleUser(state, action);
     case types.ADD_USER_MOST_PLAYED:
       return addSingleUserMusic(state, action);
     case types.ADD_USER_RECENTLY_PLAYED:
@@ -262,16 +259,12 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_COVER_IMAGE:
-        return addCoverImage(state, action);
-      case types.ADD_CURRENT_LOCATION:
-        return addCurrentLocation(state, action);
       case types.ADD_CURRENT_USER:
         return addCurrentUser(state, action);
       case types.ADD_FAVORITE_TRACK:
         return addFavoriteTrack(state, action);
-      case types.ADD_PEOPLE:
-        return addPeople(state, action);
+      case types.ADD_USERS:
+        return addUsers(state, action);
       case types.ADD_USER_MOST_PLAYED:
         return addUserMostPlayed(state, action);
       case types.ADD_USER_RECENTLY_PLAYED:

@@ -9,9 +9,11 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import {type Action as AlbumAction} from './albums';
 import {type Action as TrackAction} from './tracks';
+import {type Action as EntitiesAction} from './entities';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 import * as types from '../actions/artists/types';
+import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
 import {addSingleArtist, addArtists} from '../actions/artists/AddArtists/reducers';
@@ -27,7 +29,7 @@ export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a'
 
 type DispatchAction = Action | AlbumAction | TrackAction;
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
@@ -68,15 +70,10 @@ type State = {
   +userArtists?: Array<string>,
   +totalUserArtists?: number,
   +selectedArtist?: ?string,
-  +searchingArtists?: boolean,
-  +fetchingAlbums?: boolean,
-  +fetchingArtists?: boolean,
-  +fetchingImages?: boolean,
-  +fetchingListeners?: boolean,
-  +fetchingPlaylists?: boolean,
-  +fetchingTracks?: boolean,
-  +refreshingArtists?: boolean,
-  +incrementingCount?: boolean,
+  +searching?: ?string,
+  +fetching?: ?string,
+  +refreshing?: ?string,
+  +incrementing?: boolean,
   +error?: ?Error | SpotifyError,
 };
 
@@ -92,7 +89,7 @@ export type {
 
 /**
  * @constant
- * @alias singleArtistState
+ * @alias artistState
  * @type {object}
  * 
  * @property {string}   lastUpdated  The date/time the single artist was last updated
@@ -111,7 +108,7 @@ export type {
  * @property {string[]} topPlaylists The Spotify ids of the top playlists of an artist
  * @property {string[]} topTracks    The Spotify ids of the top tracks of an artist
  */
-const singleState: Artist = {
+const artistState: Artist = {
   lastUpdated,
   id: null,
   name: null,
@@ -155,24 +152,20 @@ export const initialState: State = {
   userArtists: [],
   totalUserArtists: 0,
   selectedArtist: null,
-  searchingArtists: false,
-  fetchingAlbums: false,
-  fetchingArtists: false,
-  fetchingImages: false,
-  fetchingListeners: false,
-  fetchingPlaylists: false,
-  fetchingTracks: false,
-  incrementingCount: false,
-  refreshingArtists: false,
+  searching: null,
+  fetching: null,
+  refreshing: null,
+  incrementing: false,
   error: null,
 };
 
-export function singleArtist(
-  state: Artist = singleState,
+export function artist(
+  state: Artist = artistState,
   action: Action,
 ): Artist {
   switch (action.type) {
     case types.ADD_ARTISTS:
+    case entitiesTypes.ADD_ENTITIES:
       return addSingleArtist(state, action);
     case types.GET_ARTIST_IMAGES_SUCCESS:
       return getArtistImages.addImages(state, action);

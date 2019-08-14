@@ -9,23 +9,25 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
+import {type Action as EntitiesAction} from './entities';
 import * as types from '../actions/conversations/types';
+import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
 import {addConversationRecipient} from '../actions/conversations/AddConversationRecipient/reducers';
 import {clearNewConversation} from '../actions/conversations/ClearNewConversation/reducers';
 import {removeConversationRecipient} from '../actions/conversations/RemoveConversationRecipient/reducers';
-import {setMessage, setConversationMessage} from '../actions/conversations/SetConversationMessage/reducers';
 import {setNewConversationMessage} from '../actions/conversations/SetNewConversationMessage/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
+type DispatchAction = Action | EntitiesAction;
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
-type SingleMessage = {
+type Message = {
   +lastUpdated?: string,
   +id?: ?string,
   +text?: ?string,
@@ -38,7 +40,7 @@ type SingleMessage = {
   +fetchingMedia?: boolean,
 };
 
-type SingleConversation = {
+type Conversation = {
   +lastUpdated?: string,
   +id?: ?string,
   +name?: ?string,
@@ -62,7 +64,7 @@ type State = {
   +lastUpdated?: string,
   +userConversations?: Array<string>,
   +totalUserConversations?: number,
-  +messagesByID?: {+[key: string]: SingleMessage},
+  +messagesByID?: {+[key: string]: Message},
   +totalMessages?: number,
   +selectedConversation?: ?string,
   +searchingConversations?: boolean,
@@ -80,8 +82,8 @@ export type {
   PromiseAction,
   ThunkAction,
   Dispatch,
-  SingleMessage,
-  SingleConversation,
+  Message,
+  Conversation,
   Action,
   State,
 };
@@ -101,7 +103,7 @@ export type {
  * @property {string}   mediaType=null       The type of media in the message
  * @property {boolean}  fetchingMedia=false  Whether the current user is fetching the message media
  */
-const singleMessageState: SingleMessage = {
+export const messageState: Message = {
   lastUpdated,
   id: null,
   text: null,
@@ -121,6 +123,7 @@ const singleMessageState: SingleMessage = {
  * @property {string}   lastUpdated            The date/time the single conversation was last updated
  * @property {string}   id=null                The Brassroots id of a single conversation
  * @property {string}   name=null              The name of a single conversation
+ * @property {string}   message                The message the current user is typing in a conversation
  * @property {string[]} members                The Brassroots ids of the members of a single conversation
  * @property {boolean}  fetchingMembers=false  Whether the current user is fetching the members of a single conversation
  * @property {string[]} messages               The Brassroots ids of the messages in a single conversation
@@ -128,10 +131,11 @@ const singleMessageState: SingleMessage = {
  * @property {string[]} sharedMusic            The ids of the shared music in a single conversation
  * @property {boolean}  fetchingMusic=false    Whether the current user is fetching shared music of a single conversation
  */
-const singleConversationState: SingleConversation = {
+export const conversationState: Conversation = {
   lastUpdated,
   id: null,
   name: null,
+  message: '',
   members: [],
   fetchingMembers: false,
   messages: [],
@@ -172,23 +176,21 @@ export const initialState: State = {
   },
 };
 
-export function singleMessage(
-  state: SingleMessage = singleMessageState,
+export function message(
+  state: Message = messageState,
   action: Action,
-): SingleMessage {
+): Message {
   switch (action.type) {
     default:
       return state;
   }
 }
 
-export function singleConversation(
-  state: SingleConversation = singleConversationState,
+export function conversation(
+  state: Conversation = conversationState,
   action: Action,
-): SingleConversation {
+): Conversation {
   switch (action.type) {
-    case types.SET_CONVERSATION_MESSAGE:
-      return setMessage(state, action);
     default:
       return state;
   }
@@ -206,8 +208,6 @@ export default function reducer(
         return clearNewConversation(state);
       case types.REMOVE_CONVERSATION_RECIPIENT:
         return removeConversationRecipient(state, action);
-      case types.SET_CONVERSATION_MESSAGE:
-        return setConversationMessage(state, action);
       case types.SET_NEW_CONVERSATION_MESSAGE:
         return setNewConversationMessage(state, action);
       default:

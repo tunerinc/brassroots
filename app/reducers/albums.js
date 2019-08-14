@@ -13,7 +13,9 @@ import {type Action as ArtistAction} from './artists';
 import {type Action as PlaylistAction} from './playlists';
 import {type Action as TrackAction} from './tracks';
 import {type Action as UserAction} from './users';
+import {type Action as EntitiesAction} from './entities';
 import * as types from '../actions/albums/types';
+import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
 import {addSingleAlbum, addAlbums} from '../actions/albums/AddAlbums/reducers';
@@ -25,11 +27,17 @@ import * as incrementAlbumPlays from '../actions/albums/IncrementAlbumPlays/redu
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-type DispatchAction = Action | ArtistAction | PlaylistAction | TrackAction | UserAction;
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
+type DispatchAction =
+  | Action
+  | ArtistAction
+  | PlaylistAction
+  | TrackAction
+  | UserAction
+  | EntitiesAction;
 
 type Artist = {|
   +id?: string,
@@ -73,14 +81,10 @@ type State = {
   +userAlbums?: Array<string>,
   +totalUserAlbums?: number,
   +selectedAlbum?: ?string,
-  +searchingAlbums?: boolean,
-  +refreshingAlbums?: boolean,
-  +fetchingAlbums?: boolean,
-  +fetchingArtists?: boolean,
-  +fetchingListeners?: boolean,
-  +fetchingPlaylists?: boolean,
-  +fetchingTracks?: boolean,
-  +incrementingCount?: boolean,
+  +searching?: ?string,
+  +refreshing?: ?string,
+  +fetchingAlbums?: ?string,
+  +incrementing?: boolean,
   +error?: ?Error | SpotifyError,
 };
 
@@ -97,7 +101,7 @@ export type {
 
 /**
  * @constant
- * @alias singleAlbumState
+ * @alias albumState
  * @type {object}
  * 
  * @property {string}   lastUpdated  The date/time the albums were last updated
@@ -115,7 +119,7 @@ export type {
  * @property {string[]} topPlaylists The Spotify ids of the top playlists of a single album
  * @property {string[]} topTracks    The Spotify ids of the top tracks of a single album
  */
-const singleState: Album = {
+const albumState: Album = {
   lastUpdated,
   id: null,
   name: null,
@@ -137,42 +141,35 @@ const singleState: Album = {
  * @alias albumsState
  * @type {object}
  * 
- * @property {string}   lastUpdated             The date/time the albums were last updated
- * @property {string[]} userAlbums              The Spotify album ids saved in the current user's library
- * @property {number}   totalUserAlbums=0       The total number of albums in the current user's library
- * @property {string}   selectedAlbum=null      The selected album to view
- * @property {boolean}  searchingAlbums=false   Whether the current user is searching albums
- * @property {boolean}  refreshingAlbums=false  Whether the current user is refreshing their saved albums
- * @property {boolean}  fetchingAlbums=false    Whether the current user is fetching albums
- * @property {boolean}  fetchingArtists=false   Whether the current user is fetching artists for an album
- * @property {boolean}  fetchingListeners=false Whether the current user is fetching listeners for an album
- * @property {boolean}  fetchingPlaylists=false Whether the current user is fetching playlists for an album
- * @property {boolean}  fetchingTracks=false    Whether the current user is fetching tracks for an album
- * @property {boolean}  incrementingCount=false Whether the current user is incrementing the play count for an album
- * @property {Error}    error=null              The error related to an albums action
+ * @property {string}   lastUpdated        The date/time the albums were last updated
+ * @property {string[]} userAlbums         The Spotify album ids saved in the current user's library
+ * @property {number}   totalUserAlbums=0  The total number of albums in the current user's library
+ * @property {string}   selectedAlbum=null The selected album to view
+ * @property {string}   searching=null     Whether the current user is searching any given item type, i.e. album, artist, listener, etc.
+ * @property {string}   refreshing=null    Whether the current user is refreshing any given item type, i.e. album, artist, listener, etc.
+ * @property {string}   fetching=null      Whether the current user is fetching any given item type, i.e. album, artist, listener, etc.
+ * @property {boolean}  incrementing=false Whether the current user is incrementing the play count for an album
+ * @property {Error}    error=null         The error related to an albums action
  */
 export const initialState: State = {
   lastUpdated,
   userAlbums: [],
   totalUserAlbums: 0,
   selectedAlbum: null,
-  searchingAlbums: false,
-  refreshingAlbums: false,
-  fetchingAlbums: false,
-  fetchingArtists: false,
-  fetchingListeners: false,
-  fetchingPlaylists: false,
-  fetchingTracks: false,
-  incrementingCount: false,
+  searching: null,
+  refreshing: null,
+  fetching: null,
+  incrementing: false,
   error: null,
 };
 
 export function singleAlbum(
-  state: Album = singleState,
+  state: Album = albumState,
   action: Action,
 ): Album {
   switch (action.type) {
     case types.ADD_ALBUMS:
+    case entitiesTypes.ADD_ENTITIES:
       return addSingleAlbum(state, action);
     case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
       return getAlbumTopListeners.addListeners(state, action);

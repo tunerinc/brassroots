@@ -8,11 +8,13 @@
 import moment from "moment";
 import updateObject from '../utils/updateObject';
 import * as types from "../actions/tracks/types";
+import * as entitiesTypes from "../actions/entities/types";
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 import {type Action as AlbumAction} from './albums';
 import {type Action as ArtistAction} from './artists';
 import {type Action as UserAction} from './users';
+import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
 import * as addRecentTrack from '../actions/tracks/AddRecentTrack/reducers';
@@ -163,6 +165,7 @@ export function singleTrack(
 ): Track {
   switch (action.type) {
     case types.ADD_TRACKS:
+    case entitiesTypes.ADD_ENTITIES:
       return addSingleTrack(state, action);
     case types.INCREMENT_TRACK_PLAYS_SUCCESS:
       return incrementTrackPlays.increment(state, action);

@@ -8,6 +8,7 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/sessions/types';
+import * as entitiesTypes from '../actions/entities/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 import {type Action as PlayerAction} from './player';
@@ -18,6 +19,7 @@ import {type Action as UserAction} from './users';
 import {type Action as PlaylistAction} from './playlists';
 import {type Action as TrackAction} from './tracks';
 import {type Action as ChatAction} from './chat';
+import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
 import {addSingleSession, addSessions} from '../actions/sessions/AddSessions/reducers';
@@ -37,7 +39,7 @@ import * as stopSessionInfoListener from '../actions/sessions/StopSessionInfoLis
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
 type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 type DispatchAction =
@@ -49,7 +51,8 @@ type DispatchAction =
   | PlaylistAction
   | UserAction
   | TrackAction
-  | ChatAction;
+  | ChatAction
+  | EntitiesAction;
 
 type Session = {
   +lastUpdated?: string,
@@ -219,6 +222,7 @@ export function singleSession(
 ): Session {
   switch (action.type) {
     case types.ADD_SESSIONS:
+    case entitiesTypes.ADD_ENTITIES:
       return addSingleSession(state, action);
     case types.CREATE_SESSION_SUCCESS:
       return addSingleSession(state, action);

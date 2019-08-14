@@ -8,8 +8,10 @@
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/playlists/types';
+import * as entitiesTypes from '../actions/entities/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
+import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
 import {addNewPlaylistUser} from '../actions/playlists/AddNewPlaylistUser/reducers';
@@ -29,13 +31,14 @@ import {setNewPlaylistPhoto} from '../actions/playlists/SetNewPlaylistPhoto/redu
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
+type DispatchAction = Action | EntitiesAction;
 type GetState = () => State;
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
-type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) => any;
+type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<Action>) => any;
 
 type PlaylistTrack = {
-  +playlistTrackID?: ?string,
+  +id?: ?string,
   +trackID?: ?string,
   +userID?: ?string,
   +totalPlays?: number,
@@ -133,14 +136,14 @@ export type {
  * @alias singlePlaylistTrackState
  * @type {object}
  * 
- * @property {string} playlistTrackID=null A string containing the playlistID and the trackID
- * @property {string} trackID=null         The Spotify id of the playlist track
- * @property {string} userID=null          The Brassroots id of the user who added the playlist track
- * @property {number} totalPlays=0         The total amount of plays the track within a playlist has
- * @property {number} userPlays=0          The amount of plays the current user has on the playlist track
+ * @property {string} id=null      A string containing the playlistID and the trackID
+ * @property {string} trackID=null The Spotify id of the playlist track
+ * @property {string} userID=null  The Brassroots id of the user who added the playlist track
+ * @property {number} totalPlays=0 The total amount of plays the track within a playlist has
+ * @property {number} userPlays=0  The amount of plays the current user has on the playlist track
  */
 const singleTrackState: PlaylistTrack = {
-  playlistTrackID: null,
+  id: null,
   trackID: null,
   userID: null,
   totalPlays: 0,
@@ -238,12 +241,13 @@ export const initialState: State = {
   },
 };
 
-export function singleTrack(
+export function singlePlaylistTrack(
   state: PlaylistTrack = singleTrackState,
   action: Action,
 ): PlaylistTrack {
   switch (action.type) {
     case types.ADD_PLAYLIST_TRACKS:
+    case entitiesTypes.ADD_ENTITIES:
       return addSinglePlaylistTrack(state, action);
     case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
       return incrementPlaylistPlays.incrementTrack(state, action);
@@ -258,6 +262,7 @@ export function singlePlaylist(
 ): Playlist {
   switch (action.type) {
     case types.ADD_PLAYLISTS:
+    case entitiesTypes.ADD_ENTITIES:
       return addSinglePlaylist(state, action);
     case types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS:
       return getPlaylistTopMembers.addMembers(state, action);
