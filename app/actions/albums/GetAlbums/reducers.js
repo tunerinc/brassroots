@@ -36,15 +36,12 @@ export function request(
 ): State {
   const {fetching} = state;
   const {refreshing} = action;
-  const updates = typeof refreshing === 'boolean' && Array.isArray(fetching)
-    ? {
-      refreshing,
-      fetching: fetching.concat('albums'),
-      error: null,
-    }
-    : {};
 
-  return updateObject(state, updates);
+  return updateObject(state, {
+    refreshing,
+    fetching: Array.isArray(fetching) ? fetching.concat('albums') : ['albums'],
+    error: null,
+  });
 };
 
 /**
@@ -105,9 +102,10 @@ export function failure(
 ): State {
   const {fetching} = state;
   const {error} = action;
-  const updates = Array.isArray(fetching)
-    ? {error, refreshing: false, fetching: fetching.filter(t => t !== 'albums')}
-    : {error, refreshing: false};
 
-  return updateObject(state, updates);
+  return updateObject(state, {
+    error,
+    refreshing: false,
+    fetching: Array.isArray(fetching) ? fetching.filter(t => t !== 'albums') : [],
+  });
 };

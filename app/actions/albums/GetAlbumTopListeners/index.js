@@ -9,7 +9,7 @@
  * @module GetAlbumTopListeners
  */
 
-import {addPeople} from '../../users/AddPeople';
+import {addEntities} from '../../entities/AddEntities';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/albums';
@@ -19,14 +19,6 @@ import {
   type FirestoreDoc,
   type FirestoreDocs,
 } from '../../../utils/firebaseTypes';
-
-type Users = {
-  +[id: string]: {
-    +id: string,
-    +displayName: string,
-    +profileImage: string,
-  },
-};
 
 /**
  * Async function which gets the top listeners of an album
@@ -52,6 +44,8 @@ export function getAlbumTopListeners(
     const albumUsersRef: FirestoreDocs = firestore.collection('albums').doc(albumID).collection('users');
     const usersRef: FirestoreRef = firestore.collection('users');
 
+    let topListeners: Array<string> = [];
+
     try {
       const topUserDocs: FirestoreDocs = await albumUsersRef.orderBy('plays', 'desc').limit(3).get();
 
@@ -60,16 +54,17 @@ export function getAlbumTopListeners(
       } else {
         const promises: Array<FirestoreDoc> = topUserDocs.docs.map(doc => usersRef.doc(doc.id).get());
         const userDocs = await Promise.all(promises);
-        const users: Users = userDocs.reduce((userList, userDoc) => {
+        const users = userDocs.reduce((userList, userDoc) => {
           if (userDoc.exists) {
             const {id, displayName, profileImage} = userDoc.data();
+            topListeners = topListeners.concat(id);
             return updateObject(userList, {[id]: {id, displayName, profileImage}});
           } else {
             throw new Error('Unable to retrieve user from Brassroots');
           }
         }, {});
 
-        dispatch(addPeople(users));
+        dispatch(addEntities({users, albums: {[albumID]: {topListeners}}}));
         dispatch(actions.getAlbumTopListenersSuccess());
       }
     } catch (err) {
