@@ -34,11 +34,12 @@ export function request(
   state: State,
   action: Action,
 ): State {
-  const {refreshing: refreshingAlbums} = action;
-  const updates = typeof refreshingAlbums === 'boolean'
+  const {fetching} = state;
+  const {refreshing} = action;
+  const updates = typeof refreshing === 'boolean' && Array.isArray(fetching)
     ? {
-      refreshingAlbums,
-      fetchingAlbums: true,
+      refreshing,
+      fetching: fetching.concat('albums'),
       error: null,
     }
     : {};
@@ -66,23 +67,18 @@ export function success(
   state: State,
   action: Action,
 ): State {
-  const {refreshingAlbums, userAlbums: oldAlbums} = state;
-  const {albums, total, replace} = action;
-  const updates = (
-    typeof refreshingAlbums === 'boolean'
-    && typeof replace === 'boolean'
-    && Array.isArray(oldAlbums)
-    && Array.isArray(albums)
-  )
+  const {refreshing, fetching, userAlbums: oldAlbums} = state;
+  const {albums, replace, total: totalUserAlbums} = action;
+  const updates = Array.isArray(fetching) && Array.isArray(oldAlbums) && Array.isArray(albums)
     ? {
       lastUpdated,
-      totalUserAlbums: total,
-      userAlbums: refreshingAlbums || replace
+      totalUserAlbums,
+      error: null,
+      refreshing: false,
+      fetching: fetching.filter(t => t !== 'albums'),
+      userAlbums: refreshing || replace
         ? [...albums]
         : [...oldAlbums, ...albums],
-      refreshingAlbums: false,
-      fetchingAlbums: false,
-      error: null,
     }
     : {};
 
@@ -107,6 +103,11 @@ export function failure(
   state: State,
   action: Action,
 ): State {
+  const {fetching} = state;
   const {error} = action;
-  return updateObject(state, {error, refreshingAlbums: false, fetchingAlbums: false});
+  const updates = Array.isArray(fetching)
+    ? {error, refreshing: false, fetching: fetching.filter(t => t !== 'albums')}
+    : {error, refreshing: false};
+
+  return updateObject(state, updates);
 };

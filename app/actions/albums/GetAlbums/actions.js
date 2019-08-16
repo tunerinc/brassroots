@@ -19,7 +19,7 @@ import {
  * Notify the app of a get albums request
  * 
  * @alias module:GetAlbums
- * @function getAlbumsRequest
+ * @function request
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
@@ -28,7 +28,7 @@ import {
  *
  * @returns {object}             Redux action with the type of GET_ALBUMS_REQUEST and whether we are refreshing the albums
  */
-export function getAlbumsRequest(
+export function request(
   refreshing: boolean,
 ): Action {
   return {
@@ -41,7 +41,7 @@ export function getAlbumsRequest(
  * Notify the app of a get albums success
  * 
  * @alias module:GetAlbums
- * @function getAlbumsSuccess
+ * @function success
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
@@ -52,7 +52,7 @@ export function getAlbumsRequest(
  *
  * @returns {object}                   Redux action with the type of GET_ALBUMS_SUCCESS and the albums to add
  */
-export function getAlbumsSuccess(
+export function success(
   albums: Array<string>,
   total: number,
   replace?: boolean = false,
@@ -69,7 +69,7 @@ export function getAlbumsSuccess(
  * Notify the app of a get albums failure
  * 
  * @alias module:GetAlbums
- * @function getAlbumsFailure
+ * @function failure
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
@@ -78,7 +78,7 @@ export function getAlbumsSuccess(
  *
  * @returns {object}       Redux action with the type of GET_ALBUMS_FAILURE and the error which caused the failure
  */
-export function getAlbumsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

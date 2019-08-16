@@ -9,11 +9,9 @@
  * @module GetAlbums
  */
 
-import getMySavedAlbums from "../../../utils/spotifyAPI/getMySavedAlbums";
+import getMySavedAlbums from '../../../utils/spotifyAPI/getMySavedAlbums';
 import updateObject from '../../../utils/updateObject';
-import {addAlbums} from '../AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
+import {addEntities} from '../../entities/AddEntities/reducers';
 import * as actions from './actions';
 import {
   lastUpdated,
@@ -73,7 +71,7 @@ export function getAlbums(
   const market: string = 'US';
 
   return async dispatch => {
-    dispatch(actions.getAlbumsRequest(refreshing));
+    dispatch(actions.request(refreshing));
 
     try {
       const {items, total} = await getMySavedAlbums({limit, offset, market});
@@ -83,7 +81,16 @@ export function getAlbums(
       let tracks: Tracks = {};
 
       const albums: Albums = albumsFromSpotify.reduce((albumList, album) => {
-        const hasImages: boolean = Array.isArray(album.images) && album.images && album.images.length === 3;
+        const hasImages: boolean = Array.isArray(album.images) && album.images.length === 3;
+        const albumToSave: Album = {
+          id: album.id,
+          name: album.name,
+          small: hasImages ? album.images[2].url : '',
+          medium: hasImages ? album.images[1].url : '',
+          large: hasImages ? album.images[0].url : '',
+          userTracks: album.tracks.items.map(t => t.id),
+          artists: album.artists.map(a => ({id: a.id, name: a.name})),
+        };
 
         const albumArtists: Artists = album.artists.reduce((artistList, artist) => {
           return updateObject(artistList, {
@@ -118,35 +125,23 @@ export function getAlbums(
             [track.id]: {
               id: track.id,
               name: track.name,
-              albumID: album.id,
               artists: track.artists.map(a => ({id: a.id, name: a.name})),
               trackNumber: track.track_number,
               durationMS: track.duration_ms,
+              album: albumToSave,
             },
           });
         }, {});
 
         tracks = updateObject(tracks, albumTracks);
 
-        return updateObject(albumList, {
-          [album.id]: {
-            id: album.id,
-            name: album.name,
-            small: hasImages ? album.images[2].url : '',
-            medium: hasImages ? album.images[1].url : '',
-            large: hasImages ? album.images[0].url : '',
-            userTracks: album.tracks.items.map(t => t.id),
-            artists: album.artists.map(a => ({id: a.id, name: a.name})),
-          },
-        });
+        return updateObject(albumList, {[album.id]: albumToSave});
       }, {});
 
-      dispatch(addArtists(artists));
-      dispatch(addAlbums(albums));
-      dispatch(addTracks(tracks));
-      dispatch(actions.getAlbumsSuccess(albumsFromSpotify.map(a => a.id), total));
+      dispatch(addEntities({albums, artists, tracks}));
+      dispatch(actions.success(albumsFromSpotify.map(a => a.id), total));
     } catch (err) {
-      dispatch(actions.getAlbumsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

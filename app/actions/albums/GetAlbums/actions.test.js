@@ -17,7 +17,7 @@ describe('get albums synchronous action creators', () => {
       refreshing,
     };
 
-    expect(actions.getAlbumsRequest(refreshing)).toStrictEqual(expectedAction);
+    expect(actions.request(refreshing)).toStrictEqual(expectedAction);
   });
 
   it('creates get albums success action', () => {
@@ -31,8 +31,8 @@ describe('get albums synchronous action creators', () => {
       replace,
     };
 
-    expect(actions.getAlbumsSuccess(albums, total)).toStrictEqual({...expectedAction, replace: false});
-    expect(actions.getAlbumsSuccess(albums, total, replace)).toStrictEqual(expectedAction);
+    expect(actions.success(albums, total)).toStrictEqual({...expectedAction, replace: false});
+    expect(actions.success(albums, total, replace)).toStrictEqual(expectedAction);
   });
 
   it('creates get albums failure action', () => {
@@ -42,6 +42,6 @@ describe('get albums synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getAlbumsFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });
