@@ -13,7 +13,8 @@ import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
 import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import {Actions} from 'react-native-router-flux';
-import {addCurrentUser} from '../../users/AddCurrentUser';
+import {addEntities} from '../../entities/AddEntities';
+import {updateUsers} from '../../users/UpdateUsers';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/onboarding';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
@@ -72,6 +73,7 @@ export function createProfile(
         country: user.country,
         email: user.email,
         profileImage: url,
+        spotifyAccountStatus: user.product,
       };
 
       let batch = firestore.batch();
@@ -80,7 +82,6 @@ export function createProfile(
         usersRef.doc(user.id),
         {
           ...newUserProfile,
-          spotifyAccountStatus: user.product,
           currentSession: null,
           favoriteTrackID: null,
           online: false,
@@ -128,22 +129,8 @@ export function createProfile(
 
       await batch.commit();
 
-      dispatch(
-        addCurrentUser(
-          {
-            ...newUserProfile,
-            spotifyAccountStatus: user.product,
-            coverImage: '',
-            bio: '',
-            location: '',
-            website: '',
-            favoriteTrackID: null,
-            totalFollowers: 0,
-            totalFollowing: 0,
-          },
-        ),
-      );
-
+      dispatch(addEntities({users: {[user.id]: newUserProfile}}));
+      dispatch(updateUsers({currentUserID: user.id}));
       dispatch(actions.createProfileSuccess());
       Actions.createProfile();
     } catch (err) {

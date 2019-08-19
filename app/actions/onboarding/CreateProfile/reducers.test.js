@@ -5,38 +5,37 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/onboarding';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/onboarding';
+import userReducer, {
+  initialState as userState,
+  type State as UserState,
+} from '../../../reducers/users';
 import * as actions from './actions';
 
 describe('create profile reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CREATE_PROFILE_REQUEST', () => {
-    expect(reducer(initialState, actions.createProfileRequest()))
-      .toStrictEqual({...initialState, creatingUser: true});
+  it('handles CREATE_PROFILE_REQUEST', () => {
+    const expectedState: State = {...initialState, creatingUser: true};
+    expect(reducer(initialState, actions.createProfileRequest())).toStrictEqual(expectedState);
   });
 
-  it('should handle CREATE_PROFILE_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, creatingUser: true},
-        actions.createProfileSuccess(),
-      ),
-    )
-    .toStrictEqual({...initialState, profileCreated: true});
+  it('handles CREATE_PROFILE_SUCCESS', () => {
+    const state: State = {...initialState, creatingUser: true};
+    const currentUserID: string = 'foo';
+    const expectedState: State = {...initialState, profileCreated: true};
+    expect(reducer(state, actions.createProfileSuccess())).toStrictEqual(expectedState);
   });
 
-  it('should handle CREATE_PROFILE_FAILURE', () => {
+  it('handles CREATE_PROFILE_FAILURE', () => {
+    const state: State = {...initialState, creatingUser: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, creatingUser: true},
-        actions.createProfileFailure(error),
-      ),
-    )
-    .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.createProfileFailure(error))).toStrictEqual(expectedState);
   });
 });

@@ -23,9 +23,7 @@ import {type Action} from '../../../reducers/onboarding';
  * @returns {object} Redux action with the type of CREATE_PROFILE_REQUEST
  */
 export function createProfileRequest(): Action {
-  return {
-    type: types.CREATE_PROFILE_REQUEST,
-  };
+  return {type: types.CREATE_PROFILE_REQUEST};
 }
 
 /**
@@ -36,12 +34,10 @@ export function createProfileRequest(): Action {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @returns {object}         Redux action with the type of CREATE_PROFILE_SUCCESS
+ * @returns {object} Redux action with the type of CREATE_PROFILE_SUCCESS
  */
 export function createProfileSuccess(): Action {
-  return {
-    type: types.CREATE_PROFILE_SUCCESS,
-  };
+  return {type: types.CREATE_PROFILE_SUCCESS};
 }
 
 /**

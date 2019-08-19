@@ -7,15 +7,12 @@
 
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/onboarding/types';
+import {type Action as EntitiesAction} from './entities';
 import {type Action as UserAction} from './users';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 
-// Case Functions
-import * as createProfile from '../actions/onboarding/CreateProfile/reducers';
-import {setOnboarding} from '../actions/onboarding/SetOnboarding/reducers';
-
-type DispatchAction = Action | UserAction;
+type DispatchAction = Action | UserAction | EntitiesAction;
 type GetState = () => State;
 type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
@@ -25,6 +22,7 @@ type Action = {
   +type?: string,
   +error?: Error,
   +status?: boolean,
+  +updates?: State | {currentUserID: string},
 };
 
 type State = {
@@ -67,15 +65,15 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.CREATE_PROFILE_REQUEST:
-        return createProfile.request(state);
+        return updateObject(state, {creatingUser: true, error: null});
       case types.CREATE_PROFILE_SUCCESS:
-        return createProfile.success(state);
+          return updateObject(state, {creatingUser: false, profileCreated: true, error: null});
       case types.CREATE_PROFILE_FAILURE:
-        return createProfile.failure(state, action);
+          return updateObject(state, {error: action.error, creatingUser: false});
       case types.RESET_ONBOARDING:
         return initialState;
       case types.SET_ONBOARDING:
-        return setOnboarding(state, action);
+        return updateObject(state, {onboarding: action.status});
       default:
         return state;
     }

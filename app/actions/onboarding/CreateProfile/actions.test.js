@@ -11,18 +11,12 @@ import {type Action} from '../../../reducers/onboarding';
 
 describe('create profile synchronous action creators', () => {
   it('creates create profile request action', () => {
-    const expectedAction: Action = {
-      type: types.CREATE_PROFILE_REQUEST,
-    };
-
+    const expectedAction: Action = {type: types.CREATE_PROFILE_REQUEST};
     expect(actions.createProfileRequest()).toStrictEqual(expectedAction);
   });
 
   it('creates create profile success action', () => {
-    const expectedAction: Action = {
-      type: types.CREATE_PROFILE_SUCCESS,
-    };
-
+    const expectedAction: Action = {type: types.CREATE_PROFILE_SUCCESS};
     expect(actions.createProfileSuccess()).toStrictEqual(expectedAction);
   });
 
