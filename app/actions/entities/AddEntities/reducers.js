@@ -16,6 +16,20 @@ import {singleSession} from '../../../reducers/sessions';
 import {singleTrack} from '../../../reducers/tracks';
 import {singleUser} from '../../../reducers/users';
 
+const singleEntityReducers = {
+  singleAlbum,
+  singleArtist,
+  singleConversation,
+  singleGroup,
+  singleMessage,
+  singlePlaylist,
+  singlePlaylistTrack,
+  singleQueueTrack,
+  singleSession,
+  singleTrack,
+  singleUser,
+};
+
 /**
  * Adds entities to a single node of the entities state
  * 
@@ -50,31 +64,12 @@ export function addEntityType(state, action) {
   const allIDs = [...oldIDs, ...itemIDs].filter((el, i, arr) => i === arr.indexOf(el));
   const entitiesToAdd = items.reduce((obj, item) => {
     const entity = byID[item.id];
-    const addedEntity = entityType === 'albums'
-      ? singleAlbum(entity, {...action, album: item})
-      : entityType === 'artists'
-      ? singleArtist(entity, {...action, artist: item})
-      : entityType === 'conversations'
-      ? singleConversation(entity, {...action, conversation: item})
-      : entityType === 'groups'
-      ? singleGroup(entity, {...action, group: item})
-      : entityType === 'messages'
-      ? singleMessage(entity, {...action, message: item})
-      : entityType === 'playlists'
-      ? singlePlaylist(entity, {...action, playlist: item})
-      : entityType === 'playlistTracks'
-      ? singlePlaylistTrack(entity, {...action, track: item})
-      : entityType === 'queueTracks'
-      ? singleQueueTrack(entity, {...action, track: item})
-      : entityType === 'sessions'
-      ? singleSession(entity, {...action, session: item})
-      : entityType === 'tracks'
-      ? singleTrack(entity, {...action, track: item})
-      : entityType === 'users'
-      ? singleUser(entity, {...action, user: item})
-      : null;
-
-    if (addedEntity) {
+    const type = entityType.slice(0, -1);
+    const name = `single${type.slice(0, 1).toUpperCase()}${type.slice(1).toLowerCase()}`;
+    const func = singleEntityReducers[name];
+    
+    if (typeof func === 'function') {
+      const addedEntity = func(entity, {...action, item});
       return updateObject(obj, {[item.id]: addedEntity});
     }
 
