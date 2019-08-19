@@ -13,7 +13,7 @@ import getUserPlaylists from '../../../utils/spotifyAPI/getUserPlaylists';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {addPlaylists} from '../AddPlaylists';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 import {
   type ThunkAction,
   type Playlist,
@@ -97,7 +97,7 @@ export function getPlaylists(
         });
       }, {});
 
-      dispatch(addPeople(users));
+      dispatch(addUsers(users));
       dispatch(addPlaylists(playlistsFromSpotify));
       dispatch(actions.getPlaylistsSuccess(items.map(p => p.id), total));
     } catch (err) {

@@ -12,7 +12,7 @@ import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
 import {addTracks} from '../../tracks/AddTracks';
 import {addPlaylists} from '../../playlists/AddPlaylists';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 import {addSessions} from '../AddSessions';
 import * as actions from './actions';
 
@@ -169,7 +169,7 @@ export function paginateNearbySessions() {
           dispatch(addArtists(music.artists));
           dispatch(addAlbums(music.albums));
           dispatch(addTracks(music.tracks));
-          dispatch(addPeople(users));
+          dispatch(addUsers(users));
           dispatch(addSessions(newSessions));
           dispatch(actions.paginateNearbySessionsSuccess(sessionIDs, sessionIDs.length === 15));
         }

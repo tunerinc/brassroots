@@ -17,7 +17,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import {addCurrentUser} from '../actions/users/AddCurrentUser/reducers';
 import {addFavoriteTrack} from '../actions/users/AddFavoriteTrack/reducers';
-import {addSingleUser, addUsers} from '../actions/users/AddUsers/reducers';
 import {addUserMostPlayed} from '../actions/users/AddUserMostPlayed/reducers';
 import {addUserRecentlyPlayed} from '../actions/users/AddUserRecentlyPlayed/reducers';
 import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUserRecentTrack/reducers';

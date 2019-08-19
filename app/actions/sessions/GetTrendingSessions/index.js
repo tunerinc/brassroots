@@ -22,7 +22,7 @@ import {addArtists} from '../../artists/AddArtists';
 import {addTracks} from '../../tracks/AddTracks';
 import {addPlaylists} from '../../playlists/AddPlaylists';
 import {addCurrentLocation} from '../../users/AddCurrentLocation';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 import {
   type ThunkAction,
   type Session,
@@ -170,7 +170,7 @@ export function getTrendingSessions(): ThunkAction {
         dispatch(addArtists(music.artists));
         dispatch(addAlbums(music.albums));
         dispatch(addTracks(music.tracks));
-        dispatch(addPeople(users));
+        dispatch(addUsers(users));
         dispatch(addSessions(trendingSessions))
         dispatch(actions.getTrendingSessionsSuccess(sessionIDs, sessionIDs.length === 15));
       }

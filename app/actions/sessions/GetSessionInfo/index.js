@@ -11,7 +11,7 @@
 
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 import {updatePlayer} from '../../player/UpdatePlayer';
 import {type ThunkAction} from '../../../reducers/sessions';
 import {

@@ -19,7 +19,7 @@ import {addAlbums} from '../../albums/AddAlbums';
 import {addArtists} from '../../artists/AddArtists';
 import {addTracks} from '../../tracks/AddTracks';
 import {addPlaylists} from '../../playlists/AddPlaylists';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 import {addSessions} from '../AddSessions';
 import {addCurrentLocation} from '../../users/AddCurrentLocation';
 import * as actions from './actions';
@@ -178,7 +178,7 @@ export function paginateTrendingSessions(
         dispatch(addArtists(music.artists));
         dispatch(addAlbums(music.albums));
         dispatch(addTracks(music.tracks));
-        dispatch(addPeople(users));
+        dispatch(addUsers(users));
         dispatch(addSessions(trendingSessions));
         dispatch(actions.paginateTrendingSessionsSuccess(sessionIDs, sessionIDs.length === 15));
       }

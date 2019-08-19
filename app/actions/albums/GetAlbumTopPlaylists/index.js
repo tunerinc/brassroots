@@ -10,7 +10,7 @@
  */
 
 import {addPlaylists} from '../../playlists/AddPlaylists';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 import getPlaylist from '../../../utils/spotifyAPI/getPlaylist';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
@@ -120,7 +120,7 @@ export function getAlbumTopPlaylists(
         }
 
         dispatch(addPlaylists(playlists));
-        dispatch(addPeople(users));
+        dispatch(addUsers(users));
         dispatch(actions.getAlbumTopPlaylistsSuccess());
       }
     } catch (err) {

@@ -17,7 +17,7 @@ import {addArtists} from '../../artists/AddArtists';
 import {addPlaylists} from '../../playlists/AddPlaylists';
 import {addTracks} from '../../tracks/AddTracks';
 import {addCurrentLocation} from '../../users/AddCurrentLocation';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 
 /**
  * Async function which gets the current sessions from Ultrasound
@@ -171,7 +171,7 @@ export function getNearbySessions(): ThunkAction {
           dispatch(addArtists(music.artists));
           dispatch(addAlbums(music.albums));
           dispatch(addTracks(music.tracks));
-          dispatch(addPeople(users));
+          dispatch(addUsers(users));
           dispatch(addSessions(nearbySessions));
           dispatch(actions.getNearbySessionsSuccess(sessionIDs, sessionIDs.length === 15));
         }

@@ -13,9 +13,8 @@ import Spotify from 'rn-spotify-sdk';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {addArtists} from '../../artists/AddArtists';
-import {addAlbums} from '../../albums/AddAlbums';
 import {addTracks} from '../../tracks/AddTracks';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 import {addQueueTracks} from '../AddQueueTracks';
 import {removeQueueTrack} from '../RemoveQueueTrack';
 import {updatePlayer} from '../../player/UpdatePlayer';
@@ -78,7 +77,7 @@ export function getUserQueue(
 
               if (change.type === 'added') {
                 if (user.id !== userID) {
-                  dispatch(addPeople({[user.id]: user}));
+                  dispatch(addUsers({[user.id]: user}));
                 }
 
                 dispatch(addArtists(artists));

@@ -19,7 +19,7 @@ import * as actions from './actions';
 import {addCurrentLocation} from '../../users/AddCurrentLocation';
 import {playTrack} from '../../player/PlayTrack';
 import {addCurrentContext} from '../../queue/AddCurrentContext';
-import {addPeople} from '../../users/AddPeople';
+import {addUsers} from '../../users/AddUsers';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {
   type ThunkAction,
@@ -279,7 +279,7 @@ export function createSession(
 
       await batch.commit();
       dispatch(actions.createSessionSuccess(session.id));
-      dispatch(addPeople({[user.id]: {...user, currentSessionID: session.id}}));
+      dispatch(addUsers({[user.id]: {...user, currentSessionID: session.id}}));
       dispatch(addCurrentContext(context));
       dispatch(
         playTrack(
