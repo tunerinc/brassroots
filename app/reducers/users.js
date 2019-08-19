@@ -74,6 +74,8 @@ type Action = {
   +currentUserID?: string,
   +trackID?: string,
   +index?: number,
+  +updates?: State,
+  +item?: User,
   +location?: {
     latitude: number,
     longitude: number,
@@ -91,10 +93,9 @@ type Action = {
 type State = {
   +lastUpdated?: string,
   +currentUserID?: ?string,
-  +searchingUsers?: boolean,
-  +fetchingUsers?: boolean,
-  +fetchingImages?: boolean,
-  +savingUser?: boolean,
+  +searching?: Array<string>,
+  +fetching?: Array<string>,
+  +saving?: boolean,
   +changingImage?: ?string,
   +error?: ?Error | SpotifyError,
 };
@@ -163,22 +164,20 @@ const singleState: User = {
  * @alias usersState
  * @type {object}
  * 
- * @property {string}  lastUpdated          The date/time the users state was last updated
- * @property {string}  currentUserID        The Spotify id of the current user
- * @property {boolean} searchingUsers=false Whether the current user is searching for users
- * @property {boolean} fetchingUsers=false  Whether the current user is fetching users
- * @property {boolean} fetchingImages=false Whether the current user is fetching images of users
- * @property {boolean} savingUser=false     Whether the current user is saving
- * @property {string}  changingImage=null   Whether the current user is changing a profile/cover image
- * @property {Error}   error=null           The error related to users actions
+ * @property {string}   lastUpdated        The date/time the users state was last updated
+ * @property {string}   currentUserID      The Spotify id of the current user
+ * @property {boolean}  searching=[]       Whether the current user is searching for users
+ * @property {string[]} fetching=[]       The different types of info the current user is fetching
+ * @property {boolean}  saving=false       Whether the current user is saving
+ * @property {string}   changingImage=null Whether the current user is changing a profile/cover image
+ * @property {Error}    error=null         The error related to users actions
  */
 export const initialState: State = {
   lastUpdated,
   currentUserID: '',
-  searchingUsers: false,
-  fetchingUsers: false,
-  fetchingImages: false,
-  savingUser: false,
+  searching: [],
+  fetching: [],
+  saving: false,
   changingImage: null,
   error: null,
 };
@@ -259,12 +258,8 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_CURRENT_USER:
-        return addCurrentUser(state, action);
       case types.ADD_FAVORITE_TRACK:
         return addFavoriteTrack(state, action);
-      case types.ADD_USERS:
-        return addUsers(state, action);
       case types.ADD_USER_MOST_PLAYED:
         return addUserMostPlayed(state, action);
       case types.ADD_USER_RECENTLY_PLAYED:
@@ -301,6 +296,8 @@ export default function reducer(
         return saveProfile.failure(state, action);
       case types.SET_CAMERA_ROLL_PHOTO_INDEX:
         return setCameraRollPhotoIndex(state, action);
+      case types.UPDATE_USERS:
+        return updateObject(state, action.updates);
       default:
         return state;
     }
