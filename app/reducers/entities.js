@@ -170,7 +170,7 @@ export const initialState: State = {
   users: entityTypeState,
 };
 
-export function entityType(
+export function singleEntityType(
   state: Entity = entityTypeState,
   action: Action,
 ): Entity {
