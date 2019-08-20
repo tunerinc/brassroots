@@ -192,6 +192,20 @@ export function conversation(
   }
 }
 
+/**
+ * Updates any of the values in the conversations state
+ * 
+ * @function update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state          The Redux state
+ * @param   {object} action         The Redux action
+ * @param   {string} action.type    The type of Redux action
+ * @param   {object} action.updates The updates to make to the state
+ * 
+ * @returns {object}                The state updated with the new information
+ */
 function update(
   state: State,
   action: Action,

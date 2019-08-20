@@ -5,7 +5,6 @@
  * @flow
  */
 
-export const ADD_SETTINGS: string = 'ADD_SETTINGS';
 export const AUTHORIZE_USER_REQUEST: string = 'AUTHORIZE_USER_REQUEST';
 export const AUTHORIZE_USER_SUCCESS: string = 'AUTHORIZE_USER_SUCCESS';
 export const AUTHORIZE_USER_FAILURE: string = 'AUTHORIZE_USER_FAILURE';
@@ -61,3 +60,4 @@ export const LOG_OUT_REQUEST: string = 'LOG_OUT_REQUEST';
 export const LOG_OUT_SUCCESS: string = 'LOG_OUT_SUCCESS';
 export const LOG_OUT_FAILURE: string = 'LOG_OUT_FAILURE';
 export const RESET_SETTINGS: string = 'RESET_SETTINGS';
+export const UPDATE_SETTINGS: string = 'UPDATE_SETTINGS';

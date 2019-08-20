@@ -158,9 +158,18 @@ export const initialState: State = {
 };
 
 /**
+ * Adds or updates a single artist
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function addOrUpdateArtist
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {object} action.item The artist object to add or update
+ * 
+ * @returns {object}             The single artist added or updated with the new information
  */
 function addOrUpdateArtist(
   state: Artist,

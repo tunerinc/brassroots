@@ -24,7 +24,6 @@ import {type Action as UserAction} from './users';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 
 // Case Functions
-import {addSettings} from '../actions/settings/AddSettings/reducers';
 import * as authorizeUser from '../actions/settings/AuthUser/reducers';
 import * as changeDirectMessageNotification from '../actions/settings/ChangeDirectMessageNotification/reducers';
 import * as changeGroupDirectMessageNotification from '../actions/settings/ChangeGroupDirectMessageNotification/reducers';
@@ -67,22 +66,22 @@ type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) 
 type Dispatch = (action: DispatchAction | PromiseAction | ThunkAction | Array<DispatchAction>) => any;
 
 type Notify = {
-  +session: string,
-  +chat: string,
-  +message: boolean,
-  +groupMessage: string,
-  +nearbySession: string,
-  +playlistChange: boolean,
-  +playlistJoin: boolean,
-  +likedTrack: boolean,
-  +newFollower: boolean,
+  +session?: string,
+  +chat?: string,
+  +message?: boolean,
+  +groupMessage?: string,
+  +nearbySession?: string,
+  +playlistChange?: boolean,
+  +playlistJoin?: boolean,
+  +likedTrack?: boolean,
+  +newFollower?: boolean,
 };
 
 type Preference = {
-  +playlist: string,
-  +session: string,
-  +message: string,
-  +muteNearby: boolean,
+  +playlist?: string,
+  +session?: string,
+  +message?: string,
+  +muteNearby?: boolean,
 };
 
 type Settings = {
@@ -103,6 +102,7 @@ type Action = {
   +status?: string | boolean,
   +theme?: string,
   +loggedIn?: boolean,
+  +updates?: State,
 };
 
 type State = {
@@ -199,14 +199,42 @@ export const initialState: State = {
   },
 };
 
+/**
+ * Updates any of the values in the settings state
+ * 
+ * @function addOrUpdate
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state          The Redux state
+ * @param   {object} action         The Redux action
+ * @param   {string} action.type    The type of Redux action
+ * @param   {object} action.updates The updatees to make to the state
+ * 
+ * @returns {object}                The state with the new information added/updated
+ */
+function addOrUpdate(
+  state: State,
+  action: Action,
+): State {
+  const {notify: oldNotify, preference: oldPref} = state;
+  const notify = oldNotify && action.updates && action.updates.notify
+    ? updateObject(oldNotify, action.updates.notify)
+    : oldNotify;
+
+  const preference = oldPref && action.updates && action.updates.preference
+    ? updateObject(oldPref, action.updates.preference)
+    : oldPref;
+
+  return updateObject(state, {...action.updates, notify, preference});
+}
+
 export default function reducer(
   state: State = initialState,
   action: Action = {},
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_SETTINGS:
-        return addSettings(state, action);
       case types.AUTHORIZE_USER_REQUEST:
         return authorizeUser.request(state);
       case types.AUTHORIZE_USER_SUCCESS:
@@ -317,6 +345,8 @@ export default function reducer(
         return logOut.failure(state, action);
       case types.RESET_SETTINGS:
         return initialState;
+      case types.UPDATE_SETTINGS:
+        return addOrUpdate(state, action);
       default:
         return state;
     }

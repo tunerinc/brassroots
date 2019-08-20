@@ -164,9 +164,19 @@ export const initialState: State = {
 };
 
 /**
+ * Adds or updates a single album
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function addOrUpdateAlbum
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}  state             The Redux state
+ * @param   {object}  action            The Redux action
+ * @param   {string}  action.type       The type of Redux action
+ * @param   {object}  action.item       The album object to add or update
+ * @param   {boolean} action.refreshing Whether the current user is refreshing
+ * 
+ * @returns {object}                    The single album added or updated with the new information
  */
 function addOrUpdateAlbum(
   state: Album,
