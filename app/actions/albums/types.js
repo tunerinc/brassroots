@@ -5,7 +5,6 @@
  * @flow
  */
 
-export const ADD_ALBUMS: string = 'ADD_ALBUMS';
 export const DELETE_ALBUM_REQUEST: string = 'DELETE_ALBUM_REQUEST';
 export const DELETE_ALBUM_SUCCESS: string = 'DELETE_ALBUM_SUCCESS';
 export const DELETE_ALBUM_FAILURE: string = 'DELETE_ALBUM_FAILURE';
@@ -31,3 +30,4 @@ export const SAVE_ALBUM_FAILURE: string = 'SAVE_ALBUM_FAILURE';
 export const SEARCH_ALBUMS_REQUEST: string = 'SEARCH_ALBUMS_REQUEST';
 export const SEARCH_ALBUMS_SUCCESS: string = 'SEARCH_ALBUMS_SUCCESS';
 export const SEARCH_ALBUMS_FAILURE: string = 'SEARCH_ALBUMS_FAILURE';
+export const UPDATE_ALBUMS: string = 'UPDATE_ALBUMS';

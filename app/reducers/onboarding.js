@@ -72,8 +72,6 @@ export default function reducer(
           return updateObject(state, {error: action.error, creatingUser: false});
       case types.RESET_ONBOARDING:
         return initialState;
-      case types.SET_ONBOARDING:
-        return updateObject(state, {onboarding: action.status});
       case types.UPDATE_ONBOARDING:
         return updateObject(state, action.updates);
       default:
