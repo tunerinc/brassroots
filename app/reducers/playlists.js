@@ -241,7 +241,7 @@ export const initialState: State = {
   },
 };
 
-export function singlePlaylistTrack(
+export function playlistTrack(
   state: PlaylistTrack = singleTrackState,
   action: Action,
 ): PlaylistTrack {
@@ -256,7 +256,7 @@ export function singlePlaylistTrack(
   }
 }
 
-export function singlePlaylist(
+export function playlist(
   state: Playlist = singlePlaylistState,
   action: Action,
 ): Playlist {

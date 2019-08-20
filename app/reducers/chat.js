@@ -100,7 +100,7 @@ export const initialState: State = {
   error: null,
 };
 
-export function singleChat(
+export function chatMessage(
   state: Message = messageState,
   action: Action,
 ): Message {

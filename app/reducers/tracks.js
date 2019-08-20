@@ -159,7 +159,7 @@ export const initialState: State = {
   error: null,
 };
 
-export function singleTrack(
+export function track(
   state: Track = singleState,
   action: Action,
 ): Track {

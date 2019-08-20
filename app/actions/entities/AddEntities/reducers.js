@@ -6,28 +6,28 @@
 
 import updateObject from '../../../utils/updateObject';
 import {singleEntityType} from '../../../reducers/entities';
-import {singleAlbum} from '../../../reducers/albums';
-import {singleArtist} from '../../../reducers/artists';
-import {singleConversation, singleMessage} from '../../../reducers/conversations';
-import {singleGroup} from '../../../reducers/groups';
-import {singlePlaylist, singlePlaylistTrack} from '../../../reducers/playlists';
-import {singleQueueTrack} from '../../../reducers/queue';
-import {singleSession} from '../../../reducers/sessions';
-import {singleTrack} from '../../../reducers/tracks';
-import {singleUser} from '../../../reducers/users';
+import {album} from '../../../reducers/albums';
+import {artist} from '../../../reducers/artists';
+import {conversation, message} from '../../../reducers/conversations';
+import {group} from '../../../reducers/groups';
+import {playlist, playlistTrack} from '../../../reducers/playlists';
+import {queueTrack} from '../../../reducers/queue';
+import {session} from '../../../reducers/sessions';
+import {track} from '../../../reducers/tracks';
+import {user} from '../../../reducers/users';
 
 const singleEntityReducers = {
-  singleAlbum,
-  singleArtist,
-  singleConversation,
-  singleGroup,
-  singleMessage,
-  singlePlaylist,
-  singlePlaylistTrack,
-  singleQueueTrack,
-  singleSession,
-  singleTrack,
-  singleUser,
+  album,
+  artist,
+  conversation,
+  group,
+  message,
+  playlist,
+  playlistTrack,
+  queueTrack,
+  session,
+  track,
+  user,
 };
 
 /**
@@ -64,9 +64,7 @@ export function addEntityType(state, action) {
   const allIDs = [...oldIDs, ...itemIDs].filter((el, i, arr) => i === arr.indexOf(el));
   const entitiesToAdd = items.reduce((obj, item) => {
     const entity = byID[item.id];
-    const type = entityType.slice(0, -1);
-    const name = `single${type.slice(0, 1).toUpperCase()}${type.slice(1).toLowerCase()}`;
-    const func = singleEntityReducers[name];
+    const func = singleEntityReducers[entityType.slice(0, -1).toLowerCase()];
     
     if (typeof func === 'function') {
       const addedEntity = func(entity, {...action, item});

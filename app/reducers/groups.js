@@ -178,7 +178,7 @@ export const initialState: State = {
   },
 };
 
-function singleGroup(
+function group(
   state: Group = singleState,
   action: Action,
 ): Group {

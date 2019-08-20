@@ -216,7 +216,7 @@ export const initialState: State = {
   },
 };
 
-export function singleSession(
+export function session(
   state: Session = singleState,
   action: Action,
 ): Session {

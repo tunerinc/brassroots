@@ -172,20 +172,20 @@ function addOrUpdateAlbum(
   state: Album,
   action: Action,
 ): Album {
-  const {tracks, userTracks: oldTracks} = state;
+  const {tracks, userTracks} = state;
   const {item, refreshing} = action;
-  const updates: Album = item && Array.isArray(tracks) && Array.isArray(oldTracks)
+  const updates: Album = item && Array.isArray(tracks) && Array.isArray(userTracks)
     ? {
       ...item,
       lastUpdated,
-      userTracks: item && Array.isArray(item.userTracks) && refreshing
+      userTracks: item.userTracks && refreshing
         ? [...item.userTracks]
-        : item && item.userTracks && item.userTracks.length
-        ? [...oldTracks, ...item.userTracks].filter((el, i, arr) => i === arr.indexOf(el))
-        : [...oldTracks],
-      tracks: item && Array.isArray(item.tracks) && refreshing
+        : item.userTracks
+        ? [...userTracks, ...item.userTracks].filter((el, i, arr) => i === arr.indexOf(el))
+        : [...userTracks],
+      tracks: item.tracks && refreshing
         ? [...item.tracks]
-        : item && item.tracks && item.tracks.length
+        : item.tracks
         ? [...tracks, ...item.tracks].filter((el, i, arr) => i === arr.indexOf(el))
         : [...tracks],
     }
@@ -194,7 +194,7 @@ function addOrUpdateAlbum(
   return updateObject(state, updates);
 }
 
-export function singleAlbum(
+export function album(
   state: Album = albumState,
   action: Action,
 ): Album {

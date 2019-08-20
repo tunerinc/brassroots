@@ -9,6 +9,7 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/users/types';
 import * as entitiesTypes from '../actions/entities/types';
+import * as onboardingTypes from '../actions/onboarding/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 import {type Action as OnboardingAction} from './onboarding';
@@ -21,10 +22,7 @@ import {addUserMostPlayed} from '../actions/users/AddUserMostPlayed/reducers';
 import {addUserRecentlyPlayed} from '../actions/users/AddUserRecentlyPlayed/reducers';
 import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUserRecentTrack/reducers';
 import {addUserTopPlaylists} from '../actions/users/AddUserTopPlaylists/reducers';
-import * as changeCoverPhoto from '../actions/users/ChangeCoverPhoto/reducers';
 import * as changeProfilePhoto from '../actions/users/ChangeProfilePhoto/reducers';
-import * as getUserImage from '../actions/users/GetUserImage/reducers';
-import * as saveProfile from '../actions/users/SaveProfile/reducers';
 import {setCameraRollPhotoIndex} from '../actions/users/SetCameraRollPhotoIndex/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -182,70 +180,50 @@ export const initialState: State = {
 };
 
 /**
- * Adds the music of a single user
+ * Adds a single user
  * 
- * @function addSingleUserMusic
+ * @function addOrUpdateUser
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state                    The Redux state
- * @param   {object}   action                   The Redux action
- * @param   {string}   action.type              The type of Redux action
- * @param   {string}   [action.userID]          The Brassroots id of the single user
- * @param   {string[]} [action.mostPlayed]      The Spotify ids of the single user's most played tracks to add
- * @param   {string[]} [action.recentlyPlayed]  The Spotify ids of the single user's recently played tracks to add
- * @param   {string[]} [action.topPlaylists]    The SPotify ids of the single user's top playlists to add
- * @param   {string}   [action.favoriteTrackID] The Spotify id of the single user's favorite track to add
+ * @param   {object}   state                         The Redux state
+ * @param   {object}   action                        The Redux action
+ * @param   {string}   action.type                   The type of Redux action
+ * @param   {object}   action.items                  The users that are being added in total
+ * @param   {object}   action.item                   The user object to add
+ * @param   {string}   action.item.id                The Brassroots id of the single user
+ * @param   {string}   [action.item.displayName]     The display name of the single user
+ * @param   {string}   [action.item.profileImage]    The profile image of the single user
+ * @param   {string}   [action.item.coverImage]      The cover image of the single user
+ * @param   {string}   [action.item.bio]             The bio of the single user
+ * @param   {string}   [action.item.location]        The location of the single user
+ * @param   {string}   [action.item.website]         The website of the single user
+ * @param   {string[]} [action.item.mostPlayed]      The Spotify ids of the single user's most played tracks to add
+ * @param   {string[]} [action.item.recentlyPlayed]  The Spotify ids of the single user's recently played tracks to add
+ * @param   {string[]} [action.item.topPlaylists]    The SPotify ids of the single user's top playlists to add
+ * @param   {string}   [action.item.favoriteTrackID] The Spotify id of the single user's favorite track to add
  * 
- * @returns {object}                            The state of the single user with the new music added
+ * @returns {object}                                 The state of the newly added single user
  */
-function addSingleUserMusic(
+function addOrUpdateUser(
   state: User,
   action: Action,
 ): User {
-  const {mostPlayed, recentlyPlayed, topPlaylists, favoriteTrackID} = action;
-  const {
-    mostPlayed: oldMost,
-    recentlyPlayed: oldRecent,
-    topPlaylists: oldTop,
-    favoriteTrackID: oldFavorite,
-  } = state;
+  const {item} = action;
+  return updateObject(state, item);
+}
 
-
-  return updateObject(state, {
-    mostPlayed: mostPlayed || oldMost,
-    recentlyPlayed: recentlyPlayed || oldRecent,
-    topPlaylists: topPlaylists || oldTop,
-    favoriteTrackID: favoriteTrackID || oldFavorite,
-  });
-};
-
-export function singleUser(
+export function user(
   state: User = singleState,
   action: Action,
 ): User {
   switch (action.type) {
-    case types.ADD_FAVORITE_TRACK:
-      return addSingleUserMusic(state, action);
-    case types.ADD_USERS:
     case entitiesTypes.ADD_ENTITIES:
-      return addSingleUser(state, action);
-    case types.ADD_USER_MOST_PLAYED:
-      return addSingleUserMusic(state, action);
-    case types.ADD_USER_RECENTLY_PLAYED:
-      return addSingleUserMusic(state, action);
+      return addOrUpdateUser(state, action);
     case types.ADD_USER_RECENT_TRACK:
       return addSingleRecentTrack(state, action);
     case types.ADD_USER_TOP_PLAYLISTS:
-      return addSingleUserMusic(state, action);
-    case types.CHANGE_COVER_PHOTO_SUCCESS:
-      return changeCoverPhoto.addImage(state, action);
-    case types.CHANGE_PROFILE_PHOTO_SUCCESS:
-      return changeProfilePhoto.addImage(state, action);
-    case types.GET_USER_IMAGE_SUCCESS:
-      return getUserImage.addImage(state, action);
-    case types.SAVE_PROFILE_SUCCESS:
-      return saveProfile.save(state, action);
+      return addOrUpdateUser(state, action);
     default:
       return state;
   }
@@ -268,31 +246,40 @@ export default function reducer(
       case types.ADD_USER_TOP_PLAYLISTS:
         return addUserTopPlaylists(state, action);
       case types.CHANGE_COVER_PHOTO_REQUEST:
-        return changeCoverPhoto.request(state);
+        return updateObject(state, {changingImage: 'cover', error: null});
       case types.CHANGE_COVER_PHOTO_SUCCESS:
-        return changeCoverPhoto.success(state);
+        return updateObject(state, {changingImage: null, error: null});
       case types.CHANGE_COVER_PHOTO_FAILURE:
-        return changeCoverPhoto.failure(state, action);
+        return updateObject(state, {error: action.error, changingImage: null});
       case types.CHANGE_PROFILE_PHOTO_REQUEST:
-        return changeProfilePhoto.request(state);
+        return updateObject(state, {changingImage: 'profile', error: null});
       case types.CHANGE_PROFILE_PHOTO_SUCCESS:
-        return changeProfilePhoto.success(state);
+        return updateObject(state, {changingImage: null, error: null});
       case types.CHANGE_PROFILE_PHOTO_FAILURE:
-        return changeProfilePhoto.failure(state, action);
-      case types.GET_USER_IMAGE_REQUEST:
-        return getUserImage.request(state);
-      case types.GET_USER_IMAGE_SUCCESS:
-        return getUserImage.success(state);
-      case types.GET_USER_IMAGE_FAILURE:
-        return getUserImage.failure(state, action);
+        return updateObject(state, {error: action.error, changingImage: null});
+      case types.GET_USER_IMAGE_REQUEST: {
+        const {fetching: oldFetching} = state;
+        const fetching = Array.isArray(oldFetching) ? oldFetching.concat('images') : [];
+        return updateObject(state, {fetching, error: null});
+      }
+      case types.GET_USER_IMAGE_SUCCESS: {
+        const {fetching: oldFetching} = state;
+        const fetching = Array.isArray(oldFetching) ? oldFetching.filter(t => t !== 'images') : [];
+        return updateObject(state, {fetching, error: null});
+      }
+      case types.GET_USER_IMAGE_FAILURE: {
+        const {fetching: oldFetching} = state;
+        const fetching = Array.isArray(oldFetching) ? oldFetching.filter(t => t !== 'images') : [];
+        return updateObject(state, {fetching, error: action.error});
+      }
       case types.RESET_USERS:
         return initialState;
       case types.SAVE_PROFILE_REQUEST:
-        return saveProfile.request(state);
+        return updateObject(state, {saving: true, error: null});
       case types.SAVE_PROFILE_SUCCESS:
-        return saveProfile.success(state);
+        return updateObject(state, {saving: false, error: null});
       case types.SAVE_PROFILE_FAILURE:
-        return saveProfile.failure(state, action);
+        return updateObject(state, {error: action.error, saving: false});
       case types.SET_CAMERA_ROLL_PHOTO_INDEX:
         return setCameraRollPhotoIndex(state, action);
       case types.UPDATE_USERS:

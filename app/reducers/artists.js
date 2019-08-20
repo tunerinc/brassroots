@@ -16,7 +16,6 @@ import * as types from '../actions/artists/types';
 import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
-import {addSingleArtist, addArtists} from '../actions/artists/AddArtists/reducers';
 import * as getArtistImages from '../actions/artists/GetArtistImages/reducers';
 import * as getArtists from '../actions/artists/GetArtists/reducers';
 import * as getArtistTopAlbums from '../actions/artists/GetArtistTopAlbums/reducers';
@@ -40,9 +39,11 @@ type Artist = {
   +small?: ?string,
   +medium?: ?string,
   +large?: ?string,
+  +images?: [],
   +albums?: Array<string>,
   +totalPlays?: number,
   +userPlays?: number,
+  +userAlbums?: Array<string>,
   +userTracks?: Array<string>,
   +topAlbums?: Array<string>,
   +topListeners?: Array<string>,
@@ -56,6 +57,7 @@ type Action = {
   +error?: Error,
   +artists?: {+[id: string]: Artist} | Array<string>,
   +artistID?: string,
+  +item?: ?Artist,
   +topAlbums?: Array<string>,
   +listeners?: Array<string>,
   +playlistIDs?: Array<string>,
@@ -63,6 +65,7 @@ type Action = {
   +artistCounts?: Array<number>,
   +artistCount?: number,
   +refreshing?: boolean,
+  +updates?: State,
 };
 
 type State = {
@@ -70,9 +73,9 @@ type State = {
   +userArtists?: Array<string>,
   +totalUserArtists?: number,
   +selectedArtist?: ?string,
-  +searching?: ?string,
-  +fetching?: ?string,
-  +refreshing?: ?string,
+  +searching?: ?Array<string>,
+  +fetching?: ?Array<string>,
+  +refreshing?: boolean,
   +incrementing?: boolean,
   +error?: ?Error | SpotifyError,
 };
@@ -132,41 +135,64 @@ const artistState: Artist = {
  * @alias artistsState
  * @type {object}
  * 
- * @property {string}   lastUpdated             The date/time the artists were last updated
- * @property {string[]} userArtists             The Spotify ids of the artists saved in the current user's library
- * @property {number}   totalUserArtists=0      The total amount of artists in the currrent user's library
- * @property {string}   selectedArtist=null     The selected artist to view
- * @property {boolean}  searchingArtists=false  Whether the current user is searching artists
- * @property {boolean}  fetchingAlbums=false    Whether the current user is fetching albums of an artist
- * @property {boolean}  fetchingArtists=false   Whether the current user is fetching artists
- * @property {boolean}  fetchingImages=false    Whether the current user is fetching images of artists
- * @property {boolean}  fetchingListeners=false Whether the current user is fetching listeners of an artist
- * @property {boolean}  fetchingPlaylists=false Whether the current user is fetching playlists of an artist
- * @property {boolean}  fetchingTracks=false    Whether the current user is fetching trakcs of an artist
- * @property {boolean}  incrementingCount=false Whether the current user is incrmenting the amount of plays for the current user on artists
- * @property {boolean}  refreshingArtists=false Whether the current suer is refreshing the artists
- * @property {Error}    error=null              The error related to artists actions
+ * @property {string}   lastUpdated         The date/time the artists were last updated
+ * @property {string[]} userArtists         The Spotify ids of the artists saved in the current user's library
+ * @property {number}   totalUserArtists=0  The total amount of artists in the currrent user's library
+ * @property {string}   selectedArtist=null The selected artist to view
+ * @property {string[]} searching=[]        Whether the current user is searching any given item type, i.e. album, artist, listener, etc.
+ * @property {boolean}  refreshing=false    Whether the current user is refreshing any given item type, i.e. album, artist, listener, etc.
+ * @property {string[]} fetching=[]         Whether the current user is fetching any given item type, i.e. album, artist, listener, etc.
+ * @property {boolean}  incrementing=false  Whether the current user is incrementing the play count for an album
+ * @property {Error}    error=null          The error related to artists actions
  */
 export const initialState: State = {
   lastUpdated,
   userArtists: [],
   totalUserArtists: 0,
   selectedArtist: null,
-  searching: null,
-  fetching: null,
-  refreshing: null,
+  searching: [],
+  refreshing: false,
+  fetching: [],
   incrementing: false,
   error: null,
 };
+
+/**
+ * 
+ * @param {*} state 
+ * @param {*} action 
+ */
+function addOrUpdateArtist(
+  state: Artist,
+  action: Action,
+): Artist {
+  const {albums, userAlbums, userTracks} = state;
+  const {item} = action;
+  const updates: Artist = (
+    item
+    && Array.isArray(albums)
+    && Array.isArray(userAlbums)
+    && Array.isArray(userTracks)
+  )
+    ? {
+      ...item,
+      lastUpdated,
+      albums: item.albums ? [...albums, ...item.albums] : [...albums],
+      userAlbums: item.userAlbums ? [...userAlbums, ...item.userAlbums] : [...userAlbums],
+      userTracks: item.userTracks ? [...userTracks, ...item.userTracks] : [...userTracks],
+    }
+    : {};
+
+  return updateObject(state, updates);
+}
 
 export function artist(
   state: Artist = artistState,
   action: Action,
 ): Artist {
   switch (action.type) {
-    case types.ADD_ARTISTS:
     case entitiesTypes.ADD_ENTITIES:
-      return addSingleArtist(state, action);
+      return addOrUpdateArtist(state, action);
     case types.GET_ARTIST_IMAGES_SUCCESS:
       return getArtistImages.addImages(state, action);
     case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:
@@ -190,8 +216,6 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_ARTISTS:
-        return addArtists(state, action);
       case types.GET_ARTIST_IMAGES_REQUEST:
         return getArtistImages.request(state);
       case types.GET_ARTIST_IMAGES_SUCCESS:
@@ -236,6 +260,8 @@ export default function reducer(
         return incrementArtistPlays.failure(state, action);
       case types.RESET_ARTISTS:
         return initialState;
+      case types.UPDATE_ARTISTS:
+        return updateObject(state, action.updates);
       default:
         return state;
     }

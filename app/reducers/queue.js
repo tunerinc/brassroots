@@ -22,7 +22,7 @@ import {addSingleTrack, addQueueTracks} from '../actions/queue/AddQueueTracks/re
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
 import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
-import * as queueTrack from '../actions/queue/QueueTrack/reducers';
+import * as queueTrackThunk from '../actions/queue/QueueTrack/reducers';
 import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
 import * as stopQueueListener from '../actions/queue/StopQueueListener/reducers';
 import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
@@ -185,7 +185,7 @@ export const initialState: State = {
   },
 };
 
-export function singleQueueTrack(
+export function queueTrack(
   state: QueueTrack = singleState,
   action: Action,
 ): QueueTrack {
@@ -227,11 +227,11 @@ export default function reducer(
       case types.GET_USER_QUEUE_FAILURE:
         return getUserQueue.failure(state, action);
       case types.QUEUE_TRACK_REQUEST:
-        return queueTrack.request(state);
+        return queueTrackThunk.request(state);
       case types.QUEUE_TRACK_SUCCESS:
-        return queueTrack.success(state);
+        return queueTrackThunk.success(state);
       case types.QUEUE_TRACK_FAILURE:
-        return queueTrack.failure(state, action);
+        return queueTrackThunk.failure(state, action);
       case types.REMOVE_QUEUE_TRACK:
         return removeQueueTrack(state, action);
       case types.RESET_QUEUE:
