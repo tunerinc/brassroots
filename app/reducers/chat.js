@@ -39,9 +39,7 @@ type Action = {
   +messages?: {[id: string]: Message} | Array<string>,
   +unsubscribe?: () => void,
   +chatID?: string,
-  +updates?: {
-    +text?: string,
-  },
+  +updates?: State,
   +message?:
     | string
     | {
@@ -144,6 +142,8 @@ export default function reducer(
         return stopChatListener.success(state);
       case types.STOP_CHAT_LISTENER_FAILURE:
         return stopChatListener.failure(state, action);
+      case types.UPDATE_CHAT:
+        return updateObject(state, action.updates);
       case types.UPDATE_CHAT_MESSAGE:
         return updateChatMessage(state, action);
       default:
