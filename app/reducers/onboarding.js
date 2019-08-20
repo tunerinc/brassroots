@@ -26,10 +26,10 @@ type Action = {
 };
 
 type State = {
-  +onboarding: boolean,
-  +creatingUser: boolean,
-  +profileCreated: boolean,
-  +error: ?Error | SpotifyError,
+  +onboarding?: boolean,
+  +creatingUser?: boolean,
+  +profileCreated?: boolean,
+  +error?: ?Error | SpotifyError,
 };
 
 export type {
@@ -74,6 +74,8 @@ export default function reducer(
         return initialState;
       case types.SET_ONBOARDING:
         return updateObject(state, {onboarding: action.status});
+      case types.UPDATE_ONBOARDING:
+        return updateObject(state, action.updates);
       default:
         return state;
     }
