@@ -18,9 +18,7 @@ import * as types from '../actions/albums/types';
 import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
-import {addSingleAlbum, addAlbums} from '../actions/albums/AddAlbums/reducers';
 import * as getAlbums from '../actions/albums/GetAlbums/reducers';
-import * as getAlbumTopListeners from '../actions/albums/GetAlbumTopListeners/reducers';
 import * as getAlbumTopPlaylists from '../actions/albums/GetAlbumTopPlaylists/reducers';
 import * as getAlbumTopTracks from '../actions/albums/GetAlbumTopTracks/reducers';
 import * as incrementAlbumPlays from '../actions/albums/IncrementAlbumPlays/reducers';
@@ -66,6 +64,7 @@ type Action = {
   +error?: Error,
   +albums?: {+[key: string]: Album} | Array<string>,
   +album?: ?Album,
+  +item?: ?Album,
   +refreshing?: boolean,
   +albumID?: string,
   +listeners?: Array<string>,
@@ -74,6 +73,7 @@ type Action = {
   +albumCount?: number,
   +replace?: boolean,
   +total?: number,
+  +updates?: State,
 };
 
 type State = {
@@ -81,9 +81,9 @@ type State = {
   +userAlbums?: Array<string>,
   +totalUserAlbums?: number,
   +selectedAlbum?: ?string,
-  +searching?: ?string,
-  +refreshing?: ?string,
-  +fetchingAlbums?: ?string,
+  +searching?: Array<string>,
+  +refreshing?: boolean,
+  +fetching?: Array<string>,
   +incrementing?: boolean,
   +error?: ?Error | SpotifyError,
 };
@@ -145,9 +145,9 @@ const albumState: Album = {
  * @property {string[]} userAlbums         The Spotify album ids saved in the current user's library
  * @property {number}   totalUserAlbums=0  The total number of albums in the current user's library
  * @property {string}   selectedAlbum=null The selected album to view
- * @property {string}   searching=null     Whether the current user is searching any given item type, i.e. album, artist, listener, etc.
- * @property {string}   refreshing=null    Whether the current user is refreshing any given item type, i.e. album, artist, listener, etc.
- * @property {string}   fetching=null      Whether the current user is fetching any given item type, i.e. album, artist, listener, etc.
+ * @property {string[]} searching=[]       Whether the current user is searching any given item type, i.e. album, artist, listener, etc.
+ * @property {boolean}  refreshing=false   Whether the current user is refreshing any given item type, i.e. album, artist, listener, etc.
+ * @property {string[]} fetching=[]        Whether the current user is fetching any given item type, i.e. album, artist, listener, etc.
  * @property {boolean}  incrementing=false Whether the current user is incrementing the play count for an album
  * @property {Error}    error=null         The error related to an albums action
  */
@@ -156,23 +156,51 @@ export const initialState: State = {
   userAlbums: [],
   totalUserAlbums: 0,
   selectedAlbum: null,
-  searching: null,
-  refreshing: null,
-  fetching: null,
+  searching: [],
+  refreshing: false,
+  fetching: [],
   incrementing: false,
   error: null,
 };
+
+/**
+ * 
+ * @param {*} state 
+ * @param {*} action 
+ */
+function addOrUpdateAlbum(
+  state: Album,
+  action: Action,
+): Album {
+  const {tracks, userTracks: oldTracks} = state;
+  const {item, refreshing} = action;
+  const updates: Album = item && Array.isArray(tracks) && Array.isArray(oldTracks)
+    ? {
+      ...item,
+      lastUpdated,
+      userTracks: item && Array.isArray(item.userTracks) && refreshing
+        ? [...item.userTracks]
+        : item && item.userTracks && item.userTracks.length
+        ? [...oldTracks, ...item.userTracks].filter((el, i, arr) => i === arr.indexOf(el))
+        : [...oldTracks],
+      tracks: item && Array.isArray(item.tracks) && refreshing
+        ? [...item.tracks]
+        : item && item.tracks && item.tracks.length
+        ? [...tracks, ...item.tracks].filter((el, i, arr) => i === arr.indexOf(el))
+        : [...tracks],
+    }
+    : {};
+
+  return updateObject(state, updates);
+}
 
 export function singleAlbum(
   state: Album = albumState,
   action: Action,
 ): Album {
   switch (action.type) {
-    case types.ADD_ALBUMS:
     case entitiesTypes.ADD_ENTITIES:
-      return addSingleAlbum(state, action);
-    case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
-      return getAlbumTopListeners.addListeners(state, action);
+      return addOrUpdateAlbum(state, action);
     case types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS:
       return getAlbumTopPlaylists.addPlaylists(state, action);
     case types.GET_ALBUM_TOP_TRACKS_SUCCESS:
@@ -190,20 +218,27 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_ALBUMS:
-        return addAlbums(state, action);
       case types.GET_ALBUMS_REQUEST:
         return getAlbums.request(state, action);
       case types.GET_ALBUMS_SUCCESS:
         return getAlbums.success(state, action);
       case types.GET_ALBUMS_FAILURE:
         return getAlbums.failure(state, action);
-      case types.GET_ALBUM_TOP_LISTENERS_REQUEST:
-        return getAlbumTopListeners.request(state);
-      case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
-        return getAlbumTopListeners.success(state);
-      case types.GET_ALBUM_TOP_LISTENERS_FAILURE:
-        return getAlbumTopListeners.failure(state, action);
+      case types.GET_ALBUM_TOP_LISTENERS_REQUEST: {
+        const {fetching: oldFetch} = state;
+        const fetching = Array.isArray(oldFetch) ? oldFetch.concat('topListeners') : ['topListeners'];
+        return updateObject(state, {fetching, error: null});
+      }
+      case types.GET_ALBUM_TOP_LISTENERS_SUCCESS: {
+        const {fetching: oldFetch} = state;
+        const fetching = Array.isArray(oldFetch) ? oldFetch.filter(t => t !== 'topListeners') : [];
+        return updateObject(state, {fetching, error: null});
+      }
+      case types.GET_ALBUM_TOP_LISTENERS_FAILURE: {
+        const {fetching: oldFetch} = state;
+        const fetching = Array.isArray(oldFetch) ? oldFetch.filter(t => t !== 'topListeners') : [];
+        return updateObject(state, {fetching, error: action.error});
+      }
       case types.GET_ALBUM_TOP_PLAYLISTS_REQUEST:
         return getAlbumTopPlaylists.request(state);
       case types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS:
@@ -224,6 +259,8 @@ export default function reducer(
         return incrementAlbumPlays.failure(state, action);
       case types.RESET_ALBUMS:
         return initialState;
+      case types.UPDATE_ALBUMS:
+        return updateObject(state, action.updates);
       default:
         return state;
     }
