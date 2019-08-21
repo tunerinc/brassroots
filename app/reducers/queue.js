@@ -80,6 +80,7 @@ type Action = {
   +unsubscribe?: () => void,
   +updates?: Updates,
   +removeTrack?: boolean,
+  +updates?: State,
 };
 
 type State = {
@@ -87,8 +88,7 @@ type State = {
   +userQueue?: Array<QueueTrack>,
   +totalUserQueue?: number,
   +contextQueue?: Array<string>,
-  +fetchingQueue?: boolean,
-  +fetchingContext?: boolean,
+  +fetching?: Array<string>,
   +liking?: Array<string>,
   +deleting?: Array<string>,
   +failed?: Array<string>,
@@ -144,32 +144,30 @@ const singleState: QueueTrack = {
  * @alias queueState
  * @type {object}
  * 
- * @property {string}          lastUpdated           The date/time the queue was last updated
- * @property {string[]}        userQueue             The Brassroots ids of the tracks next up in the queue
- * @property {number}          totalUserQueue=0      The total amount of tracks in the user queue
- * @property {string[]}        contextQueue          The Spotify ids of the tracks next up in the queue from the context
- * @property {boolean}         fetchingQueue=false   Whether the current user is fetching the queue of the session
- * @property {boolean}         fetchingContext=false Whether the current user is fetching the context queue of the session
- * @property {string[]}        liking                The Brassroots ids of the tracks in the queue the current user is liking
- * @property {string[]}        deleting              The Brassroots ids of the tracks in the queue the current user is deleting
- * @property {string[]}        failed                The Brassroots ids of the tracks in the queue which experienced an error
- * @property {boolean}         queueing=false        Whether the current user is queueing a track
- * @property {unsubscribe}     unsubscribe=null      The function to invoke to unsubscribe from the queue listener
- * @property {Error}           error=null            The error related to queue actions
- * @property {object}          context               The current context of the queue
- * @property {string}          context.id            The id of the current context
- * @property {string}          context.name          The name of the current context
- * @property {string}          context.type          The type of item the current context is
- * @property {string}          context.displayName   The display name of the current context
- * @property {(number|string)} context.position=0    The position/cursor in the context the current track is located
+ * @property {string}          lastUpdated         The date/time the queue was last updated
+ * @property {string[]}        userQueue           The Brassroots ids of the tracks next up in the queue
+ * @property {number}          totalUserQueue=0    The total amount of tracks in the user queue
+ * @property {string[]}        contextQueue        The Spotify ids of the tracks next up in the queue from the context
+ * @property {boolean}         fetching=[]         Whether the current user is fetching any entity type
+ * @property {string[]}        liking              The Brassroots ids of the tracks in the queue the current user is liking
+ * @property {string[]}        deleting            The Brassroots ids of the tracks in the queue the current user is deleting
+ * @property {string[]}        failed              The Brassroots ids of the tracks in the queue which experienced an error
+ * @property {boolean}         queueing=false      Whether the current user is queueing a track
+ * @property {unsubscribe}     unsubscribe=null    The function to invoke to unsubscribe from the queue listener
+ * @property {Error}           error=null          The error related to queue actions
+ * @property {object}          context             The current context of the queue
+ * @property {string}          context.id          The id of the current context
+ * @property {string}          context.name        The name of the current context
+ * @property {string}          context.type        The type of item the current context is
+ * @property {string}          context.displayName The display name of the current context
+ * @property {(number|string)} context.position=0  The position/cursor in the context the current track is located
  */
 export const initialState: State = {
   lastUpdated,
   userQueue: [],
   totalUserQueue: 0,
   contextQueue: [],
-  fetchingQueue: false,
-  fetchingContext: false,
+  fetching: [],
   liking: [],
   deleting: [],
   failed: [],
@@ -196,6 +194,37 @@ export function queueTrack(
     default:
       return state;
   }
+}
+
+/**
+ * Updates any of the values in the queue state
+ * 
+ * @function update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state          The Redux state
+ * @param   {object} action         The Redux action
+ * @param   {string} action.type    The type of Redux action
+ * @param   {object} action.updates The updates to make to the state
+ * 
+ * @returns {object}                The state updated with the new information
+ */
+function update(
+  state: State,
+  action: Action,
+): State {
+  const {context: oldContext} = state;
+  const updates: State = oldContext && action.updates
+    ? {
+      ...action.updates,
+      context: action.updates.context
+        ? updateObject(oldContext, action.updates.context)
+        : {...oldContext},
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export default function reducer(
@@ -248,6 +277,8 @@ export default function reducer(
         return toggleTrackLike.success(state, action);
       case types.TOGGLE_TRACK_LIKE_FAILURE:
         return toggleTrackLike.failure(state, action);
+      case types.UPDATE_QUEUE:
+        return update(state, action);
       default:
         return state;
     }
