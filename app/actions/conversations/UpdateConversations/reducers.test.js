@@ -17,8 +17,8 @@ describe('update conversations reducer', () => {
   });
 
   it('handles UPDATE_CONVERSATIONS', () => {
-    const newConversation = {text: 'foo', users: ['foo']};
-    const updates: State = {newConversation};
+    const updates: State = {newConversation: {text: 'foo', users: ['foo']}};
+    const newConversation = {...initialState.newConversation, text: 'foo', users: ['foo']};
     const expectedState: State = {...initialState, newConversation};
     expect(reducer(initialState, actions.updateConversations(updates))).toStrictEqual(expectedState);
   });

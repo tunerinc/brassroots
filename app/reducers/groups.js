@@ -13,11 +13,6 @@ import * as types from '../actions/groups/types';
 import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
-import {setNewGroupBio} from '../actions/groups/SetNewGroupBio/reducers';
-import {setNewGroupLocation} from '../actions/groups/SetNewGroupLocation/reducers';
-import {setNewGroupName} from '../actions/groups/SetNewGroupName/reducers';
-import {setNewGroupPermissions} from '../actions/groups/SetNewGroupPermissions/reducers';
-import {setNewGroupWebsite} from '../actions/groups/SetNewGroupWebsite/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -37,11 +32,9 @@ type Group = {
   +groupImage: ?string,
   +coverImage: ?string,
   +members: Array<string>,
-  +fetchingMembers: boolean,
   +playlists: Array<string>,
-  +fetchingPlaylists: boolean,
   +recentlyPlayed: Array<string>,
-  +fetchingRecent: boolean,
+  +fetching: Array<string>,
   +conversationID: ?string,
   +featuredID: ?string,
   +featuredType: ?string,
@@ -58,25 +51,26 @@ type Action = {
   +permission?: string,
   +websiteValid?: boolean,
   +website?: string,
+  +updates?: State,
 };
 
 type State = {
-  +lastUpdated: string,
-  +userGroups: Array<string>,
-  +totalUserGroups: number,
-  +selectedGroup: ?string,
-  +fetchingGroups: boolean,
-  +searchingGroups: boolean,
+  +lastUpdated?: string,
+  +userGroups?: Array<string>,
+  +totalUserGroups?: number,
+  +selectedGroup?: ?string,
+  +fetching?: Array<string>,
+  +searching?: boolean,
   +websiteValid?: boolean,
-  +error: ?Error,
-  +newGroup: {
-    +members: Array<string>,
-    +name: string,
-    +bio: string,
-    +location: string,
-    +website: string,
-    +image: string,
-    +join: string,
+  +error?: ?Error,
+  +newGroup?: {
+    +members?: Array<string>,
+    +name?: string,
+    +bio?: string,
+    +location?: string,
+    +website?: string,
+    +image?: string,
+    +join?: string,
   },
 };
 
@@ -94,25 +88,23 @@ export type {
  * @constant
  * @type {object}
  * 
- * @property {string}   lastUpdated             The date/time the single group was last updated
- * @property {string}   id=null                 The Brassroots id of a single group
- * @property {string}   name=null               The name of a single group
- * @property {string}   bio=null                The bio of a single group
- * @property {string}   location=null           The location of a single group
- * @property {string}   website=null            The website of a single group
- * @property {string}   groupImage=null         The group image url of a single group
- * @property {string}   coverImage=null         The cover image url of a single group
- * @property {string[]} members                 The Brassroots ids of the members of a single group
- * @property {boolean}  fetchingMembers=false   Whether the current user is fetching members of a single group
- * @property {string[]} playlists               The Spotify ids of the playlists of a single group
- * @property {boolean}  fetchingPlaylists=false Whether the current user is fetching playlists of a single group
- * @property {string[]} recentlyPlayed          The Spotify ids of the recently played tracks of a single group
- * @property {boolean}  fetchingRecent=false    Whether the current user is fetching recent tracks of a single group
- * @property {string}   conversationID=null     The Brassroots id of the group conversation
- * @property {string}   featuredID=null         The Spotify id of the featured item of a single group
- * @property {string}   featuredType=null       The type of item featured on a single group
- * @property {string}   permissionJoin=null     The join permission status of a single group
- * @property {Error}    error=null              The error related to single group actions
+ * @property {string}   lastUpdated         The date/time the single group was last updated
+ * @property {string}   id=null             The Brassroots id of a single group
+ * @property {string}   name=null           The name of a single group
+ * @property {string}   bio=null            The bio of a single group
+ * @property {string}   location=null       The location of a single group
+ * @property {string}   website=null        The website of a single group
+ * @property {string}   groupImage=null     The group image url of a single group
+ * @property {string}   coverImage=null     The cover image url of a single group
+ * @property {string[]} members=[]          The Brassroots ids of the members of a single group
+ * @property {string[]} playlists=[]        The Spotify ids of the playlists of a single group
+ * @property {string[]} recentlyPlayed=[]   The Spotify ids of the recently played tracks of a single group
+ * @property {string[]} fetching=[]         Whether the current user is fetching any entity type
+ * @property {string}   conversationID=null The Brassroots id of the group conversation
+ * @property {string}   featuredID=null     The Spotify id of the featured item of a single group
+ * @property {string}   featuredType=null   The type of item featured on a single group
+ * @property {string}   permissionJoin=null The join permission status of a single group
+ * @property {Error}    error=null          The error related to single group actions
  */
 const singleState: Group = {
   lastUpdated,
@@ -124,11 +116,9 @@ const singleState: Group = {
   groupImage: null,
   coverImage: null,
   members: [],
-  fetchingMembers: false,
   playlists: [],
-  fetchingPlaylists: false,
   recentlyPlayed: [],
-  fetchingRecent: false,
+  fetching: [],
   conversationID: null,
   featuredID: null,
   featuredType: null,
@@ -145,8 +135,8 @@ const singleState: Group = {
  * @property {string[]} userGroups            The Brassroots ids of the groups the current user is a member of
  * @property {number}   totalUserGroups=0     The total amount of user groups
  * @property {string}   selectedGroup=null    The selected group to view
- * @property {boolean}  fetchingGroups=false  Whether the current user is fetching groups
- * @property {boolean}  searchingGroups=false Whether the current user is searching groups
+ * @property {boolean}  fetching=[]  Whether the current user is fetching any entity type
+ * @property {boolean}  searching=false Whether the current user is searching groups
  * @property {boolean}  websiteValid=true     Whether the group website the current user has entered is a valid URL
  * @property {Error}    error=null            The error related to groups actions
  * @property {object}   newGroup              The new group the current user is creating
@@ -163,8 +153,8 @@ export const initialState: State = {
   userGroups: [],
   totalUserGroups: 0,
   selectedGroup: null,
-  fetchingGroups: false,
-  searchingGroups: false,
+  fetching: [],
+  searching: false,
   websiteValid: true,
   error: null,
   newGroup: {
@@ -188,22 +178,45 @@ function group(
   }
 }
 
+/**
+ * Updates any of the values in the groups state
+ * 
+ * @function update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state          The Redux state
+ * @param   {object} action         The Redux action
+ * @param   {string} action.type    The type of Redux action
+ * @param   {object} action.updates The updates to make to the state
+ * 
+ * @returns {object}                The state updated with the new information
+ */
+function update(
+  state: State,
+  action: Action,
+): State {
+  const {newGroup: oldGroup} = state;
+  const updates: State = oldGroup && action.updates
+    ? {
+      ...action.updates,
+      newGroup: action.updates.newGroup
+        ? updateObject(oldGroup, action.updates.newGroup)
+        : {...oldGroup},
+    }
+    : {};
+
+  return updateObject(state, updates);
+}
+
 export default function reducer(
   state: State = initialState,
   action: Action = {},
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.SET_NEW_GROUP_BIO:
-        return setNewGroupBio(state, action);
-      case types.SET_NEW_GROUP_LOCATION:
-        return setNewGroupLocation(state, action);
-      case types.SET_NEW_GROUP_NAME:
-        return setNewGroupName(state, action);
-      case types.SET_NEW_GROUP_PERMISSIONS:
-        return setNewGroupPermissions(state, action);
-      case types.SET_NEW_GROUP_WEBSITE:
-        return setNewGroupWebsite(state, action);
+      case types.UPDATE_GROUPS:
+        return update(state, action);
       default:
         return state;
     }
