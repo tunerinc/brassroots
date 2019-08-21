@@ -86,19 +86,18 @@ type Action = {
   +sessionID?: string,
   +updates?: Session,
   +isOwner?: boolean,
+  +updates?: State,
 };
 
 type State = {
   +lastUpdated?: string,
   +currentSessionID?: ?string,
-  +fetchingListeners?: boolean,
+  +fetching?: Array<string>,
   +changingMode?: boolean,
-  +fetchingInfo?: boolean,
-  +fetchingSessions?: boolean,
-  +paginatingSessions?: boolean,
-  +refreshingSessions?: boolean,
-  +joiningSession?: boolean,
-  +leavingSession?: boolean,
+  +paginating?: boolean,
+  +refreshing?: boolean,
+  +joining?: boolean,
+  +leaving?: boolean,
   +selectedSession?: ?string,
   +infoUnsubscribe?: ?() => void,
   +error?: ?Error | SpotifyError,
@@ -192,14 +191,12 @@ const singleState: Session = {
 export const initialState: State = {
   lastUpdated,
   currentSessionID: null,
-  fetchingListeners: false,
+  fetching: [],
   changingMode: false,
-  fetchingInfo: false,
-  fetchingSessions: false,
-  paginatingSessions: false,
-  refreshingSessions: false,
-  joiningSession: false,
-  leavingSession: false,
+  paginating: false,
+  refreshing: false,
+  joining: false,
+  leaving: false,
   selectedSession: null,
   infoUnsubscribe: null,
   error: null,
@@ -235,6 +232,37 @@ export function session(
     default:
       return state;
   }
+}
+
+/**
+ * Updates any of the values in the conversations state
+ * 
+ * @function update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state          The Redux state
+ * @param   {object} action         The Redux action
+ * @param   {string} action.type    The type of Redux action
+ * @param   {object} action.updates The updates to make to the state
+ * 
+ * @returns {object}                The state updated with the new information
+ */
+function update(
+  state: State,
+  action: Action,
+): State {
+  const {explore: oldExplore} = state;
+  const updates: State = oldExplore && action.updates
+    ? {
+      ...action.updates,
+      explore: action.updates.explore
+        ? updateObject(oldExplore, action.updates.explore)
+        : {...oldExplore},
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export default function reducer(
@@ -319,6 +347,8 @@ export default function reducer(
         return stopSessionInfoListener.success(state);
       case types.STOP_SESSION_INFO_LISTENER_FAILURE:
         return stopSessionInfoListener.failure(state, action);
+      case types.UPDATE_SESSIONS:
+        return update(state, action);
       default:
         return state;
     }
