@@ -63,6 +63,7 @@ type Action = {
   +trackCount?: number,
   +replace?: boolean,
   +total?: number,
+  +updates?: State,
 };
 
 type State = {
@@ -70,15 +71,11 @@ type State = {
   +userTracks?: Array<string>,
   +totalUserTracks?: number,
   +selectedTrack?: ?string,
-  +searchingTracks?: boolean,
-  +fetchingTracks?: boolean,
-  +refreshingTracks?: boolean,
-  +changingFavoriteTrack?: boolean,
-  +fetchingFavoriteTrack?: boolean,
-  +fetchingMostPlayed?: boolean,
-  +fetchingRecent?: boolean,
+  +searching?: boolean,
+  +fetching?: Array<string>,
+  +refreshing?: boolean,
   +addingRecent?: boolean,
-  +incrementingCount?: boolean,
+  +incrementing?: boolean,
   +error?: ?Error | SpotifyError,
 };
 
@@ -127,35 +124,27 @@ const singleState: Track = {
  * @alias tracksState
  * @type {object}
  * 
- * @property {string}   lastUpdated                 The date/time the tracks were last updated
- * @property {string[]} userTracks                  The Spotify track ids saved in the current user's library
- * @property {number}   totalUserTracks=0           The total amount of tracks in the current user's library
- * @property {string}   selectedTrack=null          The selected track to view
- * @property {boolean}  searchingTracks=false       Whether the current user is searching tracks
- * @property {boolean}  fetchingTracks=false        Whether the current user is fetching tracks
- * @property {boolean}  refreshingTracks=false      Whether the current user is refreshing tracks
- * @property {boolean}  changingFavoriteTrack=false Whether the current user is changing their favorite track
- * @property {boolean}  fetchingFavoriteTrack=false Whether the current user is fetching a favorite track
- * @property {boolean}  fetchingMostPlayed=false    Whether the current user is fetching most played tracks
- * @property {boolean}  fetchingRecent=false        Whether the current user is fetching recently played tracks
- * @property {boolean}  addingRecent=false          Whether we are adding a recently played track for the current user
- * @property {boolean}  incrementingCount=false     Whether the current user is incrementing the play count for a single track
- * @property {Error}    error=null                  The error related to tracks actions
+ * @property {string}   lastUpdated        The date/time the tracks were last updated
+ * @property {string[]} userTracks         The Spotify track ids saved in the current user's library
+ * @property {number}   totalUserTracks=0  The total amount of tracks in the current user's library
+ * @property {string}   selectedTrack=null The selected track to view
+ * @property {boolean}  searching=false    Whether the current user is searching tracks
+ * @property {boolean}  fetching=[]        Whether the current user is fetching tracks
+ * @property {boolean}  refreshing=false   Whether the current user is refreshing tracks
+ * @property {boolean}  addingRecent=false we are adding a recently played track for the current user
+ * @property {boolean}  incrementing=false Whether the current user is incrementing the play count for a single track
+ * @property {Error}    error=null         The error related to tracks actions
  */
 export const initialState: State = {
   lastUpdated,
   userTracks: [],
   totalUserTracks: 0,
   selectedTrack: null,
-  searchingTracks: false,
-  fetchingTracks: false,
-  refreshingTracks: false,
-  changingFavoriteTrack: false,
-  fetchingFavoriteTrack: false,
-  fetchingMostPlayed: false,
-  fetchingRecent: false,
+  searching: false,
+  fetching: [],
+  refreshing: false,
   addingRecent: false,
-  incrementingCount: false,
+  incrementing: false,
   error: null,
 };
 
@@ -232,6 +221,8 @@ export default function reducer(
           return incrementTrackPlays.failure(state, action);
         case types.RESET_TRACKS:
           return initialState;
+        case types.UPDATE_TRACKS:
+          return updateObject(state, action.updates);
       default:
         return state;
     }
