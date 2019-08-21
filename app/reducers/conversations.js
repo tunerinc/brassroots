@@ -210,18 +210,10 @@ function update(
   state: State,
   action: Action,
 ): State {
-  const {userConversations: oldUser, newConversation: oldConvo} = state;
-  const userConversations: Array<string> = action.updates && action.updates.userConversations
-    ? action.updates.userConversations
-    : Array.isArray(oldUser)
-    ? [...oldUser]
-    : [];
-
+  const {newConversation: oldConvo} = state;
   const updates: State = oldConvo && action.updates
     ? {
       ...action.updates,
-      userConversations,
-      totalUserConversations: userConversations.length,
       newConversation: action.updates.newConversation
         ? updateObject(oldConvo, action.updates.newConversation)
         : {...oldConvo},
