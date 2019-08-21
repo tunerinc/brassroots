@@ -13,7 +13,6 @@ import updateObject from '../../../utils/updateObject';
 import {
   lastUpdated,
   singlePlaylist,
-  singleTrack,
   type Action,
   type State,
   type Playlist,

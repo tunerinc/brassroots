@@ -22,9 +22,8 @@ import {singlePlaylist, lastUpdated} from '../../../reducers/playlists';
  */
 export function addSinglePlaylist(state, action) {
   const {tracks} = state;
-  const {playlists, playlistID} = action;
-  const playlist = playlists[playlistID];
-  const newTracks = playlist.tracks ? playlist.tracks.map(trackID => `${playlistID}-${trackID}`) : [];
+  const {playlist} = action;
+  const newTracks = playlist.tracks ? playlist.tracks.map(trackID => `${playlist.id}-${trackID}`) : [];
 
   return updateObject(state, {
     ...playlist,
@@ -42,10 +41,10 @@ export function addSinglePlaylist(state, action) {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {object}   state 
- * @param   {object}   action 
- * @param   {string}   action.type
- * @param   {object[]} action.playlists
+ * @param   {object} state 
+ * @param   {object} action 
+ * @param   {string} action.type
+ * @param   {object} action.playlists
  * 
  * @returns {object}
  */
@@ -55,7 +54,7 @@ export function addPlaylists(state, action) {
   let {playlistsByID} = state;
 
   Object.values(playlists).forEach(playlist => {
-    const playlistAction = {...action, playlistID: playlist.id};
+    const playlistAction = {...action, playlist};
     const addedPlaylist = singlePlaylist(playlistsByID[playlist.id], playlistAction);
     playlistsByID = updateObject(playlistsByID, {[playlist.id]: addedPlaylist});
   });

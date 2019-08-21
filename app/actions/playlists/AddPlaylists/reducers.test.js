@@ -63,12 +63,12 @@ describe('add playlists reducer', () => {
               large: 'foo',
               mode: 'foo',
               public: true,
+              total: 1,
               members: [],
               tracks: [],
               topTracks: [],
               totalPlays: 0,
               userPlays: 0,
-              total: 1,
               lastUpdated: initialState.lastUpdated,
             },
             bar: {

@@ -14,20 +14,14 @@ import type {SpotifyError} from '../utils/spotifyAPI/types';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import {addNewPlaylistUser} from '../actions/playlists/AddNewPlaylistUser/reducers';
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
-import {clearNewPlaylist} from '../actions/playlists/ClearNewPlaylist/reducers';
 import * as getPlaylists from '../actions/playlists/GetPlaylists/reducers';
 import * as getPlaylistTopMembers from '../actions/playlists/GetPlaylistTopMembers/reducers';
 import * as getPlaylistTopTracks from '../actions/playlists/GetPlaylistTopTracks/reducers';
 import * as getPlaylistTracks from '../actions/playlists/GetPlaylistTracks/reducers';
 import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
 import * as incrementPlaylistPlays from '../actions/playlists/IncrementPlaylistPlays/reducers';
-import {removeNewPlaylistUser} from '../actions/playlists/RemoveNewPlaylistUser/reducers';
-import {setNewPlaylistMode} from '../actions/playlists/SetNewPlaylistMode/reducers';
-import {setNewPlaylistName} from '../actions/playlists/SetNewPlaylistName/reducers';
-import {setNewPlaylistPhoto} from '../actions/playlists/SetNewPlaylistPhoto/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -73,6 +67,7 @@ type Action = {
   +playlistID?: string,
   +refreshing?: boolean,
   +members?: Array<string>,
+  +updates?: State,
   +topTracks?: Array<string>,
   +playlistCount?: number,
   +total?: number,
@@ -100,22 +95,16 @@ type State = {
   +userPlaylists?: Array<string>,
   +totalUserPlaylists?: number,
   +selectedPlaylist?: ?string,
-  +canPaginate?: boolean,
-  +fetchingMembers?: boolean,
-  +refreshingPlaylists?: boolean,
-  +fetchingPlaylists?: boolean,
-  +fetchingTopPlaylists?: boolean,
-  +fetchingTopTracks?: boolean,
-  +refreshingTracks?: boolean,
-  +fetchingTracks?: boolean,
-  +searchingPlaylists?: boolean,
-  +creatingPlaylist?: boolean,
-  +incrementingCount?: boolean,
+  +fetching?: Array<string>,
+  +refreshing?: Array<string>,
+  +searching?: boolean,
+  +creating?: boolean,
+  +incrementing?: boolean,
   +error?: ?Error | SpotifyError,
   +newPlaylist?: {
     +members?: Array<string>,
-    +name?: string,
-    +image?: string,
+    +name?: ?string,
+    +image?: ?string,
     +mode?: string,
   },
 };
@@ -222,21 +211,16 @@ export const initialState: State = {
   userPlaylists: [],
   totalUserPlaylists: 0,
   selectedPlaylist: null,
-  fetchingMembers: false,
-  refreshingPlaylists: false,
-  fetchingPlaylists: false,
-  fetchingTopPlaylists: false,
-  fetchingTopTracks: false,
-  fetchingTracks: false,
-  refreshingTracks: false,
-  searchingPlaylists: false,
-  creatingPlaylist: false,
-  incrementingCount: false,
+  fetching: [],
+  refreshing: [],
+  searching: false,
+  creating: false,
+  incrementing: false,
   error: null,
   newPlaylist: {
     members: [],
-    name: '',
-    image: '',
+    name: null,
+    image: null,
     mode: 'limitless',
   },
 };
@@ -277,20 +261,47 @@ export function playlist(
   }
 }
 
+/**
+ * Updates any of the values in the playlists state
+ * 
+ * @function update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state          The Redux state
+ * @param   {object} action         The Redux action
+ * @param   {string} action.type    The type of Redux action
+ * @param   {object} action.updates The updates to make to the state
+ * 
+ * @returns {object}                The state updated with the new information
+ */
+function update(
+  state: State,
+  action: Action,
+): State {
+  const {newPlaylist: oldPlaylist} = state;
+  const updates: State = oldPlaylist && action.updates
+    ? {
+      ...action.updates,
+      newPlaylist: action.updates.newPlaylist
+        ? updateObject(oldPlaylist, action.updates.newPlaylist)
+        : {...oldPlaylist},
+    }
+    : {};
+
+  return updateObject(state, updates);
+}
+
 export default function reducer(
   state: State = initialState,
   action: Action = {},
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_NEW_PLAYLIST_USER:
-        return addNewPlaylistUser(state, action);
       case types.ADD_PLAYLISTS:
         return addPlaylists(state, action);
       case types.ADD_PLAYLIST_TRACKS:
         return addPlaylistTracks(state, action);
-      case types.CLEAR_NEW_PLAYLIST:
-        return clearNewPlaylist(state);
       case types.GET_PLAYLISTS_REQUEST:
         return getPlaylists.request(state, action);
       case types.GET_PLAYLISTS_SUCCESS:
@@ -327,16 +338,10 @@ export default function reducer(
         return incrementPlaylistPlays.success(state);
       case types.INCREMENT_PLAYLIST_PLAYS_FAILURE:
         return incrementPlaylistPlays.failure(state, action);
-      case types.REMOVE_NEW_PLAYLIST_USER:
-        return removeNewPlaylistUser(state, action);
       case types.RESET_PLAYLISTS:
         return initialState;
-      case types.SET_NEW_PLAYLIST_MODE:
-        return setNewPlaylistMode(state, action);
-      case types.SET_NEW_PLAYLIST_NAME:
-        return setNewPlaylistName(state, action);
-      case types.SET_NEW_PLAYLIST_PHOTO:
-        return setNewPlaylistPhoto(state, action);
+      case types.UPDATE_PLAYLISTS:
+        return update(state, action);
       default:
         return state;
     }

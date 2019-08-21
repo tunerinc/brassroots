@@ -5,7 +5,7 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {singleTrack, lastUpdated} from '../../../reducers/playlists';
+import {singlePlaylistTrack, lastUpdated} from '../../../reducers/playlists';
 
 /**
  * Adds a single playlist track to Redux
@@ -17,8 +17,8 @@ import {singleTrack, lastUpdated} from '../../../reducers/playlists';
  * @param   {object}   state                   The Redux state
  * @param   {object}   action                  The Redux action
  * @param   {string}   action.type             The type of Redux action
- * @param   {string}   action.playlistID       The Spotify id of the playlist
  * @param   {object[]} action.tracks           The tracks to add from a playlist
+ * @param   {string}   action.tracks[].id      The id of the playlist track, {playlistID}-{trackID}
  * @param   {string}   action.tracks[].trackID The Spotify id of the track
  * @param   {string}   action.tracks[].userID  The Brassroots id of the user who added the track
  * @param   {object}   action.track            The single track object to add
@@ -28,9 +28,8 @@ import {singleTrack, lastUpdated} from '../../../reducers/playlists';
  * @returns {object}                           The state of the single track updated
  */
 export function addSinglePlaylistTrack(state, action) {
-  const {playlistID, track} = action;
-  const playlistTrackID = `${playlistID}-${track.trackID}`;
-  return updateObject(state, {...track, playlistTrackID});
+  const {track} = action;
+  return updateObject(state, {...track});
 }
 
 /**
@@ -43,22 +42,21 @@ export function addSinglePlaylistTrack(state, action) {
  * @param   {object}   state                   The Redux state
  * @param   {object}   action                  The Redux action
  * @param   {string}   action.type             The type of Redux action
- * @param   {string}   action.playlistID       The Spotify id of the playlist
  * @param   {object[]} action.tracks           The tracks to add from a playlist
+ * @param   {string}   action.tracks[].id      The id of the playlist track, {playlistID}-{trackID}
  * @param   {string}   action.tracks[].trackID The Spotify id of the track
  * @param   {string}   action.tracks[].userID  The Brassroots id of the user who added the track
  * 
  * @returns {object}                           The state with the playlist tracks added
  */
 export function addPlaylistTracks(state, action) {
-  const {playlistID, tracks} = action;
+  const {tracks} = action;
   
   let {playlistTracksByID} = state;
 
   Object.values(tracks).forEach(track => {
-    const playlistTrackID = `${playlistID}-${track.trackID}`;
-    const addedTrack = singleTrack(playlistTracksByID[playlistTrackID], {...action, track});
-    playlistTracksByID = updateObject(playlistTracksByID, {[playlistTrackID]: addedTrack});
+    const addedTrack = singlePlaylistTrack(playlistTracksByID[track.id], {...action, track});
+    playlistTracksByID = updateObject(playlistTracksByID, {[track.id]: addedTrack});
   });
 
   return updateObject(state, {
