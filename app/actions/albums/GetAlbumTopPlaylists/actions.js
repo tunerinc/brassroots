@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/albums';
  * Notify the app of a get album top playlists request
  * 
  * @alias module:GetAlbumTopPlaylists
- * @function getAlbumTopPlaylistsRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object}         Redux action with the type of GET_ALBUM_TOP_PLAYLISTS_REQUEST
  */
-export function getAlbumTopPlaylistsRequest(): Action {
+export function request(): Action {
   return {type: types.GET_ALBUM_TOP_PLAYLISTS_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function getAlbumTopPlaylistsRequest(): Action {
  * Notify the app of a get album top playlists success
  * 
  * @alias module:GetAlbumTopPlaylists
- * @function getAlbumTopPlaylistsSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_ALBUM_TOP_PLAYLISTS_SUCCESS
  */
-export function getAlbumTopPlaylistsSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function getAlbumTopPlaylistsSuccess(): Action {
  * Notify the app of a get album top playlists failure
  * 
  * @alias module:GetAlbumTopPlaylists
- * @function getAlbumTopPlaylistsFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -52,7 +52,7 @@ export function getAlbumTopPlaylistsSuccess(): Action {
  * 
  * @returns {object}       Redux action with the type of GET_ALBUM_TOP_PLAYLISTS_FAILURE and the error which caused the failure
  */
-export function getAlbumTopPlaylistsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

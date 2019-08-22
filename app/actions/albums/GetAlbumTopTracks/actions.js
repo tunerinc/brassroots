@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/albums';
  * Notify the app of a get album top tracks request
  * 
  * @alias module:GetAlbumTopTracks
- * @function getAlbumTopTracksRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_ALBUM_TOP_TRACKS_REQUEST
  */
-export function getAlbumTopTracksRequest(): Action {
+export function request(): Action {
   return {type: types.GET_ALBUM_TOP_TRACKS_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function getAlbumTopTracksRequest(): Action {
  * Notify the app of a get album top tracks success
  * 
  * @alias module:GetAlbumTopTracks
- * @function getAlbumTopTracksSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_ALBUM_TOP_TRACKS_SUCCESS
  */
-export function getAlbumTopTracksSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_ALBUM_TOP_TRACKS_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function getAlbumTopTracksSuccess(): Action {
  * Notify the app of a get album top tracks failure
  * 
  * @alias module:GetAlbumTopTracks
- * @function getAlbumTopTracksFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -52,7 +52,7 @@ export function getAlbumTopTracksSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of GET_ALBUM_TOP_TRACKS_FAILURE and the error which caused the failure
  */
-export function getAlbumTopTracksFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

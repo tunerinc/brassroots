@@ -12,12 +12,12 @@ import {type Action} from '../../../reducers/albums';
 describe('get album top playlists synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.GET_ALBUM_TOP_PLAYLISTS_REQUEST};
-    expect(actions.getAlbumTopPlaylistsRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
     const expectedAction: Action = {type: types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS};
-    expect(actions.getAlbumTopPlaylistsSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -27,6 +27,6 @@ describe('get album top playlists synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getAlbumTopPlaylistsFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

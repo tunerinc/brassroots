@@ -6,10 +6,9 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
 import addMusicItems from '../../../utils/addMusicItems';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/albums';
 import {
   type FirestoreInstance,
@@ -39,7 +38,7 @@ export function getAlbumTopTracks(
   albumID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getAlbumTopTracksRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const albumTracksRef: FirestoreDocs = firestore.collection('albums').doc(albumID).collection('tracks');
@@ -48,25 +47,20 @@ export function getAlbumTopTracks(
       const trackDocs: FirestoreDocs = await albumTracksRef.orderBy('plays', 'desc').limit(3).get();
 
       if (trackDocs.empty) {
-        dispatch(actions.getAlbumTopTracksSuccess());
+        dispatch(actions.success());
       } else {
-        const trackIDs: Array<string> = trackDocs.docs.map(doc => doc.id);
-        const tracksRes = await Spotify.getTracks(trackIDs, {});
+        const topTracks: Array<string> = trackDocs.docs.map(doc => doc.id);
+        const tracksRes = await Spotify.getTracks(topTracks, {});
+        const music = addMusicItems(
+          tracksRes.tracks,
+          {albums: {[albumID]: {topTracks}}, artists: {}, tracks: {}},
+        );
 
-        let music = {
-          tracks: {},
-          albums: {},
-          tracks: {},
-        };
-
-        music = addMusicItems(tracksRes.tracks, music);
-
-        dispatch(addArtists(music.artists));
-        dispatch(addTracks(music.tracks));
-        dispatch(actions.getAlbumTopTracksSuccess());
+        dispatch(addEntities(music));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getAlbumTopTracksFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

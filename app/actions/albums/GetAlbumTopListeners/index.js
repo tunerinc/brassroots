@@ -9,9 +9,9 @@
  * @module GetAlbumTopListeners
  */
 
-import {addEntities} from '../../entities/AddEntities';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/albums';
 import {
   type FirestoreInstance,
@@ -38,7 +38,7 @@ export function getAlbumTopListeners(
   albumID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getAlbumTopListenersRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const albumUsersRef: FirestoreDocs = firestore.collection('albums').doc(albumID).collection('users');
@@ -50,7 +50,7 @@ export function getAlbumTopListeners(
       const topUserDocs: FirestoreDocs = await albumUsersRef.orderBy('plays', 'desc').limit(3).get();
 
       if (topUserDocs.empty) {
-        dispatch(actions.getAlbumTopListenersSuccess());
+        dispatch(actions.success());
       } else {
         const promises: Array<FirestoreDoc> = topUserDocs.docs.map(doc => usersRef.doc(doc.id).get());
         const userDocs = await Promise.all(promises);
@@ -65,10 +65,10 @@ export function getAlbumTopListeners(
         }, {});
 
         dispatch(addEntities({users, albums: {[albumID]: {topListeners}}}));
-        dispatch(actions.getAlbumTopListenersSuccess());
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getAlbumTopListenersFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

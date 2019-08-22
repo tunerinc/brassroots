@@ -19,9 +19,6 @@ import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
 import * as getAlbums from '../actions/albums/GetAlbums/reducers';
-import * as getAlbumTopPlaylists from '../actions/albums/GetAlbumTopPlaylists/reducers';
-import * as getAlbumTopTracks from '../actions/albums/GetAlbumTopTracks/reducers';
-import * as incrementAlbumPlays from '../actions/albums/IncrementAlbumPlays/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -211,15 +208,41 @@ export function album(
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
       return addOrUpdateAlbum(state, action);
-    case types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS:
-      return getAlbumTopPlaylists.addPlaylists(state, action);
-    case types.GET_ALBUM_TOP_TRACKS_SUCCESS:
-      return getAlbumTopTracks.addTracks(state, action);
-    case types.INCREMENT_ALBUM_PLAYS_SUCCESS:
-        return incrementAlbumPlays.increment(state, action);
     default:
       return state;
   }
+}
+
+/**
+ * Updates the fetching value in state by adding/removing a type
+ * 
+ * @function updateFetching
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {string} type        The type to remove from the fetching array
+ * 
+ * @returns {object}             The state with the fetching and error props updated
+ */
+function updateFetching(
+  state: State,
+  action: Action,
+  type: string,
+): State {
+  const {fetching: oldFetch} = state;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const updates: State = Array.isArray(oldFetch)
+    ? {
+      fetching: add ? oldFetch.concat(type) : oldFetch.filter(t => t !== type),
+      error: haveError ? action.error : null,
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export default function reducer(
@@ -234,39 +257,30 @@ export default function reducer(
         return getAlbums.success(state, action);
       case types.GET_ALBUMS_FAILURE:
         return getAlbums.failure(state, action);
-      case types.GET_ALBUM_TOP_LISTENERS_REQUEST: {
-        const {fetching: oldFetch} = state;
-        const fetching = Array.isArray(oldFetch) ? oldFetch.concat('topListeners') : ['topListeners'];
-        return updateObject(state, {fetching, error: null});
-      }
-      case types.GET_ALBUM_TOP_LISTENERS_SUCCESS: {
-        const {fetching: oldFetch} = state;
-        const fetching = Array.isArray(oldFetch) ? oldFetch.filter(t => t !== 'topListeners') : [];
-        return updateObject(state, {fetching, error: null});
-      }
-      case types.GET_ALBUM_TOP_LISTENERS_FAILURE: {
-        const {fetching: oldFetch} = state;
-        const fetching = Array.isArray(oldFetch) ? oldFetch.filter(t => t !== 'topListeners') : [];
-        return updateObject(state, {fetching, error: action.error});
-      }
+      case types.GET_ALBUM_TOP_LISTENERS_REQUEST:
+        return updateFetching(state, action, 'topListeners');
+      case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
+        return updateFetching(state, action, 'topListeners');
+      case types.GET_ALBUM_TOP_LISTENERS_FAILURE:
+        return updateFetching(state, action, 'topListeners');
       case types.GET_ALBUM_TOP_PLAYLISTS_REQUEST:
-        return getAlbumTopPlaylists.request(state);
+        return updateFetching(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS:
-        return getAlbumTopPlaylists.success(state);
+        return updateFetching(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_PLAYLISTS_FAILURE:
-        return getAlbumTopPlaylists.failure(state, action);
+        return updateFetching(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_TRACKS_REQUEST:
-        return getAlbumTopTracks.request(state);
+        return updateFetching(state, action, 'topTracks');
       case types.GET_ALBUM_TOP_TRACKS_SUCCESS:
-        return getAlbumTopTracks.success(state);
+        return updateFetching(state, action, 'topTracks');
       case types.GET_ALBUM_TOP_TRACKS_FAILURE:
-        return getAlbumTopTracks.failure(state, action);
+        return updateFetching(state, action, 'topTracks');
       case types.INCREMENT_ALBUM_PLAYS_REQUEST:
-        return incrementAlbumPlays.request(state);
+        return updateObject(state, {incrementing: true, error: null});
       case types.INCREMENT_ALBUM_PLAYS_SUCCESS:
-        return incrementAlbumPlays.success(state);
+        return updateObject(state, {incrementing: false, error: null});
       case types.INCREMENT_ALBUM_PLAYS_FAILURE:
-        return incrementAlbumPlays.failure(state, action);
+        return updateObject(state, {error: action.error, incrementing: false});
       case types.RESET_ALBUMS:
         return initialState;
       case types.UPDATE_ALBUMS:

@@ -19,21 +19,29 @@ describe('get album top listeners reducer', () => {
 
   it('handles GET_ALBUM_TOP_LISTENERS_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
+    const stateTwo: State = {...state, fetching: ['topTracks']};
     const expectedState: State = {...initialState, fetching: ['topListeners']};
-    expect(reducer(state, actions.getAlbumTopListenersRequest())).toStrictEqual(expectedState);
-    expect(reducer(initialState, actions.getAlbumTopListenersRequest()))
-      .toStrictEqual(expectedState);
+    const expectedStateTwo: State = {...initialState, fetching: ['topTracks', 'topListeners']};
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.request())).toStrictEqual(expectedStateTwo);
   });
 
   it('handles GET_ALBUM_TOP_LISTENERS_SUCCESS', () => {
     const state: State = {...initialState, fetching: ['topListeners']};
-    expect(reducer(state, actions.getAlbumTopListenersSuccess())).toStrictEqual(initialState);
+    const stateTwo: State = {...initialState, fetching: ['topListeners', 'topTracks']};
+    const expectedState: State = {...initialState, fetching: ['topTracks']};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success())).toStrictEqual(expectedState);
   });
 
   it('handles GET_ALBUM_TOP_LISTENERS_FAILURE', () => {
     const state: State = {...initialState, fetching: ['topListeners']};
+    const stateTwo: State = {...initialState, fetching: ['topListeners', 'topTracks']};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.getAlbumTopListenersFailure(error))).toStrictEqual(expectedState);
+    const expectedStateTwo: State = {...expectedState, fetching: ['topTracks']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });

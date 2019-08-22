@@ -10,6 +10,7 @@
  */
 
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/albums';
 import {
   type FirestoreInstance,
@@ -36,14 +37,14 @@ export function incrementAlbumPlays(
   userID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.incrementAlbumPlaysRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const userRef: FirestoreDoc = firestore.collection('users').doc(userID);
     const albumRef: FirestoreDoc = userRef.collection('albums').doc(albumID);
 
     try {
-      const total: number = await firestore.runTransaction(async transaction => {
+      const userPlays: number = await firestore.runTransaction(async transaction => {
         const doc: FirestoreDoc = await transaction.get(albumRef);
 
         if (!doc.exists) {
@@ -56,9 +57,10 @@ export function incrementAlbumPlays(
         return plays + 1;
       });
 
-      dispatch(actions.incrementAlbumPlaysSuccess());
+      dispatch(addEntities({albums: {[albumID]: {userPlays}}}));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.incrementAlbumPlaysFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }
