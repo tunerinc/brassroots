@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/artists';
  * Notify the app of a get artist top playlists request
  * 
  * @alias module:GetArtistTopPlaylists
- * @function getArtistTopPlaylistsRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_ARTIST_TOP_PLAYLISTS_REQUEST
  */
-export function getArtistTopPlaylistsRequest(): Action {
+export function request(): Action {
   return {type: types.GET_ARTIST_TOP_PLAYLISTS_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function getArtistTopPlaylistsRequest(): Action {
  * Notify the app of a get artist top playlists success
  * 
  * @alias module:GetArtistTopPlaylists
- * @function getArtistTopPlaylistsSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_ARTIST_TOP_PLAYLISTS_SUCCESS
  */
-export function getArtistTopPlaylistsSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_ARTIST_TOP_PLAYLISTS_SUCCESS};
 }
 
@@ -44,15 +44,15 @@ export function getArtistTopPlaylistsSuccess(): Action {
  * Notify the app of a get artist top playlists failure
  * 
  * @alias module:GetArtistTopPlaylists
- * @function getArtistTopPlaylistsFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {Error}  error    The error which caused the get artist top playlists failure
+ * @param   {Error}  error The error which caused the get artist top playlists failure
  * 
- * @returns {object}          Redux action with the type of GET_ARTIST_TOP_PLAYLISTS_FAILURE and the error which caused the failure for the artist
+ * @returns {object}       Redux action with the type of GET_ARTIST_TOP_PLAYLISTS_FAILURE and the error which caused the failure for the artist
  */
-export function getArtistTopPlaylistsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

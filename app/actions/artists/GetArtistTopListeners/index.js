@@ -9,9 +9,9 @@
  * @module GetArtistTopListeners
  */
 
-import {addUsers} from '../../users/AddUsers';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/artists';
 import {
   type FirestoreInstance,
@@ -19,14 +19,6 @@ import {
   type FirestoreDocs,
   type FirestoreRef,
 } from '../../../utils/firebaseTypes';
-
-type Users = {
-  [id: string]: {
-    +id: string,
-    +name: string,
-    +profileImage: string,
-  },
-};
 
 /**
  * Async function which gets the top listeners of an artist
@@ -46,11 +38,14 @@ export function getArtistTopListeners(
   artistID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-  dispatch(actions.getArtistTopListenersRequest());
+  dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
-    const artistUsersRef: FirestoreDocs = firestore.collection('artists').doc(artistID).collection('users');
+    const artistsRef: FirestoreRef = firestore.collection('artists');
+    const artistUsersRef: FirestoreDocs = artistsRef.doc(artistID).collection('users');
     const usersRef: FirestoreRef = firestore.collection('users');
+
+    let topListeners: Array<string> = [];
 
     try {
       const topUserDocs: FirestoreDocs = await artistUsersRef
@@ -59,24 +54,28 @@ export function getArtistTopListeners(
         .get();
 
       if (topUserDocs.empty) {
-        dispatch(actions.getArtistTopListenersSuccess());
+        dispatch(actions.success());
       } else {
-        const promises: Array<Promise<FirestoreDoc>> = topUserDocs.docs.map(doc => usersRef.doc(doc.id).get());
+        const promises: Array<Promise<FirestoreDoc>> = topUserDocs.docs.map(doc => {
+          return usersRef.doc(doc.id).get();
+        });
+
         const userDocs: Array<FirestoreDoc> = await Promise.all(promises);
-        const users: Users = userDocs.reduce((userList, userDoc) => {
+        const users = userDocs.reduce((userList, userDoc) => {
           if (userDoc.exists) {
             const {id, username, profileImage} = userDoc.data();
+            topListeners = topListeners.concat(id);
             return updateObject(userList, {[id]: {id, username, profileImage}});
           } else {
             throw new Error('Unable to retrieve user from Ultrasound');
           }
         }, {});
 
-        dispatch(addUsers(users));
-        dispatch(actions.getArtistTopListenersSuccess());
+        dispatch(addEntities({users, artists: {[artistID]: {topListeners, id: artistID}}}));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getArtistTopListenersFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

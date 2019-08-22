@@ -16,29 +16,24 @@ import {type Action} from '../../../reducers/artists';
  * Notify the app of a get artists request
  * 
  * @alias GetArtists
- * @function getArtistsRequest
+ * @function request
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {boolean} refreshing Whether the current user is refreshing the artists
- * 
- * @returns {object}             Redux action with the type of GET_ARTISTS_REQUEST and whether the current user is refreshing
+ * @returns {object} Redux action with the type of GET_ARTISTS_REQUEST
  */
-export function getArtistsRequest(
+export function request(
   refreshing?: boolean,
 ): Action {
-  return {
-    type: types.GET_ARTISTS_REQUEST,
-    refreshing,
-  };
+  return {type: types.GET_ARTISTS_REQUEST};
 }
 
 /**
  * Notify the app of a get artists success
  * 
  * @alias GetArtists
- * @function getArtistsSuccess
+ * @function success
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
@@ -47,7 +42,7 @@ export function getArtistsRequest(
  * 
  * @returns {object}           Redux action with the type of GET_ARTISTS_SUCCESS and the saved artist ids
  */
-export function getArtistsSuccess(
+export function success(
   artists: Array<string>,
 ): Action {
   return {
@@ -60,7 +55,7 @@ export function getArtistsSuccess(
  * Notify the app of a get artists failure
  * 
  * @alias GetArtists
- * @function getArtistsFailure
+ * @function failure
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
@@ -69,7 +64,7 @@ export function getArtistsSuccess(
  * 
  * @returns {object}      Redux action with the type of GET_ARTISTS_FAILURE and the error which caused the failure
  */
-export function getArtistsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

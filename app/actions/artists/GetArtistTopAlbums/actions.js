@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/artists';
  * Notify the app of a get artist top albums request
  * 
  * @alias module:GetArtistTopAlbums
- * @function getArtistTopAlbumsRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_ARTIST_TOP_ALBUMS_REQUEST
  */
-export function getArtistTopAlbumsRequest(): Action {
+export function request(): Action {
   return {type: types.GET_ARTIST_TOP_ALBUMS_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function getArtistTopAlbumsRequest(): Action {
  * Notify the app of a get artist top albums success
  * 
  * @alias module:GetArtistTopAlbums
- * @function getArtistTopAlbumsSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_ARTIST_TOP_ALBUMS_SUCCESS
  */
-export function getArtistTopAlbumsSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_ARTIST_TOP_ALBUMS_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function getArtistTopAlbumsSuccess(): Action {
  * Notify the app of a get artist top albums failure
  * 
  * @alias module:GetArtistTopAlbums
- * @function getArtistTopAlbumsFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -52,7 +52,7 @@ export function getArtistTopAlbumsSuccess(): Action {
  * 
  * @returns {object}       Redux action with the type of GET_ARTIST_TOP_ALBUMS_FAILURE and the error which caused the failure
  */
-export function getArtistTopAlbumsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

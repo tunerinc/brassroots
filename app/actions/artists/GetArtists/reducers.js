@@ -17,42 +17,50 @@ import {
 } from '../../../reducers/artists';
 
 /**
+ * Starts the request to get the the current user's saved artists
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function request
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}  state The Redux state
+ * 
+ * @returns {object}        The state with the fetching/refreshing props updated
  */
 export function request(
   state: State,
-  action: Action,
 ): State {
-  const {refreshing: refreshingArtists} = action;
-  const updates = typeof refreshingArtists === 'boolean'
-    ? {
-      refreshingArtists,
-      fetchingArtists: true,
-      error: null,
-    }
-    : {};
-
-  return updateObject(state, updates);
+  const {fetching: oldFetch} = state;
+  const fetching: Array<string> = Array.isArray(oldFetch) ? oldFetch.concat('artists') : ['artists'];
+  return updateObject(state, {fetching, error: null});
 }
 
 /**
+ * Confirms the success of getting the current user's saved artists
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function success
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}   state          The Redux state
+ * @param   {object}   action         The Redux action
+ * @param   {string}   action.type    The type of Redux action
+ * @param   {string[]} action.artists The Spotify ids of the artists saved in the current user's library
+ * 
+ * @returns {object}                  The state with the current user's saved artists added
  */
 export function success(
   state: State,
   action: Action,
 ): State {
-  const {artists: userArtists} = action;
-  const updates = Array.isArray(userArtists)
+  const {fetching, userArtists: oldArtists} = state;
+  const {artists} = action;
+  const updates = Array.isArray(fetching) && Array.isArray(oldArtists) && Array.isArray(artists)
     ? {
       lastUpdated,
-      userArtists,
-      refreshingArtists: false,
-      fetchingArtists: false,
+      userArtists: [...artists],
+      totalUserArtists: artists.length,
+      fetching: fetching.filter(t => t !== 'artists'),
       error: null,
     }
     : {};
@@ -61,14 +69,25 @@ export function success(
 }
 
 /**
+ * Adds the error which caused the get artists failure
  * 
- * @param {*} state 
- * @param {*} action 
+ * @function failure
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state        The Redux state
+ * @param   {object} action       The Redux action
+ * @param   {string} action.type  The type of Redux action
+ * @param   {Error}  action.error The error which caused the get artists failure
+ * 
+ * @returns {object}              The state with the error prop updated
  */
 export function failure(
   state: State,
   action: Action,
 ): State {
+  const {fetching: old} = state;
   const {error} = action;
-  return updateObject(state, {error, fetchingArtists: false, refreshingArtists: false});
+  const fetching: Array<string> = Array.isArray(old) ? old.filter(t => t !== 'artists') : [];
+  return updateObject(state, {error, fetching});
 }

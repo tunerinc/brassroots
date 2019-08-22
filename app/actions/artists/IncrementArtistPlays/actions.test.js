@@ -12,12 +12,12 @@ import {type Action} from '../../../reducers/artists';
 describe('increment artist plays synchronous action creators', () => {
   it('creates increment artist plays request action', () => {
     const expectedAction: Action = {type: types.INCREMENT_ARTIST_PLAYS_REQUEST};
-    expect(actions.incrementArtistPlaysRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates increment artist plays success action', () => {
     const expectedAction: Action = {type: types.INCREMENT_ARTIST_PLAYS_SUCCESS};
-    expect(actions.incrementArtistPlaysSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates increment artist plays failure action', () => {
@@ -27,6 +27,6 @@ describe('increment artist plays synchronous action creators', () => {
       error,
     };
 
-    expect(actions.incrementArtistPlaysFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

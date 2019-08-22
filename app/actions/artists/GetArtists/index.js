@@ -16,11 +16,9 @@ import addMusicItems from '../../../utils/addMusicItems';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {getArtistImages} from '../GetArtistImages';
-import {getAlbumsSuccess} from '../../albums/GetAlbums/actions';
-import {getTracksSuccess} from '../../tracks/GetTracks/actions';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
+import {addEntities} from '../../entities/AddEntities';
+import * as getAlbums from '../../albums/GetAlbums/actions';
+import * as getTracks from '../../tracks/GetTracks/actions';
 import {type ThunkAction} from '../../../reducers/artists';
 
 /**
@@ -32,22 +30,18 @@ import {type ThunkAction} from '../../../reducers/artists';
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tuenrinc.com>
  * 
- * @param    {boolean} [refreshing=false] Whether the current user is refreshing the artists
- * 
  * @returns  {Promise}
- * @resolves {object}                     The artists in the current user's library
- * @rejects  {Error}                      The error which caused the get artists failure
+ * @resolves {object}  The artists in the current user's library
+ * @rejects  {Error}   The error which caused the get artists failure
  */
-export function getArtists(
-  refreshing?: boolean = false,
-): ThunkAction {
+export function getArtists(): ThunkAction {
   const albumLimit = 50;
   const trackLimit = 50;
   const artistLimit = 20;
   const market = 'US';
 
   return async dispatch => {
-    dispatch(actions.getArtistsRequest(refreshing));
+    dispatch(actions.request());
 
     let albumsFromSpotify = [];
     let tracksFromSpotify = [];
@@ -147,20 +141,18 @@ export function getArtists(
         });
       }
 
-      dispatch(addArtists(music.artists));
-      dispatch(addAlbums(music.albums));
-      dispatch(addTracks(music.tracks));
-      dispatch(actions.getArtistsSuccess(sortedArtists));
+      dispatch(addEntities(music));
+      dispatch(actions.success(sortedArtists));
 
       dispatch(
-        getAlbumsSuccess(albumsFromSpotify.map(a => a.album.id), albumsFromSpotify.length, true),
+        getAlbums.success(albumsFromSpotify.map(a => a.album.id), albumsFromSpotify.length, true),
       );
 
       dispatch(
-        getTracksSuccess(tracksFromSpotify.map(t => t.track.id), tracksFromSpotify.length, true),
+        getTracks.success(tracksFromSpotify.map(t => t.track.id), tracksFromSpotify.length, true),
       );
     } catch (err) {
-      dispatch(actions.getArtistsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

@@ -12,12 +12,12 @@ import {type Action} from '../../../reducers/artists';
 describe('get artist top albums synchronous action creators', () => {
   it('creates get artist top albums request action', () => {
     const expectedAction: Action = {type: types.GET_ARTIST_TOP_ALBUMS_REQUEST};
-    expect(actions.getArtistTopAlbumsRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates get artist top albums success action', () => {
     const expectedAction: Action = {type: types.GET_ARTIST_TOP_ALBUMS_SUCCESS};
-    expect(actions.getArtistTopAlbumsSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates get artist top albums failure action', () => {
@@ -27,6 +27,6 @@ describe('get artist top albums synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getArtistTopAlbumsFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

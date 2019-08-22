@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/artists';
  * Notify the app of a get artist top listeners request
  * 
  * @alias module:GetArtistTopListeners
- * @function getArtistTopListenersRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_ARTIST_TOP_LISTENERS_REQUEST
  */
-export function getArtistTopListenersRequest(): Action {
+export function request(): Action {
   return {type: types.GET_ARTIST_TOP_LISTENERS_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function getArtistTopListenersRequest(): Action {
  * Notify the app of a get artist top listeners success
  * 
  * @alias module:GetArtistTopListeners
- * @function getArtistTopListenersSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_ARTIST_TOP_LISTENERS_SUCCESS
  */
-export function getArtistTopListenersSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_ARTIST_TOP_LISTENERS_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function getArtistTopListenersSuccess(): Action {
  * Notify the app of a get artist top listeners failure
  * 
  * @alias module:GetArtistTopListeners
- * @function getArtistTopListenersFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -52,7 +52,7 @@ export function getArtistTopListenersSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of GET_ARTIST_TOP_LISTENERS_FAILURE and the error which caused the failure
  */
-export function getArtistTopListenersFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

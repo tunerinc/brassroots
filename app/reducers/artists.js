@@ -16,17 +16,11 @@ import * as types from '../actions/artists/types';
 import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
-import * as getArtistImages from '../actions/artists/GetArtistImages/reducers';
 import * as getArtists from '../actions/artists/GetArtists/reducers';
-import * as getArtistTopAlbums from '../actions/artists/GetArtistTopAlbums/reducers';
-import * as getArtistTopListeners from '../actions/artists/GetArtistTopListeners/reducers';
-import * as getArtistTopPlaylists from '../actions/artists/GetArtistTopPlaylists/reducers';
-import * as getArtistTopTracks from '../actions/artists/GetArtistTopTracks/reducers';
-import * as incrementArtistPlays from '../actions/artists/IncrementArtistPlays/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-type DispatchAction = Action | AlbumAction | TrackAction;
+type DispatchAction = Action | AlbumAction | TrackAction | EntitiesAction;
 type GetState = () => State;
 type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
@@ -75,7 +69,6 @@ type State = {
   +selectedArtist?: ?string,
   +searching?: ?Array<string>,
   +fetching?: ?Array<string>,
-  +refreshing?: boolean,
   +incrementing?: boolean,
   +error?: ?Error | SpotifyError,
 };
@@ -140,7 +133,6 @@ const artistState: Artist = {
  * @property {number}   totalUserArtists=0  The total amount of artists in the currrent user's library
  * @property {string}   selectedArtist=null The selected artist to view
  * @property {string[]} searching=[]        Whether the current user is searching any given item type, i.e. album, artist, listener, etc.
- * @property {boolean}  refreshing=false    Whether the current user is refreshing any given item type, i.e. album, artist, listener, etc.
  * @property {string[]} fetching=[]         Whether the current user is fetching any given item type, i.e. album, artist, listener, etc.
  * @property {boolean}  incrementing=false  Whether the current user is incrementing the play count for an album
  * @property {Error}    error=null          The error related to artists actions
@@ -151,7 +143,6 @@ export const initialState: State = {
   totalUserArtists: 0,
   selectedArtist: null,
   searching: [],
-  refreshing: false,
   fetching: [],
   incrementing: false,
   error: null,
@@ -202,21 +193,41 @@ export function artist(
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
       return addOrUpdateArtist(state, action);
-    case types.GET_ARTIST_IMAGES_SUCCESS:
-      return getArtistImages.addImages(state, action);
-    case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:
-      return getArtistTopAlbums.addAlbums(state, action);
-    case types.GET_ARTIST_TOP_LISTENERS_SUCCESS:
-      return getArtistTopListeners.addListeners(state, action);
-    case types.GET_ARTIST_TOP_PLAYLISTS_SUCCESS:
-      return getArtistTopPlaylists.addPlaylists(state, action);
-    case types.GET_ARTIST_TOP_TRACKS_SUCCESS:
-      return getArtistTopTracks.addTracks(state, action);
-    case types.INCREMENT_ARTIST_PLAYS_SUCCESS:
-      return incrementArtistPlays.increment(state, action);
     default:
       return state;
   }
+}
+
+/**
+ * Updates the fetching value in state by adding/removing a type
+ * 
+ * @function updateFetching
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {string} type        The type to remove from the fetching array
+ * 
+ * @returns {object}             The state with the fetching and error props updated
+ */
+function updateFetching(
+  state: State,
+  action: Action,
+  type: string,
+): State {
+  const {fetching: oldFetch} = state;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const updates: State = Array.isArray(oldFetch)
+    ? {
+      fetching: add ? oldFetch.concat(type) : oldFetch.filter(t => t !== type),
+      error: haveError ? action.error : null,
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export default function reducer(
@@ -226,47 +237,47 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.GET_ARTIST_IMAGES_REQUEST:
-        return getArtistImages.request(state);
+        return updateFetching(state, action, 'images');
       case types.GET_ARTIST_IMAGES_SUCCESS:
-        return getArtistImages.success(state);
+        return updateFetching(state, action, 'images');
       case types.GET_ARTIST_IMAGES_FAILURE:
-        return getArtistImages.failure(state, action);
+        return updateFetching(state, action, 'images');
       case types.GET_ARTISTS_REQUEST:
-        return getArtists.request(state, action);
+        return getArtists.request(state);
       case types.GET_ARTISTS_SUCCESS:
         return getArtists.success(state, action);
       case types.GET_ARTISTS_FAILURE:
         return getArtists.failure(state, action);
       case types.GET_ARTIST_TOP_ALBUMS_REQUEST:
-        return getArtistTopAlbums.request(state);
+        return updateFetching(state, action, 'topAlbums');
       case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:
-        return getArtistTopAlbums.success(state);
+        return updateFetching(state, action, 'topAlbums');
       case types.GET_ARTIST_TOP_ALBUMS_FAILURE:
-        return getArtistTopAlbums.failure(state, action);
+        return updateFetching(state, action, 'topAlbums');
       case types.GET_ARTIST_TOP_LISTENERS_REQUEST:
-        return getArtistTopListeners.request(state);
+        return updateFetching(state, action, 'topListeners');
       case types.GET_ARTIST_TOP_LISTENERS_SUCCESS:
-        return getArtistTopListeners.success(state);
+        return updateFetching(state, action, 'topListeners');
       case types.GET_ARTIST_TOP_LISTENERS_FAILURE:
-        return getArtistTopListeners.failure(state, action);
+        return updateFetching(state, action, 'topListeners');
       case types.GET_ARTIST_TOP_PLAYLISTS_REQUEST:
-        return getArtistTopPlaylists.request(state);
+        return updateFetching(state, action, 'topPlaylists');
       case types.GET_ARTIST_TOP_PLAYLISTS_SUCCESS:
-        return getArtistTopPlaylists.success(state);
+        return updateFetching(state, action, 'topPlaylists');
       case types.GET_ARTIST_TOP_PLAYLISTS_FAILURE:
-        return getArtistTopPlaylists.failure(state, action);
+        return updateFetching(state, action, 'topPlaylists');
       case types.GET_ARTIST_TOP_TRACKS_REQUEST:
-        return getArtistTopTracks.request(state);
+        return updateFetching(state, action, 'topTracks');
       case types.GET_ARTIST_TOP_TRACKS_SUCCESS:
-        return getArtistTopTracks.success(state);
+        return updateFetching(state, action, 'topTracks');
       case types.GET_ARTIST_TOP_TRACKS_FAILURE:
-        return getArtistTopTracks.failure(state, action);
+        return updateFetching(state, action, 'topTracks');
       case types.INCREMENT_ARTIST_PLAYS_REQUEST:
-        return incrementArtistPlays.request(state);
+        return updateObject(state, {incrementing: true, error: null});
       case types.INCREMENT_ARTIST_PLAYS_SUCCESS:
-        return incrementArtistPlays.success(state);
+        return updateObject(state, {incrementing: false, error: null});
       case types.INCREMENT_ARTIST_PLAYS_FAILURE:
-        return incrementArtistPlays.failure(state, action);
+        return updateObject(state, {error: action.error, incrementing: false});
       case types.RESET_ARTISTS:
         return initialState;
       case types.UPDATE_ARTISTS:

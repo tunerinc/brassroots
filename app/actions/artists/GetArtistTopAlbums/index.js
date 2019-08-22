@@ -10,10 +10,9 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../AddArtists';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {
   type ThunkAction,
   type Artist,
@@ -23,14 +22,6 @@ import {
   type FirestoreInstance,
   type FirestoreDocs,
 } from '../../../utils/firebaseTypes';
-
-type Artists = {
-  [id: string]: Artist,
-};
-
-type Albums = {
-  [id: string]: Album,
-};
 
 /**
  * Async function that gets an artist's top played albums from Ultrasound
@@ -50,7 +41,7 @@ export function getArtistTopAlbums(
   artistID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getArtistTopAlbumsRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const artistAlbumsRef: FirestoreDocs = firestore
@@ -58,7 +49,7 @@ export function getArtistTopAlbums(
       .doc(artistID)
       .collection('albums');
 
-    let artists: Artists = {};
+    let artists = {};
 
     try {
       const artistAlbumDocs: FirestoreDocs = await artistAlbumsRef
@@ -67,11 +58,11 @@ export function getArtistTopAlbums(
         .get();
       
       if (artistAlbumDocs.empty) {
-        dispatch(actions.getArtistTopAlbumsSuccess());
+        dispatch(actions.success());
       } else {
-        const albumIDs: Array<string> = artistAlbumDocs.docs.map(doc => doc.id);
-        const albumsRes = await Spotify.getAlbums(albumIDs, {});
-        const albums: Albums = albumsRes.albums.reduce((albumList, album) => {
+        const topAlbums: Array<string> = artistAlbumDocs.docs.map(doc => doc.id);
+        const albumsRes = await Spotify.getAlbums(topAlbums, {});
+        const albums = albumsRes.albums.reduce((albumList, album) => {
           const large: string = album.images.length > 0 ? album.images[0].url : '';
           const medium: string = album.images.length > 0 ? album.images[1].url : large;
           const small: string = album.images.length > 0 ? album.images[2].url : large;
@@ -90,11 +81,14 @@ export function getArtistTopAlbums(
                   [artist.id]: {
                     id: artist.id,
                     name: artist.name,
-                    image: '',
+                    small: '',
+                    medium: '',
+                    large: '',
                     userTracks: [],
                     userAlbums: [],
                     tracks: [],
                     albums: [],
+                    topAlbums: artist.id === artistID ? topAlbums : [],
                   },
                 });
 
@@ -107,12 +101,11 @@ export function getArtistTopAlbums(
           });
         });
 
-        dispatch(addAlbums(albums));
-        dispatch(addArtists(artists));
-        dispatch(actions.getArtistTopAlbumsSuccess());
+        dispatch(addEntities({albums, artists}));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getArtistTopAlbumsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

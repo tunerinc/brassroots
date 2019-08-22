@@ -9,37 +9,16 @@
  * @module GetArtistTopPlaylists
  */
 
-import {addPlaylists} from '../../playlists/AddPlaylists';
-import {addUsers} from '../../users/AddUsers';
 import getPlaylist from '../../../utils/spotifyAPI/getPlaylist';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/artists';
 import {
   type FirestoreInstance,
   type FirestoreDocs,
   type FirestoreRef,
 } from '../../../utils/firebaseTypes';
-
-type Playlists = {
-  [id: string]: {
-    id: string,
-    small: string,
-    medium: string,
-    large: string,
-    name: string,
-    ownerID: string,
-    ownerType: string,
-  },
-};
-
-type Users = {
-  [id: string]: {
-    id: string,
-    username?: string,
-    profileImage?: string,
-  },
-};
 
 /**
  * Async function that gets the top playlists in which the given artist is played
@@ -67,24 +46,24 @@ export function getArtistTopPlaylists(
   };
 
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getArtistTopPlaylistsRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const artistPlaylistsRef: FirestoreDocs = firestore.collection('artists').doc(artistID).collection('playlists');
     const usersRef: FirestoreRef = firestore.collection('users');
     
-    let playlists: Playlists = {};
-    let users: Users = {};
+    let playlists = {};
+    let users = {};
 
     try {
       const playlistDocs: FirestoreDocs = await artistPlaylistsRef.orderBy('plays', 'desc').limit(3).get();
 
       if (playlistDocs.empty) {
-        dispatch(actions.getArtistTopPlaylistsSuccess());
+        dispatch(actions.success());
       } else {
-        const playlistIDs: Array<string> = playlistDocs.docs.map(doc => doc.id);
+        const topPlaylists: Array<string> = playlistDocs.docs.map(doc => doc.id);
         const playlistsRes = await Promise.all(
-          playlistIDs.map((playlistID, index) => {
+          topPlaylists.map((playlistID, index) => {
             return getPlaylist(playlistID, options);
           })
         );
@@ -127,12 +106,11 @@ export function getArtistTopPlaylists(
           });
         }
 
-        dispatch(addPlaylists(playlists));
-        dispatch(addUsers(users));
-        dispatch(actions.getArtistTopPlaylistsSuccess());
+        dispatch(addEntities({playlists, users, artists: {[artistID]: {topPlaylists, id: artistID}}}));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getArtistTopPlaylistsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

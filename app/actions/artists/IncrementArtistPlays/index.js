@@ -16,6 +16,8 @@ import {
   type FirestoreInstance,
   type FirestoreDoc,
 } from '../../../utils/firebaseTypes';
+import updateObject from '../../../utils/updateObject';
+import { addEntities } from '../../entities/AddEntities/reducers';
 
 /**
   * Async function which increments the number of plays for an artist
@@ -25,25 +27,25 @@ import {
   * 
   * @author Aldo Gonzalez <aldo@tunerinc.com>
   *
-  * @param    {string[]} artists The artist id to increment the number of plays for
-  * @param    {string}   userID  The user id to increment artist plays for
+  * @param    {string[]} artistsToAdd The artist id to increment the number of plays for
+  * @param    {string}   userID       The user id to increment artist plays for
   *
   * @returns  {Promise}
-  * @resolves {object}           The new amount of plays for an artist
-  * @rejects  {Error}            The error which caused teh increment artist plays failure
+  * @resolves {object}                The new amount of plays for an artist
+  * @rejects  {Error}                 The error which caused teh increment artist plays failure
   */
 export function incrementArtistPlays(
-  artists: Array<string>,
+  artistsToAdd: Array<string>,
   userID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.incrementArtistPlaysRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const userRef: FirestoreDoc = firestore.collection('users').doc(userID);
 
     try {
-      const promises = artists.map(artistID => {
+      const promises = artistsToAdd.map(artistID => {
         const artistRef: FirestoreDoc = userRef.collection('artists').doc(artistID);
 
         return firestore.runTransaction(async transaction => {
@@ -62,10 +64,15 @@ export function incrementArtistPlays(
       });
 
       const totals: Array<number> = await Promise.all(promises);
+      const artists = artistsToAdd.reduce((obj, artistID, index) => {
+        const userPlays = totals[index];
+        return updateObject(obj, {[artistID]: {userPlays, id: artistID}});
+      }, {});
       
-      dispatch(actions.incrementArtistPlaysSuccess());
+      dispatch(addEntities({artists}));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.incrementArtistPlaysFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

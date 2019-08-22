@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/artists';
   * Notify the app of a increment artist plays request
   * 
   * @alias module:IncrementArtistPlays
-  * @function incrementArtistPlaysRequest
+  * @function request
   * 
   * @author Aldo Gonzalez <aldo@tunerinc.com>
   *
   * @returns {object} Redux action with the type of INCREMENT_ARTIST_PLAYS_REQUEST
   */
-export function incrementArtistPlaysRequest(): Action {
+export function request(): Action {
   return {type: types.INCREMENT_ARTIST_PLAYS_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function incrementArtistPlaysRequest(): Action {
   * Notify the app of a increment artist plays success
   * 
   * @alias module:IncrementArtistPlays
-  * @function incrementArtistPlaysSuccess
+  * @function success
   * 
   * @author Aldo Gonzalez <aldo@tunerinc.com>
   *
   * @returns {object} Redux action with the type of INCREMENT_ARTIST_PLAYS_SUCCESS
   */
-export function incrementArtistPlaysSuccess(): Action {
+export function success(): Action {
   return {type: types.INCREMENT_ARTIST_PLAYS_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function incrementArtistPlaysSuccess(): Action {
   * Notify the app of a increment artist plays failure
   * 
   * @alias module:IncrementArtistPlays
-  * @function incrementArtistPlaysFailure
+  * @function failure
   * 
   * @author Aldo Gonzalez <aldo@tunerinc.com>
   *
@@ -52,7 +52,7 @@ export function incrementArtistPlaysSuccess(): Action {
   *
   * @returns {object}       Redux action with the type of INCREMENT_ARTIST_PLAYS_FAILURE and the error which caused the failure
   */
-export function incrementArtistPlaysFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

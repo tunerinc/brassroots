@@ -10,11 +10,9 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
 import addMusicItems from '../../../utils/addMusicItems';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/artists';
 import {
   type FirestoreInstance,
@@ -39,7 +37,7 @@ export function getArtistTopTracks(
   artistID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getArtistTopTracksRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const artistTracksRef: FirestoreDocs = firestore
@@ -51,26 +49,20 @@ export function getArtistTopTracks(
       const trackDocs: FirestoreDocs = await artistTracksRef.orderBy('plays', 'desc').limit(3).get();
 
       if (trackDocs.empty) {
-        dispatch(actions.getArtistTopTracksSuccess());
+        dispatch(actions.success());
       } else {
-        const trackIDs = trackDocs.docs.map(doc => doc.id);
-        const tracksRes = await Spotify.getTracks(trackIDs, {});
+        const topTracks = trackDocs.docs.map(doc => doc.id);
+        const tracksRes = await Spotify.getTracks(topTracks, {});
+        const music = addMusicItems(
+          tracksRes.tracks,
+          {artists: {[artistID]: {topTracks, id: artistID}}, albums: {}, tracks: {}},
+        );
 
-        let music = {
-          tracks: {},
-          albums: {},
-          artists: {},
-        };
-
-        music = addMusicItems(tracksRes.tracks, music);
-
-        dispatch(addAlbums(music.albums));
-        dispatch(addArtists(music.artists));
-        dispatch(addTracks(music.tracks));
-        dispatch(actions.getArtistTopTracksSuccess());
+        dispatch(addEntities(music));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getArtistTopTracksFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

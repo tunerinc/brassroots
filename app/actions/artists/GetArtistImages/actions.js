@@ -19,13 +19,13 @@ import {
  * Notify the app of a get artist images request
  * 
  * @alias GetArtistImages
- * @function getArtistImagesRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_ARTIST_IMAGES_REQUEST
  */
-export function getArtistImagesRequest() {
+export function request() {
   return {type: types.GET_ARTIST_IMAGES_REQUEST};
 }
 
@@ -33,7 +33,7 @@ export function getArtistImagesRequest() {
  * Notify the app of a get artist images success
  * 
  * @alias GetArtistImages
- * @function getArtistImagesSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -44,7 +44,7 @@ export function getArtistImagesRequest() {
  * 
  * @returns {object}                  Redux action with the type of GET_ARTIST_IMAGES_SUCCESS and artist images to add
  */
-export function getArtistImagesSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_ARTIST_IMAGES_SUCCESS};
 }
 
@@ -52,7 +52,7 @@ export function getArtistImagesSuccess(): Action {
  * Notify the app of a get artist images failure
  * 
  * @alias GetArtistImages
- * @function getArtistImagesFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -60,7 +60,7 @@ export function getArtistImagesSuccess(): Action {
  * 
  * @returns {object}       Redux action with the type of GET_ARTIST_IMAGES_FAILURE and the error which caused the failure
  */
-export function getArtistImagesFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

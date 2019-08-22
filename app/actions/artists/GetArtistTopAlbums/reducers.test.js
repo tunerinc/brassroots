@@ -19,20 +19,29 @@ describe('get artist top albums reducer', () => {
 
   it('should handle GET_ARTIST_TOP_ALBUMS_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
-    const expectedState: State = {...initialState, fetchingAlbums: true};
-    expect(reducer(initialState, actions.getArtistTopAlbumsRequest())).toStrictEqual(expectedState);
-    expect(reducer(state, actions.getArtistTopAlbumsRequest())).toStrictEqual(expectedState);
+    const stateTwo: State = {...state, fetching: ['artists']};
+    const expectedState: State = {...initialState, fetching: ['topAlbums']};
+    const expectedStateTwo: State = {...initialState, fetching: ['artists', 'topAlbums']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.request())).toStrictEqual(expectedStateTwo);
   });
 
   it('should handle GET_ARTIST_TOP_ALBUMS_SUCCESS', () => {
-    const state: State = {...initialState, fetchingAlbums: true};
-    expect(reducer(state, actions.getArtistTopAlbumsSuccess())).toStrictEqual(initialState);
+    const state: State = {...initialState, fetching: ['topAlbums']};
+    const stateTwo: State = {...initialState, fetching: ['albums', 'topAlbums']};
+    const expectedState: State = {...initialState, fetching: ['albums']};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success())).toStrictEqual(expectedState);
   });
 
   it('should handle GET_ARTIST_TOP_ALBUMS_FAILURE', () => {
-    const state: State = {...initialState, fetchingAlbums: true};
+    const state: State = {...initialState, fetching: ['topAlbums']};
+    const stateTwo: State = {...initialState, fetching: ['artists', 'topAlbums']};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.getArtistTopAlbumsFailure(error))).toStrictEqual(expectedState);
+    const expectedStateTwo: State = {...expectedState, fetching: ['artists']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });
