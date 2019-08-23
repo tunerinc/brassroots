@@ -17,7 +17,7 @@ describe('get terms synchronous action creators', () => {
       refreshing,
     };
 
-    expect(actions.getTermsRequest(refreshing)).toStrictEqual(expectedAction);
+    expect(actions.request(refreshing)).toStrictEqual(expectedAction);
   });
 
   it('creates get terms success action', () => {
@@ -27,7 +27,7 @@ describe('get terms synchronous action creators', () => {
       text,
     };
 
-    expect(actions.getTermsSuccess(text)).toStrictEqual(expectedAction);
+    expect(actions.success(text)).toStrictEqual(expectedAction);
   });
 
   it('creates get terms failure action', () => {
@@ -37,6 +37,6 @@ describe('get terms synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getTermsFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

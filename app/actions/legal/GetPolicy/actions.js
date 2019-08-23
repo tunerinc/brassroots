@@ -16,7 +16,7 @@ import {type Action} from '../../../reducers/legal';
  * Notify the app of a get policy request
  * 
  * @alias module:GetPolicy
- * @function getPolicyRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -24,7 +24,7 @@ import {type Action} from '../../../reducers/legal';
  *
  * @returns {object}             Redux action with the type of GET_POLICY_REQUEST
  */
-export function getPolicyRequest(
+export function request(
   refreshing: boolean,
 ): Action {
   return {
@@ -37,7 +37,7 @@ export function getPolicyRequest(
  * Notify the app of a get policy success
  * 
  * @alias module:GetPolicy
- * @function getPolicySuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -45,7 +45,7 @@ export function getPolicyRequest(
  *
  * @returns {object}      Redux action with the type of GET_POLICY_SUCCESS and the most recent privacy policy
  */
-export function getPolicySuccess(
+export function success(
   text: string,
 ): Action {
   return {
@@ -58,7 +58,7 @@ export function getPolicySuccess(
  * Notify the app of a get policy failure
  * 
  * @alias module:GetPolicy
- * @function getPolicyFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -66,7 +66,7 @@ export function getPolicySuccess(
  *
  * @returns {object}       Redux action with the type of GET_POLICY_FAILURE and the error which caused the failure
  */
-export function getPolicyFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

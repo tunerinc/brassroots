@@ -17,7 +17,7 @@ describe('get policy synchronous action creators', () => {
       refreshing,
     };
 
-    expect(actions.getPolicyRequest(refreshing)).toStrictEqual(expectedAction);
+    expect(actions.request(refreshing)).toStrictEqual(expectedAction);
   });
 
   it('creates get policy success action', () => {
@@ -27,7 +27,7 @@ describe('get policy synchronous action creators', () => {
       text,
     };
 
-    expect(actions.getPolicySuccess(text)).toStrictEqual(expectedAction);
+    expect(actions.success(text)).toStrictEqual(expectedAction);
   });
 
   it('creates get policy failure action', () => {
@@ -37,6 +37,6 @@ describe('get policy synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getPolicyFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

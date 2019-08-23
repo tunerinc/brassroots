@@ -34,14 +34,14 @@ export function getTerms(
   refreshing: boolean = false,
 ): ThunkAction {
   return async dispatch => {
-    dispatch(actions.getTermsRequest(refreshing));
+    dispatch(actions.request(refreshing));
 
     try {
       const termsURL: string = 'https://ps.tiunncer.com/terms';
       // const html: string = await fetchRemoteURL(termsURL, 'text');
-      // dispatch(actions.getTermsSuccess(html));
+      // dispatch(actions.success(html));
     } catch (err) {
-      dispatch(actions.getTermsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

@@ -16,7 +16,7 @@ import {type Action} from '../../../reducers/legal';
  * Notify the app of a get terms request
  * 
  * @alias module:GetTerms
- * @function getTermsRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -24,7 +24,7 @@ import {type Action} from '../../../reducers/legal';
  *
  * @returns {object}             Redux action with the type of GET_TERMS_REQUEST and whether the current user is refreshing
  */
-export function getTermsRequest(
+export function request(
   refreshing: boolean,
 ): Action {
   return {
@@ -37,7 +37,7 @@ export function getTermsRequest(
  * Notify the app of a get terms success
  * 
  * @alias module:GetTerms
- * @function getTermsSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -45,7 +45,7 @@ export function getTermsRequest(
  *
  * @returns {object}      Redux action with the type of GET_TERMS_SUCCESS and the retrieved terms of service
  */
-export function getTermsSuccess(
+export function success(
   text: string,
 ): Action {
   return {
@@ -58,7 +58,7 @@ export function getTermsSuccess(
  * Notify the app of a get terms failure
  * 
  * @alias module:GetTerms
- * @function getTermsFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -66,7 +66,7 @@ export function getTermsSuccess(
  *
  * @returns {object}       Redux action with the type of GET_TERMS_FAILURE and the error which caused the failure
  */
-export function getTermsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

@@ -5,77 +5,39 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/legal';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/legal';
 import * as actions from './actions';
 
 describe('get policy reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_POLICY_REQUEST', () => {
-    const refreshingPrivacy: boolean = true;
-
-    expect(reducer(initialState, actions.getPolicyRequest(!refreshingPrivacy)))
-      .toStrictEqual({...initialState, privacy: {...initialState.privacy, fetchingPrivacy: true}});
-
-    expect(reducer(initialState, actions.getPolicyRequest(refreshingPrivacy)))
-      .toStrictEqual(
-        {
-          ...initialState,
-          privacy: {...initialState.privacy, refreshingPrivacy, fetchingPrivacy: true},
-        },
-      );
-
-    expect(
-      reducer(
-        {...initialState, privacy: {...initialState.privacy, error: new Error('error')}},
-        actions.getPolicyRequest(!refreshingPrivacy),
-      ),
-    )
-      .toStrictEqual({...initialState, privacy: {...initialState.privacy, fetchingPrivacy: true}});
-
-    expect(
-      reducer(
-        {...initialState, privacy: {...initialState.privacy, error: new Error('error')}},
-        actions.getPolicyRequest(refreshingPrivacy),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          privacy: {...initialState.privacy, refreshingPrivacy, fetchingPrivacy: true},
-        },
-      );
+  it('handles GET_POLICY_REQUEST', () => {
+    const state: State = {...initialState, privacy: {...initialState.privacy, error: new Error('error')}};
+    const refreshing: boolean = true;
+    const expectedState: State = {...initialState, privacy: {...initialState.privacy, fetching: true}};
+    const refreshState: State = {...initialState, privacy: {...expectedState.privacy, refreshing}};
+    expect(reducer(initialState, actions.request(!refreshing))).toStrictEqual(expectedState);
+    expect(reducer(initialState, actions.request(refreshing))).toStrictEqual(refreshState);
+    expect(reducer(state, actions.request(!refreshing))).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request(refreshing))).toStrictEqual(refreshState);
   });
 
-  it('should handle GET_POLICY_SUCCESS', () => {
+  it('handles GET_POLICY_SUCCESS', () => {
+    const state: State = {...initialState, privacy: {...initialState.privacy, refreshing: true, fetching: true}};
     const text: string = 'foo';
-
-    expect(
-      reducer(
-        {
-          ...initialState,
-          privacy: {...initialState.privacy, refreshingPrivacy: true, fetchingPrivacy: true},
-        },
-        actions.getPolicySuccess(text),
-      ),
-    )
-      .toStrictEqual({...initialState, privacy: {...initialState.privacy, text}});
+    const expectedState: State = {...initialState, privacy: {...initialState.privacy, text}};
+    expect(reducer(state, actions.success(text))).toStrictEqual(expectedState);
   });
 
-  it('should handle GET_POLICY_FAILURE', () => {
+  it('handles GET_POLICY_FAILURE', () => {
+    const state: State = {...initialState, privacy: {...initialState.privacy, refreshing: true, fetching: true}};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {
-          ...initialState,
-          privacy: {...initialState.privacy, refreshingPrivacy: true, fetchingPrivacy: true},
-        },
-        actions.getPolicyFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, privacy: {...initialState.privacy, error}});
+    const expectedState: State = {...initialState, privacy: {...initialState.privacy, error}};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

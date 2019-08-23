@@ -34,14 +34,14 @@ export function getPolicy(
   refreshing: boolean = false,
 ): ThunkAction {
   return async dispatch => {
-    dispatch(actions.getPolicyRequest(refreshing));
+    dispatch(actions.request(refreshing));
 
     try {
       const policyURL: string = 'https://ps.tiunncer.com/policy';
       // const html: string = await fetchRemoteURL(policyURL, 'text');
-      // dispatch(actions.getPolicySuccess(html));
+      // dispatch(actions.success(html));
     } catch (err) {
-      dispatch(actions.getPolicyFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }
