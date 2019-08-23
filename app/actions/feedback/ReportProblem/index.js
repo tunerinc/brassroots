@@ -49,7 +49,7 @@ export function reportProblem(
   problem: Problem,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.reportProblemRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const feedbackRef: FirestoreRef = firestore.collection('feedback');
@@ -59,9 +59,9 @@ export function reportProblem(
       const feedbackID: string = feedbackDoc.id;
 
       await feedbackRef.doc(feedbackID).set({...problem, userID, id: feedbackID, type: 'problem'});
-      dispatch(actions.reportProblemSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.reportProblemFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

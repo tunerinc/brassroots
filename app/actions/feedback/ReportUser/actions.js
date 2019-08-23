@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/feedback';
  * Notify the app of a report user request
  * 
  * @alias module:ReportUser
- * @function reportUserRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of REPORT_USER_REQUEST
  */
-export function reportUserRequest(): Action {
-  return {
-    type: types.REPORT_USER_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.REPORT_USER_REQUEST};
 }
 
 /**
  * Notify the app of a report user success
  * 
  * @alias module:ReportUser
- * @function reportUserSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object}      Redux action with the type of REPORT_USER_SUCCESS
  */
-export function reportUserSuccess(): Action {
-  return {
-    type: types.REPORT_USER_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.REPORT_USER_SUCCESS};
 }
 
 /**
  * Notify the app of a report user failure
  * 
  * @alias module:ReportUser
- * @function reportUserFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -56,7 +52,7 @@ export function reportUserSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of REPORT_USER_FAILURE and the error which caused the failure
  */
-export function reportUserFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

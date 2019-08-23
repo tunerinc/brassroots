@@ -5,46 +5,33 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/feedback';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/feedback';
 import * as actions from './actions';
 
 describe('report user reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should return REPORT_USER_REQUEST', () => {
-    expect(reducer(initialState, actions.reportUserRequest()))
-      .toStrictEqual({...initialState, sending: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.reportUserRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, sending: true});
+  it('returns REPORT_USER_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, sending: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should return REPORT_USER_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, sending: true},
-        actions.reportUserSuccess(),
-      ),
-    )
-      .toStrictEqual(initialState);
+  it('returns REPORT_USER_SUCCESS', () => {
+    const state: State = {...initialState, sending: true};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
   });
 
-  it('should return REPORT_USER_FAILURE', () => {
+  it('returns REPORT_USER_FAILURE', () => {
+    const state: State = {...initialState, sending: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, sending: true},
-        actions.reportUserFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });
