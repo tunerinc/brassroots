@@ -53,7 +53,7 @@ export function getAlbumTopTracks(
         const tracksRes = await Spotify.getTracks(topTracks, {});
         const music = addMusicItems(
           tracksRes.tracks,
-          {albums: {[albumID]: {topTracks}}, artists: {}, tracks: {}},
+          {albums: {[albumID]: {topTracks, id: albumID}}, artists: {}, tracks: {}},
         );
 
         dispatch(addEntities(music));

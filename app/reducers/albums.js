@@ -18,7 +18,6 @@ import * as types from '../actions/albums/types';
 import * as entitiesTypes from '../actions/entities/types';
 
 // Case Functions
-import * as getAlbums from '../actions/albums/GetAlbums/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -216,7 +215,7 @@ export function album(
 /**
  * Updates the fetching value in state by adding/removing a type
  * 
- * @function updateFetching
+ * @function update
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -227,18 +226,26 @@ export function album(
  * 
  * @returns {object}             The state with the fetching and error props updated
  */
-function updateFetching(
+function update(
   state: State,
   action: Action,
-  type: string,
+  type?: string,
 ): State {
-  const {fetching: oldFetch} = state;
+  const {fetching: oldFetch, userAlbums: oldAlbums, refreshing: oldRefresh, totalUserAlbums} = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
-  const updates: State = Array.isArray(oldFetch)
+  const updates: State = Array.isArray(oldFetch) && Array.isArray(oldAlbums)
     ? {
-      fetching: add ? oldFetch.concat(type) : oldFetch.filter(t => t !== type),
+      lastUpdated,
+      fetching: add && type ? oldFetch.concat(type) : type ? oldFetch.filter(t => t !== type) : oldFetch,
+      refreshing: action.refreshing && !action.replace ? action.refreshing : false,
       error: haveError ? action.error : null,
+      totalUserAlbums: action.total ? action.total : totalUserAlbums,
+      userAlbums: (Array.isArray(action.albums) && (oldRefresh || action.replace))
+        ? [...action.albums]
+        : Array.isArray(action.albums)
+        ? [...oldAlbums, ...action.albums]
+        : [...oldAlbums],
     }
     : {};
 
@@ -252,29 +259,29 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.GET_ALBUMS_REQUEST:
-        return getAlbums.request(state, action);
+        return update(state, action, 'albums');
       case types.GET_ALBUMS_SUCCESS:
-        return getAlbums.success(state, action);
+        return update(state, action, 'albums');
       case types.GET_ALBUMS_FAILURE:
-        return getAlbums.failure(state, action);
+        return update(state, action, 'albums');
       case types.GET_ALBUM_TOP_LISTENERS_REQUEST:
-        return updateFetching(state, action, 'topListeners');
+        return update(state, action, 'topListeners');
       case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
-        return updateFetching(state, action, 'topListeners');
+        return update(state, action, 'topListeners');
       case types.GET_ALBUM_TOP_LISTENERS_FAILURE:
-        return updateFetching(state, action, 'topListeners');
+        return update(state, action, 'topListeners');
       case types.GET_ALBUM_TOP_PLAYLISTS_REQUEST:
-        return updateFetching(state, action, 'topPlaylists');
+        return update(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS:
-        return updateFetching(state, action, 'topPlaylists');
+        return update(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_PLAYLISTS_FAILURE:
-        return updateFetching(state, action, 'topPlaylists');
+        return update(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_TRACKS_REQUEST:
-        return updateFetching(state, action, 'topTracks');
+        return update(state, action, 'topTracks');
       case types.GET_ALBUM_TOP_TRACKS_SUCCESS:
-        return updateFetching(state, action, 'topTracks');
+        return update(state, action, 'topTracks');
       case types.GET_ALBUM_TOP_TRACKS_FAILURE:
-        return updateFetching(state, action, 'topTracks');
+        return update(state, action, 'topTracks');
       case types.INCREMENT_ALBUM_PLAYS_REQUEST:
         return updateObject(state, {incrementing: true, error: null});
       case types.INCREMENT_ALBUM_PLAYS_SUCCESS:

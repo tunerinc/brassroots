@@ -57,7 +57,7 @@ export function incrementAlbumPlays(
         return plays + 1;
       });
 
-      dispatch(addEntities({albums: {[albumID]: {userPlays}}}));
+      dispatch(addEntities({albums: {[albumID]: {userPlays, id: albumID}}}));
       dispatch(actions.success());
     } catch (err) {
       dispatch(actions.failure(err));

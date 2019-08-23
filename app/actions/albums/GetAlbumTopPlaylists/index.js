@@ -99,7 +99,7 @@ export function getAlbumTopPlaylists(
           }, {});
         }
 
-        dispatch(addEntities({playlists, users, albums: {[albumID]: {topPlaylists}}}));
+        dispatch(addEntities({playlists, users, albums: {[albumID]: {topPlaylists, id: albumID}}}));
         dispatch(actions.success());
       }
     } catch (err) {

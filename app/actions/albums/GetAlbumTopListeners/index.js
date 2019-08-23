@@ -64,7 +64,7 @@ export function getAlbumTopListeners(
           }
         }, {});
 
-        dispatch(addEntities({users, albums: {[albumID]: {topListeners}}}));
+        dispatch(addEntities({users, albums: {[albumID]: {topListeners, id: albumID}}}));
         dispatch(actions.success());
       }
     } catch (err) {
