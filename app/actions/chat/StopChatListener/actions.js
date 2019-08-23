@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/chat';
  * Notify the app of a stop chat listener request
  * 
  * @alias module:StopChatListener
- * @function stopChatListenerRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of STOP_CHAT_LISTENER_REQUEST
  */
-export function stopChatListenerRequest(): Action {
-  return {
-    type: types.STOP_CHAT_LISTENER_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.STOP_CHAT_LISTENER_REQUEST};
 }
 
 /**
  * Notify the app of a stop chat listener success
  * 
  * @alias module:StopChatListener
- * @function stopChatListenerSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of STOP_CHAT_LISTENER_SUCCESS
  */
-export function stopChatListenerSuccess(): Action {
-  return {
-    type: types.STOP_CHAT_LISTENER_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.STOP_CHAT_LISTENER_SUCCESS};
 }
 
 /**
  * Notify the app of a stop chat listener failure
  * 
  * @alias module:StopChatListener
- * @function stopChatListenerFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -56,7 +52,7 @@ export function stopChatListenerSuccess(): Action {
  * 
  * @returns {object}       Redux action with the type of STOP_CHAT_LISTENER_FAILURE and the error which caused the failure
  */
-export function stopChatListenerFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

@@ -5,46 +5,42 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/chat';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/chat';
 import * as actions from './actions';
 
 describe('send chat message reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle SEND_CHAT_MESSAGE_REQUEST', () => {
-    expect(reducer(initialState, actions.sendChatMessageRequest()))
-      .toStrictEqual({...initialState, sendingMessage: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.sendChatMessageRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, sendingMessage: true});
+  it('handles SEND_CHAT_MESSAGE_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const stateTwo: State = {...state, fetching: ['chat']};
+    const expectedState: State = {...initialState, fetching: ['message']};
+    const expectedStateTwo: State = {...initialState, fetching: ['chat', 'message']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.request())).toStrictEqual(expectedStateTwo);
   });
 
-  it('should handle SEND_CHAT_MESSAGE_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, sendingMessage: true},
-        actions.sendChatMessageSuccess(),
-      ),
-    )
-      .toStrictEqual(initialState);
+  it('handles SEND_CHAT_MESSAGE_SUCCESS', () => {
+    const state: State = {...initialState, fetching: ['message']};
+    const stateTwo: State = {...initialState, fetching: ['chat', 'message']};
+    const expectedState: State = {...initialState, fetching: ['chat']};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success())).toStrictEqual(expectedState);
   });
 
-  it('should handle SEND_CHAT_MESSAGE_FAILURE', () => {
+  it('handles SEND_CHAT_MESSAGE_FAILURE', () => {
+    const state: State = {...initialState, fetching: ['message']};
+    const stateTwo: State = {...initialState, fetching: ['chat', 'message']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, sendingMessage: true},
-        actions.sendChatMessageFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    const expectedStateTwo: State = {...expectedState, fetching: ['chat']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });

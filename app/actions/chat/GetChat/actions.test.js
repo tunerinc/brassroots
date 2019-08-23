@@ -11,11 +11,8 @@ import {type Action} from '../../../reducers/chat';
 
 describe('get chat synchronous action creators', () => {
   it('creates get chat request action', () => {
-    const expectedAction: Action = {
-      type: types.GET_CHAT_REQUEST,
-    };
-
-    expect(actions.getChatRequest()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.GET_CHAT_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates get chat success action', () => {
@@ -27,7 +24,7 @@ describe('get chat synchronous action creators', () => {
       unsubscribe,
     };
 
-    expect(actions.getChatSuccess(messages, unsubscribe)).toStrictEqual(expectedAction);
+    expect(actions.success(messages, unsubscribe)).toStrictEqual(expectedAction);
   });
 
   it('creates get chat failure action', () => {
@@ -37,6 +34,6 @@ describe('get chat synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getChatFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

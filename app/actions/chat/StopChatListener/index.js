@@ -36,13 +36,13 @@ export function stopChatListener(
   unsubscribe: () => void,
 ): ThunkAction {
   return async dispatch => {
-    dispatch(actions.stopChatListenerRequest());
+    dispatch(actions.request());
 
     try {
       unsubscribe();
-      dispatch(actions.stopChatListenerSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.stopChatListenerFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

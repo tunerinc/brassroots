@@ -9,10 +9,9 @@
  * @module GetChat
  */
 
-import {addUsers} from '../../users/AddUsers';
-import {addChatMessages} from '../AddChatMessages';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/chat';
 import {type FirebaseInstance} from '../../../utils/firebaseTypes';
 
@@ -34,11 +33,11 @@ export function getChat(
   sessionID: string,
 ): ThunkAction {
   return (dispatch, _, {getFirebase, getFirestore}) => {
-    dispatch(actions.getChatRequest());
+    dispatch(actions.request());
 
     const firebase: FirebaseInstance = getFirebase();
 
-    let people = {};
+    let users = {};
 
     const unsubscribe = firebase.database()
       .ref(`sessions/live/${sessionID}/messages`)
@@ -47,18 +46,14 @@ export function getChat(
         if (dbMessages && dbMessages.val()) {
           const messages = dbMessages.reduce((obj, msg) => {
             const {user} = msg.val();
-            people = updateObject(people, {[user.id]: {...user}});
+            users = updateObject(users, {[user.id]: {...user}});
             return updateObject(obj, {[msg.val().id]: {...msg.val()}});
           }, {});
 
-          if (Object.keys(people).length !== 0) {
-            dispatch(addUsers(people));
-          };
-
-          dispatch(addChatMessages(messages));
-          dispatch(actions.getChatSuccess(dbMessages.map(m => m.val().id), unsubscribe));
+          dispatch(addEntities({messages, users}));
+          dispatch(actions.success(dbMessages.map(m => m.val().id), unsubscribe));
         }
       },
-      err => dispatch(actions.getChatFailure(err)));
+      err => dispatch(actions.failure(err)));
   };
 }

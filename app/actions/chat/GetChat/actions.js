@@ -16,16 +16,14 @@ import {type Action} from '../../../reducers/chat';
  * Notify the app of a get chat request
  * 
  * @alias module:GetChat
- * @function getChatRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @return {object} Redux action with the type of GET_CHAT_REQUEST
  */
-export function getChatRequest(): Action {
-  return {
-    type: types.GET_CHAT_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.GET_CHAT_REQUEST};
 };
 
 /**
@@ -38,7 +36,7 @@ export function getChatRequest(): Action {
  * Notify the app of a get chat success
  * 
  * @alias module:GetChat
- * @function getChatSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -47,7 +45,7 @@ export function getChatRequest(): Action {
  *
  * @return {object}                  Redux action with the type of GET_CHAT_SUCCESS, chat message ids, and the unsubscribe function
  */
-export function getChatSuccess(
+export function success(
   messages: Array<string>,
   unsubscribe: () => void,
 ): Action {
@@ -62,7 +60,7 @@ export function getChatSuccess(
  * Notify the app of a get chat failure
  * 
  * @alias module:GetChat
- * @function getChatFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -70,7 +68,7 @@ export function getChatSuccess(
  *
  * @return {object}       Redux action with the type of GET_CHAT_FAILURE and the error which caused the failure
  */
-export function getChatFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

@@ -11,19 +11,13 @@ import {type Action} from '../../../reducers/chat';
 
 describe('send chat message synchronous action creators', () => {
   it('creates send chat message request action', () => {
-    const expectedAction: Action = {
-      type: types.SEND_CHAT_MESSAGE_REQUEST,
-    };
-
-    expect(actions.sendChatMessageRequest()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.SEND_CHAT_MESSAGE_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates send chat message success action', () => {
-    const expectedAction: Action = {
-      type: types.SEND_CHAT_MESSAGE_SUCCESS,
-    };
-
-    expect(actions.sendChatMessageSuccess()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.SEND_CHAT_MESSAGE_SUCCESS};
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates send chat message failure action', () => {
@@ -33,6 +27,6 @@ describe('send chat message synchronous action creators', () => {
       error,
     };
 
-    expect(actions.sendChatMessageFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

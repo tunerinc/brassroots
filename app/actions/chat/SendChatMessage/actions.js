@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/chat';
  * Notify the app of a send chat message request
  * 
  * @alias module:SendChatMessage
- * @function sendChatMessageRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @return {object} Redux action with the type of SEND_CHAT_MESSAGE_REQUEST
  */
-export function sendChatMessageRequest(): Action {
-  return {
-    type: types.SEND_CHAT_MESSAGE_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.SEND_CHAT_MESSAGE_REQUEST};
 }
 
 /**
  * Notify the app of a send chat message success
  * 
  * @alias module:SendChatMessage
- * @function sendChatMessageSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @return {object} Redux action with the type of SEND_CHAT_MESSAGE_SUCCESS
  */
-export function sendChatMessageSuccess(): Action {
-  return {
-    type: types.SEND_CHAT_MESSAGE_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.SEND_CHAT_MESSAGE_SUCCESS};
 }
 
 /**
  * Notify the app of a send chat message failure
  * 
  * @alias module:SendChatMessage
- * @function sendChatMessageFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -56,7 +52,7 @@ export function sendChatMessageSuccess(): Action {
  *
  * @return {object}       Redux action with the type of SEND_CHAT_MESSAGE_FAILURE and the error which caused the failure
  */
-export function sendChatMessageFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

@@ -11,19 +11,13 @@ import {type Action} from '../../../reducers/chat';
 
 describe('stop chat listener synchronous action creators', () => {
   it('creates stop chat listener request action', () => {
-    const expectedAction: Action = {
-      type: types.STOP_CHAT_LISTENER_REQUEST,
-    };
-
-    expect(actions.stopChatListenerRequest()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.STOP_CHAT_LISTENER_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates stop chat listener success action', () => {
-    const expectedAction: Action = {
-      type: types.STOP_CHAT_LISTENER_SUCCESS,
-    };
-
-    expect(actions.stopChatListenerSuccess()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.STOP_CHAT_LISTENER_SUCCESS};
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates stop chat listener failure action', () => {
@@ -33,6 +27,6 @@ describe('stop chat listener synchronous action creators', () => {
       error,
     };
 
-    expect(actions.stopChatListenerFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

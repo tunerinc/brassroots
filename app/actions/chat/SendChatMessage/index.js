@@ -10,8 +10,8 @@
  */
 
 import moment from 'moment';
-import {addChatMessages} from '../AddChatMessages';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/chat';
 import {
   type FirestoreInstance,
@@ -60,7 +60,7 @@ export function sendChatMessage(
   total: number,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.sendChatMessageRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -82,10 +82,10 @@ export function sendChatMessage(
       batch.update(sessionRef, {'totals.messages': total});
 
       await batch.commit();
-      dispatch(addChatMessages({[messageID]: newMessage}));
-      dispatch(actions.sendChatMessageSuccess());
+      dispatch(addEntities({messages: {[messageID]: newMessage}}));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.sendChatMessageFailure(err))
+      dispatch(actions.failure(err))
     }
   };
 }

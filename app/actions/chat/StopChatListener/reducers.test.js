@@ -5,45 +5,41 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/chat';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/chat';
 import * as actions from './actions';
 
-const chatUnsubscribe = () => {return};
+const unsubscribe: () => any = () => {return};
 
 describe('stop chat listener reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle STOP_CHAT_LISTENER_REQUEST', () => {
-    expect(
-      reducer(
-        {...initialState, chatUnsubscribe},
-        actions.stopChatListenerRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, chatUnsubscribe});
+  it('handles STOP_CHAT_LISTENER_REQUEST', () => {
+    const state: State = {...initialState, unsubscribe, fetching: ['chat']};
+    const stateTwo: State = {...state, fetching: ['message', 'chat']};
+    expect(reducer(state, actions.request())).toStrictEqual(state);
+    expect(reducer(stateTwo, actions.request())).toStrictEqual(stateTwo);
   });
 
-  it('should handle STOP_CHAT_LISTENER_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, chatUnsubscribe},
-        actions.stopChatListenerSuccess(),
-      ),
-    )
-      .toStrictEqual(initialState);
+  it('handles STOP_CHAT_LISTENER_SUCCESS', () => {
+    const state: State = {...initialState, unsubscribe, fetching: ['chat']};
+    const stateTwo: State = {...state, fetching: ['message', 'chat']};
+    const expectedState: State = {...initialState, fetching: ['message']};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success())).toStrictEqual(expectedState);
   });
 
-  it('should handle STOP_CHAT_LISTENER_FAILURE', () => {
+  it('handles STOP_CHAT_LISTENER_FAILURE', () => {
+    const state: State = {...initialState, unsubscribe, fetching: ['chat']};;
+    const stateTwo: State = {...initialState, unsubscribe, fetching: ['message', 'chat']};;
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, chatUnsubscribe},
-        actions.stopChatListenerFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, chatUnsubscribe});
+    const expectedState: State = {...state, error};
+    const expectedStateTwo: State = {...stateTwo, error};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });

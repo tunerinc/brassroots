@@ -5,49 +5,46 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/chat';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/chat';
 import * as actions from './actions';
 
 describe('get chat reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_CHAT_REQUEST', () => {
-    expect(reducer(initialState, actions.getChatRequest()))
-      .toStrictEqual({...initialState, fetchingChat: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.getChatRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, fetchingChat: true});
+  it('handles GET_CHAT_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const stateTwo: State = {...state, fetching: ['media']};
+    const expectedState: State = {...initialState, fetching: ['chat']};
+    const expectedStateTwo: State = {...initialState, fetching: ['media', 'chat']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.request())).toStrictEqual(expectedStateTwo);
   });
 
-  it('should handle GET_CHAT_SUCCESS', () => {
+  it('handles GET_CHAT_SUCCESS', () => {
+    const state: State = {...initialState, fetching: ['chat']};
+    const stateTwo: State = {...initialState, fetching: ['media', 'chat']};
     const messages: Array<string> = ['foo', 'bar'];
-    const chatUnsubscribe: () => void = () => {return;};
-
-    expect(
-      reducer(
-        {...initialState, fetchingChat: true},
-        actions.getChatSuccess(messages, chatUnsubscribe),
-      ),
-    )
-      .toStrictEqual({...initialState, chatUnsubscribe, currentChat: messages.reverse()});
+    const currentChat: Array<string> = messages.reverse();
+    const unsubscribe: () => void = () => {return;};
+    const expectedState: State = {...initialState, currentChat, unsubscribe, totalCurrentChat: 2};
+    const expectedStateTwo: State = {...expectedState, fetching: ['media']};
+    expect(reducer(state, actions.success(messages, unsubscribe))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.success(messages, unsubscribe))).toStrictEqual(expectedStateTwo);
   });
 
-  it('should handle GET_CHAT_FAILURE', () => {
+  it('handles GET_CHAT_FAILURE', () => {
+    const state: State = {...initialState, fetching: ['chat']};
+    const stateTwo: State = {...initialState, fetching: ['media', 'chat']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, fetchingChat: true},
-        actions.getChatFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    const expectedStateTwo: State = {...expectedState, fetching: ['media']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });

@@ -18,12 +18,6 @@ import {
 } from './conversations';
 
 // Case Functions
-import {addSingleMessage, addMessages} from '../actions/chat/AddChatMessages/reducers';
-import * as getChat from '../actions/chat/GetChat/reducers';
-import * as sendChatMessage from '../actions/chat/SendChatMessage/reducers';
-import {setChatMessage} from '../actions/chat/SetChatMessage/reducers';
-import * as stopChatListener from '../actions/chat/StopChatListener/reducers';
-import {updateSingleMessage, updateChatMessage} from '../actions/chat/UpdateChatMessage/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -37,7 +31,7 @@ type Action = {
   +type?: string,
   +error?: Error,
   +messages?: {[id: string]: Message} | Array<string>,
-  +unsubscribe?: () => void,
+  +unsubscribe?: ?() => void,
   +chatID?: string,
   +updates?: State,
   +message?:
@@ -52,11 +46,10 @@ type Action = {
 
 type State = {
   +lastUpdated?: string,
-  +message?: string,
+  +text?: string,
   +currentChat?: Array<string>,
   +totalCurrentChat?: number,
-  +sendingMessage?: boolean,
-  +fetchingChat?: boolean,
+  +fetching?: Array<string>,
   +unsubscribe?: ?() => void,
   +error?: ?Error | SpotifyError,
 };
@@ -80,36 +73,57 @@ export type {
  * @type {object}
  * 
  * @property {string}   lastUpdated        The date/time the chat was last updated
- * @property {string}   message            The current message from the current user in the session
+ * @property {string}   text               The current text in the chat
  * @property {string[]} currentChat        The Brassroots ids of the chat messages in the session
  * @property {number}   totalCurrentChat=0 The total amount of chat messages in the session
- * @property {string}   sending=null       Whether the current user is sending any given item type
- * @property {string}   fetching=null      Whether the current user is fetching any given item type
+ * @property {string[]} fetching=[]        Whether the current user is fetching any given item type
  * @property {unsub}    unsubscribe=null   The function to invoke to unsubscribe the chat listener
  */
 export const initialState: State = {
   lastUpdated,
-  message: '',
+  text: '',
   currentChat: [],
   totalCurrentChat: 0,
-  sending: null,
-  fetching: null,
+  fetching: [],
   unsubscribe: null,
   error: null,
 };
 
-export function chatMessage(
-  state: Message = messageState,
+/**
+ * Updates the state by adding/removing values
+ * 
+ * @function update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {string} type        The type to remove from the fetching array
+ * 
+ * @returns {object}             The state with the updated values
+ */
+function update(
+  state: State,
   action: Action,
-): Message {
-  switch (action.type) {
-    case entityTypes.ADD_ENTITIES:
-      return addSingleMessage(state, action);
-    case entityTypes.UPDATE_ENTITIES:
-      return updateSingleMessage(state, action);
-    default:
-      return state;
-  }
+  type?: string,
+): State {
+  const {totalCurrentChat, unsubscribe, fetching: oldFetch, currentChat: oldChat} = state;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const stopListener: boolean = action.type === types.STOP_CHAT_LISTENER_SUCCESS;
+  const updates: State = Array.isArray(oldFetch) && Array.isArray(oldChat)
+    ? {
+      lastUpdated,
+      fetching: add && type ? oldFetch.concat(type) : type ? oldFetch.filter(t => t !== type) : oldFetch,
+      error: haveError ? action.error : null,
+      totalCurrentChat: Array.isArray(action.messages) ? action.messages.length : totalCurrentChat,
+      currentChat: Array.isArray(action.messages) ? [...action.messages] : [...oldChat],
+      unsubscribe: action.unsubscribe ? action.unsubscribe : stopListener ? null : unsubscribe,
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export default function reducer(
@@ -118,34 +132,28 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_CHAT_MESSAGES:
-        return addMessages(state, action);
       case types.GET_CHAT_REQUEST:
-        return getChat.request(state);
+        return update(state, action, 'chat');
       case types.GET_CHAT_SUCCESS:
-        return getChat.success(state, action);
+        return update(state, action);
       case types.GET_CHAT_FAILURE:
-        return getChat.failure(state, action);
+        return update(state, action, 'chat');
       case types.RESET_CHAT:
         return initialState;
       case types.SEND_CHAT_MESSAGE_REQUEST:
-        return sendChatMessage.request(state);
+        return update(state, action, 'message');
       case types.SEND_CHAT_MESSAGE_SUCCESS:
-        return sendChatMessage.success(state);
+        return update(state, action, 'message');
       case types.SEND_CHAT_MESSAGE_FAILURE:
-        return sendChatMessage.failure(state, action);
-      case types.SET_CHAT_MESSAGE:
-        return setChatMessage(state, action);
+        return update(state, action, 'message');
       case types.STOP_CHAT_LISTENER_REQUEST:
         return state;
       case types.STOP_CHAT_LISTENER_SUCCESS:
-        return stopChatListener.success(state);
+        return update(state, action, 'chat');
       case types.STOP_CHAT_LISTENER_FAILURE:
-        return stopChatListener.failure(state, action);
+        return update(state, action);
       case types.UPDATE_CHAT:
         return updateObject(state, action.updates);
-      case types.UPDATE_CHAT_MESSAGE:
-        return updateChatMessage(state, action);
       default:
         return state;
     }
