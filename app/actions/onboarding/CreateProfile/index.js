@@ -48,7 +48,7 @@ export function createProfile(
   spotifyUser: ?PrivateUser = null,
 ): ThunkAction {
   return async (dispatch, _, {getFirebase, getFirestore}) => {
-    dispatch(actions.createProfileRequest());
+    dispatch(actions.request());
 
     const firebase: FirebaseInstance = getFirebase();
     const firestore: FirestoreInstance = getFirestore();
@@ -131,10 +131,10 @@ export function createProfile(
 
       dispatch(addEntities({users: {[user.id]: newUserProfile}}));
       dispatch(updateUsers({currentUserID: user.id}));
-      dispatch(actions.createProfileSuccess());
+      dispatch(actions.success());
       Actions.createProfile();
     } catch (err) {
-      dispatch(actions.createProfileFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

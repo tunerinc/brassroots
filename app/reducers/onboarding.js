@@ -27,8 +27,8 @@ type Action = {
 
 type State = {
   +onboarding?: boolean,
-  +creatingUser?: boolean,
-  +profileCreated?: boolean,
+  +creating?: boolean,
+  +created?: boolean,
   +error?: ?Error | SpotifyError,
 };
 
@@ -46,15 +46,15 @@ export type {
  * @alias onboardingState
  * @type {object}
  * 
- * @property {boolean} onboarding=false       Whether the current user is onboarding
- * @property {boolean} creatingUser=false     Whether the current user is creating their profile
- * @property {boolean} profileCreated=false   Whether the current user's profile was created
- * @property {Error}   error=null             The error related to onboarding actions
+ * @property {boolean} onboarding=false Whether the current user is onboarding
+ * @property {boolean} creating=false   Whether the current user is creating their profile
+ * @property {boolean} created=false    Whether the current user's profile was created
+ * @property {Error}   error=null       The error related to onboarding actions
  */
 export const initialState: State = {
   onboarding: false,
-  creatingUser: false,
-  profileCreated: false,
+  creating: false,
+  created: false,
   error: null,
 };
 
@@ -65,11 +65,11 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.CREATE_PROFILE_REQUEST:
-        return updateObject(state, {creatingUser: true, error: null});
+        return updateObject(state, {creating: true, error: null});
       case types.CREATE_PROFILE_SUCCESS:
-          return updateObject(state, {creatingUser: false, profileCreated: true, error: null});
+        return updateObject(state, {creating: false, created: true, error: null});
       case types.CREATE_PROFILE_FAILURE:
-          return updateObject(state, {error: action.error, creatingUser: false});
+        return updateObject(state, {error: action.error, creating: false});
       case types.RESET_ONBOARDING:
         return initialState;
       case types.UPDATE_ONBOARDING:

@@ -9,10 +9,6 @@ import reducer, {
   initialState,
   type State,
 } from '../../../reducers/onboarding';
-import userReducer, {
-  initialState as userState,
-  type State as UserState,
-} from '../../../reducers/users';
 import * as actions from './actions';
 
 describe('create profile reducer', () => {
@@ -21,21 +17,20 @@ describe('create profile reducer', () => {
   });
 
   it('handles CREATE_PROFILE_REQUEST', () => {
-    const expectedState: State = {...initialState, creatingUser: true};
-    expect(reducer(initialState, actions.createProfileRequest())).toStrictEqual(expectedState);
+    const expectedState: State = {...initialState, creating: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
   it('handles CREATE_PROFILE_SUCCESS', () => {
-    const state: State = {...initialState, creatingUser: true};
-    const currentUserID: string = 'foo';
-    const expectedState: State = {...initialState, profileCreated: true};
-    expect(reducer(state, actions.createProfileSuccess())).toStrictEqual(expectedState);
+    const state: State = {...initialState, creating: true};
+    const expectedState: State = {...initialState, created: true};
+    expect(reducer(state, actions.success())).toStrictEqual(expectedState);
   });
 
   it('handles CREATE_PROFILE_FAILURE', () => {
-    const state: State = {...initialState, creatingUser: true};
+    const state: State = {...initialState, creating: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.createProfileFailure(error))).toStrictEqual(expectedState);
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

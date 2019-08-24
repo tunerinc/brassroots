@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/onboarding';
  * Notify the app of a create profile request
  * 
  * @alias module:CreateProfile
- * @function createProfileRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CREATE_PROFILE_REQUEST
  */
-export function createProfileRequest(): Action {
+export function request(): Action {
   return {type: types.CREATE_PROFILE_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function createProfileRequest(): Action {
  * Notify the app of a create profile success
  * 
  * @alias module:CreateProfile
- * @function createProfileSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CREATE_PROFILE_SUCCESS
  */
-export function createProfileSuccess(): Action {
+export function success(): Action {
   return {type: types.CREATE_PROFILE_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function createProfileSuccess(): Action {
  * Notify the app of a create profile failure
  * 
  * @alias module:CreateProfile
- * @function createProfileFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -52,7 +52,7 @@ export function createProfileSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of CREATE_PROFILE_FAILURE and the error which caused the failure
  */
-export function createProfileFailure(
+export function failure(
   error: Error,
 ): Action {
   return {
