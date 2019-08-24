@@ -16,23 +16,21 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a toggle mute request
  * 
  * @alias module:ToggleMute
- * @function toggleMuteRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @return {object} Redux action with the type of TOGGLE_MUTE_REQUEST
  */
-export function toggleMuteRequest(): Action {
-  return {
-    type: types.TOGGLE_MUTE_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.TOGGLE_MUTE_REQUEST};
 }
 
 /**
  * Notify the app of a toggle mute success
  * 
  * @alias module:ToggleMute
- * @function toggleMuteSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -40,7 +38,7 @@ export function toggleMuteRequest(): Action {
  *
  * @return {object}         Redux action with the type of TOGGLE_MUTE_SUCCESS and the new mute status
  */
-export function toggleMuteSuccess(
+export function success(
   status: boolean,
 ): Action {
   return {
@@ -53,7 +51,7 @@ export function toggleMuteSuccess(
  * Notify the app of a toggle mute failure
  * 
  * @alias module:ToggleMute
- * @function toggleMuteFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function toggleMuteSuccess(
  *
  * @return {object}       Redux action with the type of TOGGLE_MUTE_FAILURE and the error which caused the failure
  */
-export function toggleMuteFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

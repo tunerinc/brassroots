@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/player';
 
 describe('toggle repeat synchronous action creators', () => {
-  it('creates toggle repeat request action', () => {
-    const expectedAction: Action = {
-      type: types.TOGGLE_REPEAT_REQUEST,
-    };
-
-    expect(actions.toggleRepeatRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.TOGGLE_REPEAT_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates toggle repeat success action', () => {
+  it('creates success action', () => {
     const status: boolean = true;
     const expectedAction: Action = {
       type: types.TOGGLE_REPEAT_SUCCESS,
       status,
     };
 
-    expect(actions.toggleRepeatSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(status)).toStrictEqual(expectedAction);
   });
 
-  it('creates toggle repeat failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.TOGGLE_REPEAT_FAILURE,
       error,
     };
 
-    expect(actions.toggleRepeatFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

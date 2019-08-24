@@ -10,12 +10,12 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/player';
 
 describe('play track synchronous action creators', () => {
-  it('creates play track request action', () => {
+  it('creates request action', () => {
     const expectedAction: Action = {type: types.PLAY_TRACK_REQUEST};
-    expect(actions.playTrackRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates play track success action', () => {
+  it('creates success action', () => {
     const currentQueueID: string = 'foo';
     const currentTrackID: string = 'foo';
     const durationMS: number = 0;
@@ -30,16 +30,18 @@ describe('play track synchronous action creators', () => {
       prevTrackID,
     };
 
-    expect(actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS, prevQueueID))
+    const expectedActionTwo: Action = {...expectedAction, prevQueueID: null, prevTrackID: null};
+
+    expect(actions.success(currentQueueID, currentTrackID, durationMS, prevQueueID, prevTrackID))
       .toStrictEqual(expectedAction);
 
-    expect(actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS))
-      .toStrictEqual({...expectedAction, prevQueueID: null, prevTrackID: null});
+    expect(actions.success(currentQueueID, currentTrackID, durationMS))
+      .toStrictEqual(expectedActionTwo);
   });
 
-  it('creates play track failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {type: types.PLAY_TRACK_FAILURE, error};
-    expect(actions.playTrackFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

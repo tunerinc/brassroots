@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a seek position request
  *
  * @alias module:SeekPosition
- * @function seekPositionRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of SEEK_POSITION_REQUEST
  */
-export function seekPositionRequest(): Action {
-  return {
-    type: types.SEEK_POSITION_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.SEEK_POSITION_REQUEST};
 }
 
 /**
  * Notify the app of a seek position success
  * 
  * @alias module:SeekPosition
- * @function seekPositionSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of SEEK_POSITION_SUCCESS
  */
-export function seekPositionSuccess(): Action {
-  return {
-    type: types.SEEK_POSITION_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.SEEK_POSITION_SUCCESS};
 }
 
 /**
  * Notify the app of a seek position failure
  * 
  * @alias module:SeekPosition
- * @function seekPositionFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -56,7 +52,7 @@ export function seekPositionSuccess(): Action {
  * 
  * @return {object}           Redux action with the type of SEEK_POSITION_FAILURE and the error that caused the session to not seek to a new position
  */
-export function seekPositionFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

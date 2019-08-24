@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a stop player request
  * 
  * @alias module:StopPlayer
- * @function stopPlayerRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of STOP_PLAYER_REQUEST
  */
-export function stopPlayerRequest(): Action {
-  return {
-    type: types.STOP_PLAYER_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.STOP_PLAYER_REQUEST};
 }
 
 /**
  * Notify the app of a stop player success
  * 
  * @alias module:StopPlayer
- * @function stopPlayerSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of STOP_PLAYER_SUCCESS
  */
-export function stopPlayerSuccess(): Action {
-  return {
-    type: types.STOP_PLAYER_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.STOP_PLAYER_SUCCESS};
 }
 
 /**
  * Notify the app of a stop player failure
  * 
  * @alias module:StopPlayer
- * @function stopPlayerFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -56,7 +52,7 @@ export function stopPlayerSuccess(): Action {
  * 
  * @return {object}           Redux action with the type of STOP_PLAYER_FAILURE and the error which caused the failure
  */
-export function stopPlayerFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

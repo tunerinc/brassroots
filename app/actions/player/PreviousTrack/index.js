@@ -116,7 +116,7 @@ export function previousTrack(
   session: Session,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.previousTrackRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
@@ -219,7 +219,7 @@ export function previousTrack(
       );
 
       dispatch(
-        actions.previousTrackSuccess(
+        actions.success(
           queueID,
           prevDoc.data().track.id,
           prevDoc.data().track.duration_ms,
@@ -228,7 +228,7 @@ export function previousTrack(
         ),
       );
     } catch (err) {
-      dispatch(actions.previousTrackFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

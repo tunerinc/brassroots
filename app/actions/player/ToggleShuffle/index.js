@@ -36,16 +36,16 @@ export function toggleShuffle(
   status: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.toggleShuffleRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
 
     try {
       await sessionRef.update({shuffle: !status});
-      dispatch(actions.toggleShuffleSuccess(!status));
+      dispatch(actions.success(!status));
     } catch (err) {
-      dispatch(actions.toggleShuffleFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

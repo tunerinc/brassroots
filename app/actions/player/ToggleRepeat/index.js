@@ -36,16 +36,16 @@ export function toggleRepeat(
   status: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.toggleRepeatRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
 
     try {
       await sessionRef.update({repeat: !status});
-      dispatch(actions.toggleRepeatSuccess(!status));
+      dispatch(actions.success(!status));
     } catch (err) {
-      dispatch(actions.toggleRepeatFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

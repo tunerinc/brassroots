@@ -18,7 +18,7 @@ describe('play track reducer', () => {
 
   it('handles PLAY_TRACK_REQUEST', () => {
     const expectedState: State = {...initialState, attemptingToPlay: true};
-    expect(reducer(initialState, actions.playTrackRequest())).toStrictEqual(expectedState);
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
   it('handles PLAY_TRACK_SUCCESS', () => {
@@ -27,57 +27,32 @@ describe('play track reducer', () => {
     const durationMS: number = 0;
     const prevQueueID: string = 'bar';
     const prevTrackID: string = 'bar';
+    const state: State = {...initialState, attemptingToPlay: true};
+    const stateTwo: State = {...state, currentTrackID, currentQueueID};
 
-    expect(
-      reducer(
-        {...initialState, attemptingToPlay: true},
-        actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS),
-      ),
-    )
+    expect(reducer(state, actions.success(currentQueueID, currentTrackID, durationMS)))
       .toStrictEqual(
         {
           ...initialState,
           currentQueueID,
           currentTrackID,
           durationMS,
-          attemptingToPlay: false,
           paused: false,
         },
       );
 
-    expect(
-      reducer(
-        {
-          ...initialState,
-          currentTrackID,
-          currentQueueID,
-          attemptingToPlay: true,
-        },
-        actions.playTrackSuccess(currentQueueID, currentTrackID, durationMS),
-      ),
-    )
+    expect(reducer(stateTwo, actions.success(currentQueueID, currentTrackID, durationMS)))
       .toStrictEqual(
         {
           ...initialState,
           currentQueueID,
           currentTrackID,
           durationMS,
-          attemptingToPlay: false,
           paused: false,
         },
       );
 
-    expect(
-      reducer(
-        {
-          ...initialState,
-          currentTrackID,
-          currentQueueID,
-          attemptingToPlay: true,
-        },
-        actions.playTrackSuccess(prevQueueID, prevTrackID, durationMS),
-      ),
-    )
+    expect(reducer(stateTwo, actions.success(prevQueueID, prevTrackID, durationMS)))
       .toStrictEqual(
         {
           ...initialState,
@@ -86,7 +61,6 @@ describe('play track reducer', () => {
           currentTrackID: prevTrackID,
           prevQueueID: currentQueueID,
           prevTrackID: currentTrackID,
-          attemptingToPlay: false,
           paused: false,
         },
       );
@@ -96,6 +70,6 @@ describe('play track reducer', () => {
     const state: State = {...initialState, attemptingToPlay: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error, attemptingToPlay: false};
-    expect(reducer(state, actions.playTrackFailure(error))).toStrictEqual(expectedState);
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

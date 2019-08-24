@@ -38,7 +38,7 @@ export function toggleMute(
   status: boolean,
 ): ThunkAction {
   return async (dispatch, _, { getFirestore }) => {
-    dispatch(actions.toggleMuteRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -46,9 +46,9 @@ export function toggleMute(
 
     try {
       await sessionUserRef.update({muted: !status});
-      dispatch(actions.toggleMuteSuccess(!status));
+      dispatch(actions.success(!status));
     } catch (err) {
-      dispatch(actions.toggleMuteFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

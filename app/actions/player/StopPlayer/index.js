@@ -35,7 +35,7 @@ export function stopPlayer(
   sessionID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.stopPlayerRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -43,9 +43,9 @@ export function stopPlayer(
 
     try {
       await sessionRef.update({timeLastPlayed, paused: true, currentProgressMS: 0});
-      dispatch(actions.stopPlayerSuccess())
+      dispatch(actions.success())
     } catch (err) {
-      dispatch(actions.stopPlayerFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

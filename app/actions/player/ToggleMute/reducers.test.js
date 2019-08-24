@@ -5,46 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/player';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/player';
 import * as actions from './actions';
 
 describe('toggle mute reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle TOGGLE_MUTE_REQUEST', () => {
-    expect(reducer(initialState, actions.toggleMuteRequest()))
-      .toStrictEqual({...initialState, muting: true});
+  it('handles TOGGLE_MUTE_REQUEST', () => {
+    const expectedState: State = {...initialState, muting: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle TOGGLE_MUTE_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, muting: true},
-        actions.toggleMuteSuccess(true),
-      ),
-    )
-      .toStrictEqual({...initialState, muting: false, muted: true});
-
-    expect(
-      reducer(
-        {...initialState, muting: true, muted: true},
-        actions.toggleMuteSuccess(false),
-      ),
-    )
-      .toStrictEqual({...initialState, muting: false});
+  it('handles TOGGLE_MUTE_SUCCESS', () => {
+    const state: State = {...initialState, muting: true};
+    const stateTwo: State = {...state, muted: true};
+    const expectedState: State = {...initialState, muting: false, muted: true};
+    const expectedStateTwo: State = {...expectedState, muted: false};
+    expect(reducer(state, actions.success(true))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.success(false))).toStrictEqual(expectedStateTwo);
   });
 
-  it('should handle TOGGLE_MUTE_FAILURE', () => {
+  it('handles TOGGLE_MUTE_FAILURE', () => {
+    const state: State = {...initialState, muting: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, muting: true},
-        actions.toggleMuteFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, muting: false});
+    const expectedState: State = {...initialState, error, muting: false};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

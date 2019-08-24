@@ -41,7 +41,7 @@ export function startPlayer(
   position: number,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.startPlayerRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -54,9 +54,9 @@ export function startPlayer(
       ];
       
       await Promise.all(promises);
-      dispatch(actions.startPlayerSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.startPlayerFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

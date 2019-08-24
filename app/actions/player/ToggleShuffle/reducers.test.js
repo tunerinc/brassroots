@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/player';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/player';
 import * as actions from './actions';
 
 describe('toggle shuffle reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle TOGGLE_SHUFFLE_REQUEST', () => {
-    expect(reducer(initialState, actions.toggleShuffleRequest()))
-      .toStrictEqual({...initialState, shuffling: true});
+  it('handles TOGGLE_SHUFFLE_REQUEST', () => {
+    const expectedState: State = {...initialState, shuffling: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle TOGGLE_SHUFFLE_SUCCESS', () => {
+  it('handles TOGGLE_SHUFFLE_SUCCESS', () => {
     const shuffle: boolean = true;
-
-    expect(
-      reducer(
-        {...initialState, shuffling: true},
-        actions.toggleShuffleSuccess(shuffle),
-      ),
-    )
-      .toStrictEqual({...initialState, shuffle, shuffling: false});
-
-    expect(
-      reducer(
-        {...initialState, shuffle: true, shuffling: true},
-        actions.toggleShuffleSuccess(!shuffle),
-      ),
-    )
-      .toStrictEqual({...initialState, shuffling: false});
+    const state: State = {...initialState, shuffling: true};
+    const stateTwo: State = {...initialState, shuffle, shuffling: true};
+    const expectedState: State = {...initialState, shuffle};
+    expect(reducer(state, actions.success(shuffle))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.success(!shuffle))).toStrictEqual(initialState);
   });
 
-  it('should handle TOGGLE_SHUFFLE_FAILURE', () => {
+  it('handles TOGGLE_SHUFFLE_FAILURE', () => {
+    const state: State = {...initialState, shuffling: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, shuffling: true},
-        actions.toggleShuffleFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, shuffling: false});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

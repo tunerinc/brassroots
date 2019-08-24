@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a start player request
  * 
  * @alias module:StartPlayer
- * @function startPlayerRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of START_PLAYER_REQUEST
  */
-export function startPlayerRequest(): Action {
+export function request(): Action {
   return {type: types.START_PLAYER_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function startPlayerRequest(): Action {
  * Notify the app of a start player success
  * 
  * @alias module:StartPlayer
- * @function startPlayerSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of START_PLAYER_SUCCESS
  */
-export function startPlayerSuccess(): Action {
+export function success(): Action {
   return {type: types.START_PLAYER_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function startPlayerSuccess(): Action {
  * Notify the app of a start player failure
  * 
  * @alias module:StartPlayer
- * @function startPlayerFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -52,7 +52,7 @@ export function startPlayerSuccess(): Action {
  * 
  * @return {object}       Redux action with the type of START_PLAYER_FAILURE and the error which caused the failure
  */
-export function startPlayerFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

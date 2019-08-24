@@ -18,8 +18,8 @@ describe('next track reducer', () => {
   });
 
   it('should handle NEXT_TRACK_REQUEST', () => {
-    expect(reducer(initialState, actions.nextTrackRequest()))
-      .toStrictEqual({...initialState, skippingNext: true});
+    const expectedState: State = {...initialState, skippingNext: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
   it('should handle NEXT_TRACK_SUCCESS', () => {
@@ -28,71 +28,45 @@ describe('next track reducer', () => {
     const durationMS: number = 2000;
     const nextQueueID: string = 'foo';
     const nextTrackID: string = 'foo';
+    const state: State = {
+      ...initialState,
+      currentQueueID: 'foo',
+      currentTrackID: 'foo',
+      durationMS: 1000,
+      nextQueueID: 'bar',
+      nextTrackID: 'bar',
+    };
+
+    const expectedState: State = {
+      ...initialState,
+      currentQueueID,
+      currentTrackID,
+      durationMS,
+      prevQueueID: 'foo',
+      prevTrackID: 'foo',
+      nextQueueID: null,
+      nextTrackID: null,
+      paused: false,
+    };
+
+    const expectedStateTwo: State = {...expectedState, nextQueueID, nextTrackID};
+
+    expect(reducer(state, actions.success(currentQueueID, currentTrackID, durationMS)))
+      .toStrictEqual(expectedState);
 
     expect(
       reducer(
-        {
-          ...initialState,
-          currentQueueID: 'foo',
-          currentTrackID: 'foo',
-          durationMS: 1000,
-          nextQueueID: 'bar',
-          nextTrackID: 'bar',
-        },
-        actions.nextTrackSuccess(currentQueueID, currentTrackID, durationMS),
+        state,
+        actions.success(currentQueueID, currentTrackID, durationMS, nextQueueID, nextTrackID),
       )
     )
-      .toStrictEqual(
-        {
-          ...initialState,
-          currentQueueID,
-          currentTrackID,
-          durationMS,
-          prevQueueID: 'foo',
-          prevTrackID: 'foo',
-          nextQueueID: null,
-          nextTrackID: null,
-          paused: false,
-        },
-      );
-
-    expect(
-      reducer(
-        {
-          ...initialState,
-          currentQueueID: 'foo',
-          currentTrackID: 'foo',
-          durationMS: 1000,
-          nextQueueID: 'bar',
-          nextTrackID: 'bar',
-        },
-        actions.nextTrackSuccess(currentQueueID, currentTrackID, durationMS, nextQueueID, nextTrackID),
-      )
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          currentQueueID,
-          currentTrackID,
-          durationMS,
-          nextQueueID,
-          nextTrackID,
-          prevQueueID: 'foo',
-          prevTrackID: 'foo',
-          paused: false,
-        },
-      );
+      .toStrictEqual(expectedStateTwo);
   });
 
   it('should handle NEXT_TRACK_FAILURE', () => {
+    const state: State = {...initialState, skippingNext: true};
     const error: Error = new Error('foo');
-
-    expect(
-      reducer(
-        {...initialState, skippingNext: true},
-        actions.nextTrackFailure(error),
-      )
-    )
-      .toStrictEqual({...initialState, error, skippingNext: false});
+    const expectedState: State = {...initialState, error, skippingNext: false};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

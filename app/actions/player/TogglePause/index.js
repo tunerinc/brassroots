@@ -53,7 +53,7 @@ export function togglePause(
   paused: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.togglePauseRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
@@ -95,9 +95,9 @@ export function togglePause(
       }
 
       await batch.commit();
-      dispatch(actions.togglePauseSuccess(paused, session.progress));
+      dispatch(actions.success(paused, session.progress));
     } catch (err) {
-      dispatch(actions.togglePauseFailure(err));
+      dispatch(actions.failure(err));
     };
   };
 }

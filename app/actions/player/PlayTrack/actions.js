@@ -16,23 +16,21 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a play track request
  * 
  * @alias module:PlayTrack
- * @function playTrackRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @return {object} Redux action with the type of PLAY_TRACK_REQUEST
  */
-export function playTrackRequest(): Action {
-  return {
-    type: types.PLAY_TRACK_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.PLAY_TRACK_REQUEST};
 }
 
 /**
  * Notify the app of a play track success
  * 
  * @alias module:PlayTrack
- * @function playTrackSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -44,7 +42,7 @@ export function playTrackRequest(): Action {
  *
  * @return {object}                    Redux action with the type of PLAY_TRACK_SUCCESS and the queue id of the new track playing
  */
-export function playTrackSuccess(
+export function success(
   currentQueueID: ?string,
   currentTrackID: string,
   durationMS: number,
@@ -65,7 +63,7 @@ export function playTrackSuccess(
  * Notify the app of a play track failure
  * 
  * @alias module:PlayTrack
- * @function playTrackFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -73,7 +71,7 @@ export function playTrackSuccess(
  *
  * @return {object}       Redux action with the type of PLAY_TRACK_FAILURE and the error which caused the failure
  */
-export function playTrackFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

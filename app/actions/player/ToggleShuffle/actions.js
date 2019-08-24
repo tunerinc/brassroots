@@ -16,23 +16,21 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a toggle shuffle request
  * 
  * @alias module:ToggleShuffle
- * @function toggleShuffleRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @return {object} Redux action with the type of TOGGLE_SHUFFLE_REQUEST
  */
-export function toggleShuffleRequest(): Action {
-  return {
-    type: types.TOGGLE_SHUFFLE_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.TOGGLE_SHUFFLE_REQUEST};
 }
 
 /**
  * Notify the app of a toggle shuffle success
  * 
  * @alias module:ToggleShuffle
- * @function toggleShuffleSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -40,7 +38,7 @@ export function toggleShuffleRequest(): Action {
  *
  * @return {object}         Redux action with the type of TOGGLE_SHUFFLE_SUCCESS and the new shuffle status
  */
-export function toggleShuffleSuccess(
+export function success(
   status: boolean,
 ): Action {
   return {
@@ -53,7 +51,7 @@ export function toggleShuffleSuccess(
  * Notify the app of a toggle shuffle failure
  * 
  * @alias module:ToggleShuffle
- * @function toggleShuffleFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function toggleShuffleSuccess(
  *
  * @return {object}       Redux action with the type of TOGGLE_SHUFFLE_FAILURE and the error which caused the failure
  */
-export function toggleShuffleFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

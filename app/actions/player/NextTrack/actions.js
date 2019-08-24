@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a next track request
  * 
  * @alias module:NextTrack
- * @function nextTrackRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of NEXT_TRACK_REQUEST
  */
-export function nextTrackRequest(): Action {
+export function request(): Action {
   return {type: types.NEXT_TRACK_REQUEST};
 }
 
@@ -30,7 +30,7 @@ export function nextTrackRequest(): Action {
  * Notify the app of a next track success
  * 
  * @alias module:NextTrack
- * @function nextTrackSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -42,7 +42,7 @@ export function nextTrackRequest(): Action {
  *
  * @return {object}                            Redux action with the type of NEXT_TRACK_SUCCESS, the queue ids of the tracks, and the duration of the new track in milliseconds
  */
-export function nextTrackSuccess(
+export function success(
   currentQueueID: ?string = null,
   currentTrackID: string,
   durationMS: ?number = null,
@@ -63,7 +63,7 @@ export function nextTrackSuccess(
  * Notify the app of a next track failure
  * 
  * @alias module:NextTrack
- * @function nextTrackFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -71,7 +71,7 @@ export function nextTrackSuccess(
  *
  * @returns {object}       Redux action with the type of NEXT_TRACK_FAILURE and the error which caused the failure
  */
-export function nextTrackFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

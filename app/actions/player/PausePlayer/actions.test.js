@@ -12,12 +12,12 @@ import {type Action} from '../../../reducers/player';
 describe('pause player synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.PAUSE_PLAYER_REQUEST};
-    expect(actions.pausePlayerRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
     const expectedAction: Action = {type: types.PAUSE_PLAYER_SUCCESS};
-    expect(actions.pausePlayerSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -27,6 +27,6 @@ describe('pause player synchronous action creators', () => {
       error,
     };
 
-    expect(actions.pausePlayerFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

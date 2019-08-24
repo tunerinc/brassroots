@@ -11,7 +11,7 @@
 
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
-import {setProgress} from '../SetProgress';
+import {updatePlayer} from '../UpdatePlayer';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/player';
 import {
@@ -30,7 +30,7 @@ import {
  * 
  * @param    {string}  sessionID The session id to seek to a new position
  * @param    {string}  userID    The Brassroots id of the current user
- * @param    {number}  seekTime  The new position to seek the session to
+ * @param    {number}  progress  The new position to seek the session to
  * 
  * @return   {Promise}
  * @resolves {object}            Confirmation the session was successfully seeked to the new position
@@ -39,10 +39,10 @@ import {
 export function seekPosition(
   sessionID: string,
   userID: string,
-  seekTime: number,
+  progress: number,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.seekPositionRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -52,21 +52,16 @@ export function seekPosition(
     let batch: FirestoreBatch = firestore.batch();
 
     try {
-      const seconds: number = parseInt(Math.abs(seekTime / 1000).toFixed(0));
+      const seconds: number = parseInt(Math.abs(progress / 1000).toFixed(0));
 
-      batch.update(sessionRef, {timeLastPlayed, progress: seekTime});
-      batch.update(sessionUserRef, {progress: seekTime});
+      batch.update(sessionRef, {timeLastPlayed, progress});
+      batch.update(sessionUserRef, {progress});
 
-      const promises = [
-        batch.commit(),
-        Spotify.seek(seconds),
-      ];
-
-      await Promise.all(promises);
-      dispatch(setProgress(seekTime));
-      dispatch(actions.seekPositionSuccess());
+      await Promise.all([batch.commit(), Spotify.seek(seconds)]);
+      dispatch(updatePlayer({progress}));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.seekPositionFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

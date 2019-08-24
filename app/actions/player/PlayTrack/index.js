@@ -168,7 +168,7 @@ export function playTrack(
   context: ?Context,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.playTrackRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
@@ -298,9 +298,9 @@ export function playTrack(
       ];
 
       await Promise.all(promises);
-      dispatch(actions.playTrackSuccess(track.id, track.trackID, track.durationMS));
+      dispatch(actions.success(track.id, track.trackID, track.durationMS));
     } catch (err) {
-      dispatch(actions.playTrackFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

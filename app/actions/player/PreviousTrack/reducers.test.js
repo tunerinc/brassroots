@@ -5,37 +5,31 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/player';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/player';
 import * as actions from './actions';
 
 describe('previous track reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle PREVIOUS_TRACK_REQUEST', () => {
-    expect(reducer(initialState, actions.previousTrackRequest()))
-      .toStrictEqual({...initialState, skippingPrev: true});
+  it('handles PREVIOUS_TRACK_REQUEST', () => {
+    const expectedState: State = {...initialState, skippingPrev: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle PREVIOUS_TRACK_SUCCESS', () => {
+  it('handles PREVIOUS_TRACK_SUCCESS', () => {
+    const state: State = {...initialState, currentQueueID: 'bar', currentTrackID: 'bar', durationMS: 1000};
     const currentQueueID: string = 'foo';
     const currentTrackID: string = 'foo';
     const durationMS: number = 0;
     const prevQueueID: string = 'bar';
     const prevTrackID: string = 'bar';
 
-    expect(
-      reducer(
-        {
-          ...initialState,
-          currentQueueID: 'bar',
-          currentTrackID: 'bar',
-          durationMS: 1000,
-        },
-        actions.previousTrackSuccess(currentQueueID, currentTrackID, durationMS),
-      ),
-    )
+    expect(reducer(state, actions.success(currentQueueID, currentTrackID, durationMS)))
       .toStrictEqual(
         {
           ...initialState,
@@ -50,19 +44,8 @@ describe('previous track reducer', () => {
 
     expect(
       reducer(
-        {
-          ...initialState,
-          currentQueueID: 'bar',
-          currentTrackID: 'bar',
-          durationMS: 1000,
-        },
-        actions.previousTrackSuccess(
-          currentQueueID,
-          currentTrackID,
-          durationMS,
-          prevQueueID,
-          prevTrackID,
-        ),
+        state,
+        actions.success(currentQueueID, currentTrackID, durationMS, prevQueueID, prevTrackID),
       ),
     )
       .toStrictEqual(
@@ -78,15 +61,10 @@ describe('previous track reducer', () => {
       );
   });
 
-  it('should handle PREVIOUS_TRACK_FAILURE', () => {
+  it('handles PREVIOUS_TRACK_FAILURE', () => {
+    const state: State = {...initialState, skippingPrev: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, skippingPrev: true},
-        actions.previousTrackFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, skippingPrev: false});
+    const expectedState: State = {...initialState, error, skippingPrev: false};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

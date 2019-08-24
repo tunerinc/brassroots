@@ -39,7 +39,7 @@ export function pausePlayer(
   progress: number,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.pausePlayerRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -52,9 +52,9 @@ export function pausePlayer(
       ];
       
       await Promise.all(promises);
-      dispatch(actions.pausePlayerSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.pausePlayerFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

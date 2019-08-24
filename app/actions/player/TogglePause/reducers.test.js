@@ -5,46 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/player';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/player';
 import * as actions from './actions';
 
 describe('toggle pause reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle TOGGLE_PAUSE_REQUEST', () => {
-    expect(reducer(initialState, actions.togglePauseRequest()))
-      .toStrictEqual({...initialState, pausing: true});
+  it('handles TOGGLE_PAUSE_REQUEST', () => {
+    const expectedState: State = {...initialState, pausing: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle TOGGLE_PAUSE_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, pausing: true},
-        actions.togglePauseSuccess(false, 1000),
-      ),
-    )
-      .toStrictEqual({...initialState, paused: false, pausing: false, progress: 1000});
-
-    expect(
-      reducer(
-        {...initialState, paused: false, pausing: true},
-        actions.togglePauseSuccess(true, 1000),
-      ),
-    )
-      .toStrictEqual({...initialState, paused: true, pausing: false, progress: 1000});
+  it('handles TOGGLE_PAUSE_SUCCESS', () => {
+    const state: State = {...initialState, pausing: true};
+    const stateTwo: State = {...initialState, paused: false, pausing: true}
+    const expectedState: State = {...initialState, paused: false, pausing: false, progress: 1000};
+    const expectedStateTwo: State = {...expectedState, paused: true};
+    expect(reducer(state, actions.success(false, 1000))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.success(true, 1000))).toStrictEqual(expectedStateTwo);
   });
 
-  it('should handle TOGGLE_PAUSE_FAILURE', () => {
+  it('handles TOGGLE_PAUSE_FAILURE', () => {
+    const state: State = {...initialState, pausing: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, pausing: true},
-        actions.togglePauseFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, pausing: false});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

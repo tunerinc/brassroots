@@ -11,11 +11,8 @@ import {type Action} from '../../../reducers/player';
 
 describe('previous track synchronous action creators', () => {
   it('creates previous track request action', () => {
-    const expectedAction: Action = {
-      type: types.PREVIOUS_TRACK_REQUEST,
-    };
-
-    expect(actions.previousTrackRequest()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.PREVIOUS_TRACK_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates previous track success action', () => {
@@ -33,7 +30,7 @@ describe('previous track synchronous action creators', () => {
       prevTrackID: null,
     };
 
-    expect(actions.previousTrackSuccess(currentQueueID, currentTrackID, durationMS))
+    expect(actions.success(currentQueueID, currentTrackID, durationMS))
       .toStrictEqual(expectedAction);
 
     const expectedActionWithPrev: Action = {
@@ -46,7 +43,7 @@ describe('previous track synchronous action creators', () => {
     };
 
     expect(
-      actions.previousTrackSuccess(
+      actions.success(
         currentQueueID,
         currentTrackID,
         durationMS,
@@ -64,6 +61,6 @@ describe('previous track synchronous action creators', () => {
       error,
     };
 
-    expect(actions.previousTrackFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

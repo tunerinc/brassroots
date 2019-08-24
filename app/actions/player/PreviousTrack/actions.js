@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a previous track request
  * 
  * @alias module:PreviousTrack
- * @function previousTrackRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of PREVIOUS_TRACK_REQUEST
  */
-export function previousTrackRequest(): Action {
+export function request(): Action {
   return {
     type: types.PREVIOUS_TRACK_REQUEST,
   };
@@ -32,7 +32,7 @@ export function previousTrackRequest(): Action {
  * Notify the app of a previous track success
  * 
  * @alias module:PreviousTrack
- * @function previousTrackSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -44,7 +44,7 @@ export function previousTrackRequest(): Action {
  *
  * @returns {object}                    Redux action with the type of PREVIOUS_TRACK_SUCCESS, the queue ids of the tracks, and the duration of the current track in milliseconds
  */
-export function previousTrackSuccess(
+export function success(
   currentQueueID: string,
   currentTrackID: string,
   durationMS: number,
@@ -65,7 +65,7 @@ export function previousTrackSuccess(
  * Notify the app of a previous track failure
  * 
  * @alias module:PreviousTrack
- * @function previousTrackFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -73,7 +73,7 @@ export function previousTrackSuccess(
  *
  * @returns {object}       Redux action with the type of PREVIOUS_TRACK_FAILURE and the error which caused the failure
  */
-export function previousTrackFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

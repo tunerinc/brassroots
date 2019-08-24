@@ -19,19 +19,19 @@ describe('pause player reducer', () => {
   it('handles PAUSE_PLAYER_REQUEST', () => {
     const state: State = {...initialState, paused: false};
     const expectedState: State = {...initialState, pausing: true, paused: false};
-    expect(reducer(state, actions.pausePlayerRequest())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
   it('handles PAUSE_PLAYER_SUCCESS', () => {
     const state: State = {...initialState, pausing: true, paused: false};
     const expectedState: State = {...initialState, pausing: false, paused: true};
-    expect(reducer(state, actions.pausePlayerSuccess())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.success())).toStrictEqual(expectedState);
   });
 
   it('handles PAUSE_PLAYER_FAILURE', () => {
     const state: State = {...initialState, pausing: true, paused: false};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error, pausing: false, paused: false};
-    expect(reducer(state, actions.pausePlayerFailure(error))).toStrictEqual(expectedState);
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

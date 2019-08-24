@@ -14,17 +14,8 @@ import * as types from '../actions/player/types';
 
 // Case Functions
 import * as nextTrack from '../actions/player/NextTrack/reducers';
-import * as pausePlayer from '../actions/player/PausePlayer/reducers';
 import * as playTrack from '../actions/player/PlayTrack/reducers';
 import * as previousTrack from '../actions/player/PreviousTrack/reducers';
-import * as seekPosition from '../actions/player/SeekPosition/reducers';
-import {setProgress} from '../actions/player/SetProgress/reducers';
-import * as startPlayer from '../actions/player/StartPlayer/reducers';
-import * as stopPlayer from '../actions/player/StopPlayer/reducers';
-import * as toggleMute from '../actions/player/ToggleMute/reducers';
-import * as togglePause from '../actions/player/TogglePause/reducers';
-import * as toggleRepeat from '../actions/player/ToggleRepeat/reducers';
-import * as toggleShuffle from '../actions/player/ToggleShuffle/reducers';
 import {updatePlayer} from '../actions/player/UpdatePlayer/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -165,75 +156,95 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.NEXT_TRACK_REQUEST:
-        return nextTrack.request(state);
+        return updateObject(state, {skippingNext: true, error: null});
       case types.NEXT_TRACK_SUCCESS:
         return nextTrack.success(state, action);
       case types.NEXT_TRACK_FAILURE:
-        return nextTrack.failure(state, action);
+        return updateObject(state, {error: action.error, skippingNext: false});
       case types.PAUSE_PLAYER_REQUEST:
-        return pausePlayer.request(state);
+        return updateObject(state, {pausing: true, error: null});
       case types.PAUSE_PLAYER_SUCCESS:
-        return pausePlayer.success(state);
+        return updateObject(state, {lastUpdated, paused: true, pausing: false, error: null});
       case types.PAUSE_PLAYER_FAILURE:
-        return pausePlayer.failure(state, action);
+        return updateObject(state, {error: action.error, paused: false, pausing: false});
       case types.PLAY_TRACK_REQUEST:
-        return playTrack.request(state);
+        return updateObject(state, {attemptingToPlay: true, error: null});
       case types.PLAY_TRACK_SUCCESS:
         return playTrack.success(state, action);
       case types.PLAY_TRACK_FAILURE:
-        return playTrack.failure(state, action);
+        return updateObject(state, {error: action.error, attemptingToPlay: false});
       case types.PREVIOUS_TRACK_REQUEST:
-        return previousTrack.request(state);
+        return updateObject(state, {skippingPrev: true, error: null});
       case types.PREVIOUS_TRACK_SUCCESS:
         return previousTrack.success(state, action);
       case types.PREVIOUS_TRACK_FAILURE:
-        return previousTrack.failure(state, action);
+        return updateObject(state, {error: action.error, skippingPrev: false});
       case types.RESET_PLAYER:
         return initialState;
       case types.SEEK_POSITION_REQUEST:
-        return seekPosition.request(state);
+        return updateObject(state, {seeking: true, error: null});
       case types.SEEK_POSITION_SUCCESS:
-        return seekPosition.success(state);
+        return updateObject(state, {seeking: false, error: null});
       case types.SEEK_POSITION_FAILURE:
-        return seekPosition.failure(state, action);
-      case types.SET_PROGRESS:
-        return setProgress(state, action);
+        return updateObject(state, {error: action.error, seeking: false});
       case types.START_PLAYER_REQUEST:
-        return startPlayer.request(state);
+        return updateObject(state, {attemptingToPlay: true, error: null});
       case types.START_PLAYER_SUCCESS:
-        return startPlayer.success(state);
+        return updateObject(state, {
+          lastUpdated,
+          paused: false,
+          attemptingToPlay: false,
+          error: null,
+        });
       case types.START_PLAYER_FAILURE:
-        return startPlayer.failure(state, action);
+        return updateObject(state, {error: action.error, attemptingToPlay: false});
       case types.STOP_PLAYER_REQUEST:
-        return stopPlayer.request(state);
+        return updateObject(state, {pausing: true, error: null});
       case types.STOP_PLAYER_SUCCESS:
-        return stopPlayer.success(state);
+        return updateObject(state, {
+          lastUpdated,
+          pausing: false,
+          paused: true,
+          progress: 0,
+          error: null,
+        });
       case types.STOP_PLAYER_FAILURE:
-        return stopPlayer.failure(state, action);
+        return updateObject(state, {error: action.error, pausing: false, paused: false});
       case types.TOGGLE_MUTE_REQUEST:
-        return toggleMute.request(state);
+        return updateObject(state, {muting: true, error: null});
       case types.TOGGLE_MUTE_SUCCESS:
-        return toggleMute.success(state, action);
+        return updateObject(state, {lastUpdated, muted: action.status, muting: false, error: null});
       case types.TOGGLE_MUTE_FAILURE:
-        return toggleMute.failure(state, action);
+        return updateObject(state, {error: action.error, muting: false});
       case types.TOGGLE_PAUSE_REQUEST:
-        return togglePause.request(state);
+        return updateObject(state, {pausing: true, error: null});
       case types.TOGGLE_PAUSE_SUCCESS:
-        return togglePause.success(state, action);
+        return updateObject(state, {
+          lastUpdated,
+          progress: action.progress,
+          paused: action.status,
+          pausing: false,
+          error: null,
+        });
       case types.TOGGLE_PAUSE_FAILURE:
-        return togglePause.failure(state, action);
+        return updateObject(state, {error: action.error, pausing: false});
       case types.TOGGLE_REPEAT_REQUEST:
-        return toggleRepeat.request(state);
+        return updateObject(state, {repeating: true, error: null});
       case types.TOGGLE_REPEAT_SUCCESS:
-        return toggleRepeat.success(state, action);
+        return updateObject(state, {
+          lastUpdated,
+          repeat: action.status,
+          repeating: false,
+          error: null,
+        });
       case types.TOGGLE_REPEAT_FAILURE:
-        return toggleRepeat.failure(state, action);
+        return updateObject(state, {error: action.error, repeating: false});
       case types.TOGGLE_SHUFFLE_REQUEST:
-        return toggleShuffle.request(state);
+        return updateObject(state, {shuffling: true, error: null});
       case types.TOGGLE_SHUFFLE_SUCCESS:
-        return toggleShuffle.success(state, action);
+        return updateObject(state, {shuffle: action.status, shuffling: false, error: null});
       case types.TOGGLE_SHUFFLE_FAILURE:
-        return toggleShuffle.failure(state, action);
+        return updateObject(state, {error: action.error, shuffling: false});
       case types.UPDATE_PLAYER:
         return updatePlayer(state, action);
       default:

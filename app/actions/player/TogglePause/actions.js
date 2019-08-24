@@ -16,23 +16,21 @@ import {type Action} from '../../../reducers/player';
  * Notify the app of a toggle pause track request
  * 
  * @alias module:TogglePause
- * @function togglePauseRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @return {object} Redux action with the type of TOGGLE_PAUSE_REQUEST
  */
-export function togglePauseRequest(): Action {
-  return {
-    type: types.TOGGLE_PAUSE_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.TOGGLE_PAUSE_REQUEST};
 }
 
 /**
  * Notify the app of a toggle pause track success
  * 
  * @alias module:TogglePause
- * @function togglePauseSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -41,7 +39,7 @@ export function togglePauseRequest(): Action {
  *
  * @return {object}           Redux action with the type of TOGGLE_PAUSE_SUCCESS and the new pause status with the progress
  */
-export function togglePauseSuccess(
+export function success(
   status: boolean,
   progress: number,
 ): Action {
@@ -56,7 +54,7 @@ export function togglePauseSuccess(
  * Notify the app of a toggle pause track failure
  * 
  * @alias module:TogglePause
- * @function togglePauseFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -64,7 +62,7 @@ export function togglePauseSuccess(
  *
  * @return {object}       Redux action with the type of TOGGLE_PAUSE_FAILURE and the error which caused the failure
  */
-export function togglePauseFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

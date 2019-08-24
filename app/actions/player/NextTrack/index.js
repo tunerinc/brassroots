@@ -77,7 +77,7 @@ export function nextTrack(
   nextQueueID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.nextTrackRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
@@ -142,7 +142,7 @@ export function nextTrack(
       await Promise.all(promises);
       dispatch(removeQueueTrack(nextQueueID));
       dispatch(
-        actions.nextTrackSuccess(
+        actions.success(
           nextQueueID,
           nextDoc.data().track.id,
           nextDoc.data().track.durationMS,
@@ -151,7 +151,7 @@ export function nextTrack(
         ),
       );
     } catch (err) {
-      dispatch(actions.nextTrackFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }
