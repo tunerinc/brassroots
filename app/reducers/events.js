@@ -10,9 +10,6 @@ import updateObject from '../utils/updateObject';
 import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/events/types';
 
-// Case Functions
-import * as sendEventsBatch from '../actions/events/SendEventsBatch/reducers';
-
 export const lastTimeSent: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
 type GetState = () => State;
@@ -143,7 +140,7 @@ function addEvent(
   const {batch} = state;
   const {event} = action;
   return updateObject(state, {batch: [...batch, ...(event && event.eventType ? [event] : [])]});
-};
+}
 
 export default function reducer(
   state: State = initialState,
@@ -162,11 +159,11 @@ export default function reducer(
       case types.VIEWED_MUSIC_INFO:
         return addEvent(state, action);
       case types.SEND_EVENTS_BATCH_REQUEST:
-        return sendEventsBatch.request(state);
+        return updateObject(state, {uploading: true, error: null});
       case types.SEND_EVENTS_BATCH_SUCCESS:
-        return sendEventsBatch.success();
+        return updateObject(initialState, {lastTimeSent});
       case types.SEND_EVENTS_BATCH_FAILURE:
-        return sendEventsBatch.failure(state, action);
+        return updateObject(state, {error: action.error, uploading: false});
       default:
         return state;
     }
