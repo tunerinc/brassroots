@@ -213,7 +213,7 @@ export function album(
 }
 
 /**
- * Updates the fetching value in state by adding/removing a type
+ * Updates the state by adding/removing values
  * 
  * @function update
  * 
@@ -224,14 +224,14 @@ export function album(
  * @param   {string} action.type The type of Redux action
  * @param   {string} type        The type to remove from the fetching array
  * 
- * @returns {object}             The state with the fetching and error props updated
+ * @returns {object}             The state with the updated values
  */
 function update(
   state: State,
   action: Action,
   type?: string,
 ): State {
-  const {fetching: oldFetch, userAlbums: oldAlbums, refreshing: oldRefresh, totalUserAlbums} = state;
+  const {totalUserAlbums, fetching: oldFetch, userAlbums: oldAlbums, refreshing: oldRefresh} = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
   const updates: State = Array.isArray(oldFetch) && Array.isArray(oldAlbums)

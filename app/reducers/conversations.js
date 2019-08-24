@@ -9,15 +9,17 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
-import {type Action as EntitiesAction} from './entities';
+import {type Action as EntitiesAction, entityTypeState} from './entities';
+import {type Action as ChatAction} from './chat';
 import * as types from '../actions/conversations/types';
 import * as entitiesTypes from '../actions/entities/types';
+import * as chatTypes from '../actions/chat/types';
 
 // Case Functions
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
-type DispatchAction = Action | EntitiesAction;
+type DispatchAction = Action | EntitiesAction | ChatAction;
 type GetState = () => State;
 type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
@@ -30,12 +32,13 @@ type Message = {
   +fetching?: Array<string>,
   +read?: Array<string>,
   +timestamp?: ?string,
+  +error?: ?Error,
   +sender?: ?{
     +id: string,
     +image: string,
     +name: string,
   },
-  +media: ?{
+  +media?: ?{
     +id: string,
     +type: string,
   },
@@ -104,6 +107,7 @@ export type {
  * @property {object}   media=null     The media included in the message
  * @property {string}   media.id       The id of the media
  * @property {string}   media.type     The type of media
+ * @property {Error}    error          Any errors that may arise for a message
  */
 export const messageState: Message = {
   lastUpdated,
@@ -114,6 +118,7 @@ export const messageState: Message = {
   timestamp: null,
   sender: null,
   media: null,
+  error: null,
 };
 
 /**
@@ -174,9 +179,11 @@ export const initialState: State = {
 
 export function message(
   state: Message = messageState,
-  action: Action,
+  action: DispatchAction,
 ): Message {
   switch (action.type) {
+    case entitiesTypes.ADD_ENTITIES:
+      return updateObject(state, {...(action.item ? action.item : {})});
     default:
       return state;
   }

@@ -198,7 +198,7 @@ export function artist(
 }
 
 /**
- * Updates the fetching value in state by adding/removing a type
+ * Updates the state by adding/removing values
  * 
  * @function update
  * 
@@ -209,14 +209,14 @@ export function artist(
  * @param   {string} action.type The type of Redux action
  * @param   {string} type        The type to remove from the fetching array
  * 
- * @returns {object}             The state with the fetching and error props updated
+ * @returns {object}             The state with the updated values
  */
 function update(
   state: State,
   action: Action,
   type: string,
 ): State {
-  const {fetching: oldFetch, userArtists: oldArtists, totalUserArtists} = state;
+  const {totalUserArtists, fetching: oldFetch, userArtists: oldArtists} = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
   const updates: State = Array.isArray(oldFetch) && Array.isArray(oldArtists)

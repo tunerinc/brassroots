@@ -179,51 +179,15 @@ export const initialState: State = {
   error: null,
 };
 
-/**
- * Adds a single user
- * 
- * @function addOrUpdateUser
- * 
- * @author Aldo Gonzalez <aldo@tunerinc.com>
- * 
- * @param   {object}   state                         The Redux state
- * @param   {object}   action                        The Redux action
- * @param   {string}   action.type                   The type of Redux action
- * @param   {object}   action.items                  The users that are being added in total
- * @param   {object}   action.item                   The user object to add
- * @param   {string}   action.item.id                The Brassroots id of the single user
- * @param   {string}   [action.item.displayName]     The display name of the single user
- * @param   {string}   [action.item.profileImage]    The profile image of the single user
- * @param   {string}   [action.item.coverImage]      The cover image of the single user
- * @param   {string}   [action.item.bio]             The bio of the single user
- * @param   {string}   [action.item.location]        The location of the single user
- * @param   {string}   [action.item.website]         The website of the single user
- * @param   {string[]} [action.item.mostPlayed]      The Spotify ids of the single user's most played tracks to add
- * @param   {string[]} [action.item.recentlyPlayed]  The Spotify ids of the single user's recently played tracks to add
- * @param   {string[]} [action.item.topPlaylists]    The SPotify ids of the single user's top playlists to add
- * @param   {string}   [action.item.favoriteTrackID] The Spotify id of the single user's favorite track to add
- * 
- * @returns {object}                                 The state of the newly added single user
- */
-function addOrUpdateUser(
-  state: User,
-  action: Action,
-): User {
-  const {item} = action;
-  return updateObject(state, item);
-}
-
 export function user(
   state: User = singleState,
   action: Action,
 ): User {
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
-      return addOrUpdateUser(state, action);
+      return updateObject(state, action.item);
     case types.ADD_USER_RECENT_TRACK:
       return addSingleRecentTrack(state, action);
-    case types.ADD_USER_TOP_PLAYLISTS:
-      return addOrUpdateUser(state, action);
     default:
       return state;
   }
