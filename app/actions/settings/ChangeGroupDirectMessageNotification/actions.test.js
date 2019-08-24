@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change group direct message notification synchronous action creators', () => {
-  it('creates change group direct message notification request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST,
-    };
-
-    expect(actions.changeGroupDirectMessageNotificationRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change group direct message notification success action', () => {
-    const status: string = 'foo';
+  it('creates success action', () => {
+    const groupMessage: string = 'foo';
     const expectedAction: Action = {
       type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS,
-      status,
+      updates: {notify: {groupMessage}},
     };
 
-    expect(actions.changeGroupDirectMessageNotificationSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(groupMessage)).toStrictEqual(expectedAction);
   });
 
-  it('creates change group direct message notification failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE,
       error,
     };
 
-    expect(actions.changeGroupDirectMessageNotificationFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

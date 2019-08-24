@@ -36,16 +36,16 @@ export function changeThemeColor(
   theme: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeThemeColorRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({theme});
-      dispatch(actions.changeThemeColorSuccess(theme));
+      dispatch(actions.success(theme));
     } catch (err) {
-      dispatch(actions.changeThemeColorFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

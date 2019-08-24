@@ -36,16 +36,16 @@ export function changeMessagePreference(
   status: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeMessagePreferenceRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({messagePreference: status});
-      dispatch(actions.changeMessagePreferenceSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeMessagePreferenceFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change session chat notification reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_SESSION_CHAT_NOTIFICATION_REQUEST', () => {
-    expect(reducer(initialState, actions.changeSessionChatNotificationRequest()))
-      .toStrictEqual({...initialState, saving: ['session chat']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['session chat']},
-        actions.changeSessionChatNotificationRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['session chat']});
+  it('handles CHANGE_SESSION_CHAT_NOTIFICATION_REQUEST', () => {
+    const state: State = {...initialState, failed: ['session chat']};
+    const expectedState: State = {...initialState, saving: ['session chat']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_SESSION_CHAT_NOTIFICATION_SUCCESS', () => {
+  it('handles CHANGE_SESSION_CHAT_NOTIFICATION_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['session chat']};
     const chat: string = 'foo';
-
-    expect(
-      reducer(
-        {...initialState, saving: ['session chat']},
-        actions.changeSessionChatNotificationSuccess(chat),
-      ),
-    )
-      .toStrictEqual({...initialState, notify: {...initialState.notify, chat}});
+    const expectedState: State = {...initialState, notify: {...initialState.notify, chat}};
+    expect(reducer(state, actions.success(chat))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_SESSION_CHAT_NOTIFICATION_FAILURE', () => {
+  it('handles CHANGE_SESSION_CHAT_NOTIFICATION_FAILURE', () => {
+    const state: State = {...initialState, saving: ['session chat']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['session chat']},
-        actions.changeSessionChatNotificationFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['session chat']});
+    const expectedState: State = {...initialState, error, failed: ['session chat']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

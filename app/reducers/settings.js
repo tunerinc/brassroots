@@ -23,26 +23,6 @@ import {type Action as TrackAction} from './tracks';
 import {type Action as UserAction} from './users';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 
-// Case Functions
-import * as authorizeUser from '../actions/settings/AuthUser/reducers';
-import * as changeDirectMessageNotification from '../actions/settings/ChangeDirectMessageNotification/reducers';
-import * as changeGroupDirectMessageNotification from '../actions/settings/ChangeGroupDirectMessageNotification/reducers';
-import * as changeLikeTrackNotification from '../actions/settings/ChangeLikeTrackNotification/reducers';
-import * as changeMessagePreference from '../actions/settings/ChangeMessagePreference/reducers';
-import * as changeNearbySessionNotification from '../actions/settings/ChangeNearbySessionNotification/reducers';
-import * as changeNewFollowerNotification from '../actions/settings/ChangeNewFollowerNotification/reducers';
-import * as changePlaylistChangeNotification from '../actions/settings/ChangePlaylistChangeNotification/reducers';
-import * as changePlaylistJoinNotification from '../actions/settings/ChangePlaylistJoinNotification/reducers';
-import * as changePlaylistPreference from '../actions/settings/ChangePlaylistPreference/reducers';
-import * as changeSessionChatNotification from '../actions/settings/ChangeSessionChatNotification/reducers';
-import * as changeSessionPreference from '../actions/settings/ChangeSessionPreference/reducers';
-import * as changeSessionsNotification from '../actions/settings/ChangeSessionsNotification/reducers';
-import * as changeSoundEffects from '../actions/settings/ChangeSoundEffects/reducers';
-import * as changeThemeColor from '../actions/settings/ChangeThemeColor/reducers';
-import * as getUserSettings from '../actions/settings/GetUserSettings/reducers';
-import * as initializeSpotify from '../actions/settings/InitializeSpotify/reducers';
-import * as logOut from '../actions/settings/LogOut/reducers';
-
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type DispatchAction =
@@ -202,7 +182,7 @@ export const initialState: State = {
 /**
  * Updates any of the values in the settings state
  * 
- * @function addOrUpdate
+ * @function update
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -210,14 +190,19 @@ export const initialState: State = {
  * @param   {object} action         The Redux action
  * @param   {string} action.type    The type of Redux action
  * @param   {object} action.updates The updatees to make to the state
+ * @param   {string} action.type    The type to add/remove from saving/failed props
  * 
  * @returns {object}                The state with the new information added/updated
  */
-function addOrUpdate(
+function update(
   state: State,
   action: Action,
+  type?: string,
 ): State {
-  const {notify: oldNotify, preference: oldPref} = state;
+  const {saving, failed, notify: oldNotify, preference: oldPref} = state;
+  const {error} = action;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
   const notify = oldNotify && action.updates && action.updates.notify
     ? updateObject(oldNotify, action.updates.notify)
     : oldNotify;
@@ -226,7 +211,18 @@ function addOrUpdate(
     ? updateObject(oldPref, action.updates.preference)
     : oldPref;
 
-  return updateObject(state, {...action.updates, notify, preference});
+  const updates: State = Array.isArray(saving) && Array.isArray(failed)
+    ? {
+      ...(action.updates ? action.updates : {}),
+      notify,
+      preference,
+      error: error ? error : null,
+      saving: type && add ? saving.concat(type) : saving.filter(t => t !== type),
+      failed: type && haveError ? failed.concat(type) : failed.filter(t => t !== type),
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export default function reducer(
@@ -236,117 +232,89 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.AUTHORIZE_USER_REQUEST:
-        return authorizeUser.request(state);
+        return updateObject(state, {loggingIn: true, error: null});
       case types.AUTHORIZE_USER_SUCCESS:
-        return authorizeUser.success(state);
+        return updateObject(state, {lastUpdated, loggingIn: false, loggedIn: true, error: null});
       case types.AUTHORIZE_USER_FAILURE:
-        return authorizeUser.failure(state, action);
+        return updateObject(state, {error: action.error, loggingIn: false});
       case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST:
-        return changeDirectMessageNotification.request(state);
       case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS:
-        return changeDirectMessageNotification.success(state, action);
       case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
-        return changeDirectMessageNotification.failure(state, action);
+        return update(state, action, 'direct message');
       case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST:
-        return changeGroupDirectMessageNotification.request(state);
       case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS:
-        return changeGroupDirectMessageNotification.success(state, action);
       case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
-        return changeGroupDirectMessageNotification.failure(state, action);
+        return update(state, action, 'group message');
       case types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST:
-        return changeLikeTrackNotification.request(state);
       case types.CHANGE_LIKE_TRACK_NOTIFICATION_SUCCESS:
-        return changeLikeTrackNotification.success(state, action);
       case types.CHANGE_LIKE_TRACK_NOTIFICATION_FAILURE:
-        return changeLikeTrackNotification.failure(state, action);
+        return update(state, action, 'liked track');
       case types.CHANGE_MESSAGE_PREFERENCE_REQUEST:
-        return changeMessagePreference.request(state);
       case types.CHANGE_MESSAGE_PREFERENCE_SUCCESS:
-        return changeMessagePreference.success(state, action);
       case types.CHANGE_MESSAGE_PREFERENCE_FAILURE:
-        return changeMessagePreference.failure(state, action);
+        return update(state, action, 'message pref');
       case types.CHANGE_NEARBY_SESSION_NOTIFICATION_REQUEST:
-        return changeNearbySessionNotification.request(state);
       case types.CHANGE_NEARBY_SESSION_NOTIFICATION_SUCCESS:
-        return changeNearbySessionNotification.success(state, action);
       case types.CHANGE_NEARBY_SESSION_NOTIFICATION_FAILURE:
-        return changeNearbySessionNotification.failure(state, action);
+        return update(state, action, 'nearby session');
       case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST:
-        return changeNewFollowerNotification.request(state);
       case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS:
-        return changeNewFollowerNotification.success(state, action);
       case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_FAILURE:
-        return changeNewFollowerNotification.failure(state, action);
+        return update(state, action, 'new follower');
       case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_REQUEST:
-        return changePlaylistChangeNotification.request(state);
       case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_SUCCESS:
-        return changePlaylistChangeNotification.success(state, action);
       case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_FAILURE:
-        return changePlaylistChangeNotification.failure(state, action);
+        return update(state, action, 'playlist change');
       case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_REQUEST:
-        return changePlaylistJoinNotification.request(state);
       case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_SUCCESS:
-        return changePlaylistJoinNotification.success(state, action);
       case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_FAILURE:
-        return changePlaylistJoinNotification.failure(state, action);
+        return update(state, action, 'playlist join');
       case types.CHANGE_PLAYLIST_PREFERENCE_REQUEST:
-        return changePlaylistPreference.request(state);
       case types.CHANGE_PLAYLIST_PREFERENCE_SUCCESS:
-        return changePlaylistPreference.success(state, action);
       case types.CHANGE_PLAYLIST_PREFERENCE_FAILURE:
-        return changePlaylistPreference.failure(state, action);
+        return update(state, action, 'playlist pref');
       case types.CHANGE_SESSION_CHAT_NOTIFICATION_REQUEST:
-        return changeSessionChatNotification.request(state);
       case types.CHANGE_SESSION_CHAT_NOTIFICATION_SUCCESS:
-        return changeSessionChatNotification.success(state, action);
       case types.CHANGE_SESSION_CHAT_NOTIFICATION_FAILURE:
-        return changeSessionChatNotification.failure(state, action);
+        return update(state, action, 'session chat');
       case types.CHANGE_SESSION_PREFERENCE_REQUEST:
-        return changeSessionPreference.request(state);
       case types.CHANGE_SESSION_PREFERENCE_SUCCESS:
-        return changeSessionPreference.success(state, action);
       case types.CHANGE_SESSION_PREFERENCE_FAILURE:
-        return changeSessionPreference.failure(state, action);
+        return update(state, action, 'session pref');
       case types.CHANGE_SESSIONS_NOTIFICATION_REQUEST:
-        return changeSessionsNotification.request(state);
       case types.CHANGE_SESSIONS_NOTIFICATION_SUCCESS:
-        return changeSessionsNotification.success(state, action);
       case types.CHANGE_SESSIONS_NOTIFICATION_FAILURE:
-        return changeSessionsNotification.failure(state, action);
+        return update(state, action, 'sessions');
       case types.CHANGE_SOUND_EFFECTS_REQUEST:
-        return changeSoundEffects.request(state);
       case types.CHANGE_SOUND_EFFECTS_SUCCESS:
-        return changeSoundEffects.success(state, action);
       case types.CHANGE_SOUND_EFFECTS_FAILURE:
-        return changeSoundEffects.failure(state, action);
+        return update(state, action, 'sound effects');
       case types.CHANGE_THEME_COLOR_REQUEST:
-        return changeThemeColor.request(state);
       case types.CHANGE_THEME_COLOR_SUCCESS:
-        return changeThemeColor.success(state, action);
       case types.CHANGE_THEME_COLOR_FAILURE:
-        return changeThemeColor.failure(state, action);
+        return update(state, action, 'theme');
       case types.GET_USER_SETTINGS_REQUEST:
-        return getUserSettings.request(state);
+        return updateObject(state, {fetchingSettings: true, error: null});
       case types.GET_USER_SETTINGS_SUCCESS:
-        return getUserSettings.success(state);
+        return updateObject(state, {lastUpdated, fetchingSettings: false, error: null});
       case types.GET_USER_SETTINGS_FAILURE:
-        return getUserSettings.failure(state, action);
+        return updateObject(state, {error: action.error, fetchingSettings: false});
       case types.INITIALIZE_SPOTIFY_REQUEST:
-        return initializeSpotify.request(state);
+        return updateObject(state, {initializing: true, error: null});
       case types.INITIALIZE_SPOTIFY_SUCCESS:
-        return initializeSpotify.success(state, action);
+        return updateObject(state, {lastUpdated, loggedIn: action.loggedIn, initializing: false});
       case types.INITIALIZE_SPOTIFY_FAILURE:
-        return initializeSpotify.failure(state, action);
+        return updateObject(state, {error: action.error, initializing: false});
       case types.LOG_OUT_REQUEST:
-        return logOut.request(state);
+        return updateObject(state, {loggingOut: true, error: null});
       case types.LOG_OUT_SUCCESS:
-        return logOut.success();
+        return updateObject(initialState, {initialized: true});
       case types.LOG_OUT_FAILURE:
-        return logOut.failure(state, action);
+        return updateObject(state, {error: action.error, loggingOut: false});
       case types.RESET_SETTINGS:
         return initialState;
       case types.UPDATE_SETTINGS:
-        return addOrUpdate(state, action);
+        return update(state, action);
       default:
         return state;
     }

@@ -36,16 +36,16 @@ export function changePlaylistJoinNotification(
   status: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changePlaylistJoinNotificationRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({playlistJoinNotification: status});
-      dispatch(actions.changePlaylistJoinNotificationSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changePlaylistJoinNotificationFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

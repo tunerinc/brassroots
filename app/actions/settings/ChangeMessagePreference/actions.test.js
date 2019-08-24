@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change message preference synchronous action creators', () => {
-  it('creates change message preference request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_MESSAGE_PREFERENCE_REQUEST,
-    };
-
-    expect(actions.changeMessagePreferenceRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_MESSAGE_PREFERENCE_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change message preference success action', () => {
-    const status: string = 'foo';
+  it('creates success action', () => {
+    const message: string = 'foo';
     const expectedAction: Action = {
       type: types.CHANGE_MESSAGE_PREFERENCE_SUCCESS,
-      status,
+      updates: {preference: {message}},
     };
 
-    expect(actions.changeMessagePreferenceSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(message)).toStrictEqual(expectedAction);
   });
 
-  it('creates change message preference failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_MESSAGE_PREFERENCE_FAILURE,
       error,
     };
 
-    expect(actions.changeMessagePreferenceFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

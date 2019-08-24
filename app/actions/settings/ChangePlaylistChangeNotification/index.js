@@ -36,16 +36,16 @@ export function changePlaylistChangeNotification(
   status: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changePlaylistChangeNotificationRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({playlistChangeNotification: status});
-      dispatch(actions.changePlaylistChangeNotificationSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changePlaylistChangeNotificationFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

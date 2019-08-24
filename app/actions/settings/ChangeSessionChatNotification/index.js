@@ -36,16 +36,16 @@ export function changeSessionChatNotification(
   status: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeSessionChatNotificationRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({sessionChatNotification: status});
-      dispatch(actions.changeSessionChatNotificationSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeSessionChatNotificationFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

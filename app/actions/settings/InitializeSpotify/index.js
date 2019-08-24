@@ -13,9 +13,9 @@ import Spotify from 'rn-spotify-sdk';
 import {Actions, ActionConst} from 'react-native-router-flux';
 import * as actions from './actions';
 import {getUserSettings} from '../GetUserSettings';
-import {authorizeUserSuccess} from '../AuthUser/actions';
-import {setOnboarding} from '../../onboarding/SetOnboarding';
-import {addCurrentUser} from '../../users/AddCurrentUser';
+import {addEntities} from '../../entities/AddEntities';
+import {updateOnboarding} from '../../onboarding/UpdateOnboarding';
+import {updateUsers} from '../../users/UpdateUsers';
 import envConfig from '../../../../env.json';
 import {type ThunkAction} from '../../../reducers/settings';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
@@ -39,7 +39,7 @@ import {
  */
 export function initializeSpotify(): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.initializeSpotifyRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
 
@@ -97,20 +97,20 @@ export function initializeSpotify(): ThunkAction {
             totalFollowing: userDoc.data().totals.following,
           };
 
-          dispatch(actions.initializeSpotifySuccess(true));
-          dispatch(authorizeUserSuccess());
-          dispatch(addCurrentUser(user));
-          dispatch(setOnboarding(false));
+          dispatch(actions.success(true));
+          dispatch(addEntities({users: {[user.id]: user}}));
+          dispatch(updateUsers({currentUserID: user.id}));
+          dispatch(updateOnboarding({onboarding: false}));
           dispatch(getUserSettings(user.id));
           Actions.root({type: ActionConst.RESET});
         } else {
-          dispatch(actions.initializeSpotifySuccess(false));
+          dispatch(actions.success(false));
         }
       } else {
-        dispatch(actions.initializeSpotifySuccess(false));
+        dispatch(actions.success(false));
       }
     } catch (err) {
-      dispatch(actions.initializeSpotifyFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

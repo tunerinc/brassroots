@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change sessions notification synchronous action creators', () => {
-  it('creates change sessions notification request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_SESSIONS_NOTIFICATION_REQUEST,
-    };
-
-    expect(actions.changeSessionsNotificationRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_SESSIONS_NOTIFICATION_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change sessions notification success action', () => {
-    const status: string = 'foo';
+  it('creates success action', () => {
+    const session: string = 'foo';
     const expectedAction: Action = {
       type: types.CHANGE_SESSIONS_NOTIFICATION_SUCCESS,
-      status,
+      updates: {notify: {session}},
     };
 
-    expect(actions.changeSessionsNotificationSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(session)).toStrictEqual(expectedAction);
   });
 
-  it('creates change sessions notification failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_SESSIONS_NOTIFICATION_FAILURE,
       error,
     };
 
-    expect(actions.changeSessionsNotificationFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

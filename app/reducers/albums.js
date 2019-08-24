@@ -265,21 +265,15 @@ export default function reducer(
       case types.GET_ALBUMS_FAILURE:
         return update(state, action, 'albums');
       case types.GET_ALBUM_TOP_LISTENERS_REQUEST:
-        return update(state, action, 'topListeners');
       case types.GET_ALBUM_TOP_LISTENERS_SUCCESS:
-        return update(state, action, 'topListeners');
       case types.GET_ALBUM_TOP_LISTENERS_FAILURE:
         return update(state, action, 'topListeners');
       case types.GET_ALBUM_TOP_PLAYLISTS_REQUEST:
-        return update(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_PLAYLISTS_SUCCESS:
-        return update(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_PLAYLISTS_FAILURE:
         return update(state, action, 'topPlaylists');
       case types.GET_ALBUM_TOP_TRACKS_REQUEST:
-        return update(state, action, 'topTracks');
       case types.GET_ALBUM_TOP_TRACKS_SUCCESS:
-        return update(state, action, 'topTracks');
       case types.GET_ALBUM_TOP_TRACKS_FAILURE:
         return update(state, action, 'topTracks');
       case types.INCREMENT_ALBUM_PLAYS_REQUEST:

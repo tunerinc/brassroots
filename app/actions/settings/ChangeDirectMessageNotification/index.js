@@ -36,16 +36,16 @@ export function changeDirectMessageNotification(
   status: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeDirectMessageNotificationRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({directMessageNotification: status});
-      dispatch(actions.changeDirectMessageNotificationSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeDirectMessageNotificationFailure(err))
+      dispatch(actions.failure(err))
     }
   };
 }

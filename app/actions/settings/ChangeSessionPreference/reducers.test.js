@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change session preference reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_SESSION_PREFERENCE_REQUEST', () => {
-    expect(reducer(initialState, actions.changeSessionPreferenceRequest()))
-      .toStrictEqual({...initialState, saving: ['session pref']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['session pref']},
-        actions.changeSessionPreferenceRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['session pref']});
+  it('handles CHANGE_SESSION_PREFERENCE_REQUEST', () => {
+    const state: State = {...initialState, failed: ['session pref']};
+    const expectedState: State = {...initialState, saving: ['session pref']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_SESSION_PREFERENCE_SUCCESS', () => {
+  it('handles CHANGE_SESSION_PREFERENCE_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['session pref']};
     const session: string = 'foo';
-
-    expect(
-      reducer(
-        {...initialState, saving: ['session pref']},
-        actions.changeSessionPreferenceSuccess(session),
-      ),
-    )
-      .toStrictEqual({...initialState, preference: {...initialState.preference, session}});
+    const expectedState: State = {...initialState, preference: {...initialState.preference, session}};
+    expect(reducer(state, actions.success(session))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_SESSION_PREFERENCE_FAILURE', () => {
+  it('handles CHANGE_SESSION_PREFERENCE_FAILURE', () => {
+    const state: State = {...initialState, saving: ['session pref']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['session pref']},
-        actions.changeSessionPreferenceFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['session pref']});
+    const expectedState: State = {...initialState, error, failed: ['session pref']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

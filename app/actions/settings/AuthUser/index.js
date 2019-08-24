@@ -11,10 +11,11 @@
 
 import Spotify from 'rn-spotify-sdk';
 import {Actions, ActionConst} from 'react-native-router-flux';
-import {setOnboarding} from '../../onboarding/SetOnboarding';
+import {addEntities} from '../../entities/AddEntities';
+import {updateOnboarding} from '../../onboarding/UpdateOnboarding';
+import {updateUsers} from '../../users/UpdateUsers';
 import {getUserSettings} from '../GetUserSettings';
 import {createProfile} from '../../onboarding/CreateProfile';
-import {addCurrentUser} from '../../users/AddCurrentUser';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/settings';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
@@ -38,7 +39,7 @@ import {
  */
 export function authorizeUser(): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.authorizeUserRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
 
@@ -71,18 +72,19 @@ export function authorizeUser(): ThunkAction {
           totalFollowing: userDoc.data().totals.following,
         };
 
-        dispatch(actions.authorizeUserSuccess());
-        dispatch(addCurrentUser(user));
-        dispatch(setOnboarding(false));
+        dispatch(actions.success());
+        dispatch(addEntities({users: {[user.id]: user}}));
+        dispatch(updateUsers({currentUserID: user.id}));
+        dispatch(updateOnboarding({onboarding: false}));
         dispatch(getUserSettings(user.id));
         Actions.root({type: ActionConst.RESET});
       } else {
-        dispatch(actions.authorizeUserSuccess());
-        dispatch(setOnboarding(true));
+        dispatch(actions.success());
+        dispatch(updateOnboarding({onboarding: true}));
         dispatch(createProfile(spotifyUser));
       }
     } catch (err) {
-      dispatch(actions.authorizeUserFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

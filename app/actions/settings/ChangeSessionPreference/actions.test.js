@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change session preference synchronous action creators', () => {
-  it('creates change session preference request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_SESSION_PREFERENCE_REQUEST,
-    };
-
-    expect(actions.changeSessionPreferenceRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_SESSION_PREFERENCE_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change session preference success action', () => {
-    const status: string = 'foo';
+  it('creates success action', () => {
+    const session: string = 'foo';
     const expectedAction: Action = {
       type: types.CHANGE_SESSION_PREFERENCE_SUCCESS,
-      status,
+      updates: {preference: {session}},
     };
 
-    expect(actions.changeSessionPreferenceSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(session)).toStrictEqual(expectedAction);
   });
 
-  it('creates change session preference failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_SESSION_PREFERENCE_FAILURE,
       error,
     };
 
-    expect(actions.changeSessionPreferenceFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change message preference reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_MESSAGE_PREFERENCE_REQUEST', () => {
-    expect(reducer(initialState, actions.changeMessagePreferenceRequest()))
-      .toStrictEqual({...initialState, saving: ['message pref']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['message pref']},
-        actions.changeMessagePreferenceRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['message pref']});
+  it('handles CHANGE_MESSAGE_PREFERENCE_REQUEST', () => {
+    const state: State = {...initialState, failed: ['message pref']};
+    const expectedState: State = {...initialState, saving: ['message pref']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_MESSAGE_PREFERENCE_SUCCESS', () => {
+  it('handles CHANGE_MESSAGE_PREFERENCE_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['message pref']};
     const message: string = 'foo';
-
-    expect(
-      reducer(
-        {...initialState, saving: ['message pref']},
-        actions.changeMessagePreferenceSuccess(message),
-      ),
-    )
-      .toStrictEqual({...initialState, preference: {...initialState.preference, message}});
+    const expectedState: State = {...initialState, preference: {...initialState.preference, message}};
+    expect(reducer(state, actions.success(message))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_MESSAGE_PREFERENCE_FAILURE', () => {
+  it('handles CHANGE_MESSAGE_PREFERENCE_FAILURE', () => {
+    const state: State = {...initialState, saving: ['message pref']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['message pref']},
-        actions.changeMessagePreferenceFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['message pref']});
+    const expectedState: State = {...initialState, error, failed: ['message pref']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

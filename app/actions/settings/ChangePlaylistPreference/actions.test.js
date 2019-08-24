@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change playlist preference synchronous action creators', () => {
-  it('creates change playlist preference request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_PLAYLIST_PREFERENCE_REQUEST,
-    };
-
-    expect(actions.changePlaylistPreferenceRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_PLAYLIST_PREFERENCE_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change playlist preference success action', () => {
-    const status: string = 'foo';
+  it('creates success action', () => {
+    const playlist: string = 'foo';
     const expectedAction: Action = {
       type: types.CHANGE_PLAYLIST_PREFERENCE_SUCCESS,
-      status,
+      updates: {preference: {playlist}},
     };
 
-    expect(actions.changePlaylistPreferenceSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(playlist)).toStrictEqual(expectedAction);
   });
 
-  it('creates change playlist preference failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_PLAYLIST_PREFERENCE_FAILURE,
       error,
     };
 
-    expect(actions.changePlaylistPreferenceFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

@@ -36,16 +36,16 @@ export function changeNearbySessionNotification(
   status: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeNearbySessionNotificationRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({nearbySessionNotification: status});
-      dispatch(actions.changeNearbySessionNotificationSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeNearbySessionNotificationFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

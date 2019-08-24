@@ -5,38 +5,32 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('auth user reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle AUTHORIZE_USER_REQUEST', () => {
-    expect(reducer(initialState, actions.authorizeUserRequest()))
-      .toStrictEqual({...initialState, loggingIn: true});
+  it('handles AUTHORIZE_USER_REQUEST', () => {
+    const expectedState: State = {...initialState, loggingIn: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle AUTHORIZE_USER_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, loggingIn: true},
-        actions.authorizeUserSuccess(),
-        ),
-    )
-      .toStrictEqual({...initialState, loggingIn: false, loggedIn: true});
+  it('handles AUTHORIZE_USER_SUCCESS', () => {
+    const state: State = {...initialState, loggingIn: true};
+    const expectedState: State = {...initialState, loggedIn: true};
+    expect(reducer(state, actions.success())).toStrictEqual(expectedState);
   });
 
-  it('should handle AUTHORIZE_USER_FAILURE', () => {
+  it('handles AUTHORIZE_USER_FAILURE', () => {
+    const state: State = {...initialState, loggingIn: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, loggingIn: true},
-        actions.authorizeUserFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, loggingIn: false});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change theme color synchronous action creators', () => {
-  it('creates change theme color request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_THEME_COLOR_REQUEST,
-    };
-
-    expect(actions.changeThemeColorRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_THEME_COLOR_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change theme color success action', () => {
+  it('creates success action', () => {
     const theme: string = 'foo';
     const expectedAction: Action = {
       type: types.CHANGE_THEME_COLOR_SUCCESS,
-      theme,
+      updates: {theme},
     };
 
-    expect(actions.changeThemeColorSuccess(theme)).toStrictEqual(expectedAction);
+    expect(actions.success(theme)).toStrictEqual(expectedAction);
   });
 
-  it('creates change theme color failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_THEME_COLOR_FAILURE,
       error,
     };
 
-    expect(actions.changeThemeColorFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

@@ -16,36 +16,34 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change session preference request
  * 
  * @alias module:ChangeSessionPreference
- * @function changeSessionPreferenceRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_SESSION_PREFERENCE_REQUEST
  */
-export function changeSessionPreferenceRequest(): Action {
-  return {
-    type: types.CHANGE_SESSION_PREFERENCE_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_SESSION_PREFERENCE_REQUEST};
 }
 
 /**
  * Notify the app of a change session preference success
  * 
  * @alias module:ChangeSessionPreference
- * @function changeSessionPreferenceSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} status The updated session preference status for the current user
+ * @param   {string} session The updated session preference status for the current user
  *
  * @returns {object}        Redux action with the type of CHANGE_SESSION_PREFERENCE_SUCCESS and the updated preference status
  */
-export function changeSessionPreferenceSuccess(
-  status: string,
+export function success(
+  session: string,
 ): Action {
   return {
     type: types.CHANGE_SESSION_PREFERENCE_SUCCESS,
-    status,
+    updates: {preference: {session}},
   };
 }
 
@@ -53,7 +51,7 @@ export function changeSessionPreferenceSuccess(
  * Notify the app of a change session preference failure
  * 
  * @alias module:ChangeSessionPreference
- * @function changeSessionPreferenceFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function changeSessionPreferenceSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_SESSION_PREFERENCE_FAILURE and the error which caused the failure
  */
-export function changeSessionPreferenceFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

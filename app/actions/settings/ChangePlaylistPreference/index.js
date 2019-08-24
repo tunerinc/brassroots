@@ -36,16 +36,16 @@ export function changePlaylistPreference(
   status: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changePlaylistPreferenceRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({playlistPreference: status});
-      dispatch(actions.changePlaylistPreferenceSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changePlaylistPreferenceFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

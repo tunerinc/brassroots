@@ -36,16 +36,16 @@ export function changeSessionPreference(
   status: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeSessionPreferenceRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({sessionPreference: status});
-      dispatch(actions.changeSessionPreferenceSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeSessionPreferenceFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

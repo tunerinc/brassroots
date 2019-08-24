@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change direct message notification synchronous action creators', () => {
-  it('creates change direct message notification request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST,
-    };
-
-    expect(actions.changeDirectMessageNotificationRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change direct message notification success action', () => {
-    const status: boolean = true;
+  it('creates success action', () => {
+    const message: boolean = true;
     const expectedAction: Action = {
       type: types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS,
-      status,
+      updates: {notify: {message}},
     };
 
-    expect(actions.changeDirectMessageNotificationSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(message)).toStrictEqual(expectedAction);
   });
 
-  it('creates change direct message notification failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE,
       error,
     };
 
-    expect(actions.changeDirectMessageNotificationFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

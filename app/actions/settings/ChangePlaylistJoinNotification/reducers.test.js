@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change playlist join notification reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_PLAYLIST_JOIN_NOTIFICATION_REQUEST', () => {
-    expect(reducer(initialState, actions.changePlaylistJoinNotificationRequest()))
-      .toStrictEqual({...initialState, saving: ['playlist join']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['playlist join']},
-        actions.changePlaylistJoinNotificationRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['playlist join']});
+  it('handles CHANGE_PLAYLIST_JOIN_NOTIFICATION_REQUEST', () => {
+    const state: State = {...initialState, failed: ['playlist join']};
+    const expectedState: State = {...initialState, saving: ['playlist join']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_PLAYLIST_JOIN_NOTIFICATION_SUCCESS', () => {
+  it('handles CHANGE_PLAYLIST_JOIN_NOTIFICATION_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['playlist join']};
     const playlistJoin: boolean = false;
-
-    expect(
-      reducer(
-        {...initialState, saving: ['playlist join']},
-        actions.changePlaylistJoinNotificationSuccess(playlistJoin),
-      ),
-    )
-      .toStrictEqual({...initialState, notify: {...initialState.notify, playlistJoin}});
+    const expectedState: State = {...initialState, notify: {...initialState.notify, playlistJoin}};
+    expect(reducer(state, actions.success(playlistJoin))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_PLAYLIST_JOIN_NOTIFICATION_FAILURE', () => {
+  it('handles CHANGE_PLAYLIST_JOIN_NOTIFICATION_FAILURE', () => {
+    const state: State = {...initialState, saving: ['playlist join']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['playlist join']},
-        actions.changePlaylistJoinNotificationFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['playlist join']});
+    const expectedState: State = {...initialState, error, failed: ['playlist join']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

@@ -16,23 +16,21 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change theme color request
  * 
  * @alias module:ChangeThemeColor
- * @function changeThemeColorRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_THEME_COLOR_REQUEST
  */
-export function changeThemeColorRequest(): Action {
-  return {
-    type: types.CHANGE_THEME_COLOR_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_THEME_COLOR_REQUEST};
 }
 
 /**
  * Notify the app of a change theme color success
  * 
  * @alias module:ChangeThemeColor
- * @function changeThemeColorSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -40,12 +38,12 @@ export function changeThemeColorRequest(): Action {
  *
  * @returns {object}       Redux action with the type of CHANGE_THEME_COLOR_SUCCESS and the new theme color
  */
-export function changeThemeColorSuccess(
+export function success(
   theme: string,
 ): Action {
   return {
     type: types.CHANGE_THEME_COLOR_SUCCESS,
-    theme,
+    updates: {theme},
   };
 }
 
@@ -53,7 +51,7 @@ export function changeThemeColorSuccess(
  * Notify the app of a change theme color failure
  * 
  * @alias module:ChangeThemeColor
- * @function changeThemeColorFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function changeThemeColorSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_THEME_COLOR_FAILURE and the error which caused the failure
  */
-export function changeThemeColorFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

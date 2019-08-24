@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change nearby session notification reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_NEARBY_SESSION_NOTIFICATION_REQUEST', () => {
-    expect(reducer(initialState, actions.changeNearbySessionNotificationRequest()))
-      .toStrictEqual({...initialState, saving: ['nearby session']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['nearby session']},
-        actions.changeNearbySessionNotificationRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['nearby session']});
+  it('handles CHANGE_NEARBY_SESSION_NOTIFICATION_REQUEST', () => {
+    const state: State = {...initialState, failed: ['nearby session']};
+    const expectedState: State = {...initialState, saving: ['nearby session']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_NEARBY_SESSION_NOTIFICATION_SUCCESS', () => {
+  it('handles CHANGE_NEARBY_SESSION_NOTIFICATION_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['nearby session']};
     const nearbySession: string = 'foo';
-
-    expect(
-      reducer(
-        {...initialState, saving: ['nearby session']},
-        actions.changeNearbySessionNotificationSuccess(nearbySession),
-      ),
-    )
-      .toStrictEqual({...initialState, notify: {...initialState.notify, nearbySession}});
+    const expectedState: State = {...initialState, notify: {...initialState.notify, nearbySession}};
+    expect(reducer(state, actions.success(nearbySession))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_NEARBY_SESSION_NOTIFICATION_FAILURE', () => {
+  it('handles CHANGE_NEARBY_SESSION_NOTIFICATION_FAILURE', () => {
+    const state: State = {...initialState, saving: ['nearby session']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['nearby session']},
-        actions.changeNearbySessionNotificationFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['nearby session']});
+    const expectedState: State = {...initialState, error, failed: ['nearby session']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

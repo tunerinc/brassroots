@@ -16,36 +16,34 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change like track notification request
  * 
  * @alias module:ChangeLikeTrackNotification
- * @function changeLikeTrackNotificationRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST
  */
-export function changeLikeTrackNotificationRequest(): Action {
-  return {
-    type: types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST};
 }
 
 /**
  * Notify the app of a change like track notification success
  * 
  * @alias module:ChangeLikeTrackNotification
- * @function changeLikeTrackNotificationSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {boolean} status The updated like track notification status for the current user
+ * @param   {boolean} likedTrack The updated like track notification status for the current user
  *
- * @returns {object}         Redux action with the type of CHANGE_LIKE_TRACK_NOTIFICATION_SUCCESS and the updated notification status
+ * @returns {object}             Redux action with the type of CHANGE_LIKE_TRACK_NOTIFICATION_SUCCESS and the updated notification status
  */
-export function changeLikeTrackNotificationSuccess(
-  status: boolean,
+export function success(
+  likedTrack: boolean,
 ): Action {
   return {
     type: types.CHANGE_LIKE_TRACK_NOTIFICATION_SUCCESS,
-    status,
+    updates: {notify: {likedTrack}},
   };
 }
 
@@ -53,7 +51,7 @@ export function changeLikeTrackNotificationSuccess(
  * Notify the app of a change like track notification failure
  * 
  * @alias module:ChangeLikeTrackNotification
- * @function changeLikeTrackNotificationFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function changeLikeTrackNotificationSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_LIKE_TRACK_NOTIFICATION_FAILURE and the error which caused the failure
  */
-export function changeLikeTrackNotificationFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

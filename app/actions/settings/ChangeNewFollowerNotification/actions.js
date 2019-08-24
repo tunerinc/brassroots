@@ -16,36 +16,34 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change new follower notification request
  * 
  * @alias module:ChangeNewFollowerNotification
- * @function changeNewFollowerNotificationRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST
  */
-export function changeNewFollowerNotificationRequest(): Action {
-  return {
-    type: types.CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST};
 }
 
 /**
  * Notify the app of a change new follower notification success
  * 
  * @alias module:ChangeNewFollowerNotification
- * @function changeNewFollowerNotificationSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {boolean} status The updated new follower notification status for the current user
+ * @param   {boolean} newFollower The updated new follower notification status for the current user
  *
- * @returns {object}         Redux action with the type of CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS and the updated notification status
+ * @returns {object}              Redux action with the type of CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS and the updated notification status
  */
-export function changeNewFollowerNotificationSuccess(
-  status: boolean,
+export function success(
+  newFollower: boolean,
 ): Action {
   return {
     type: types.CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS,
-    status,
+    updates: {notify: {newFollower}},
   };
 }
 
@@ -53,7 +51,7 @@ export function changeNewFollowerNotificationSuccess(
  * Notify the app of a change new follower notification failure
  * 
  * @alias module:ChangeNewFollowerNotification
- * @function changeNewFollowerNotificationFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function changeNewFollowerNotificationSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_NEW_FOLLOWER_NOTIFICATION_FAILURE and the error which caused the failure
  */
-export function changeNewFollowerNotificationFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

@@ -36,16 +36,16 @@ export function changeSessionsNotification(
   status: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeSessionsNotificationRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({sessionNotification: status});
-      dispatch(actions.changeSessionsNotificationSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeSessionsNotificationFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

@@ -10,29 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change like track notification synchronous action creators', () => {
-  it('creates change like track notification request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST,
-    };
-
-    expect(actions.changeLikeTrackNotificationRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change like track notification success action', () => {
+  it('creates success action', () => {
+    const likedTrack: boolean = true;
     const expectedAction: Action = {
-      type: types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST,
+      type: types.CHANGE_LIKE_TRACK_NOTIFICATION_SUCCESS,
+      updates: {notify: {likedTrack}},
     };
 
-    expect(actions.changeLikeTrackNotificationRequest()).toStrictEqual(expectedAction);
+    expect(actions.success(likedTrack)).toStrictEqual(expectedAction);
   });
 
-  it('creates change like track notification failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_LIKE_TRACK_NOTIFICATION_FAILURE,
       error,
     };
 
-    expect(actions.changeLikeTrackNotificationFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

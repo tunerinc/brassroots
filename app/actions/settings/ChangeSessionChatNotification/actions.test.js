@@ -10,31 +10,28 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
 describe('change session chat notification synchronous action creators', () => {
-  it('creates change session chat notification request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_SESSION_CHAT_NOTIFICATION_REQUEST,
-    };
-
-    expect(actions.changeSessionChatNotificationRequest()).toStrictEqual(expectedAction);
+  it('creates request action', () => {
+    const expectedAction: Action = {type: types.CHANGE_SESSION_CHAT_NOTIFICATION_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates change session chat notification success action', () => {
-    const status: string = 'foo';
+  it('creates success action', () => {
+    const chat: string = 'foo';
     const expectedAction: Action = {
       type: types.CHANGE_SESSION_CHAT_NOTIFICATION_SUCCESS,
-      status,
+      updates: {notify: {chat}},
     };
 
-    expect(actions.changeSessionChatNotificationSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(chat)).toStrictEqual(expectedAction);
   });
 
-  it('creates change session chat notification failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.CHANGE_SESSION_CHAT_NOTIFICATION_FAILURE,
       error,
     };
 
-    expect(actions.changeSessionChatNotificationFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

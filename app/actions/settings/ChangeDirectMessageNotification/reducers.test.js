@@ -5,48 +5,40 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change direct message notification reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST', () => {
-    expect(reducer(initialState, actions.changeDirectMessageNotificationRequest()))
-      .toStrictEqual({...initialState, saving: ['direct message']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['direct message']},
-        actions.changeDirectMessageNotificationRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['direct message']});
+  it('handles CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST', () => {
+    const state: State = {...initialState, failed: ['direct message']};
+    const expectedState: State = {...initialState, saving: ['direct message']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS', () => {
+  it('handles CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS', () => {
     const message: boolean = true;
+    const state: State = {
+      ...initialState,
+      notify: {message: false, ...initialState.notify},
+      saving: ['direct message'],
+    };
 
-    expect(
-      reducer(
-        {...initialState, notify: {message: false, ...initialState.notify}, saving: ['direct message']},
-        actions.changeDirectMessageNotificationSuccess(message),
-      ),
-    )
-      .toStrictEqual({...initialState, notify: {...initialState.notify, message}});
+    const expectedState: State = {...initialState, notify: {...initialState.notify, message}};
+    expect(reducer(state, actions.success(message))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE', () => {
+  it('handles CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE', () => {
+    const state: State = {...initialState, saving: ['direct message']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['direct message']},
-        actions.changeDirectMessageNotificationFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['direct message']});
+    const expectedState: State = {...initialState, error, failed: ['direct message']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change group direct message notification reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST', () => {
-    expect(reducer(initialState, actions.changeGroupDirectMessageNotificationRequest()))
-      .toStrictEqual({...initialState, saving: ['group message']})
-
-    expect(
-      reducer(
-        {...initialState, failed: ['group message']},
-        actions.changeGroupDirectMessageNotificationRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['group message']})
+  it('handles CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST', () => {
+    const state: State = {...initialState, failed: ['group message']};
+    const expectedState: State = {...initialState, saving: ['group message']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState)
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState)
   });
 
-  it('should handle CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS', () => {
+  it('handles CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['group message']};
     const groupMessage: string = 'foo';
-
-    expect(
-      reducer(
-        {...initialState, saving: ['group message']},
-        actions.changeGroupDirectMessageNotificationSuccess(groupMessage),
-      ),
-    )
-      .toStrictEqual({...initialState, notify: {...initialState.notify, groupMessage}});
+    const expectedState: State = {...initialState, notify: {...initialState.notify, groupMessage}};
+    expect(reducer(state, actions.success(groupMessage))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE', () => {
+  it('handles CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE', () => {
+    const state: State = {...initialState, saving: ['group message']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['group message']},
-        actions.changeGroupDirectMessageNotificationFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['group message']});
+    const expectedState: State = {...initialState, error, failed: ['group message']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

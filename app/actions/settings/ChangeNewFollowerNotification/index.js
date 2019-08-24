@@ -36,16 +36,16 @@ export function changeNewFollowerNotification(
   status: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeNewFollowerNotificationRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({newFollowerNotification: status});
-      dispatch(actions.changeNewFollowerNotificationSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeNewFollowerNotificationFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

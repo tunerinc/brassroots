@@ -16,36 +16,34 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change group direct message notification request
  * 
  * @alias module:ChangeGroupDirectMessageNotification
- * @function changeGroupDirectMessageNotificationRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST
  */
-export function changeGroupDirectMessageNotificationRequest(): Action {
-  return {
-    type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST};
 }
 
 /**
  * Notify the app of a change group direct message notification success
  * 
  * @alias module:ChangeGroupDirectMessageNotification
- * @function changeGroupDirectMessageNotificationSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} status The updated group direct message notification status for the current user
+ * @param   {string} groupMessage The updated group direct message notification status for the current user
  *
- * @returns {object}        Redux action with the type of CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS and the updated notification status
+ * @returns {object}              Redux action with the type of CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS and the updated notification status
  */
-export function changeGroupDirectMessageNotificationSuccess(
-  status: string,
+export function success(
+  groupMessage: string,
 ): Action {
   return {
     type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS,
-    status,
+    updates: {notify: {groupMessage}},
   };
 }
 
@@ -53,7 +51,7 @@ export function changeGroupDirectMessageNotificationSuccess(
  * Notify the app of a change group direct message notification failure
  * 
  * @alias module:ChangeGroupDirectMessageNotification
- * @function changeGroupDirectMessageNotificationFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function changeGroupDirectMessageNotificationSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE and the error which caused the failure
  */
-export function changeGroupDirectMessageNotificationFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

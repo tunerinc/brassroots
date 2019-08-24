@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a get user settings request
  * 
  * @alias module:GetUserSettings
- * @function getUserSettingsRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_USER_SETTINGS_REQUEST
  */
-export function getUserSettingsRequest(): Action {
-  return {
-    type: types.GET_USER_SETTINGS_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.GET_USER_SETTINGS_REQUEST};
 }
 
 /**
  * Notify the app of a get user settings success
  * 
  * @alias module:GetUserSettings
- * @function getUserSettingsSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object}          Redux action with the type of GET_USER_SETTINGS_SUCCESS
  */
-export function getUserSettingsSuccess(): Action {
-  return {
-    type: types.GET_USER_SETTINGS_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.GET_USER_SETTINGS_SUCCESS};
 }
 
 /**
  * Notify the app of a get user settings failure
  * 
  * @alias module:GetUserSettings
- * @function getUserSettingsFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -56,7 +52,7 @@ export function getUserSettingsSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of GET_USER_SETTINGS_FAILURE and the error which caused the failure
  */
-export function getUserSettingsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

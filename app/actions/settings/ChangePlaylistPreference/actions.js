@@ -16,36 +16,34 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change playlist preference request
  * 
  * @alias module:ChangePlaylistPreference
- * @function changePlaylistPreferenceRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_PLAYLIST_PREFERENCE_REQUEST
  */
-export function changePlaylistPreferenceRequest(): Action {
-  return {
-    type: types.CHANGE_PLAYLIST_PREFERENCE_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_PLAYLIST_PREFERENCE_REQUEST};
 }
 
 /**
  * Notify the app of a change playlist preference success
  * 
  * @alias module:ChangePlaylistPreference
- * @function changePlaylistPreferenceSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} status The updated playlist preference status for the current user
+ * @param   {string} playlist The updated playlist preference status for the current user
  *
- * @returns {object}        Redux action with the type of CHANGE_PLAYLIST_PREFERENCE_SUCCESS and the updated preference status
+ * @returns {object}          Redux action with the type of CHANGE_PLAYLIST_PREFERENCE_SUCCESS and the updated preference status
  */
-export function changePlaylistPreferenceSuccess(
-  status: string,
+export function success(
+  playlist: string,
 ): Action {
   return {
     type: types.CHANGE_PLAYLIST_PREFERENCE_SUCCESS,
-    status,
+    updates: {preference: {playlist}},
   };
 }
 
@@ -53,7 +51,7 @@ export function changePlaylistPreferenceSuccess(
  * Notify the app of a change playlist preference failure
  * 
  * @alias module:ChangePlaylistPreference
- * @function changePlaylistPreferenceFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function changePlaylistPreferenceSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_PLAYLIST_PREFERENCE_FAILURE and the error which caused the failure
  */
-export function changePlaylistPreferenceFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

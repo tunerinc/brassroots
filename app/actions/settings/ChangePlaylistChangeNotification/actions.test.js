@@ -11,21 +11,18 @@ import {type Action} from '../../../reducers/settings';
 
 describe('change playlist change notification synchronous action creators', () => {
   it('creates change playlist change notification request action', () => {
-    const expectedAction: Action = {
-      type: types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_REQUEST,
-    };
-
-    expect(actions.changePlaylistChangeNotificationRequest()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates change playlist change notification success action', () => {
-    const status: boolean = false;
+    const playlistChange: boolean = false;
     const expectedAction: Action = {
       type: types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_SUCCESS,
-      status,
+      updates: {notify: {playlistChange}},
     };
 
-    expect(actions.changePlaylistChangeNotificationSuccess(status)).toStrictEqual(expectedAction);
+    expect(actions.success(playlistChange)).toStrictEqual(expectedAction);
   });
 
   it('creates change playlist change notification failure action', () => {
@@ -35,6 +32,6 @@ describe('change playlist change notification synchronous action creators', () =
       error,
     };
 
-    expect(actions.changePlaylistChangeNotificationFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

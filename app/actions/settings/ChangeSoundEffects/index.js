@@ -36,16 +36,16 @@ export function changeSoundEffects(
   status: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeSoundEffectsRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({soundEffects: status});
-      dispatch(actions.changeSoundEffectsSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeSoundEffectsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

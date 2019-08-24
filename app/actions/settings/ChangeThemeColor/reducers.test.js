@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change theme color reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_THEME_COLOR_REQUEST', () => {
-    expect(reducer(initialState, actions.changeThemeColorRequest()))
-      .toStrictEqual({...initialState, saving: ['theme']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['theme']},
-        actions.changeThemeColorRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['theme']});
+  it('handles CHANGE_THEME_COLOR_REQUEST', () => {
+    const state: State = {...initialState, failed: ['theme']};
+    const expectedState: State = {...initialState, saving: ['theme']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_THEME_COLOR_SUCCESS', () => {
+  it('handles CHANGE_THEME_COLOR_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['theme']};
     const theme: string = 'foo';
-
-    expect(
-      reducer(
-        {...initialState, saving: ['theme']},
-        actions.changeThemeColorSuccess(theme),
-      ),
-    )
-      .toStrictEqual({...initialState, theme});
+    const expectedState: State = {...initialState, theme};
+    expect(reducer(state, actions.success(theme))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_THEME_COLOR_FAILURE', () => {
+  it('handles CHANGE_THEME_COLOR_FAILURE', () => {
+    const state: State = {...initialState, saving: ['theme']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['theme']},
-        actions.changeThemeColorFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['theme']});
+    const expectedState: State = {...initialState, error, failed: ['theme']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

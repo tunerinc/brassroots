@@ -16,36 +16,34 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change direct message notification request
  * 
  * @alias module:ChangeDirectMessageNotification
- * @function changeDirectMessageNotificationRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST
  */
-export function changeDirectMessageNotificationRequest(): Action {
-  return {
-    type: types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST};
 }
 
 /**
  * Notify the app of a change direct message notification success
  * 
  * @alias module:ChangeDirectMessageNotification
- * @function changeDirectMessageNotificationSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {boolean} status The new direct message notification status for the current user
+ * @param   {boolean} message The new direct message notification status for the current user
  *
- * @returns {object}         Redux action with the type of CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS and the new notification status
+ * @returns {object}          Redux action with the type of CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS and the new notification status
  */
-export function changeDirectMessageNotificationSuccess(
-  status: boolean,
+export function success(
+  message: boolean,
 ): Action {
   return {
     type: types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS,
-    status,
+    updates: {notify: {message}},
   };
 }
 
@@ -53,7 +51,7 @@ export function changeDirectMessageNotificationSuccess(
  * Notify the app of a change direct message notification failure
  * 
  * @alias module:ChangeDirectMessageNotification
- * @function changeDirectMessageNotificationFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function changeDirectMessageNotificationSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE and the error which caused the failure
  */
-export function changeDirectMessageNotificationFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

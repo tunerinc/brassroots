@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change new follower notification reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST', () => {
-    expect(reducer(initialState, actions.changeNewFollowerNotificationRequest()))
-      .toStrictEqual({...initialState, saving: ['new follower']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['new follower']},
-        actions.changeNewFollowerNotificationRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['new follower']});
+  it('handles CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST', () => {
+    const state: State = {...initialState, failed: ['new follower']};
+    const expectedState: State = {...initialState, saving: ['new follower']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS', () => {
+  it('handles CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['new follower']};
     const newFollower: boolean = false;
-
-    expect(
-      reducer(
-        {...initialState, saving: ['new follower']},
-        actions.changeNewFollowerNotificationSuccess(newFollower),
-      ),
-    )
-      .toStrictEqual({...initialState, notify: {...initialState.notify, newFollower}});
+    const expectedState: State = {...initialState, notify: {...initialState.notify, newFollower}};
+    expect(reducer(state, actions.success(newFollower))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_NEW_FOLLOWER_NOTIFICATION_FAILURE', () => {
+  it('handles CHANGE_NEW_FOLLOWER_NOTIFICATION_FAILURE', () => {
+    const state: State = {...initialState, saving: ['new follower']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['new follower']},
-        actions.changeNewFollowerNotificationFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['new follower']});
+    const expectedState: State = {...initialState, error, failed: ['new follower']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

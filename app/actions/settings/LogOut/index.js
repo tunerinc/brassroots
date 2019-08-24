@@ -40,13 +40,13 @@ import {type ThunkAction} from '../../../reducers/settings';
 */
 export function logOut(): ThunkAction {
   return async dispatch => {
-    dispatch(actions.logOutRequest());
+    dispatch(actions.request());
 
     try {
       await Spotify.logout();
       Actions.welcome({type: ActionConst.RESET});
       
-      dispatch(actions.logOutSuccess());
+      dispatch(actions.success());
       dispatch(resetAlbums());
       dispatch(resetArtists());
       dispatch(resetChat());
@@ -60,7 +60,7 @@ export function logOut(): ThunkAction {
       dispatch(resetTracks());
       dispatch(resetUsers());
     } catch (err) {
-      dispatch(actions.logOutFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

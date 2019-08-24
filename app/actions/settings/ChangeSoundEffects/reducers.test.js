@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change sound effects reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_SOUND_EFFECTS_REQUEST', () => {
-    expect(reducer(initialState, actions.changeSoundEffectsRequest()))
-      .toStrictEqual({...initialState, saving: ['sound effects']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['sound effects']},
-        actions.changeSoundEffectsRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['sound effects']});
+  it('handles CHANGE_SOUND_EFFECTS_REQUEST', () => {
+    const state: State = {...initialState, failed: ['sound effects']};
+    const expectedState: State = {...initialState, saving: ['sound effects']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_SOUND_EFFECTS_SUCCESS', () => {
+  it('handles CHANGE_SOUND_EFFECTS_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['sound effects']};
     const soundEffects: boolean = false;
-
-    expect(
-      reducer(
-        {...initialState, saving: ['sound effects']},
-        actions.changeSoundEffectsSuccess(soundEffects),
-      ),
-    )
-      .toStrictEqual({...initialState, soundEffects});
+    const expectedState: State = {...initialState, soundEffects};
+    expect(reducer(state, actions.success(soundEffects))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_SOUND_EFFECTS_FAILURE', () => {
+  it('handles CHANGE_SOUND_EFFECTS_FAILURE', () => {
+    const state: State = {...initialState, saving: ['sound effects']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['sound effects']},
-        actions.changeSoundEffectsFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['sound effects']});
+    const expectedState: State = {...initialState, error, failed: ['sound effects']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

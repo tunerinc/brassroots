@@ -5,48 +5,35 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/settings';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
 describe('change playlist preference reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle CHANGE_PLAYLIST_PREFERENCE_REQUEST', () => {
-    expect(reducer(initialState, actions.changePlaylistPreferenceRequest()))
-      .toStrictEqual({...initialState, saving: ['playlist pref']});
-
-    expect(
-      reducer(
-        {...initialState, failed: ['playlist pref']},
-        actions.changePlaylistPreferenceRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, saving: ['playlist pref']});
+  it('handles CHANGE_PLAYLIST_PREFERENCE_REQUEST', () => {
+    const state: State = {...initialState, failed: ['playlist pref']};
+    const expectedState: State = {...initialState, saving: ['playlist pref']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_PLAYLIST_PREFERENCE_SUCCESS', () => {
+  it('handles CHANGE_PLAYLIST_PREFERENCE_SUCCESS', () => {
+    const state: State = {...initialState, saving: ['playlist pref']};
     const playlist: string = 'foo';
-
-    expect(
-      reducer(
-        {...initialState, saving: ['playlist pref']},
-        actions.changePlaylistPreferenceSuccess(playlist),
-      ),
-    )
-      .toStrictEqual({...initialState, preference: {...initialState.preference, playlist}});
+    const expectedState: State = {...initialState, preference: {...initialState.preference, playlist}};
+    expect(reducer(state, actions.success(playlist))).toStrictEqual(expectedState);
   });
 
-  it('should handle CHANGE_PLAYLIST_PREFERENCE_FAILURE', () => {
+  it('handles CHANGE_PLAYLIST_PREFERENCE_FAILURE', () => {
+    const state: State = {...initialState, saving: ['playlist pref']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, saving: ['playlist pref']},
-        actions.changePlaylistPreferenceFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: ['playlist pref']});
+    const expectedState: State = {...initialState, error, failed: ['playlist pref']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

@@ -9,7 +9,7 @@
  * @module GetUserSettings
  */
 
-import {addSettings} from '../AddSettings';
+import {updateSettings} from '../UpdateSettings';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/settings';
 import {
@@ -36,7 +36,7 @@ export function getUserSettings(
   userID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getUserSettingsRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
@@ -45,13 +45,13 @@ export function getUserSettings(
       const settings: FirestoreDoc = await settingsRef.doc(userID).get();
 
       if (settings.exists) {
-        dispatch(addSettings(settings.data()));
-        dispatch(actions.getUserSettingsSuccess());
+        dispatch(updateSettings(settings.data()));
+        dispatch(actions.success());
       } else {
         throw new Error('Unable to retrieve user settings from Ultrasound');
       }
     } catch (err) {
-      dispatch(actions.getUserSettingsFailure(err))
+      dispatch(actions.failure(err))
     }
   };
 }

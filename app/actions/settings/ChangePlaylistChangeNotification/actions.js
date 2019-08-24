@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change playlist change notification request
  * 
  * @alias module:ChangePlaylistChangeNotification
- * @function changePlaylistChangeNotificationRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_PLAYLIST_CHANGE_NOTIFICATION_REQUEST
  */
-export function changePlaylistChangeNotificationRequest(): Action {
+export function request(): Action {
   return {
     type: types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_REQUEST,
   };
@@ -32,20 +32,20 @@ export function changePlaylistChangeNotificationRequest(): Action {
  * Notify the app of a change playlist change notification success
  * 
  * @alias module:ChangePlaylistChangeNotification
- * @function changePlaylistChangeNotificationSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {boolean} status The updated playlist change notification status for the current user
+ * @param   {boolean} playlistChange The updated playlist change notification status for the current user
  *
- * @returns {object}         Redux action with the type of CHANGE_PLAYLIST_CHANGE_NOTIFICATION_SUCCESS and the updated notification status
+ * @returns {object}                 Redux action with the type of CHANGE_PLAYLIST_CHANGE_NOTIFICATION_SUCCESS and the updated notification status
  */
-export function changePlaylistChangeNotificationSuccess(
-  status: boolean,
+export function success(
+  playlistChange: boolean,
 ): Action {
   return {
     type: types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_SUCCESS,
-    status,
+    updates: {notify: {playlistChange}},
   };
 }
 
@@ -53,7 +53,7 @@ export function changePlaylistChangeNotificationSuccess(
  * Notify the app of a change playlist change notification failure
  * 
  * @alias module:ChangePlaylistChangeNotification
- * @function changePlaylistChangeNotificationFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +61,7 @@ export function changePlaylistChangeNotificationSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_PLAYLIST_CHANGE_NOTIFICATION_FAILURE and the error which caused the failure
  */
-export function changePlaylistChangeNotificationFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

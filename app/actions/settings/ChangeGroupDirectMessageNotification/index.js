@@ -36,16 +36,16 @@ export function changeGroupDirectMessageNotification(
   status: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeGroupDirectMessageNotificationRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
       await settingsRef.doc(userID).update({groupDirectMessageNotification: status});
-      dispatch(actions.changeGroupDirectMessageNotificationSuccess(status));
+      dispatch(actions.success(status));
     } catch (err) {
-      dispatch(actions.changeGroupDirectMessageNotificationFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

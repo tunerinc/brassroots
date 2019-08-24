@@ -16,36 +16,34 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change sound effects request
  * 
  * @alias module:ChangeSoundEffects
- * @function changeSoundEffectsRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of  CHANGE_SOUND_EFFECTS_REQUEST
  */
-export function changeSoundEffectsRequest(): Action {
-  return {
-    type: types.CHANGE_SOUND_EFFECTS_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_SOUND_EFFECTS_REQUEST};
 }
 
 /**
  * Notify the app of a change sound effects success
  * 
  * @alias module:ChangeSoundEffects
- * @function changeSoundEffectsSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {boolean} status The new status for sound effects
+ * @param   {boolean} soundEffects The new status for sound effects
  *
- * @returns {object}         Redux action with the type of CHANGE_SOUND_EFFECTS_SUCCESS and the new sound effects status
+ * @returns {object}               Redux action with the type of CHANGE_SOUND_EFFECTS_SUCCESS and the new sound effects status
  */
-export function changeSoundEffectsSuccess(
-  status: boolean,
+export function success(
+  soundEffects: boolean,
 ): Action {
   return {
     type: types.CHANGE_SOUND_EFFECTS_SUCCESS,
-    status,
+    updates: {soundEffects},
   };
 }
 
@@ -53,7 +51,7 @@ export function changeSoundEffectsSuccess(
  * Notify the app of a change sound effects failure
  * 
  * @alias module:ChangeSoundEffects
- * @function changeSoundEffectsFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +59,7 @@ export function changeSoundEffectsSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_SOUND_EFFECTS_FAILURE and the error which caused the failure
  */
-export function changeSoundEffectsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/settings';
  * Notify the app of a change sessions notification request
  * 
  * @alias module:ChangeSessionsNotification
- * @function changeSessionsNotificationRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_SESSIONS_NOTIFICATION_REQUEST
  */
-export function changeSessionsNotificationRequest(): Action {
+export function request(): Action {
   return {
     type: types.CHANGE_SESSIONS_NOTIFICATION_REQUEST,
   };
@@ -32,20 +32,20 @@ export function changeSessionsNotificationRequest(): Action {
  * Notify the app of a change sessions notification success
  * 
  * @alias module:ChangeSessionsNotification
- * @function changeSessionsNotificationSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} status The new live sessions notification status for the current user
+ * @param   {string} session The new live sessions notification status for the current user
  *
- * @returns {object}        Redux action with the type of CHANGE_SESSIONS_NOTIFICATION_SUCCESS and the new live sessions notification status
+ * @returns {object}         Redux action with the type of CHANGE_SESSIONS_NOTIFICATION_SUCCESS and the new live sessions notification status
  */
-export function changeSessionsNotificationSuccess(
-  status: string
+export function success(
+  session: string
 ): Action {
   return {
     type: types.CHANGE_SESSIONS_NOTIFICATION_SUCCESS,
-    status,
+    updates: {notify: {session}},
   };
 }
 
@@ -53,7 +53,7 @@ export function changeSessionsNotificationSuccess(
  * Notify the app of a change sessions notification failure
  * 
  * @alias module:ChangeSessionsNotification
- * @function changeSessionsNotificationFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -61,7 +61,7 @@ export function changeSessionsNotificationSuccess(
  *
  * @returns {object}       Redux action with the type of CHANGE_SESSIONS_NOTIFICATION_FAILURE and the error which caused the failure
  */
-export function changeSessionsNotificationFailure(
+export function failure(
   error: Error,
 ): Action {
   return {
