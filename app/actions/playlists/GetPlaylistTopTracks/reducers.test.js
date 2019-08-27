@@ -13,27 +13,35 @@ import reducer, {
 import * as actions from './actions';
 
 describe('get playlist top tracks reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_PLAYLIST_TOP_TRACKS_REQUEST', () => {
+  it('handles GET_PLAYLIST_TOP_TRACKS_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
-    const expectedState: State = {...initialState, fetchingTopTracks: true};
-    expect(reducer(state, actions.getPlaylistTopTracksRequest())).toStrictEqual(expectedState);
-    expect(reducer(initialState, actions.getPlaylistTopTracksRequest()))
-      .toStrictEqual(expectedState);
+    const stateTwo: State = {...initialState, fetching: ['topMembers']};
+    const expectedState: State = {...initialState, fetching: ['topTracks']};
+    const expectedStateTwo: State = {...initialState, fetching: ['topMembers', 'topTracks']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.request())).toStrictEqual(expectedStateTwo);
   });
 
-  it('should handle GET_PLAYLIST_TOP_TRACKS_SUCCESS', () => {
-    const state: State = {...initialState, fetchingTopTracks: true};
-    expect(reducer(state, actions.getPlaylistTopTracksSuccess())).toStrictEqual(initialState);
+  it('handles GET_PLAYLIST_TOP_TRACKS_SUCCESS', () => {
+    const state: State = {...initialState, fetching: ['topTracks']};
+    const stateTwo: State = {...state, fetching: ['topTracks', 'topMembers']};
+    const expectedState: State = {...initialState, fetching: ['topMembers']};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success())).toStrictEqual(expectedState);
   });
 
-  it('should handle GET_PLAYLIST_TOP_TRACKS_FAILURE', () => {
-    const state: State = {...initialState, fetchingTopTracks: true};
+  it('handles GET_PLAYLIST_TOP_TRACKS_FAILURE', () => {
+    const state: State = {...initialState, fetching: ['topTracks']};
+    const stateTwo: State = {...initialState, fetching: ['topMembers', 'topTracks']};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.getPlaylistTopTracksFailure(error))).toStrictEqual(expectedState);
+    const expectedStateTwo: State = {...initialState, error, fetching: ['topMembers']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });

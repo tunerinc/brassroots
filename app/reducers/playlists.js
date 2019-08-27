@@ -16,7 +16,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
-import * as getPlaylistTopTracks from '../actions/playlists/GetPlaylistTopTracks/reducers';
 import * as getPlaylistTracks from '../actions/playlists/GetPlaylistTracks/reducers';
 import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
 import * as incrementPlaylistPlays from '../actions/playlists/IncrementPlaylistPlays/reducers';
@@ -246,8 +245,6 @@ export function playlist(
     case types.ADD_PLAYLISTS:
     case entitiesTypes.ADD_ENTITIES:
       return addSinglePlaylist(state, action);
-    case types.GET_PLAYLIST_TOP_TRACKS_SUCCESS:
-      return getPlaylistTopTracks.addTracks(state, action);
     case types.GET_PLAYLIST_TRACKS_SUCCESS:
       return getPlaylistTracks.addTracks(state, action);
     case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
@@ -286,7 +283,11 @@ function update(
   } = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
-  const updates: State = Array.isArray(oldRefresh) && Array.isArray(oldFetch) && Array.isArray(oldPlaylists)
+  const updates: State = (
+    Array.isArray(oldRefresh)
+    && Array.isArray(oldFetch)
+    && Array.isArray(oldPlaylists)
+  )
     ? {
       ...(action.updates ? action.updates : {}),
       lastUpdated,
@@ -327,11 +328,9 @@ export default function reducer(
       case types.GET_PLAYLIST_TOP_MEMBERS_FAILURE:
         return update(state, action, 'topMembers');
       case types.GET_PLAYLIST_TOP_TRACKS_REQUEST:
-        return getPlaylistTopTracks.request(state);
       case types.GET_PLAYLIST_TOP_TRACKS_SUCCESS:
-        return getPlaylistTopTracks.success(state);
       case types.GET_PLAYLIST_TOP_TRACKS_FAILURE:
-        return getPlaylistTopTracks.failure(state, action);
+        return update(state, action, 'topTracks');
       case types.GET_PLAYLIST_TRACKS_REQUEST:
         return getPlaylistTracks.request(state, action);
       case types.GET_PLAYLIST_TRACKS_SUCCESS:

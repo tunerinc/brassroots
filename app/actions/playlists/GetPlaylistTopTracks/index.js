@@ -9,11 +9,8 @@
  * @module GetPlaylistTopTracks
  */
 
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
-import {addPlaylistTracks} from '../AddPlaylistTracks';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/playlists';
 import {type FirestoreInstance} from '../../../utils/firebaseTypes';
 
@@ -35,7 +32,7 @@ export function getPlaylistTopTracks(
   playlistID: string,
 ): ThunkAction {
   return (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getPlaylistTopTracksRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
   };
