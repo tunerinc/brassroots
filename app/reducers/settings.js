@@ -12,6 +12,7 @@ import {type Firebase} from '../utils/firebaseTypes';
 import {type Action as AlbumAction} from './albums';
 import {type Action as ArtistAction} from './artists';
 import {type Action as ChatAction} from './chat';
+import {type Action as EntitiesAction} from './entities';
 import {type Action as FeedbackAction} from './feedback';
 import {type Action as OnboardingAction} from './onboarding';
 import {type Action as PlayerAction} from './player';
@@ -30,6 +31,7 @@ type DispatchAction =
   | AlbumAction
   | ArtistAction
   | ChatAction
+  | EntitiesAction
   | FeedbackAction
   | OnboardingAction
   | PlayerAction
