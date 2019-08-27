@@ -16,7 +16,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
-import * as getPlaylistTracks from '../actions/playlists/GetPlaylistTracks/reducers';
 import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
 import * as incrementPlaylistPlays from '../actions/playlists/IncrementPlaylistPlays/reducers';
 
@@ -222,6 +221,28 @@ export const initialState: State = {
   },
 };
 
+/**
+ * Adds or updates a single playlist track
+ * 
+ * @function addOrUpdateTrack
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}  state             The Redux state
+ * @param   {object}  action            The Redux action
+ * @param   {string}  action.type       The type of Redux action
+ * @param   {object}  action.item       The playlist track object to add or update
+ * @param   {boolean} action.refreshing Whether the current user is refreshing
+ * 
+ * @returns {object}                    The single playlist track added or updated with the new information
+ */
+function addOrUpdateTrack(
+  state: PlaylistTrack,
+  action: Action,
+): PlaylistTrack {
+  return state;
+}
+
 export function playlistTrack(
   state: PlaylistTrack = singleTrackState,
   action: Action,
@@ -237,6 +258,28 @@ export function playlistTrack(
   }
 }
 
+/**
+ * Adds or updates a single playlist
+ * 
+ * @function addOrUpdatePlaylist
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object}  state             The Redux state
+ * @param   {object}  action            The Redux action
+ * @param   {string}  action.type       The type of Redux action
+ * @param   {object}  action.item       The playlist object to add or update
+ * @param   {boolean} action.refreshing Whether the current user is refreshing
+ * 
+ * @returns {object}                    The single playlist added or updated with the new information
+ */
+function addOrUpdatePlaylist(
+  state: Playlist,
+  action: Action,
+): Playlist {
+  return state;
+}
+
 export function playlist(
   state: Playlist = singlePlaylistState,
   action: Action,
@@ -245,8 +288,6 @@ export function playlist(
     case types.ADD_PLAYLISTS:
     case entitiesTypes.ADD_ENTITIES:
       return addSinglePlaylist(state, action);
-    case types.GET_PLAYLIST_TRACKS_SUCCESS:
-      return getPlaylistTracks.addTracks(state, action);
     case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
       return incrementPlaylistPlays.incrementPlaylist(state, action);
     default:
@@ -332,11 +373,9 @@ export default function reducer(
       case types.GET_PLAYLIST_TOP_TRACKS_FAILURE:
         return update(state, action, 'topTracks');
       case types.GET_PLAYLIST_TRACKS_REQUEST:
-        return getPlaylistTracks.request(state, action);
       case types.GET_PLAYLIST_TRACKS_SUCCESS:
-        return getPlaylistTracks.success(state);
       case types.GET_PLAYLIST_TRACKS_FAILURE:
-        return getPlaylistTracks.failure(state, action);
+        return update(state, action, 'tracks');
       case types.GET_TOP_PLAYLISTS_REQUEST:
         return getTopPlaylists.request(state);
       case types.GET_TOP_PLAYLISTS_SUCCESS:

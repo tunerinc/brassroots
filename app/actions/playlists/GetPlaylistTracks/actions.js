@@ -16,7 +16,7 @@ import {type Action} from '../../../reducers/playlists';
  * Notify the app of a get playlist tracks request
  * 
  * @alias GetPlaylistTracks
- * @function getPlaylistTracksRequest
+ * @function request
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
@@ -25,7 +25,7 @@ import {type Action} from '../../../reducers/playlists';
  * 
  * @returns {object}             Redux action with the type of GET_PLAYLIST_TRACKS_REQUEST and whether the current user is refreshing
  */
-export function getPlaylistTracksRequest(
+export function request(
   refreshing: boolean,
 ): Action {
   return {
@@ -38,14 +38,14 @@ export function getPlaylistTracksRequest(
  * Notify the app of a get playlist tracks success
  * 
  * @alias GetPlaylistTracks
- * @function getPlaylistTracksSuccess
+ * @function success
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_PLAYLIST_TRACKS_SUCCESS
  */
-export function getPlaylistTracksSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_PLAYLIST_TRACKS_SUCCESS};
 }
 
@@ -53,7 +53,7 @@ export function getPlaylistTracksSuccess(): Action {
  * Notify the app of a get playlist tracks failure
  * 
  * @alias GetPlaylistTracks
- * @function getPlaylistTracksFailure
+ * @function failure
  * 
  * @author Ben Howdle
  * @author Aldo Gonzalez <aldo@tunerinc.com>
@@ -62,7 +62,7 @@ export function getPlaylistTracksSuccess(): Action {
  * 
  * @returns {object}      Redux action with the type of GET_PLAYLIST_TRACKS_FAILURE and the error which caused the failure
  */
-export function getPlaylistTracksFailure(
+export function failure(
   error: Error,
 ): Action {
   return {
