@@ -34,7 +34,6 @@ type Group = {
   +members: Array<string>,
   +playlists: Array<string>,
   +recentlyPlayed: Array<string>,
-  +fetching: Array<string>,
   +conversationID: ?string,
   +featuredID: ?string,
   +featuredType: ?string,
@@ -52,6 +51,8 @@ type Action = {
   +websiteValid?: boolean,
   +website?: string,
   +updates?: State,
+  +item?: Group,
+  +refreshing?: boolean,
 };
 
 type State = {
@@ -99,7 +100,6 @@ export type {
  * @property {string[]} members=[]          The Brassroots ids of the members of a single group
  * @property {string[]} playlists=[]        The Spotify ids of the playlists of a single group
  * @property {string[]} recentlyPlayed=[]   The Spotify ids of the recently played tracks of a single group
- * @property {string[]} fetching=[]         Whether the current user is fetching any entity type
  * @property {string}   conversationID=null The Brassroots id of the group conversation
  * @property {string}   featuredID=null     The Spotify id of the featured item of a single group
  * @property {string}   featuredType=null   The type of item featured on a single group
@@ -118,7 +118,6 @@ const singleState: Group = {
   members: [],
   playlists: [],
   recentlyPlayed: [],
-  fetching: [],
   conversationID: null,
   featuredID: null,
   featuredType: null,
@@ -186,7 +185,36 @@ function addOrUpdateGroup(
   state: Group,
   action: Action,
 ): Group {
-  return state;
+  const {members, playlists, recentlyPlayed} = state;
+  const {item, refreshing} = action;
+  const updates: Group = (
+    item
+    && Array.isArray(members)
+    && Array.isArray(playlists)
+    && Array.isArray(recentlyPlayed)
+  )
+    ? {
+      ...item,
+      lastUpdated,
+      members: item.members && refreshing
+        ? [...item.members]
+        : item.members
+        ? [...members, ...item.members]
+        : [...members],
+      playlists: item.playlists && refreshing
+        ? [...item.playlists]
+        : item.playlists
+        ? [...playlists, ...item.playlists]
+        : [...playlists],
+      recentlyPlayed: item.recentlyPlayed && refreshing
+        ? [...item.recentlyPlayed]
+        : item.recentlyPlayed
+        ? [...recentlyPlayed, ...item.recentlyPlayed]
+        : [...recentlyPlayed],
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export function group(
@@ -194,6 +222,8 @@ export function group(
   action: Action,
 ): Group {
   switch (action.type) {
+    case entitiesTypes.ADD_ENTITIES:
+      return addOrUpdateGroup(state, action);
     default:
       return state;
   }

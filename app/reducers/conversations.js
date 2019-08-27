@@ -29,8 +29,7 @@ type Message = {
   +lastUpdated?: string,
   +id?: ?string,
   +text?: ?string,
-  +fetching?: Array<string>,
-  +read?: Array<string>,
+  +read?: boolean,
   +timestamp?: ?string,
   +error?: ?Error,
   +sender?: ?{
@@ -50,7 +49,6 @@ type Conversation = {
   +name?: ?string,
   +text?: ?string,
   +members?: Array<string>,
-  +fetching?: Array<string>,
   +messages?: Array<string>,
   +music?: Array<string>,
 };
@@ -72,7 +70,7 @@ type State = {
   +totalUserConversations?: number,
   +selectedConversation?: ?string,
   +searching?: boolean,
-  +fetching?: boolean,
+  +fetching?: Array<string>,
   +creating?: boolean,
   +error?: ?Error | SpotifyError,
   +newConversation?: {
@@ -96,27 +94,25 @@ export type {
  * @constant
  * @type {object}
  * 
- * @property {string}   lastUpdated    The date/time the message was last updated
- * @property {string}   id=null        The Brassroots id of the message
- * @property {string}   text=null      The text of the message
- * @property {string[]} fetching=[]    Whether the current user is fetching any entity type
- * @property {string[]} read           The Brassroots ids of the users who have read the message
- * @property {string}   timestamp=null The timestamp of the message
- * @property {object}   sender=null    The sender of the message
- * @property {string}   sender.id      The Spotify id of the sender
- * @property {string}   sender.image   The image of the sender
- * @property {string}   sender.name    The name of the sender
- * @property {object}   media=null     The media included in the message
- * @property {string}   media.id       The id of the media
- * @property {string}   media.type     The type of media
- * @property {Error}    error          Any errors that may arise for a message
+ * @property {string}  lastUpdated    The date/time the message was last updated
+ * @property {string}  id=null        The Brassroots id of the message
+ * @property {string}  text=null      The text of the message
+ * @property {boolean} read=false     The Brassroots ids of the users who have read the message
+ * @property {string}  timestamp=null The timestamp of the message
+ * @property {object}  sender=null    The sender of the message
+ * @property {string}  sender.id      The Spotify id of the sender
+ * @property {string}  sender.image   The image of the sender
+ * @property {string}  sender.name    The name of the sender
+ * @property {object}  media=null     The media included in the message
+ * @property {string}  media.id       The id of the media
+ * @property {string}  media.type     The type of media
+ * @property {Error}   error          Any errors that may arise for a message
  */
 export const messageState: Message = {
   lastUpdated,
   id: null,
   text: null,
-  fetching: [],
-  read: [],
+  read: false,
   timestamp: null,
   sender: null,
   media: null,
@@ -132,7 +128,6 @@ export const messageState: Message = {
  * @property {string}   name=null   The name of a single conversation
  * @property {string}   text=null   The message the current user is typing in a conversation
  * @property {string[]} members     The Brassroots ids of the members of a single conversation
- * @property {boolean}  fetching=[] Whether the current user is fetching any entity type
  * @property {string[]} messages    The Brassroots ids of the messages in a single conversation
  * @property {string[]} music       The ids of the shared music in a single conversation
  */
@@ -142,7 +137,6 @@ export const conversationState: Conversation = {
   name: null,
   text: null,
   members: [],
-  fetching: [],
   messages: [],
   music: [],
 };
@@ -157,7 +151,7 @@ export const conversationState: Conversation = {
  * @property {number}   totalUserConversations=0  The total amount of user conversations
  * @property {string}   selectedConversation=null The selected conversation to view
  * @property {boolean}  searching=false           Whether the current user is searching conversations
- * @property {boolean}  fetching=false            Whether the current user is fetching
+ * @property {boolean}  fetching=[]               Whether the current user is fetching any entity type
  * @property {boolean}  creating=false            Whether the current user is creating a new conversation
  * @property {Error}    error=null                The error related to conversations actions
  * @property {object}   newConversation           The new conversation the current user is creating
@@ -170,7 +164,7 @@ export const initialState: State = {
   totalUserConversations: 0,
   selectedConversation: null,
   searching: false,
-  fetching: false,
+  fetching: [],
   creating: false,
   error: null,
   newConversation: {
@@ -178,27 +172,6 @@ export const initialState: State = {
     text: null,
   },
 };
-
-/**
- * Adds or updates a single message
- * 
- * @function addOrUpdadteMessage
- * 
- * @author Aldo Gonzalez <aldo@tunerinc.com>
- * 
- * @param   {object} state       The Redux state
- * @param   {object} action      The Redux action
- * @param   {string} action.type The type of Redux action
- * @param   {object} action.item The message object to add or update
- * 
- * @returns {object}             The single message added or updated with the new information
- */
-function addOrUpdateMessage(
-  state: Message,
-  action: Action,
-): Message {
-  return state;
-}
 
 export function message(
   state: Message = messageState,
