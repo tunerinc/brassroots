@@ -10,11 +10,6 @@ import updateObject from '../utils/updateObject';
 import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/share/types';
 
-// Case Functions
-import {addSharedItems} from '../actions/share/AddSharedItems/reducers';
-import {addShareRecipient} from '../actions/share/AddShareRecipient/reducers';
-import {removeShareRecipient} from '../actions/share/RemoveShareRecipient/reducers';
-
 const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type GetState = () => State;
@@ -34,6 +29,7 @@ type Action = {
   +error?: Error,
   +items?: SharedItems,
   +recipientID?: string,
+  +updates?: State,
 };
 
 type State = {
@@ -42,7 +38,7 @@ type State = {
     +id: string,
     +type: string,
   },
-  +message?: string,
+  +text?: string,
   +recipients?: Array<string>,
   +searching?: boolean,
   +sharing?: boolean,
@@ -68,7 +64,7 @@ export type {
  * @property {object}   sharedItem      The music item to share
  * @property {string}   sharedItem.id   The id of the item to share
  * @property {string}   sharedItem.type The type of item to share
- * @property {string}   message         The message to send with the share
+ * @property {string}   text            The text to send with the share
  * @property {string[]} recipients      The Brassroots ids of the recipients of the share
  * @property {boolean}  searching=false Whether the current user is searching for a user to share with
  * @property {boolean}  sharing=false   Whether the current user is sharing media or not
@@ -80,12 +76,43 @@ export const initialState: State = {
     id: '',
     type: '',
   },
-  message: '',
+  text: '',
   recipients: [],
   searching: false,
   sharing: false,
   error: null,
 };
+
+/**
+ * Updates any of the values in the share state
+ * 
+ * @function update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state          The Redux state
+ * @param   {object} action         The Redux action
+ * @param   {string} action.type    The type of Redux action
+ * @param   {object} action.updates The updates to make to the state
+ * 
+ * @returns {object}                The state updated with the new information
+ */
+function update(
+  state: State,
+  action: Action,
+): State {
+  const {sharedItem: oldItem} = state;
+  const updates: State = oldItem && action.updates
+    ? {
+      ...action.updates,
+      sharedItem: action.updates.sharedItem
+        ? updateObject(oldItem, action.updates.sharedItem)
+        : {...oldItem},
+    }
+    : {};
+
+  return updateObject(state, updates);
+}
 
 export default function reducer(
   state: State = initialState,
@@ -93,14 +120,10 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_SHARED_ITEMS:
-        return addSharedItems(state, action);
-      case types.ADD_SHARE_RECIPIENT:
-        return addShareRecipient(state, action);
       case types.CLEAR_SHARE:
         return initialState;
-      case types.REMOVE_SHARE_RECIPIENT:
-        return removeShareRecipient(state, action);
+      case types.UPDATE_SHARE:
+        return update(state, action);
       default:
         return state;
     }
