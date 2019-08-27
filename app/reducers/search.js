@@ -11,9 +11,6 @@ import * as types from '../actions/search/types';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
 
-// Case Functions
-import {clearSearchQuery} from '../actions/search/ClearSearchQuery/reducers';
-
 const currentDate: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type GetState = () => State;
@@ -24,6 +21,7 @@ type Dispatch = (action: Action | PromiseAction | ThunkAction | Array<Action>) =
 type Action = {
   +type?: string,
   +error?: Error,
+  +updates?: State,
 };
 
 type State = {
@@ -37,9 +35,7 @@ type State = {
   +artistResults?: Array<string>,
   +groupResults?: Array<string>,
   +query?: string,
-  +fetchingRecent?: boolean,
-  +fetchingTrending?: boolean,
-  +fetchingNearby?: boolean,
+  +fetching?: Array<string>,
   +searching?: boolean,
   +deleting?: boolean,
   +lastUpdated?: string,
@@ -60,23 +56,21 @@ export type {
  * @alias searchState
  * @type {object}
  * 
- * @property {string[]} recentSearches         The current user's recent searches on Brassroots
- * @property {string[]} nearbySearches         The searches nearby to the current user
- * @property {string[]} trendingSearches       The trending searches on Brassroots
- * @property {string[]} userResults            The Brassroots ids of the returned user results
- * @property {string[]} trackResults           The Spotify ids of the returned track results
- * @property {string[]} playlistResults        The Spotify ids of the returned playlist results
- * @property {string[]} albumResults           The Spotify ids of the returned album results
- * @property {string[]} artistResults          The Spotify ids of the returned artist results
- * @property {string[]} groupResults           The Brassroots ids of the returned group results
- * @property {string}   query                  The query used to search
- * @property {boolean}  fetchingRecent=false   Whether the current user is fetching recent searches
- * @property {boolean}  fetchingTrending=false Whether the current user is fetching trending searches
- * @property {boolean}  fetchingNearby=false   Whether the current user is fetching nearby searches
- * @property {boolean}  searching=false        Whether the current user is searching
- * @property {boolean}  deleting=false         Whether the current user is deleting their recent searches
- * @property {string}   lastUpdated            The date/time the searches were last updated
- * @property {Error}    error=null             The error related to search actions
+ * @property {string[]} recentSearches       The current user's recent searches on Brassroots
+ * @property {string[]} nearbySearches       The searches nearby to the current user
+ * @property {string[]} trendingSearches     The trending searches on Brassroots
+ * @property {string[]} userResults          The Brassroots ids of the returned user results
+ * @property {string[]} trackResults         The Spotify ids of the returned track results
+ * @property {string[]} playlistResults      The Spotify ids of the returned playlist results
+ * @property {string[]} albumResults         The Spotify ids of the returned album results
+ * @property {string[]} artistResults        The Spotify ids of the returned artist results
+ * @property {string[]} groupResults         The Brassroots ids of the returned group results
+ * @property {string}   query                The query used to search
+ * @property {boolean}  fetchingRecent=false Whether the current user is fetching
+ * @property {boolean}  searching=false      Whether the current user is searching
+ * @property {boolean}  deleting=false       Whether the current user is deleting their recent searches
+ * @property {string}   lastUpdated          The date/time the searches were last updated
+ * @property {Error}    error=null           The error related to search actions
  */
 export const initialState: State = {
   recentSearches: [],
@@ -89,9 +83,7 @@ export const initialState: State = {
   artistResults: [],
   groupResults: [],
   query: '',
-  fetchingRecent: false,
-  fetchingTrending: false,
-  fetchingNearby: false,
+  fetching: [],
   searching: false,
   deleting: false,
   lastUpdated: currentDate,
@@ -104,10 +96,10 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.CLEAR_SEARCH_QUERY:
-        return clearSearchQuery(state);
       case types.RESET_SEARCH:
         return initialState;
+      case types.UPDATE_SEARCH:
+        return updateObject(state, action.updates);
       default:
         return state;
     }
