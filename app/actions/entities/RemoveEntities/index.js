@@ -12,23 +12,7 @@
 import * as types from '../types';
 import {type Action} from '../../../reducers/entities';
 
-type Entities = {
-  +albums?: {[id: string]: true},
-  +artists?: {[id: string]: true},
-  +conversations?: {[id: string]: true},
-  +groups?: {[id: string]: true},
-  +messages?: {[id: string]: true},
-  +playlists?: {[id: string]: true},
-  +playlistTracks?: {[id: string]: true},
-  +queueTracks?: {[id: string]: true},
-  +sessions?: {[id: string]: true},
-  +tracks?: {[id: string]: true},
-  +users?: {[id: string]: true},
-};
-
-export type {
-  Entities,
-};
+export type Entities = {+[type: string]: {+[id: string]: true}};
 
 /**
  * Removes an entity from Redux

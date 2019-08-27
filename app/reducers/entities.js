@@ -59,11 +59,11 @@ type Entity = {
 type Action = {
   +type?: string,
   +error?: Error,
-  +entities?: Entities | {[type: string]: EntityType},
+  +entities?: Entities | {+[type: string]: {+[id: string]: EntityType}},
   +ids?: Array<string>,
   +item?: EntityType,
   +items?: Array<EntityType>,
-  +updates?: {[string]: {[string]: EntityType}},
+  +updates?: {+[type: string]: {+[id: string]: EntityType}},
   +entityType?: string,
 };
 

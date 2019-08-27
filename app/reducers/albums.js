@@ -259,9 +259,7 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.GET_ALBUMS_REQUEST:
-        return update(state, action, 'albums');
       case types.GET_ALBUMS_SUCCESS:
-        return update(state, action, 'albums');
       case types.GET_ALBUMS_FAILURE:
         return update(state, action, 'albums');
       case types.GET_ALBUM_TOP_LISTENERS_REQUEST:

@@ -239,39 +239,27 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.GET_ARTIST_IMAGES_REQUEST:
-        return update(state, action, 'images');
       case types.GET_ARTIST_IMAGES_SUCCESS:
-        return update(state, action, 'images');
       case types.GET_ARTIST_IMAGES_FAILURE:
         return update(state, action, 'images');
       case types.GET_ARTISTS_REQUEST:
-        return update(state, action, 'artists');
       case types.GET_ARTISTS_SUCCESS:
-        return update(state, action, 'artists');
       case types.GET_ARTISTS_FAILURE:
         return update(state, action, 'artists');
       case types.GET_ARTIST_TOP_ALBUMS_REQUEST:
-        return update(state, action, 'topAlbums');
       case types.GET_ARTIST_TOP_ALBUMS_SUCCESS:
-        return update(state, action, 'topAlbums');
       case types.GET_ARTIST_TOP_ALBUMS_FAILURE:
         return update(state, action, 'topAlbums');
       case types.GET_ARTIST_TOP_LISTENERS_REQUEST:
-        return update(state, action, 'topListeners');
       case types.GET_ARTIST_TOP_LISTENERS_SUCCESS:
-        return update(state, action, 'topListeners');
       case types.GET_ARTIST_TOP_LISTENERS_FAILURE:
         return update(state, action, 'topListeners');
       case types.GET_ARTIST_TOP_PLAYLISTS_REQUEST:
-        return update(state, action, 'topPlaylists');
       case types.GET_ARTIST_TOP_PLAYLISTS_SUCCESS:
-        return update(state, action, 'topPlaylists');
       case types.GET_ARTIST_TOP_PLAYLISTS_FAILURE:
         return update(state, action, 'topPlaylists');
       case types.GET_ARTIST_TOP_TRACKS_REQUEST:
-        return update(state, action, 'topTracks');
       case types.GET_ARTIST_TOP_TRACKS_SUCCESS:
-        return update(state, action, 'topTracks');
       case types.GET_ARTIST_TOP_TRACKS_FAILURE:
         return update(state, action, 'topTracks');
       case types.INCREMENT_ARTIST_PLAYS_REQUEST:

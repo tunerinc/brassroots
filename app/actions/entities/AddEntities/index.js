@@ -15,7 +15,7 @@ import {
   type EntityType,
 } from '../../../reducers/entities';
 
-type Entities = {[type: string]: EntityType};
+type Entities = {+[type: string]: {+[id: string]: EntityType}};
 
 /**
  * Adds entities to Redux

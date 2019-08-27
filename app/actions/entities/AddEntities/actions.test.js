@@ -11,29 +11,33 @@ import {
   type Action,
   type EntityType,
 } from '../../../reducers/entities';
+import {type Artist} from '../../../reducers/albums';
 
-type Entities = {[type: string]: EntityType};
+type Entities = {[type: string]: {[id: string]: EntityType}};
 
 describe('add entities action creator', () => {
   it('creates action to add entities', () => {
-    const entities: Entities = {
+    const artists: Array<Artist> = [{id: 'foo', name: 'foo'}];
+    const userTracks: Array<string> = ['foo'];
+    const tracks: Array<string> = ['foo'];
+    const entities = {
       albums: {
         'foo': {
+          artists,
+          userTracks,
+          tracks,
           id: 'foo',
           name: 'foo bar',
-          artists: [{id: 'foo', name: 'foo'}],
           small: 'foo',
           medium: 'foo',
           large: 'foo',
-          userTracks: ['foo'],
-          tracks: ['foo'],
         },
       },
       tracks: {
         'foo': {
+          artists,
           id: 'foo',
           albumID: 'foo',
-          artists: [{id: 'foo', name: 'foo'}],
           name: 'foo',
           trackNumber: 1,
         },

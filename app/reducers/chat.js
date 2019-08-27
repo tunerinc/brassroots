@@ -133,25 +133,20 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.GET_CHAT_REQUEST:
+      case types.GET_CHAT_FAILURE:
+      case types.STOP_CHAT_LISTENER_SUCCESS:
         return update(state, action, 'chat');
       case types.GET_CHAT_SUCCESS:
+      case types.STOP_CHAT_LISTENER_FAILURE:
         return update(state, action);
-      case types.GET_CHAT_FAILURE:
-        return update(state, action, 'chat');
       case types.RESET_CHAT:
         return initialState;
       case types.SEND_CHAT_MESSAGE_REQUEST:
-        return update(state, action, 'message');
       case types.SEND_CHAT_MESSAGE_SUCCESS:
-        return update(state, action, 'message');
       case types.SEND_CHAT_MESSAGE_FAILURE:
         return update(state, action, 'message');
       case types.STOP_CHAT_LISTENER_REQUEST:
         return state;
-      case types.STOP_CHAT_LISTENER_SUCCESS:
-        return update(state, action, 'chat');
-      case types.STOP_CHAT_LISTENER_FAILURE:
-        return update(state, action);
       case types.UPDATE_CHAT:
         return updateObject(state, action.updates);
       default:
