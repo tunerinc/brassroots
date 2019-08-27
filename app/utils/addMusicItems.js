@@ -47,11 +47,11 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
       const newSortedTracks: Array<string> = music.sortedTracks.concat(track.id);
       music = updateObject(music, {sortedTracks: newSortedTracks});
     }
-    
+
     musicTracks = updateObject(musicTracks, {
       [track.id]: {
+        ...(music.tracks[track.id] ? music.tracks[track.id] : {}),
         id: track.id,
-        albumID: album.id,
         name: track.name,
         trackNumber: track.track_number || track.trackNumber || 1,
         durationMS: track.durationMS || track.duration_ms,
@@ -59,11 +59,23 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
           id: artist.id,
           name: artist.name,
         })),
+        album: {
+          id: album.id,
+          name: album.name,
+          small: small ? small : images && images.length ? images[2].url : '',
+          medium: medium ? medium : images && images.length ? images[1].url : '',
+          large: large ? large : images && images.length ? images[0].url : '',
+          artists: album.artists.map(artist => ({
+            id: artist.id,
+            name: artist.name,
+          })),
+        },
       },
     });
     
     musicAlbums = updateObject(musicAlbums, {
       [album.id]: {
+        ...(music.albums[album.id] ? music.albums[album.id] : {}),
         id: album.id,
         name: album.name,
         small: small ? small : images && images.length ? images[2].url : '',
@@ -82,6 +94,7 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
     track.artists.forEach(artist => {
       musicArtists = updateObject(musicArtists, {
         [artist.id]: {
+          ...(music.artists[artist.id] ? music.artists[artist.id] : {}),
           id: artist.id,
           name: artist.name,
           small: images && images.length == 3 ? images[2].url : '',
@@ -99,6 +112,7 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
       album.artists.forEach(artist => {
         musicArtists = updateObject(musicArtists, {
           [artist.id]: {
+            ...(music.artists[artist.id] ? music.artists[artist.id] : {}),
             id: artist.id,
             name: artist.name,
             small: images && images.length == 3 ? images[2].url : '',
