@@ -120,7 +120,7 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.CLEAR_SHARE:
+      case types.RESET_SHARE:
         return initialState;
       case types.UPDATE_SHARE:
         return update(state, action);
