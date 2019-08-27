@@ -222,7 +222,7 @@ export function album(
  * @param   {object} state       The Redux state
  * @param   {object} action      The Redux action
  * @param   {string} action.type The type of Redux action
- * @param   {string} type        The type to remove from the fetching array
+ * @param   {string} type        The type to add/remove from the fetching array
  * 
  * @returns {object}             The state with the updated values
  */

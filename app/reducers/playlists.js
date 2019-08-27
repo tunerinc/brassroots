@@ -16,7 +16,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
-import * as getPlaylists from '../actions/playlists/GetPlaylists/reducers';
 import * as getPlaylistTopMembers from '../actions/playlists/GetPlaylistTopMembers/reducers';
 import * as getPlaylistTopTracks from '../actions/playlists/GetPlaylistTopTracks/reducers';
 import * as getPlaylistTracks from '../actions/playlists/GetPlaylistTracks/reducers';
@@ -272,20 +271,44 @@ export function playlist(
  * @param   {object} action         The Redux action
  * @param   {string} action.type    The type of Redux action
  * @param   {object} action.updates The updates to make to the state
+ * @param   {string} type           The type to add/remove from the array
  * 
  * @returns {object}                The state updated with the new information
  */
 function update(
   state: State,
   action: Action,
+  type?: string,
 ): State {
-  const {newPlaylist: oldPlaylist} = state;
-  const updates: State = oldPlaylist && action.updates
+  const {
+    totalUserPlaylists,
+    fetching: oldFetch,
+    userPlaylists: oldPlaylists,
+    refreshing: oldRefresh,
+    newPlaylist: oldPlaylist,
+  } = state;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const updates: State = Array.isArray(oldRefresh) && Array.isArray(oldFetch) && Array.isArray(oldPlaylists)
     ? {
-      ...action.updates,
-      newPlaylist: action.updates.newPlaylist
+      ...(action.updates ? action.updates : {}),
+      lastUpdated,
+      fetching: add && type ? oldFetch.concat(type) : type ? oldFetch.filter(t => t !== type) : oldFetch,
+      error: haveError ? action.error : null,
+      totalUserPlaylists: action.total ? action.total : totalUserPlaylists,
+      newPlaylist: action.updates && action.updates.newPlaylist && oldPlaylist
         ? updateObject(oldPlaylist, action.updates.newPlaylist)
         : {...oldPlaylist},
+      refreshing: action.refreshing && type
+        ? oldRefresh.concat(type)
+        : type
+        ? oldRefresh.filter(t => t !== type)
+        : oldRefresh,
+      userPlaylists: Array.isArray(action.playlists) && type && oldRefresh.includes(type)
+        ? [...action.playlists]
+        : Array.isArray(action.playlists)
+        ? [...oldPlaylists, ...action.playlists]
+        : [...oldPlaylists],
     }
     : {};
 
@@ -298,16 +321,10 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_PLAYLISTS:
-        return addPlaylists(state, action);
-      case types.ADD_PLAYLIST_TRACKS:
-        return addPlaylistTracks(state, action);
       case types.GET_PLAYLISTS_REQUEST:
-        return getPlaylists.request(state, action);
       case types.GET_PLAYLISTS_SUCCESS:
-        return getPlaylists.success(state, action);
       case types.GET_PLAYLISTS_FAILURE:
-        return getPlaylists.failure(state, action);
+        return update(state, action, 'playlists');
       case types.GET_PLAYLIST_TOP_MEMBERS_REQUEST:
         return getPlaylistTopMembers.request(state);
       case types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS:

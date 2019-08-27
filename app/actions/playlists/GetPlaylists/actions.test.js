@@ -10,17 +10,17 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/playlists';
 
 describe('get playlists synchronous action creators', () => {
-  it('creates get playlists request action', () => {
+  it('creates request action', () => {
     const refreshing: boolean = true;
     const expectedAction: Action = {
       type: types.GET_PLAYLISTS_REQUEST,
       refreshing,
     };
 
-    expect(actions.getPlaylistsRequest(refreshing)).toStrictEqual(expectedAction);
+    expect(actions.request(refreshing)).toStrictEqual(expectedAction);
   });
 
-  it('creates get playlists success action', () => {
+  it('creates success action', () => {
     const playlists: Array<string> = ['foo', 'bar'];
     const total: number = 2;
     const expectedAction: Action = {
@@ -29,16 +29,16 @@ describe('get playlists synchronous action creators', () => {
       total,
     };
 
-    expect(actions.getPlaylistsSuccess(playlists, total)).toStrictEqual(expectedAction);
+    expect(actions.success(playlists, total)).toStrictEqual(expectedAction);
   });
 
-  it('creates get playlists failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.GET_PLAYLISTS_FAILURE,
       error,
     };
 
-    expect(actions.getPlaylistsFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

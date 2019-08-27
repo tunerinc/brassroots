@@ -12,23 +12,8 @@
 import getUserPlaylists from '../../../utils/spotifyAPI/getUserPlaylists';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addPlaylists} from '../AddPlaylists';
-import {addUsers} from '../../users/AddUsers';
-import {
-  type ThunkAction,
-  type Playlist,
-} from '../../../reducers/playlists';
-
-type Users = {
-  +[id: string]: {|
-    +id: string,
-    +displayName: string,
-  |},
-};
-
-type Playlists = {
-  +[id: string]: Playlist,
-};
+import {addEntities} from '../../entities/AddEntities';
+import {type ThunkAction} from '../../../reducers/playlists';
 
 type Options = {|
   +limit: number,
@@ -64,11 +49,11 @@ export function getPlaylists(
   };
 
   return async dispatch => {
-    dispatch(actions.getPlaylistsRequest(refreshing));
+    dispatch(actions.request(refreshing));
 
     try {
       const {items, total} = await getUserPlaylists(spotifyUserID, options);
-      const playlistsFromSpotify: Playlists = items.reduce((obj, playlist) => {
+      const playlists = items.reduce((obj, playlist) => {
         const large: string = playlist.images.length ? playlist.images[0].url : '';
         const medium: string = playlist.images.length === 3 ? playlist.images[1].url : large;
         const small: string = playlist.images.length === 3 ? playlist.images[2].url : large;
@@ -88,7 +73,7 @@ export function getPlaylists(
         });
       }, {});
 
-      const users: Users = items.reduce((obj, playlist) => {
+      const users = items.reduce((obj, playlist) => {
         return updateObject(obj, {
           [playlist.owner.id]: {
             id: playlist.owner.id,
@@ -97,11 +82,10 @@ export function getPlaylists(
         });
       }, {});
 
-      dispatch(addUsers(users));
-      dispatch(addPlaylists(playlistsFromSpotify));
-      dispatch(actions.getPlaylistsSuccess(items.map(p => p.id), total));
+      dispatch(addEntities({users, playlists}));
+      dispatch(actions.success(items.map(p => p.id), total));
     } catch (err) {
-      dispatch(actions.getPlaylistsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }
