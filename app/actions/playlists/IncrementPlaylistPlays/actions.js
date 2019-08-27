@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/playlists';
  * Notify the app of a increment playlist plays request
  * 
  * @alias module:IncrementPlaylistPlays
- * @function incrementPlaylistPlaysRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of INCREMENT_PLAYLIST_PLAYS_REQUEST
  */
-export function incrementPlaylistPlaysRequest(): Action {
+export function request(): Action {
   return {type: types.INCREMENT_PLAYLIST_PLAYS_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function incrementPlaylistPlaysRequest(): Action {
  * Notify the app of a increment playlist plays success
  * 
  * @alias module:IncrementPlaylistPlays
- * @function incrementPlaylistPlaysSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of INCREMENT_PLAYLIST_PLAYS_SUCCESS
  */
-export function incrementPlaylistPlaysSuccess(): Action {
+export function success(): Action {
   return {type: types.INCREMENT_PLAYLIST_PLAYS_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function incrementPlaylistPlaysSuccess(): Action {
  * Notify the app of a increment playlist plays failure
  * 
  * @alias module:IncrementPlaylistPlays
- * @function incrementPlaylistPlaysFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -52,7 +52,7 @@ export function incrementPlaylistPlaysSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of INCREMENT_PLAYLIST_PLAYS_FAILURE and the error which caused the failure
  */
-export function incrementPlaylistPlaysFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

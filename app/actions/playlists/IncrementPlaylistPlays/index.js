@@ -10,6 +10,7 @@
  */
 
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/playlists';
 import {
   type FirestoreInstance,
@@ -38,7 +39,7 @@ export function incrementPlaylistPlays(
   trackID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.incrementPlaylistPlaysRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const userRef: FirestoreDoc = firestore.collection('users').doc(userID);
@@ -78,9 +79,18 @@ export function incrementPlaylistPlays(
     const totals: Array<number> = await Promise.all(promises);
     const [playlistCount, trackCount] = totals;
 
-    dispatch(actions.incrementPlaylistPlaysSuccess());
+    dispatch(
+      addEntities(
+        {
+          playlists: {[playlistID]: {userPlays: playlistCount, id: playlistID}},
+          playlistTracks: {[trackID]: {userPlays: trackCount, id: trackID}},
+        },
+      ),
+    );
+
+    dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.incrementPlaylistPlaysFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

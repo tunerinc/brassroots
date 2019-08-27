@@ -10,23 +10,23 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/playlists';
 
 describe('increment playlist plays synchronous action creators', () => {
-  it('creates increment playlist plays request action', () => {
+  it('creates request action', () => {
     const expectedAction: Action = {type: types.INCREMENT_PLAYLIST_PLAYS_REQUEST};
-    expect(actions.incrementPlaylistPlaysRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates increment playlist plays success action', () => {
+  it('creates success action', () => {
     const expectedAction: Action = {type: types.INCREMENT_PLAYLIST_PLAYS_SUCCESS};
-    expect(actions.incrementPlaylistPlaysSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
-  it('creates increment playlist plays failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.INCREMENT_PLAYLIST_PLAYS_FAILURE,
       error,
     };
 
-    expect(actions.incrementPlaylistPlaysFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

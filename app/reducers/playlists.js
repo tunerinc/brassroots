@@ -17,7 +17,6 @@ import {type Action as EntitiesAction} from './entities';
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
 import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
-import * as incrementPlaylistPlays from '../actions/playlists/IncrementPlaylistPlays/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -251,8 +250,6 @@ export function playlistTrack(
     case types.ADD_PLAYLIST_TRACKS:
     case entitiesTypes.ADD_ENTITIES:
       return addSinglePlaylistTrack(state, action);
-    case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
-      return incrementPlaylistPlays.incrementTrack(state, action);
     default:
       return state;
   }
@@ -288,8 +285,6 @@ export function playlist(
     case types.ADD_PLAYLISTS:
     case entitiesTypes.ADD_ENTITIES:
       return addSinglePlaylist(state, action);
-    case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
-      return incrementPlaylistPlays.incrementPlaylist(state, action);
     default:
       return state;
   }
@@ -383,11 +378,11 @@ export default function reducer(
       case types.GET_TOP_PLAYLISTS_FAILURE:
         return getTopPlaylists.failure(state, action);
       case types.INCREMENT_PLAYLIST_PLAYS_REQUEST:
-        return incrementPlaylistPlays.request(state);
+        return updateObject(state, {incrementing: true, error: null});
       case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
-        return incrementPlaylistPlays.success(state);
+        return updateObject(state, {incrementing: false, error: null});
       case types.INCREMENT_PLAYLIST_PLAYS_FAILURE:
-        return incrementPlaylistPlays.failure(state, action);
+        return updateObject(state, {error: action.error, incrementing: false});
       case types.RESET_PLAYLISTS:
         return initialState;
       case types.UPDATE_PLAYLISTS:
