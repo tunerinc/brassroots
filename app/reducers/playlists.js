@@ -16,7 +16,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
-import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -372,11 +371,9 @@ export default function reducer(
       case types.GET_PLAYLIST_TRACKS_FAILURE:
         return update(state, action, 'tracks');
       case types.GET_TOP_PLAYLISTS_REQUEST:
-        return getTopPlaylists.request(state);
       case types.GET_TOP_PLAYLISTS_SUCCESS:
-        return getTopPlaylists.success(state);
       case types.GET_TOP_PLAYLISTS_FAILURE:
-        return getTopPlaylists.failure(state, action);
+        return update(state, action, 'topPlaylists');
       case types.INCREMENT_PLAYLIST_PLAYS_REQUEST:
         return updateObject(state, {incrementing: true, error: null});
       case types.INCREMENT_PLAYLIST_PLAYS_SUCCESS:
