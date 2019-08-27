@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/playlists';
  * Notify the app of a get playlist top members request
  * 
  * @alias module:GetPlaylistTopMembers
- * @function getPlaylistTopMembersRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_PLAYLIST_TOP_MEMBERS
  */
-export function getPlaylistTopMembersRequest(): Action {
+export function request(): Action {
   return {type: types.GET_PLAYLIST_TOP_MEMBERS_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function getPlaylistTopMembersRequest(): Action {
  * Notify the app of a get playlist top members success
  * 
  * @alias module:GetPlaylistTopMembers
- * @function getPlaylistTopMembersSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_PLAYLIST_TOP_MEMBERS
  */
-export function getPlaylistTopMembersSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function getPlaylistTopMembersSuccess(): Action {
  * Notify the app of a get playlist top members failure
  * 
  * @alias module:GetPlaylistTopMembers
- * @function getPlaylistTopMembersFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -52,7 +52,7 @@ export function getPlaylistTopMembersSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of GET_PLAYLIST_TOP_MEMBERS_FAILURE and the error which caused the failure
  */
-export function getPlaylistTopMembersFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

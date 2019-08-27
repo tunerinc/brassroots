@@ -11,7 +11,7 @@
 
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addUsers} from '../../users/AddUsers';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/playlists';
 import {type FirestoreInstance} from '../../../utils/firebaseTypes';
 
@@ -35,7 +35,7 @@ export function getPlaylistTopMembers(
   playlistID: string,
 ): ThunkAction {
   return (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getPlaylistTopMembersRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
   };

@@ -16,7 +16,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
 import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
-import * as getPlaylistTopMembers from '../actions/playlists/GetPlaylistTopMembers/reducers';
 import * as getPlaylistTopTracks from '../actions/playlists/GetPlaylistTopTracks/reducers';
 import * as getPlaylistTracks from '../actions/playlists/GetPlaylistTracks/reducers';
 import * as getTopPlaylists from '../actions/playlists/GetTopPlaylists/reducers';
@@ -247,8 +246,6 @@ export function playlist(
     case types.ADD_PLAYLISTS:
     case entitiesTypes.ADD_ENTITIES:
       return addSinglePlaylist(state, action);
-    case types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS:
-      return getPlaylistTopMembers.addMembers(state, action);
     case types.GET_PLAYLIST_TOP_TRACKS_SUCCESS:
       return getPlaylistTopTracks.addTracks(state, action);
     case types.GET_PLAYLIST_TRACKS_SUCCESS:
@@ -326,11 +323,9 @@ export default function reducer(
       case types.GET_PLAYLISTS_FAILURE:
         return update(state, action, 'playlists');
       case types.GET_PLAYLIST_TOP_MEMBERS_REQUEST:
-        return getPlaylistTopMembers.request(state);
       case types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS:
-        return getPlaylistTopMembers.success(state);
       case types.GET_PLAYLIST_TOP_MEMBERS_FAILURE:
-        return getPlaylistTopMembers.failure(state, action);
+        return update(state, action, 'topMembers');
       case types.GET_PLAYLIST_TOP_TRACKS_REQUEST:
         return getPlaylistTopTracks.request(state);
       case types.GET_PLAYLIST_TOP_TRACKS_SUCCESS:

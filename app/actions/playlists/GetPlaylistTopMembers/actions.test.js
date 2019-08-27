@@ -10,23 +10,23 @@ import * as types from '../types';
 import {type Action} from '../../../reducers/playlists';
 
 describe('get playlist top members synchronous action creators', () => {
-  it('creates get playlist top members request action', () => {
+  it('creates request action', () => {
     const expectedAction: Action = {type: types.GET_PLAYLIST_TOP_MEMBERS_REQUEST};
-    expect(actions.getPlaylistTopMembersRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
-  it('creates get playlist top members success action', () => {
+  it('creates success action', () => {
     const expectedAction: Action = {type: types.GET_PLAYLIST_TOP_MEMBERS_SUCCESS};
-    expect(actions.getPlaylistTopMembersSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
-  it('creates get playlist top members failure action', () => {
+  it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
       type: types.GET_PLAYLIST_TOP_MEMBERS_FAILURE,
       error,
     };
 
-    expect(actions.getPlaylistTopMembersFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });
