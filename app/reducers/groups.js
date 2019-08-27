@@ -168,7 +168,28 @@ export const initialState: State = {
   },
 };
 
-function group(
+/**
+ * Adds or updates a single group
+ * 
+ * @function addOrUpdateGroup
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {object} action.item The group object to add or update
+ * 
+ * @returns {object}             The single group added or updated with the new information
+ */
+function addOrUpdateGroup(
+  state: Group,
+  action: Action,
+): Group {
+  return state;
+}
+
+export function group(
   state: Group = singleState,
   action: Action,
 ): Group {

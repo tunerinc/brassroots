@@ -177,6 +177,27 @@ export const initialState: State = {
   },
 };
 
+/**
+ * Adds or updates a single message
+ * 
+ * @function addOrUpdadteMessage
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {object} action.item The message object to add or update
+ * 
+ * @returns {object}             The single message added or updated with the new information
+ */
+function addOrUpdateMessage(
+  state: Message,
+  action: Action,
+): Message {
+  return state;
+}
+
 export function message(
   state: Message = messageState,
   action: DispatchAction,
@@ -187,6 +208,27 @@ export function message(
     default:
       return state;
   }
+}
+
+/**
+ * Adds or updates a single conversation
+ * 
+ * @function addOrUpdateConversation
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {object} action.item The conversation object to add or update
+ * 
+ * @returns {object}             The single conversation added or updated with the new information
+ */
+function addOrUpdateConversation(
+  state: Conversation,
+  action: Action,
+): Conversation {
+  return state;
 }
 
 export function conversation(

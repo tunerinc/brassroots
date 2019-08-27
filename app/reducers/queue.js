@@ -183,6 +183,27 @@ export const initialState: State = {
   },
 };
 
+/**
+ * Adds or updates a single queue track
+ * 
+ * @function addOrUpdateTrack
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {object} action.item The queue track object to add or update
+ * 
+ * @returns {object}             The single queue track added or updated with the new information
+ */
+function addOrUpdateTrack(
+  state: QueueTrack,
+  action: Action,
+): QueueTrack {
+  return state;
+}
+
 export function queueTrack(
   state: QueueTrack = singleState,
   action: Action,

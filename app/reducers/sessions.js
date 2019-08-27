@@ -213,6 +213,27 @@ export const initialState: State = {
   },
 };
 
+/**
+ * Adds or updates a single session
+ * 
+ * @function addOrUpdateSession
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {object} action.item The session object to add or update
+ * 
+ * @returns {object}             The single session added or updated with the new information
+ */
+function addOrUpdateSession(
+  state: Session,
+  action: Action,
+): Session {
+  return state;
+}
+
 export function session(
   state: Session = singleState,
   action: Action,

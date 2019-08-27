@@ -23,8 +23,7 @@ describe('get album top playlists reducer', () => {
     const expectedState: State = {...initialState, fetching: ['topPlaylists']};
     const expectedStateTwo: State = {...initialState, fetching: ['topListeners', 'topPlaylists']};
     expect(reducer(state, actions.request())).toStrictEqual(expectedState);
-    expect(reducer(initialState, actions.request()))
-      .toStrictEqual(expectedState);
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
   it('handles GET_ALBUM_TOP_PLAYLISTS_SUCCESS', () => {

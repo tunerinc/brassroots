@@ -148,6 +148,27 @@ export const initialState: State = {
   error: null,
 };
 
+/**
+ * Adds or updates a single track
+ * 
+ * @function addOrUpdateTrack
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {object} action.item The track object to add or update
+ * 
+ * @returns {object}             The single track added or updated with new information
+ */
+function addOrUpdateTrack(
+  state: Track,
+  action: Action,
+): Track {
+  return state;
+}
+
 export function track(
   state: Track = singleState,
   action: Action,

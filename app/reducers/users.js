@@ -179,6 +179,27 @@ export const initialState: State = {
   error: null,
 };
 
+/**
+ * Adds or updates a single user
+ * 
+ * @function addOrUpdateUser
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {object} action.item The user object to add or update
+ * 
+ * @returns {object}             The single user added or updated with the new information
+ */
+function addOrUpdateUser(
+  state: User,
+  action: Action,
+): User {
+  return state;
+}
+
 export function user(
   state: User = singleState,
   action: Action,
