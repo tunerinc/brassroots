@@ -13,10 +13,6 @@ import {type Firebase} from '../utils/firebaseTypes';
 import type {SpotifyError} from '../utils/spotifyAPI/types';
 import {type Action as EntitiesAction} from './entities';
 
-// Case Functions
-import {addSinglePlaylist, addPlaylists} from '../actions/playlists/AddPlaylists/reducers';
-import {addSinglePlaylistTrack, addPlaylistTracks} from '../actions/playlists/AddPlaylistTracks/reducers';
-
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type DispatchAction = Action | EntitiesAction;
@@ -60,6 +56,7 @@ type Action = {
   +playlists?: {+[id: string]: Playlist} | Array<string>,
   +playlistID?: string,
   +refreshing?: boolean,
+  +item?: Playlist,
   +members?: Array<string>,
   +updates?: State,
   +topTracks?: Array<string>,
@@ -246,9 +243,8 @@ export function playlistTrack(
   action: Action,
 ): PlaylistTrack {
   switch (action.type) {
-    case types.ADD_PLAYLIST_TRACKS:
     case entitiesTypes.ADD_ENTITIES:
-      return addSinglePlaylistTrack(state, action);
+      return addOrUpdateTrack(state, action);
     default:
       return state;
   }
@@ -273,7 +269,26 @@ function addOrUpdatePlaylist(
   state: Playlist,
   action: Action,
 ): Playlist {
-  return state;
+  const {members, tracks} = state;
+  const {item, refreshing} = action;
+  const updates: Playlist = item && Array.isArray(members) && Array.isArray(tracks)
+    ? {
+      ...item,
+      lastUpdated,
+      members: item.members && refreshing
+        ? [...item.members]
+        : item.members
+        ? [...members, ...item.members].filter((el, i, arr) => i === arr.indexOf(el))
+        : [...members],
+      tracks: item.tracks && refreshing
+        ? [...item.tracks]
+        : item.tracks
+        ? [...tracks, ...item.tracks].filter((el, i, arr) => i === arr.indexOf(el))
+        : [...tracks],
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export function playlist(
@@ -281,9 +296,8 @@ export function playlist(
   action: Action,
 ): Playlist {
   switch (action.type) {
-    case types.ADD_PLAYLISTS:
     case entitiesTypes.ADD_ENTITIES:
-      return addSinglePlaylist(state, action);
+      return addOrUpdatePlaylist(state, action);
     default:
       return state;
   }
