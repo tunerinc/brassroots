@@ -42,6 +42,7 @@ const singleEntityReducers = {
  * @param   {string}   action.type               The type of Redux action
  * @param   {object[]} action.items              The items to add to the single entities node
  * @param   {string}   action.entityType         The type of entities to add
+ * @param   {boolean}  [action.refreshing=false] Whether the current user is refreshing the entities given
  * @param   {object}   action.entities           The entities to add
  * @param   {object}   [entities.albums]         The album entities to add
  * @param   {object}   [entities.artists]        The artist entities to add
@@ -59,7 +60,7 @@ const singleEntityReducers = {
  */
 export function addEntityType(state, action) {
   const {allIDs: oldIDs, byID} = state;
-  const {items, entityType} = action;
+  const {items, entityType, refreshing} = action;
   const itemIDs = items.map(item => item.id);
   const allIDs = [...oldIDs, ...itemIDs].filter((el, i, arr) => i === arr.indexOf(el));
   const entitiesToAdd = items.reduce((obj, item) => {
@@ -67,7 +68,7 @@ export function addEntityType(state, action) {
     const func = singleEntityReducers[entityType.slice(0, -1).toLowerCase()];
     
     if (typeof func === 'function') {
-      const addedEntity = func(entity, {...action, item});
+      const addedEntity = func(entity, {...action, item, refreshing});
       return updateObject(obj, {[item.id]: addedEntity});
     }
 

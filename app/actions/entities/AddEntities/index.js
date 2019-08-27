@@ -42,9 +42,11 @@ type Entities = {+[type: string]: {+[id: string]: EntityType}};
  */
 export function addEntities(
   entities: Entities,
+  refreshing?: boolean = false,
 ): Action {
   return {
     type: types.ADD_ENTITIES,
     entities,
+    refreshing,
   };
 }

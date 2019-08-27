@@ -62,6 +62,8 @@ type Action = {
   +conversationID?: string,
   +message?: string,
   +updates?: State,
+  +item?: Conversation,
+  +refreshing?: boolean,
 };
 
 type State = {
@@ -70,7 +72,7 @@ type State = {
   +totalUserConversations?: number,
   +selectedConversation?: ?string,
   +searching?: boolean,
-  +fetching?: Array<string>,
+  +fetching?: boolean,
   +creating?: boolean,
   +error?: ?Error | SpotifyError,
   +newConversation?: {
@@ -155,7 +157,7 @@ export const conversationState: Conversation = {
  * @property {number}   totalUserConversations=0  The total amount of user conversations
  * @property {string}   selectedConversation=null The selected conversation to view
  * @property {boolean}  searching=false           Whether the current user is searching conversations
- * @property {boolean}  fetching=[]               Whether the current user is fetching any entity type
+ * @property {boolean}  fetching=false            Whether the current user is fetching
  * @property {boolean}  creating=false            Whether the current user is creating a new conversation
  * @property {Error}    error=null                The error related to conversations actions
  * @property {object}   newConversation           The new conversation the current user is creating
@@ -168,7 +170,7 @@ export const initialState: State = {
   totalUserConversations: 0,
   selectedConversation: null,
   searching: false,
-  fetching: [],
+  fetching: false,
   creating: false,
   error: null,
   newConversation: {
@@ -228,7 +230,36 @@ function addOrUpdateConversation(
   state: Conversation,
   action: Action,
 ): Conversation {
-  return state;
+  const {members, messages, music} = state;
+  const {item, refreshing} = action;
+  const updates: Conversation = (
+    item
+    && Array.isArray(members)
+    && Array.isArray(messages)
+    && Array.isArray(music)
+  )
+    ? {
+      ...item,
+      lastUpdated,
+      members: item.members && refreshing
+        ? [...item.members]
+        : item.members
+        ? [...members, ...item.members].filter((el, i, arr) => i === arr.indexOf(el))
+        : [...members],
+      messages: item.messages && refreshing
+        ? [...item.messages]
+        : item.messages
+        ? [...messages, ...item.messages].filter((el, i, arr) => i === arr.indexOf(el))
+        : [...messages],
+      music: item.music && refreshing
+        ? [...item.music]
+        : item.music
+        ? [...music, ...item.music].filter((el, i, arr) => i === arr.indexOf(el))
+        : [...music],
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export function conversation(
@@ -236,6 +267,8 @@ export function conversation(
   action: Action,
 ): Conversation {
   switch (action.type) {
+    case entitiesTypes.ADD_ENTITIES:
+      return addOrUpdateConversation(state, action);
     default:
       return state;
   }

@@ -17,6 +17,7 @@ type Entities = {[type: string]: {[id: string]: EntityType}};
 
 describe('add entities action creator', () => {
   it('creates action to add entities', () => {
+    const refreshing: boolean = true;
     const artists: Array<Artist> = [{id: 'foo', name: 'foo'}];
     const userTracks: Array<string> = ['foo'];
     const tracks: Array<string> = ['foo'];
@@ -54,8 +55,12 @@ describe('add entities action creator', () => {
     const expectedAction: Action = {
       type: types.ADD_ENTITIES,
       entities,
+      refreshing: false,
     };
 
+    const expectedRefresh: Action = {...expectedAction, refreshing};
+
     expect(actions.addEntities(entities)).toStrictEqual(expectedAction);
+    expect(actions.addEntities(entities, refreshing)).toStrictEqual(expectedRefresh);
   });
 });
