@@ -22,7 +22,6 @@ import {type Action as ChatAction} from './chat';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import {addSingleSession, addSessions} from '../actions/sessions/AddSessions/reducers';
 import * as changeSessionMode from '../actions/sessions/ChangeSessionMode/reducers';
 import * as createSession from '../actions/sessions/CreateSession/reducers';
 import * as getFollowingSessions from '../actions/sessions/GetFollowingSessions/reducers';
@@ -87,6 +86,8 @@ type Action = {
   +updates?: Session,
   +isOwner?: boolean,
   +updates?: State,
+  +item?: Session,
+  +refreshing?: boolean,
 };
 
 type State = {
@@ -166,14 +167,12 @@ const singleState: Session = {
  * 
  * @property {string}    lastUpdated                       The date/time the sessions were last updated
  * @property {string}    currentSessionID=null             The Brassroots id of the session the current user is in
- * @property {boolean}   fetchingListeners=false           Whether the current user is fetching the lisetners of a session
+ * @property {string[]}  fetching=[]                       Whether the current user is fetching session info
  * @property {boolean}   changingMode=false                Whether the current user is changing the mode of a session
- * @property {boolean}   fetchingInfo=false                Whether the current user is fetching session info
- * @property {boolean}   fetchingSessions=false            Whether the current user is fetching sessions
- * @property {boolean}   paginatingSessions=false          Whether the current user is paginating sessions
- * @property {boolean}   refreshingSessions=false          Whether the current user is refreshing sessions
- * @property {boolean}   joiningSession=false              Whether the current user is joining a session
- * @property {boolean}   leavingSession=false              Whether the current user is leaving a session
+ * @property {boolean}   paginating=false                  Whether the current user is paginating sessions
+ * @property {boolean}   refreshing=false                  Whether the current user is refreshing sessions
+ * @property {boolean}   joining=false                     Whether the current user is joining a session
+ * @property {boolean}   leaving=false                     Whether the current user is leaving a session
  * @property {string}    selectedSession=null              The selected session to view
  * @property {infoUnsub} infoUnsubscribe=null              The function to invoke to unsubscribe the session info listener
  * @property {Error}     error=null                        The error related to sessions actions
@@ -231,7 +230,21 @@ function addOrUpdateSession(
   state: Session,
   action: Action,
 ): Session {
-  return state;
+  const {listeners} = state;
+  const {item, refreshing} = action;
+  const updates: Session = item && Array.isArray(listeners)
+    ? {
+      ...item,
+      lastUpdated,
+      listeners: item.listeners && refreshing
+        ? [...item.listeners]
+        : item.listeners
+        ? [...listeners, ...item.listeners]
+        : [...listeners],
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export function session(
@@ -239,13 +252,8 @@ export function session(
   action: Action,
 ): Session {
   switch (action.type) {
-    case types.ADD_SESSIONS:
     case entitiesTypes.ADD_ENTITIES:
-      return addSingleSession(state, action);
-    case types.CREATE_SESSION_SUCCESS:
-      return addSingleSession(state, action);
-    case types.GET_SESSION_INFO_SUCCESS:
-      return addSingleSession(state, action);
+      return addOrUpdateSession(state, action);
     case types.JOIN_SESSION_SUCCESS:
       return joinSession.join(state, action);
     case types.LEAVE_SESSION_SUCCESS:
@@ -292,8 +300,6 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_SESSIONS:
-        return addSessions(state, action);
       case types.CHANGE_SESSION_MODE_REQUEST:
         return changeSessionMode.request(state);
       case types.CHANGE_SESSION_MODE_SUCCESS:

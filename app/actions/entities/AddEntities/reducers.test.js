@@ -5,6 +5,7 @@ import reducer, {initialState} from '../../../reducers/entities';
 import * as actions from '../AddEntities';
 import {lastUpdated as albumLast} from '../../../reducers/albums';
 import {lastUpdated as artistLast} from '../../../reducers/artists';
+import {lastUpdated as conversationLast} from '../../../reducers/conversations';
 import {lastUpdated as playlistLast} from '../../../reducers/playlists';
 import {lastUpdated as sessionLast} from '../../../reducers/sessions';
 import {lastUpdated as userLast} from '../../../reducers/users';
@@ -51,7 +52,11 @@ describe('add entities reducer', () => {
     const message = {
       id: 'foo',
       text: 'foo',
-      userID: 'foo',
+      sender: {
+        id: 'foo',
+        name: 'foo',
+        image: 'foo',
+      },
       timestamp: 'foo',
     };
 
@@ -194,7 +199,10 @@ describe('add entities reducer', () => {
             byID: {
               'foo': {
                 ...message,
+                read: false,
+                media: null,
                 error: null,
+                lastUpdated: conversationLast,
               },
             },
           },

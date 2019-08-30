@@ -9,6 +9,7 @@ import moment from 'moment';
 import updateObject from '../utils/updateObject';
 import {type Action as TrackAction} from './tracks';
 import {type Action as QueueAction} from './queue';
+import {type Action as EntitiesAction} from './entities';
 import {type Firebase} from '../utils/firebaseTypes';
 import * as types from '../actions/player/types';
 
@@ -20,7 +21,7 @@ import {updatePlayer} from '../actions/player/UpdatePlayer/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
-type DispatchAction = Action | TrackAction | QueueAction;
+type DispatchAction = Action | TrackAction | QueueAction | EntitiesAction;
 type GetState = () => State;
 type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;

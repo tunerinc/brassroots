@@ -17,8 +17,6 @@ import {type Action as TrackAction} from './tracks';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import {addCurrentContext} from '../actions/queue/AddCurrentContext/reducers';
-import {addSingleTrack, addQueueTracks} from '../actions/queue/AddQueueTracks/reducers';
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
 import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
@@ -81,6 +79,7 @@ type Action = {
   +updates?: Updates,
   +removeTrack?: boolean,
   +updates?: State,
+  +item?: QueueTrack,
 };
 
 type State = {
@@ -183,35 +182,13 @@ export const initialState: State = {
   },
 };
 
-/**
- * Adds or updates a single queue track
- * 
- * @function addOrUpdateTrack
- * 
- * @author Aldo Gonzalez <aldo@tunerinc.com>
- * 
- * @param   {object} state       The Redux state
- * @param   {object} action      The Redux action
- * @param   {string} action.type The type of Redux action
- * @param   {object} action.item The queue track object to add or update
- * 
- * @returns {object}             The single queue track added or updated with the new information
- */
-function addOrUpdateTrack(
-  state: QueueTrack,
-  action: Action,
-): QueueTrack {
-  return state;
-}
-
 export function queueTrack(
   state: QueueTrack = singleState,
   action: Action,
 ): QueueTrack {
   switch (action.type) {
-    case types.ADD_QUEUE_TRACKS:
     case entitiesTypes.ADD_ENTITIES:
-      return addSingleTrack(state, action);
+      return updateObject(state, {...(action.item ? action.item : {})});
     default:
       return state;
   }
@@ -254,10 +231,6 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_CURRENT_CONTEXT:
-        return addCurrentContext(state, action);
-      case types.ADD_QUEUE_TRACKS:
-        return addQueueTracks(state, action);
       case types.DELETE_QUEUE_TRACK_REQUEST:
         return deleteQueueTrack.request(state, action);
       case types.DELETE_QUEUE_TRACK_SUCCESS:

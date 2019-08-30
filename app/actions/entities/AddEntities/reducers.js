@@ -65,7 +65,7 @@ export function addEntityType(state, action) {
   const allIDs = [...oldIDs, ...itemIDs].filter((el, i, arr) => i === arr.indexOf(el));
   const entitiesToAdd = items.reduce((obj, item) => {
     const entity = byID[item.id];
-    const func = singleEntityReducers[entityType.slice(0, -1).toLowerCase()];
+    const func = singleEntityReducers[entityType.slice(0, -1)];
     
     if (typeof func === 'function') {
       const addedEntity = func(entity, {...action, item, refreshing});

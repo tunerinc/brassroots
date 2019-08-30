@@ -176,26 +176,21 @@ const singlePlaylistState: Playlist = {
  * @alias playlistsState
  * @type {object}
  * 
- * @property {string}   lastUpdated                The date/time the playlists were last updated
- * @property {string[]} userPlaylists              The Spoitify ids of the playlists saved in the current user's library
- * @property {number}   totalUserPlaylists=0       The total amount of playlists the current user has saved in their library
- * @property {string}   selectedPlaylist=null      The selected playlis to view
- * @property {boolean}  fetchingMembers=false      Whether the current user is fetching members of a playlist
- * @property {boolean}  refreshingPlaylists=false  Whether the current user is refreshing playlists
- * @property {boolean}  fetchingPlaylists=false    Whether the current user is fetching playlists
- * @property {boolean}  fetchingTopPlaylists=false Whether the current user is fetching top playlists
- * @property {boolean}  fetchingTopTracks=false    Whether the current user is fetching top tracks of a playlist
- * @property {boolean}  fetchingTracks=false       Whether the current user is fetching tracks of a playlist
- * @property {boolean}  refreshingTracks=false     Whether the current user is refreshing tracks of a playlist
- * @property {boolean}  searchingPlaylists=false   Whether the current user is searching playlists
- * @property {boolean}  creatingPlaylist=false     Whether the current user is creating a playlist
- * @property {boolean}  incrementingCount=false    Whether the current user is incrementing the count of a playlist & a playlist track
- * @property {Error}    error=null                 The error related to playlists actions
- * @property {object}   newPlaylist                The new playlist to create
- * @property {string[]} newPlaylist.members        The members of the new playlist
- * @property {string}   newPlaylist.name           The name of the new playlist
- * @property {string}   newPlaylist.image          The image url of the new playlist
- * @property {string}   newPlaylist.mode           The mode to create the new playlist in
+ * @property {string}   lastUpdated           The date/time the playlists were last updated
+ * @property {string[]} userPlaylists         The Spoitify ids of the playlists saved in the current user's library
+ * @property {number}   totalUserPlaylists=0  The total amount of playlists the current user has saved in their library
+ * @property {string}   selectedPlaylist=null The selected playlis to view
+ * @property {string[]} fetching=[]           Whether the current user is fetching members of a playlist
+ * @property {string[]} refreshing=[]         Whether the current user is refreshing playlists
+ * @property {boolean}  searching=false       Whether the current user is searching playlists
+ * @property {boolean}  creating=false        Whether the current user is creating a playlist
+ * @property {boolean}  incrementing=false    Whether the current user is incrementing the count of a playlist & a playlist track
+ * @property {Error}    error=null            The error related to playlists actions
+ * @property {object}   newPlaylist           The new playlist to create
+ * @property {string[]} newPlaylist.members   The members of the new playlist
+ * @property {string}   newPlaylist.name      The name of the new playlist
+ * @property {string}   newPlaylist.image     The image url of the new playlist
+ * @property {string}   newPlaylist.mode      The mode to create the new playlist in
  */
 export const initialState: State = {
   lastUpdated,
@@ -216,35 +211,13 @@ export const initialState: State = {
   },
 };
 
-/**
- * Adds or updates a single playlist track
- * 
- * @function addOrUpdateTrack
- * 
- * @author Aldo Gonzalez <aldo@tunerinc.com>
- * 
- * @param   {object}  state             The Redux state
- * @param   {object}  action            The Redux action
- * @param   {string}  action.type       The type of Redux action
- * @param   {object}  action.item       The playlist track object to add or update
- * @param   {boolean} action.refreshing Whether the current user is refreshing
- * 
- * @returns {object}                    The single playlist track added or updated with the new information
- */
-function addOrUpdateTrack(
-  state: PlaylistTrack,
-  action: Action,
-): PlaylistTrack {
-  return state;
-}
-
 export function playlistTrack(
   state: PlaylistTrack = singleTrackState,
   action: Action,
 ): PlaylistTrack {
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
-      return addOrUpdateTrack(state, action);
+      return updateObject(state, {...(action.item ? action.item : {})});
     default:
       return state;
   }

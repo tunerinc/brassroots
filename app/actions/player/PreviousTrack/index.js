@@ -14,7 +14,7 @@ import Spotify from 'rn-spotify-sdk';
 // import {GeoFirestore} from 'geofirestore';
 import * as actions from './actions';
 import {addRecentTrack} from '../../tracks/AddRecentTrack';
-import {addSessions} from '../../sessions/AddSessions';
+import {addEntities} from '../../entities/AddEntities';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/player';
 import {type FullTrack} from '../../../utils/spotifyAPI/types';
@@ -207,13 +207,15 @@ export function previousTrack(
       );
 
       dispatch(
-        addSessions(
+        addEntities(
           {
-            [session.id]: {
-              id: session.id,
-              currentTrackID: prevDoc.data().track.id,
-              currentQueueID: queueID,
-            },
+            sessions: {
+              [session.id]: {
+                id: session.id,
+                currentTrackID: prevDoc.data().track.id,
+                currentQueueID: queueID,
+              },
+            }
           },
         ),
       );

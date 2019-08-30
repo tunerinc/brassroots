@@ -18,7 +18,6 @@ import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
 import * as addRecentTrack from '../actions/tracks/AddRecentTrack/reducers';
-import {addSingleTrack, addTracks} from '../actions/tracks/AddTracks/reducers';
 import * as changeFavoriteTrack from '../actions/tracks/ChangeFavoriteTrack/reducers';
 import * as getFavoriteTrack from '../actions/tracks/GetFavoriteTrack/reducers';
 import * as getMostPlayedSpotifyTrack from '../actions/tracks/GetMostPlayedSpotifyTrack/reducers';
@@ -64,6 +63,7 @@ type Action = {
   +replace?: boolean,
   +total?: number,
   +updates?: State,
+  +item?: Track,
 };
 
 type State = {
@@ -148,35 +148,13 @@ export const initialState: State = {
   error: null,
 };
 
-/**
- * Adds or updates a single track
- * 
- * @function addOrUpdateTrack
- * 
- * @author Aldo Gonzalez <aldo@tunerinc.com>
- * 
- * @param   {object} state       The Redux state
- * @param   {object} action      The Redux action
- * @param   {string} action.type The type of Redux action
- * @param   {object} action.item The track object to add or update
- * 
- * @returns {object}             The single track added or updated with new information
- */
-function addOrUpdateTrack(
-  state: Track,
-  action: Action,
-): Track {
-  return state;
-}
-
 export function track(
   state: Track = singleState,
   action: Action,
 ): Track {
   switch (action.type) {
-    case types.ADD_TRACKS:
     case entitiesTypes.ADD_ENTITIES:
-      return addSingleTrack(state, action);
+      return updateObject(state, {...(action.item ? action.item : {})});
     case types.INCREMENT_TRACK_PLAYS_SUCCESS:
       return incrementTrackPlays.increment(state, action);
     default:
@@ -196,8 +174,6 @@ export default function reducer(
         return addRecentTrack.success(state);
       case types.ADD_RECENT_TRACK_FAILURE:
         return addRecentTrack.failure(state, action);
-        case types.ADD_TRACKS:
-          return addTracks(state, action);
         case types.CHANGE_FAVORITE_TRACK_REQUEST:
           return changeFavoriteTrack.request(state);
         case types.CHANGE_FAVORITE_TRACK_SUCCESS:

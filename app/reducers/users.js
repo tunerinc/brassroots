@@ -15,16 +15,6 @@ import {type SpotifyError} from '../utils/spotifyAPI/types';
 import {type Action as OnboardingAction} from './onboarding';
 import {type Action as EntitiesAction} from './entities';
 
-// Case Functions
-import {addCurrentUser} from '../actions/users/AddCurrentUser/reducers';
-import {addFavoriteTrack} from '../actions/users/AddFavoriteTrack/reducers';
-import {addUserMostPlayed} from '../actions/users/AddUserMostPlayed/reducers';
-import {addUserRecentlyPlayed} from '../actions/users/AddUserRecentlyPlayed/reducers';
-import {addSingleRecentTrack, addUserRecentTrack} from '../actions/users/AddUserRecentTrack/reducers';
-import {addUserTopPlaylists} from '../actions/users/AddUserTopPlaylists/reducers';
-import * as changeProfilePhoto from '../actions/users/ChangeProfilePhoto/reducers';
-import {setCameraRollPhotoIndex} from '../actions/users/SetCameraRollPhotoIndex/reducers';
-
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type DispatchAction = Action | OnboardingAction | EntitiesAction;
@@ -73,6 +63,7 @@ type Action = {
   +index?: number,
   +updates?: State,
   +item?: User,
+  +refreshing?: boolean,
   +location?: {
     latitude: number,
     longitude: number,
@@ -197,7 +188,49 @@ function addOrUpdateUser(
   state: User,
   action: Action,
 ): User {
-  return state;
+  const {coords, topPlaylists, recentlyPlayed, mostPlayed, followers, following} = state;
+  const {item, refreshing} = action;
+  const updates = (
+    item
+    && Array.isArray(topPlaylists)
+    && Array.isArray(recentlyPlayed)
+    && Array.isArray(mostPlayed)
+    && Array.isArray(followers)
+    && Array.isArray(following)
+  )
+    ? {
+      ...item,
+      lastUpdated,
+      coords: item.coords ? {...item.coords} : coords,
+      topPlaylists: item.topPlaylists && refreshing
+        ? [...item.topPlaylists]
+        : item.topPlaylists
+        ? [...topPlaylists, ...item.topPlaylists]
+        : [...topPlaylists],
+      recentlyPlayed: item.recentlyPlayed && refreshing
+        ? [...item.recentlyPlayed]
+        : item.recentlyPlayed
+        ? [...recentlyPlayed, ...item.recentlyPlayed]
+        : [...recentlyPlayed],
+      mostPlayed: item.mostPlayed && refreshing
+        ? [...item.mostPlayed]
+        : item.mostPlayed
+        ? [...mostPlayed, ...item.mostPlayed]
+        : [...mostPlayed],
+      followers: item.followers && refreshing
+        ? [...item.followers]
+        : item.followers
+        ? [...followers, ...item.followers]
+        : [...followers],
+      following: item.following && refreshing
+        ? [...item.following]
+        : item.following
+        ? [...following, ...item.following]
+        : [...following],
+    }
+    : {};
+
+  return updateObject(state, updates);
 }
 
 export function user(
@@ -206,9 +239,7 @@ export function user(
 ): User {
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
-      return updateObject(state, action.item);
-    case types.ADD_USER_RECENT_TRACK:
-      return addSingleRecentTrack(state, action);
+      return addOrUpdateUser(state, action);
     default:
       return state;
   }
@@ -220,16 +251,6 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.ADD_FAVORITE_TRACK:
-        return addFavoriteTrack(state, action);
-      case types.ADD_USER_MOST_PLAYED:
-        return addUserMostPlayed(state, action);
-      case types.ADD_USER_RECENTLY_PLAYED:
-        return addUserRecentlyPlayed(state, action);
-      case types.ADD_USER_RECENT_TRACK:
-        return addUserRecentTrack(state, action);
-      case types.ADD_USER_TOP_PLAYLISTS:
-        return addUserTopPlaylists(state, action);
       case types.CHANGE_COVER_PHOTO_REQUEST:
         return updateObject(state, {changingImage: 'cover', error: null});
       case types.CHANGE_COVER_PHOTO_SUCCESS:
@@ -265,8 +286,6 @@ export default function reducer(
         return updateObject(state, {saving: false, error: null});
       case types.SAVE_PROFILE_FAILURE:
         return updateObject(state, {error: action.error, saving: false});
-      case types.SET_CAMERA_ROLL_PHOTO_INDEX:
-        return setCameraRollPhotoIndex(state, action);
       case types.UPDATE_USERS:
         return updateObject(state, action.updates);
       default:
