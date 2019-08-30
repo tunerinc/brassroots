@@ -16,7 +16,6 @@ import events from './events';
 import feedback from './feedback';
 import groups from './groups';
 import legal from './legal';
-import notifications from './notifications';
 import onboarding from './onboarding';
 import player from './player';
 import playlists from './playlists';
@@ -40,7 +39,6 @@ const reducers = {
   firestore,
   groups,
   legal,
-  notifications,
   onboarding,
   player,
   playlists,
