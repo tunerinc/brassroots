@@ -55,10 +55,10 @@ export function changeCoverPhoto(
             width: 640,
             height: 640,
             cropperToolbarTitle: 'Crop Image',
-          }
+          },
         );
 
-        dispatch(actions.changeCoverPhotoRequest());
+        dispatch(actions.request());
 
         const blob: Blob = await fetchRemoteURL(croppedImage.path, 'blob');
         await storage.child(`coverImages/${userID}`).delete();
@@ -66,16 +66,16 @@ export function changeCoverPhoto(
         await uploadTask;
         const coverImage: string = await uploadTask.snapshot.ref.getDownloadURL();
         const promises = [
-          firestore.collection('users').doc(userID).update({ coverImage }),
+          firestore.collection('users').doc(userID).update({coverImage}),
           ImageCropPicker.clean(),
         ];
 
         await Promise.all(promises);
       }
 
-      dispatch(actions.changeCoverPhotoSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.changeCoverPhotoFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

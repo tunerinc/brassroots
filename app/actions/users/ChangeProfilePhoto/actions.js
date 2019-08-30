@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/users';
  * Notify the app of a change profile photo request
  * 
  * @alias module:ChangeProfilePhoto
- * @function changeProfilePhotoRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_PROFILE_PHOTO_REQUEST
  */
-export function changeProfilePhotoRequest(): Action {
+export function request(): Action {
   return {type: types.CHANGE_PROFILE_PHOTO_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function changeProfilePhotoRequest(): Action {
  * Notify the app of a change profile photo success
  * 
  * @alias module:ChangeProfilePhoto
- * @function changeProfilePhotoSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CHANGE_PROFILE_PHOTO_SUCCESS
  */
-export function changeProfilePhotoSuccess(): Action {
+export function success(): Action {
   return {type: types.CHANGE_PROFILE_PHOTO_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function changeProfilePhotoSuccess(): Action {
  * Notify the app of a change profile photo failure
  * 
  * @alias module:ChangeProfilePhoto
- * @function changeProfilePhotoFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -52,7 +52,7 @@ export function changeProfilePhotoSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of CHANGE_PROFILE_PHOTO_FAILURE and the error which caused the failure
  */
-export function changeProfilePhotoFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

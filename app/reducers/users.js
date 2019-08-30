@@ -253,14 +253,12 @@ export default function reducer(
     switch (action.type) {
       case types.CHANGE_COVER_PHOTO_REQUEST:
         return updateObject(state, {changingImage: 'cover', error: null});
-      case types.CHANGE_COVER_PHOTO_SUCCESS:
-        return updateObject(state, {changingImage: null, error: null});
-      case types.CHANGE_COVER_PHOTO_FAILURE:
-        return updateObject(state, {error: action.error, changingImage: null});
       case types.CHANGE_PROFILE_PHOTO_REQUEST:
         return updateObject(state, {changingImage: 'profile', error: null});
+      case types.CHANGE_COVER_PHOTO_SUCCESS:
       case types.CHANGE_PROFILE_PHOTO_SUCCESS:
         return updateObject(state, {changingImage: null, error: null});
+      case types.CHANGE_COVER_PHOTO_FAILURE:
       case types.CHANGE_PROFILE_PHOTO_FAILURE:
         return updateObject(state, {error: action.error, changingImage: null});
       case types.GET_USER_IMAGE_REQUEST: {

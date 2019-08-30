@@ -55,10 +55,10 @@ export function changeProfilePhoto(
             width: 640,
             height: 640,
             cropperToolbarTitle: 'Crop Image',
-          }
+          },
         );
 
-        dispatch(actions.changeProfilePhotoRequest());
+        dispatch(actions.request());
 
         const blob: Blob = await fetchRemoteURL(croppedImage.path, 'blob');
         await storage.child(`profileImages/${userID}`).delete();
@@ -71,12 +71,11 @@ export function changeProfilePhoto(
         ];
 
         await Promise.all(promises);
-        dispatch(actions.changeProfilePhotoSuccess());
       }
 
-      dispatch(actions.changeProfilePhotoSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.changeProfilePhotoFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

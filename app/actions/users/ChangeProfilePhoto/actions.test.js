@@ -12,12 +12,12 @@ import {type Action} from '../../../reducers/users';
 describe('change profile photo synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.CHANGE_PROFILE_PHOTO_REQUEST};
-    expect(actions.changeProfilePhotoRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
     const expectedAction: Action = {type: types.CHANGE_PROFILE_PHOTO_SUCCESS};
-    expect(actions.changeProfilePhotoSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -27,6 +27,6 @@ describe('change profile photo synchronous action creators', () => {
       error,
     };
 
-    expect(actions.changeProfilePhotoFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

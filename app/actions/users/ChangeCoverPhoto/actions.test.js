@@ -12,12 +12,12 @@ import {type Action} from '../../../reducers/users';
 describe('change cover photo synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.CHANGE_COVER_PHOTO_REQUEST};
-    expect(actions.changeCoverPhotoRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
     const expectedAction: Action = {type: types.CHANGE_COVER_PHOTO_SUCCESS};
-    expect(actions.changeCoverPhotoSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -27,6 +27,6 @@ describe('change cover photo synchronous action creators', () => {
       error,
     };
 
-    expect(actions.changeCoverPhotoFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });
