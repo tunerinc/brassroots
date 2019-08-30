@@ -10,8 +10,8 @@
  */
 
 import updateObject from '../../../utils/updateObject';
-import {addUserRecentTrack} from '../../users/AddUserRecentTrack';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {
   type ThunkAction,
   type TrackArtist,
@@ -77,7 +77,7 @@ export function addRecentTrack(
   track: Track,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.addRecentTrackRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const recentRef: FirestoreDocs = firestore.collection('users').doc(userID).collection('recentlyPlayed');
@@ -101,10 +101,10 @@ export function addRecentTrack(
       }
 
       await batch.commit();
-      dispatch(addUserRecentTrack(track.id));
-      dispatch(actions.addRecentTrackSuccess());
+      dispatch(addEntities({users: {[userID]: {id: userID, recentlyPlayed: [track.id]}}}));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.addRecentTrackFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

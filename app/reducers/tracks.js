@@ -17,7 +17,6 @@ import {type Action as UserAction} from './users';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import * as addRecentTrack from '../actions/tracks/AddRecentTrack/reducers';
 import * as changeFavoriteTrack from '../actions/tracks/ChangeFavoriteTrack/reducers';
 import * as getFavoriteTrack from '../actions/tracks/GetFavoriteTrack/reducers';
 import * as getMostPlayedSpotifyTrack from '../actions/tracks/GetMostPlayedSpotifyTrack/reducers';
@@ -28,7 +27,7 @@ import * as incrementTrackPlays from '../actions/tracks/IncrementTrackPlays/redu
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
-type DispatchAction = Action | AlbumAction | ArtistAction | UserAction;
+type DispatchAction = Action | AlbumAction | ArtistAction | UserAction | EntitiesAction;
 type GetState = () => State;
 type PromiseAction = Promise<DispatchAction>;
 type ThunkAction = (dispatch: Dispatch, getState: GetState, firebase: Firebase) => any;
@@ -169,57 +168,57 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.ADD_RECENT_TRACK_REQUEST:
-        return addRecentTrack.request(state);
+        return updateObject(state, {addingRecent: true, error: null});
       case types.ADD_RECENT_TRACK_SUCCESS:
-        return addRecentTrack.success(state);
+        return updateObject(state, {addingRecent: false, error: null});
       case types.ADD_RECENT_TRACK_FAILURE:
-        return addRecentTrack.failure(state, action);
-        case types.CHANGE_FAVORITE_TRACK_REQUEST:
-          return changeFavoriteTrack.request(state);
-        case types.CHANGE_FAVORITE_TRACK_SUCCESS:
-          return changeFavoriteTrack.success(state);
-        case types.CHANGE_FAVORITE_TRACK_FAILURE:
-          return changeFavoriteTrack.failure(state, action);
-        case types.GET_FAVORITE_TRACK_REQUEST:
-          return getFavoriteTrack.request(state);
-        case types.GET_FAVORITE_TRACK_SUCCESS:
-          return getFavoriteTrack.success(state);
-        case types.GET_FAVORITE_TRACK_FAILURE:
-          return getFavoriteTrack.failure(state, action);
-        case types.GET_MOST_PLAYED_SPOTIFY_TRACK_REQUEST:
-          return getMostPlayedSpotifyTrack.request(state);
-        case types.GET_MOST_PLAYED_SPOTIFY_TRACK_SUCCESS:
-          return getMostPlayedSpotifyTrack.success(state);
-        case types.GET_MOST_PLAYED_SPOTIFY_TRACK_FAILURE:
-          return getMostPlayedSpotifyTrack.failure(state, action);
-        case types.GET_MOST_PLAYED_TRACKS_REQUEST:
-          return getMostPlayedTracks.request(state);
-        case types.GET_MOST_PLAYED_TRACKS_SUCCESS:
-          return getMostPlayedTracks.success(state);
-        case types.GET_MOST_PLAYED_TRACKS_FAILURE:
-          return getMostPlayedTracks.failure(state, action);
-        case types.GET_RECENT_TRACKS_REQUEST:
-          return getRecentTracks.request(state);
-        case types.GET_RECENT_TRACKS_SUCCESS:
-          return getRecentTracks.success(state);
-        case types.GET_RECENT_TRACKS_FAILURE:
-          return getRecentTracks.failure(state, action);
-        case types.GET_TRACKS_REQUEST:
-          return getTracks.request(state, action);
-        case types.GET_TRACKS_SUCCESS:
-          return getTracks.success(state, action);
-        case types.GET_TRACKS_FAILURE:
-          return getTracks.failure(state, action);
-        case types.INCREMENT_TRACK_PLAYS_REQUEST:
-          return incrementTrackPlays.request(state);
-        case types.INCREMENT_TRACK_PLAYS_SUCCESS:
-          return incrementTrackPlays.success(state);
-        case types.INCREMENT_TRACK_PLAYS_FAILURE:
-          return incrementTrackPlays.failure(state, action);
-        case types.RESET_TRACKS:
-          return initialState;
-        case types.UPDATE_TRACKS:
-          return updateObject(state, action.updates);
+        return updateObject(state, {error: action.error, addingRecent: false});
+      case types.CHANGE_FAVORITE_TRACK_REQUEST:
+        return changeFavoriteTrack.request(state);
+      case types.CHANGE_FAVORITE_TRACK_SUCCESS:
+        return changeFavoriteTrack.success(state);
+      case types.CHANGE_FAVORITE_TRACK_FAILURE:
+        return changeFavoriteTrack.failure(state, action);
+      case types.GET_FAVORITE_TRACK_REQUEST:
+        return getFavoriteTrack.request(state);
+      case types.GET_FAVORITE_TRACK_SUCCESS:
+        return getFavoriteTrack.success(state);
+      case types.GET_FAVORITE_TRACK_FAILURE:
+        return getFavoriteTrack.failure(state, action);
+      case types.GET_MOST_PLAYED_SPOTIFY_TRACK_REQUEST:
+        return getMostPlayedSpotifyTrack.request(state);
+      case types.GET_MOST_PLAYED_SPOTIFY_TRACK_SUCCESS:
+        return getMostPlayedSpotifyTrack.success(state);
+      case types.GET_MOST_PLAYED_SPOTIFY_TRACK_FAILURE:
+        return getMostPlayedSpotifyTrack.failure(state, action);
+      case types.GET_MOST_PLAYED_TRACKS_REQUEST:
+        return getMostPlayedTracks.request(state);
+      case types.GET_MOST_PLAYED_TRACKS_SUCCESS:
+        return getMostPlayedTracks.success(state);
+      case types.GET_MOST_PLAYED_TRACKS_FAILURE:
+        return getMostPlayedTracks.failure(state, action);
+      case types.GET_RECENT_TRACKS_REQUEST:
+        return getRecentTracks.request(state);
+      case types.GET_RECENT_TRACKS_SUCCESS:
+        return getRecentTracks.success(state);
+      case types.GET_RECENT_TRACKS_FAILURE:
+        return getRecentTracks.failure(state, action);
+      case types.GET_TRACKS_REQUEST:
+        return getTracks.request(state, action);
+      case types.GET_TRACKS_SUCCESS:
+        return getTracks.success(state, action);
+      case types.GET_TRACKS_FAILURE:
+        return getTracks.failure(state, action);
+      case types.INCREMENT_TRACK_PLAYS_REQUEST:
+        return incrementTrackPlays.request(state);
+      case types.INCREMENT_TRACK_PLAYS_SUCCESS:
+        return incrementTrackPlays.success(state);
+      case types.INCREMENT_TRACK_PLAYS_FAILURE:
+        return incrementTrackPlays.failure(state, action);
+      case types.RESET_TRACKS:
+        return initialState;
+      case types.UPDATE_TRACKS:
+        return updateObject(state, action.updates);
       default:
         return state;
     }

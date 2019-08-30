@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/tracks';
  * Notify the app of a add recent track request
  * 
  * @alias module:AddRecentTrack
- * @function addRecentTrackRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of ADD_RECENT_TRACK_REQUEST
  */
-export function addRecentTrackRequest(): Action {
-  return {
-    type: types.ADD_RECENT_TRACK_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.ADD_RECENT_TRACK_REQUEST};
 };
 
 /**
  * Notify the app of a add recent track success
  * 
  * @alias module:AddRecentTrack
- * @function addRecentTrackSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object}         Redux action with the type of ADD_RECENT_TRACK_SUCCESS
  */
-export function addRecentTrackSuccess(): Action {
-  return {
-    type: types.ADD_RECENT_TRACK_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.ADD_RECENT_TRACK_SUCCESS};
 }
 
 /**
  * Notify the app of a add recent track failure
  * 
  * @alias module:AddRecentTrack
- * @function addRecentTrackFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -56,7 +52,7 @@ export function addRecentTrackSuccess(): Action {
  * 
  * @return {object}       Redux action with the type of ADD_RECENT_TRACK_FAILURE and the error which caused the failure
  */
-export function addRecentTrackFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

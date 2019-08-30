@@ -5,46 +5,33 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/tracks';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/tracks';
 import * as actions from './actions';
 
 describe('add recent track reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle ADD_RECENT_TRACK_REQUEST', () => {
-    expect(reducer(initialState, actions.addRecentTrackRequest()))
-      .toStrictEqual({...initialState, addingRecent: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.addRecentTrackRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, addingRecent: true});
+  it('handles ADD_RECENT_TRACK_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, addingRecent: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle ADD_RECENT_TRACK_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, addingRecent: true},
-        actions.addRecentTrackSuccess(),
-      ),
-    )
-      .toStrictEqual(initialState);
+  it('handles ADD_RECENT_TRACK_SUCCESS', () => {
+    const state: State = {...initialState, addingRecent: true};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
   });
 
-  it('should handle ADD_RECENT_TRACK_FAILURE', () => {
+  it('handles ADD_RECENT_TRACK_FAILURE', () => {
+    const state: State = {...initialState, addingRecent: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, addingRecent: true},
-        actions.addRecentTrackFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

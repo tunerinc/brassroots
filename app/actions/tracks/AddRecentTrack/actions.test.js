@@ -11,19 +11,13 @@ import {type Action} from '../../../reducers/tracks';
 
 describe('add recent track synchronous action creators', () => {
   it('creates add recent track request action', () => {
-    const expectedAction: Action = {
-      type: types.ADD_RECENT_TRACK_REQUEST,
-    };
-
-    expect(actions.addRecentTrackRequest()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.ADD_RECENT_TRACK_REQUEST};
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates add recent track success action', () => {
-    const expectedAction: Action = {
-      type: types.ADD_RECENT_TRACK_SUCCESS,
-    };
-
-    expect(actions.addRecentTrackSuccess()).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.ADD_RECENT_TRACK_SUCCESS};
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates add recent track failure action', () => {
@@ -33,6 +27,6 @@ describe('add recent track synchronous action creators', () => {
       error,
     };
 
-    expect(actions.addRecentTrackFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });
