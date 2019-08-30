@@ -16,6 +16,6 @@ describe('reset queue reducer', () => {
   it('should handle RESET_QUEUE', () => {
     const track: QueueTrack = {id: 'foo', seconds: 0, nanoseconds: 0};
     const state: State = {...initialState, userQueue: [track], contextQueue: ['foo']};
-    expect(reducer(state, actions.resetQueue())).toEqual(initialState);
+    expect(reducer(state, actions.resetQueue())).toStrictEqual(initialState);
   });
 });

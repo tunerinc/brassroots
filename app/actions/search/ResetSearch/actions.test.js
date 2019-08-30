@@ -15,6 +15,6 @@ describe('reset search action creator', () => {
       type: types.RESET_SEARCH,
     };
     
-    expect(actions.resetSearch()).toEqual(expectedAction);
+    expect(actions.resetSearch()).toStrictEqual(expectedAction);
   });
 });

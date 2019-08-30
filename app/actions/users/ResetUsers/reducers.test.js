@@ -5,20 +5,15 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/users';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/users';
 import * as actions from '../ResetUsers';
 
 describe('reset users reducer', () => {
-  it('should handle RESET_USERS', () => {
-    expect(
-      reducer(
-        {
-          ...initialState,
-          currentUserID: 'foo',
-        },
-        actions.resetUsers(),
-      )
-    )
-      .toEqual(initialState);
+  it('handles RESET_USERS', () => {
+    const state: State = {...initialState, currentUserID: 'foo'};
+    expect(reducer(state, actions.resetUsers())).toStrictEqual(initialState);
   });
 });

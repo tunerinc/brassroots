@@ -15,6 +15,6 @@ describe('reset playlists action creator', () => {
       type: types.RESET_PLAYLISTS,
     };
     
-    expect(actions.resetPlaylists()).toEqual(expectedAction);
+    expect(actions.resetPlaylists()).toStrictEqual(expectedAction);
   });
 });

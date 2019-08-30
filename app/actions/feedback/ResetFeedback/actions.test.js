@@ -15,6 +15,6 @@ describe('reset feedback action creator', () => {
       type: types.RESET_FEEDBACK,
     };
     
-    expect(actions.resetFeedback()).toEqual(expectedAction);
+    expect(actions.resetFeedback()).toStrictEqual(expectedAction);
   });
 });

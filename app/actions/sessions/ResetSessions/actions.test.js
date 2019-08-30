@@ -15,6 +15,6 @@ describe('reset sessions action creator', () => {
       type: types.RESET_SESSIONS,
     };
     
-    expect(actions.resetSessions()).toEqual(expectedAction);
+    expect(actions.resetSessions()).toStrictEqual(expectedAction);
   });
 });

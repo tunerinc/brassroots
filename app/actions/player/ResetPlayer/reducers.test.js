@@ -14,6 +14,6 @@ import * as actions from '../ResetPlayer';
 describe('reset player reducer', () => {
   it('should handle RESET_PLAYER', () => {
     const state: State = {...initialState, currentTrackID: 'foo', progress: 1000};
-    expect(reducer(state, actions.resetPlayer())).toEqual(initialState);
+    expect(reducer(state, actions.resetPlayer())).toStrictEqual(initialState);
   });
 });

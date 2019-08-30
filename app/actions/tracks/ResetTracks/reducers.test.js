@@ -20,6 +20,6 @@ describe('reset tracks reducer', () => {
         actions.resetTracks()
       )
     )
-      .toEqual(initialState);
+      .toStrictEqual(initialState);
   });
 });

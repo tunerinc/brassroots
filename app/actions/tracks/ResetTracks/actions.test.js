@@ -15,6 +15,6 @@ describe('reset tracks action creator', () => {
       type: types.RESET_TRACKS,
     };
     
-    expect(actions.resetTracks()).toEqual(expectedAction);
+    expect(actions.resetTracks()).toStrictEqual(expectedAction);
   });
 });

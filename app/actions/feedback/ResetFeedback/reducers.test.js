@@ -20,6 +20,6 @@ describe('reset feedback reducer', () => {
         actions.resetFeedback()
       )
     )
-      .toEqual(initialState);
+      .toStrictEqual(initialState);
   });
 });

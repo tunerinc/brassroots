@@ -15,6 +15,6 @@ describe('reset albums action creator', () => {
       type: types.RESET_ALBUMS,
     };
     
-    expect(actions.resetAlbums()).toEqual(expectedAction);
+    expect(actions.resetAlbums()).toStrictEqual(expectedAction);
   });
 });

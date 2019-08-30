@@ -20,6 +20,6 @@ describe('reset artists reducer', () => {
         actions.resetArtists()
       )
     )
-      .toEqual(initialState);
+      .toStrictEqual(initialState);
   });
 });

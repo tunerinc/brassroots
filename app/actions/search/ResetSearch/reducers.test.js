@@ -20,6 +20,6 @@ describe('reset search reducer', () => {
         actions.resetSearch(),
       )
     )
-      .toEqual(initialState);
+      .toStrictEqual(initialState);
   });
 });

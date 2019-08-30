@@ -11,10 +11,7 @@ import {type Action} from '../../../reducers/users';
 
 describe('reset users action creator', () => {
   it('creates action to reset the redux users state object', () => {
-    const expectedAction: Action = {
-      type: types.RESET_USERS,
-    };
-    
-    expect(actions.resetUsers()).toEqual(expectedAction);
+    const expectedAction: Action = {type: types.RESET_USERS};
+    expect(actions.resetUsers()).toStrictEqual(expectedAction);
   });
 });

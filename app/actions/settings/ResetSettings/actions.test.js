@@ -15,6 +15,6 @@ describe('reset settings action creator', () => {
       type: types.RESET_SETTINGS,
     };
     
-    expect(actions.resetSettings()).toEqual(expectedAction);
+    expect(actions.resetSettings()).toStrictEqual(expectedAction);
   });
 });

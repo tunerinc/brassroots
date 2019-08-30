@@ -20,6 +20,6 @@ describe('reset settings reducer', () => {
         actions.resetSettings()
       )
     )
-      .toEqual(initialState);
+      .toStrictEqual(initialState);
   });
 });

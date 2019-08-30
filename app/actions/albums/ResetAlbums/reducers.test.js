@@ -20,6 +20,6 @@ describe('reset albums reducer', () => {
         actions.resetAlbums()
       )
     )
-      .toEqual(initialState);
+      .toStrictEqual(initialState);
   });
 });

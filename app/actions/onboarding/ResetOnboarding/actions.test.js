@@ -15,6 +15,6 @@ describe('reset onboarding action creator', () => {
       type: types.RESET_ONBOARDING,
     };
     
-    expect(actions.resetOnboarding()).toEqual(expectedAction);
+    expect(actions.resetOnboarding()).toStrictEqual(expectedAction);
   });
 });

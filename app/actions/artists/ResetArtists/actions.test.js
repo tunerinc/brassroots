@@ -15,6 +15,6 @@ describe('reset artists action creator', () => {
       type: types.RESET_ARTISTS,
     };
     
-    expect(actions.resetArtists()).toEqual(expectedAction);
+    expect(actions.resetArtists()).toStrictEqual(expectedAction);
   });
 });

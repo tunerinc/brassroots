@@ -20,6 +20,6 @@ describe('reset onboarding reducer', () => {
         actions.resetOnboarding()
       )
     )
-      .toEqual(initialState);
+      .toStrictEqual(initialState);
   });
 });

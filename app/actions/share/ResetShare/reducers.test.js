@@ -14,7 +14,7 @@ import * as types from '../types';
 
 describe('reset share reducer', () => {
   it('returns initial state', () => {
-    expect(reducer(undefined, {})).toEqual(initialState);
+    expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
   it('handles CLEAR_SHARE', () => {

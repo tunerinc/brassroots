@@ -23,7 +23,5 @@ import {type Action} from '../../../reducers/users';
  * @returns {object} Redux action with the type of RESET_USERS
  */
 export function resetUsers(): Action {
-  return {
-    type: types.RESET_USERS,
-  };
+  return {type: types.RESET_USERS};
 }

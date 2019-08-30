@@ -20,6 +20,6 @@ describe('reset sessions reducer', () => {
         actions.resetSessions()
       )
     )
-      .toEqual(initialState);
+      .toStrictEqual(initialState);
   });
 });
