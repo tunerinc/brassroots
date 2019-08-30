@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/users';
  * Notify the app of a get user image request
  * 
  * @alias module:GetUserImage
- * @function getUserImageRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_USER_IMAGE_REQUEST
  */
-export function getUserImageRequest(): Action {
+export function request(): Action {
   return {type: types.GET_USER_IMAGE_REQUEST};
 }
 
@@ -30,13 +30,13 @@ export function getUserImageRequest(): Action {
  * Notify the app of a get user image success
  * 
  * @alias module:GetUserImage
- * @function getUserImageSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_USER_IMAGE_SUCCESS
  */
-export function getUserImageSuccess(): Action {
+export function success(): Action {
   return {type: types.GET_USER_IMAGE_SUCCESS};
 }
 
@@ -44,7 +44,7 @@ export function getUserImageSuccess(): Action {
  * Notify the app of a get user image failure
  * 
  * @alias module:GetUserImage
- * @function getUserImageFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.om>
  * 
@@ -52,7 +52,7 @@ export function getUserImageSuccess(): Action {
  * 
  * @returns {object}       Redux action with the type of GET_USER_IMAGE_FAILURE and the error which caused the failure
  */
-export function getUserImageFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

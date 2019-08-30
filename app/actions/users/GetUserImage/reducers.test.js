@@ -19,20 +19,29 @@ describe('get user image reducer', () => {
 
   it('handles GET_USER_IMAGE_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
-    const expectedState: State = {...initialState, fetchingImages: true};
-    expect(reducer(initialState, actions.getUserImageRequest())).toStrictEqual(expectedState);
-    expect(reducer(state, actions.getUserImageRequest())).toStrictEqual(expectedState);
+    const stateTwo: State = {...state, fetching: ['topPlaylists']};
+    const expectedState: State = {...initialState, fetching: ['images']};
+    const expectedStateTwo: State = {...initialState, fetching: ['topPlaylists', 'images']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.request())).toStrictEqual(expectedStateTwo);
   });
 
   it('handles GET_USER_IMAGE_SUCCESS', () => {
-    const state: State = {...initialState, fetchingImages: true};
-    expect(reducer(state, actions.getUserImageSuccess())).toStrictEqual(initialState);
+    const state: State = {...initialState, fetching: ['images']};
+    const stateTwo: State = {...initialState, fetching: ['topPlaylists', 'images']};
+    const expectedState: State = {...initialState, fetching: ['topPlaylists']};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success())).toStrictEqual(expectedState);
   });
 
   it('handles GET_USER_IMAGE_FAILURE', () => {
-    const state: State = {...initialState, fetchingImages: true};
+    const state: State = {...initialState, fetching: ['images']};
+    const stateTwo: State = {...initialState, fetching: ['topPlaylists', 'images']};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.getUserImageFailure(error))).toStrictEqual(expectedState);
+    const expectedStateTwo: State = {...expectedState, fetching: ['topPlaylists']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });

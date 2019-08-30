@@ -166,7 +166,6 @@ export const initialState: State = {
   searching: [],
   fetching: [],
   saving: false,
-  changingImage: null,
   error: null,
 };
 
@@ -245,6 +244,24 @@ export function user(
   }
 }
 
+function update(
+  state: State,
+  action: Action,
+  type?: string,
+): State {
+  const {fetching} = state;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const updates: State = Array.isArray(fetching)
+    ? {
+      fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
+      error: haveError ? action.error : null,
+    }
+    : {};
+
+  return updateObject(state, updates);
+}
+
 export default function reducer(
   state: State = initialState,
   action: Action = {},
@@ -252,30 +269,17 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.CHANGE_COVER_PHOTO_REQUEST:
-        return updateObject(state, {changingImage: 'cover', error: null});
-      case types.CHANGE_PROFILE_PHOTO_REQUEST:
-        return updateObject(state, {changingImage: 'profile', error: null});
       case types.CHANGE_COVER_PHOTO_SUCCESS:
-      case types.CHANGE_PROFILE_PHOTO_SUCCESS:
-        return updateObject(state, {changingImage: null, error: null});
       case types.CHANGE_COVER_PHOTO_FAILURE:
+        return update(state, action, 'cover');
+      case types.CHANGE_PROFILE_PHOTO_REQUEST:
+      case types.CHANGE_PROFILE_PHOTO_SUCCESS:
       case types.CHANGE_PROFILE_PHOTO_FAILURE:
-        return updateObject(state, {error: action.error, changingImage: null});
-      case types.GET_USER_IMAGE_REQUEST: {
-        const {fetching: oldFetching} = state;
-        const fetching = Array.isArray(oldFetching) ? oldFetching.concat('images') : [];
-        return updateObject(state, {fetching, error: null});
-      }
-      case types.GET_USER_IMAGE_SUCCESS: {
-        const {fetching: oldFetching} = state;
-        const fetching = Array.isArray(oldFetching) ? oldFetching.filter(t => t !== 'images') : [];
-        return updateObject(state, {fetching, error: null});
-      }
-      case types.GET_USER_IMAGE_FAILURE: {
-        const {fetching: oldFetching} = state;
-        const fetching = Array.isArray(oldFetching) ? oldFetching.filter(t => t !== 'images') : [];
-        return updateObject(state, {fetching, error: action.error});
-      }
+        return update(state, action, 'profile');
+      case types.GET_USER_IMAGE_REQUEST:
+      case types.GET_USER_IMAGE_SUCCESS:
+      case types.GET_USER_IMAGE_FAILURE:
+        return update(state, action, 'images');
       case types.RESET_USERS:
         return initialState;
       case types.SAVE_PROFILE_REQUEST:

@@ -12,6 +12,7 @@
 import getUserProfile from '../../../utils/spotifyAPI/getUserProfile';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities/reducers';
 import {type ThunkAction} from '../../../reducers/users';
 
 /**
@@ -32,13 +33,18 @@ export function getUserImage(
   userID: string,
 ): ThunkAction {
   return async dispatch => {
-    dispatch(actions.getUserImageRequest());
+    dispatch(actions.request());
 
     try {
       const {images} = await getUserProfile(userID);
-      dispatch(actions.getUserImageSuccess());
+
+      if (Array.isArray(images)) {
+        dispatch(addEntities({users: {[userID]: {id: userID, profileImage: images[0].url}}}));
+      }
+
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.getUserImageFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }
