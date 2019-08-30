@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/tracks';
  * Notify the app of a change favorite track request
  * 
  * @alias module:ChangeFavoriteTrack
- * @function changeFavoriteTrackRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of CHANGE_FAVORITE_TRACK_REQUEST
  */
-export function changeFavoriteTrackRequest(): Action {
-  return {
-    type: types.CHANGE_FAVORITE_TRACK_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.CHANGE_FAVORITE_TRACK_REQUEST};
 }
 
 /**
  * Notify the app of a change favorite track success
  * 
  * @alias module:ChangeFavoriteTrack
- * @function changeFavoriteTrackSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of CHANGE_FAVORITE_TRACK_SUCCESS
  */
-export function changeFavoriteTrackSuccess(): Action {
-  return {
-    type: types.CHANGE_FAVORITE_TRACK_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.CHANGE_FAVORITE_TRACK_SUCCESS};
 }
 
 /**
  * Notify the app of a change favorite track failure
  * 
  * @alias module:ChangeFavoriteTrack
- * @function changeFavoriteTrackFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -56,7 +52,7 @@ export function changeFavoriteTrackSuccess(): Action {
  * 
  * @returns {object}       Redux action with the type of CHANGE_FAVORITE_TRACK_FAILURE and the error which caused the failure
  */
-export function changeFavoriteTrackFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

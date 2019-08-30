@@ -9,8 +9,8 @@
  * @module ChangeFavoriteTrack
  */
 
-import {addFavoriteTrack} from '../../users/AddFavoriteTrack';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/tracks';
 import {type FirestoreInstance} from '../../../utils/firebaseTypes';
 
@@ -22,28 +22,28 @@ import {type FirestoreInstance} from '../../../utils/firebaseTypes';
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param    {string}  userID  The id of the current user
- * @param    {string}  trackID The track id to change as the current user's new favorite track
+ * @param    {string}  userID          The id of the current user
+ * @param    {string}  favoriteTrackID The track id to change as the current user's new favorite track
  * 
  * @returns  {Promise}
- * @resolves {object}          Confirmation the current user's favorite track was changed
- * @rejects  {Error}           The error which caused the change favorite track failure
+ * @resolves {object}                  Confirmation the current user's favorite track was changed
+ * @rejects  {Error}                   The error which caused the change favorite track failure
  */
 export function changeFavoriteTrack(
   userID: string,
-  trackID: string,
+  favoriteTrackID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.changeFavoriteTrackRequest());
+    dispatch(actions.request());
     
     const firestore: FirestoreInstance = getFirestore();
 
     try {
-      await firestore.collection('users').doc(userID).update({favoriteTrackID: trackID});
-      dispatch(addFavoriteTrack(trackID));
-      dispatch(actions.changeFavoriteTrackSuccess());
+      await firestore.collection('users').doc(userID).update({favoriteTrackID});
+      dispatch(addEntities({users: {[userID]: {id: userID, favoriteTrackID}}}));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.changeFavoriteTrackFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

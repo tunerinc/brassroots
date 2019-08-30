@@ -17,7 +17,6 @@ import {type Action as UserAction} from './users';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import * as changeFavoriteTrack from '../actions/tracks/ChangeFavoriteTrack/reducers';
 import * as getFavoriteTrack from '../actions/tracks/GetFavoriteTrack/reducers';
 import * as getMostPlayedSpotifyTrack from '../actions/tracks/GetMostPlayedSpotifyTrack/reducers';
 import * as getMostPlayedTracks from '../actions/tracks/GetMostPlayedTracks/reducers';
@@ -161,6 +160,40 @@ export function track(
   }
 }
 
+/**
+ * Updates any values in the tracks state
+ * 
+ * @function update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state          The Redux state
+ * @param   {object} action         The Redux action
+ * @param   {string} action.type    The type of Redux action
+ * @param   {object} action.updates The updates to make to the state
+ * @param   {string} [type]         The type of add/remove from arrays
+ * 
+ * @returns {object}                The state updated with the new information
+ */
+function update(
+  state: State,
+  action: Action,
+  type?: string,
+): State {
+  const {fetching} = state;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const updates: State = Array.isArray(fetching)
+    ? {
+      lastUpdated,
+      fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
+      error: haveError ? action.error : null,
+    }
+    : {};
+
+  return updateObject(state, updates);
+}
+
 export default function reducer(
   state: State = initialState,
   action: Action = {},
@@ -174,11 +207,9 @@ export default function reducer(
       case types.ADD_RECENT_TRACK_FAILURE:
         return updateObject(state, {error: action.error, addingRecent: false});
       case types.CHANGE_FAVORITE_TRACK_REQUEST:
-        return changeFavoriteTrack.request(state);
       case types.CHANGE_FAVORITE_TRACK_SUCCESS:
-        return changeFavoriteTrack.success(state);
       case types.CHANGE_FAVORITE_TRACK_FAILURE:
-        return changeFavoriteTrack.failure(state, action);
+        return update(state, action, 'favorite');
       case types.GET_FAVORITE_TRACK_REQUEST:
         return getFavoriteTrack.request(state);
       case types.GET_FAVORITE_TRACK_SUCCESS:
