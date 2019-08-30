@@ -25,20 +25,20 @@ describe('save profile reducer', () => {
 
   it('handles SAVE_PROFILE_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
-    const expectedState: State = {...initialState, savingUser: true};
-    expect(reducer(initialState, actions.saveProfileRequest())).toStrictEqual(expectedState);
-    expect(reducer(state, actions.saveProfileRequest())).toStrictEqual(expectedState);
+    const expectedState: State = {...initialState, saving: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
   it('handles SAVE_PROFILE_SUCCESS', () => {
-    const state: State = {...initialState, savingUser: true};
-    expect(reducer(state, actions.saveProfileSuccess())).toStrictEqual(initialState);
+    const state: State = {...initialState, saving: true};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
   });
 
   it('handles SAVE_PROFILE_FAILURE', () => {
-    const state: State = {...initialState, savingUser: true};
+    const state: State = {...initialState, saving: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.saveProfileFailure(error))).toStrictEqual(expectedState);
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

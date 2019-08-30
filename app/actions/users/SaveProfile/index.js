@@ -48,7 +48,7 @@ export function saveProfile(
   user: User,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.saveProfileRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const usersRef: FirestoreRef = firestore.collection('users');
@@ -57,12 +57,12 @@ export function saveProfile(
     try {
       await usersRef.doc(restOfUser.id).update({...restOfUser});
       dispatch(updateOnboarding({onboarding: false}));
-      dispatch(actions.saveProfileSuccess());
+      dispatch(actions.success());
 
       if (onboarding) Actions.root({type: ActionConst.RESET});
       if (!onboarding) Actions.pop();
     } catch (err) {
-      dispatch(actions.saveProfileFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

@@ -12,12 +12,12 @@ import {type Action} from '../../../reducers/users';
 describe('save profile synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.SAVE_PROFILE_REQUEST};
-    expect(actions.saveProfileRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
     const expectedAction: Action = {type: types.SAVE_PROFILE_SUCCESS};
-    expect(actions.saveProfileSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -27,6 +27,6 @@ describe('save profile synchronous action creators', () => {
       error,
     };
 
-    expect(actions.saveProfileFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });
