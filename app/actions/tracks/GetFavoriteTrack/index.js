@@ -10,12 +10,9 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../AddTracks';
-import {addFavoriteTrack} from '../../users/AddFavoriteTrack';
 import addMusicItems from '../../../utils/addMusicItems';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {
   type ThunkAction,
   type Track,
@@ -38,29 +35,27 @@ type Music = {|
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param    {string}  trackID The track id of the current user's favorite song
+ * @param    {string}  favoriteTrackID The track id of the current user's favorite song
+ * @param    {string}  userID          The Spotify id of the current user
  *
  * @returns  {Promise}
- * @resolves {object}          The current user's favorite track from Ultrasound
- * @rejects  {Error}           The error which caused the get favorite track failure
+ * @resolves {object}                  The current user's favorite track from Ultrasound
+ * @rejects  {Error}                   The error which caused the get favorite track failure
  */
 export function getFavoriteTrack(
-  trackID: string,
+  favoriteTrackID: string,
+  userID: string,
 ): ThunkAction {
   return async dispatch => {
-    dispatch(actions.getFavoriteTrackRequest());
+    dispatch(actions.request());
 
     try {
-      const track: FullTrack = await Spotify.getTrack(trackID, {});
+      const track: FullTrack = await Spotify.getTrack(favoriteTrackID, {});
       const music: Music = addMusicItems([track]);
-      
-      dispatch(addArtists(music.artists));
-      dispatch(addAlbums(music.albums));
-      dispatch(addTracks(music.tracks));
-      dispatch(addFavoriteTrack(track.id));
-      dispatch(actions.getFavoriteTrackSuccess());
+      dispatch(addEntities({...music, users: {[userID]: {id: userID, favoriteTrackID}}}));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.getFavoriteTrackFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/tracks';
  * Notify the app of a get favorite track request
  * 
  * @alias module:GetFavoriteTrack
- * @function getFavoriteTrackRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_FAVORITE_TRACK_REQUEST
  */
-export function getFavoriteTrackRequest(): Action {
-  return {
-    type: types.GET_FAVORITE_TRACK_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.GET_FAVORITE_TRACK_REQUEST};
 }
 
 /**
  * Notify the app of a get favorite track success
  * 
  * @alias module:GetFavoriteTrack
- * @function getFavoriteTrackSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object}       Redux action with the type of GET_FAVORITE_TRACK_SUCCESS and the favorite track
  */
-export function getFavoriteTrackSuccess(): Action {
-  return {
-    type: types.GET_FAVORITE_TRACK_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.GET_FAVORITE_TRACK_SUCCESS};
 }
 
 /**
  * Notify the app  of a get favorite track failure
  * 
  * @alias module:GetFavoriteTrack
- * @function getFavoriteTrackFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -56,7 +52,7 @@ export function getFavoriteTrackSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of GET_FAVORITE_TRACK_FAILURE and the error which caused the failure
  */
-export function getFavoriteTrackFailure(
+export function failure(
   error: Error,
 ): Action {
   return {
