@@ -11,12 +11,12 @@ import {type Action} from '../../../reducers/tracks';
 
 describe('get most played tracks synchronous action creators', () => {
   it('creates request action', () => {
-    const expectedAction: Action = {type: types.GET_MOST_PLAYED_TRACKS_REQUEST,};
+    const expectedAction: Action = {type: types.GET_MOST_PLAYED_TRACKS_REQUEST};
     expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
-    const expectedAction: Action = {type: types.GET_MOST_PLAYED_TRACKS_SUCCESS,};
+    const expectedAction: Action = {type: types.GET_MOST_PLAYED_TRACKS_SUCCESS};
     expect(actions.success()).toStrictEqual(expectedAction);
   });
 

@@ -17,7 +17,6 @@ import {type Action as UserAction} from './users';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import * as getRecentTracks from '../actions/tracks/GetRecentTracks/reducers';
 import * as incrementTrackPlays from '../actions/tracks/IncrementTrackPlays/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
@@ -222,11 +221,9 @@ export default function reducer(
       case types.GET_MOST_PLAYED_TRACKS_FAILURE:
         return update(state, action, 'mostPlayed');
       case types.GET_RECENT_TRACKS_REQUEST:
-        return getRecentTracks.request(state);
       case types.GET_RECENT_TRACKS_SUCCESS:
-        return getRecentTracks.success(state);
       case types.GET_RECENT_TRACKS_FAILURE:
-        return getRecentTracks.failure(state, action);
+        return update(state, action, 'recent');
       case types.GET_TRACKS_REQUEST:
       case types.GET_TRACKS_SUCCESS:
       case types.GET_TRACKS_FAILURE:

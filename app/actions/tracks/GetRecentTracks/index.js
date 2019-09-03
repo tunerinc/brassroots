@@ -11,11 +11,8 @@
 
 import addMusicItems from '../../../utils/addMusicItems';
 import updateObject from '../../../utils/updateObject';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../AddTracks';
-import {addUserRecentlyPlayed} from '../../users/AddUserRecentlyPlayed';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/tracks';
 import {
   type FirestoreInstance,
@@ -41,7 +38,7 @@ export function getRecentTracks(
   userID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getRecentTracksRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
 
@@ -59,8 +56,10 @@ export function getRecentTracks(
       const recentTracks: FirestoreDocs = await recentRef.orderBy('timeAdded', 'desc').limit(25).get();
       
       if (recentTracks.empty || !Array.isArray(recentTracks)) {
-        dispatch(actions.getRecentTracksSuccess());
+        dispatch(actions.success());
       } else {
+        const recentlyPlayed: Array<string> = recentTracks.map(t => t.data().trackID);
+
         let tracks = {};
 
         recentTracks.forEach(trackDoc => {
@@ -76,14 +75,11 @@ export function getRecentTracks(
   
         music = addMusicItems(tracks, music);
 
-        dispatch(addArtists(music.artists));
-        dispatch(addAlbums(music.albums));
-        dispatch(addTracks(music.tracks));
-        dispatch(addUserRecentlyPlayed(userID, recentTracks.map(t => t.data().trackID)));
-        dispatch(actions.getRecentTracksSuccess());
+        dispatch(addEntities({...music, users: {[userID]: {id: userID, recentlyPlayed}}}));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getRecentTracksFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }
