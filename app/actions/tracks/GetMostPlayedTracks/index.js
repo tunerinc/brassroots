@@ -11,11 +11,8 @@
 
 import Spotify from 'rn-spotify-sdk';
 import addMusicItems from '../../../utils/addMusicItems';
-import {addTracks} from '../AddTracks';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addUserMostPlayed} from '../../users/AddUserMostPlayed';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/tracks';
 import {
   type FirestoreInstance,
@@ -40,7 +37,7 @@ export function getMostPlayedTracks(
   userID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getMostPlayedTracksRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
 
@@ -49,12 +46,12 @@ export function getMostPlayedTracks(
       const userTrackDocs: FirestoreDocs = await userTracksRef.orderBy('plays', 'desc').limit(25).get();
 
       if (userTrackDocs.empty) {
-        dispatch(actions.getMostPlayedTracksSuccess());
+        dispatch(actions.success());
       } else {
         const spotifyTracks = await Spotify.getTracks(userTrackDocs.docs.map(doc => doc.id), {});
 
         const music = addMusicItems(spotifyTracks.tracks);
-        const mostPlayedTracks = userTrackDocs.docs.map(doc => doc.id)
+        const mostPlayed = userTrackDocs.docs.map(doc => doc.id)
           .sort((a, b) => {
             const countA: number = typeof a === 'number' ? userTrackDocs.docs[a].data().plays : 0;
             const countB: number = typeof b === 'number' ? userTrackDocs.docs[b].data().plays : 0;
@@ -62,14 +59,11 @@ export function getMostPlayedTracks(
             return countA > countB ? -1 : countA < countB ? 1 : 0;
           });
 
-        dispatch(addTracks(music.tracks));
-        dispatch(addAlbums(music.albums));
-        dispatch(addArtists(music.artists));
-        dispatch(addUserMostPlayed(userID, mostPlayedTracks));
-        dispatch(actions.getMostPlayedTracksSuccess());
+        dispatch(addEntities({...music, users: {[userID]: {id: userID, mostPlayed}}}));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getMostPlayedTracksFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

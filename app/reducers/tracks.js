@@ -17,7 +17,6 @@ import {type Action as UserAction} from './users';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import * as getMostPlayedTracks from '../actions/tracks/GetMostPlayedTracks/reducers';
 import * as getRecentTracks from '../actions/tracks/GetRecentTracks/reducers';
 import * as incrementTrackPlays from '../actions/tracks/IncrementTrackPlays/reducers';
 
@@ -219,11 +218,9 @@ export default function reducer(
       case types.GET_MOST_PLAYED_SPOTIFY_TRACK_FAILURE:
         return update(state, action, 'favorite');
       case types.GET_MOST_PLAYED_TRACKS_REQUEST:
-        return getMostPlayedTracks.request(state);
       case types.GET_MOST_PLAYED_TRACKS_SUCCESS:
-        return getMostPlayedTracks.success(state);
       case types.GET_MOST_PLAYED_TRACKS_FAILURE:
-        return getMostPlayedTracks.failure(state, action);
+        return update(state, action, 'mostPlayed');
       case types.GET_RECENT_TRACKS_REQUEST:
         return getRecentTracks.request(state);
       case types.GET_RECENT_TRACKS_SUCCESS:
