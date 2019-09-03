@@ -13,12 +13,8 @@ import Spotify from 'rn-spotify-sdk';
 import getUserTopTrack from '../../../utils/spotifyAPI/getUserTopTrack';
 import addMusicItems from '../../../utils/addMusicItems';
 import fetchRemoteURL from '../../../utils/fetchRemoteURL';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../AddTracks';
-import {addCoverImage} from '../../users/AddCoverImage';
-import {addFavoriteTrack} from '../../users/AddFavoriteTrack';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/tracks';
 import {type Blob} from '../../../utils/brassrootsTypes';
 import {
@@ -53,7 +49,7 @@ export function getMostPlayedSpotifyTrack(
   userID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirebase, getFirestore}) => {
-    dispatch(actions.getMostPlayedSpotifyTrackRequest());
+    dispatch(actions.request());
 
     const firebase: FirebaseInstance = getFirebase();
     const firestore: FirestoreInstance = getFirestore();
@@ -72,9 +68,9 @@ export function getMostPlayedSpotifyTrack(
         const uploadTask: StorageUploadTask = storage.child(`coverImages/${userID}`).put(blob);
         await uploadTask;
 
-        const url: string = await uploadTask.snapshot.ref.getDownloadURL();
-        batch.update(userDoc, {coverImage: url});
-        dispatch(addCoverImage(url));
+        const coverImage: string = await uploadTask.snapshot.ref.getDownloadURL();
+        batch.update(userDoc, {coverImage});
+        dispatch(addEntities({users: {[userID]: {id: userID, coverImage}}}));
       } else {
         batch.update(userDoc, {coverImage: ''});
       }
@@ -83,13 +79,10 @@ export function getMostPlayedSpotifyTrack(
 
       await batch.commit();
 
-      dispatch(addAlbums(music.albums));
-      dispatch(addArtists(music.artists));
-      dispatch(addTracks(music.tracks));
-      dispatch(addFavoriteTrack(track.id));
-      dispatch(actions.getMostPlayedSpotifyTrackSuccess());
+      dispatch(addEntities({...music, users: {[userID]: {id: userID, favoriteTrackID: track.id}}}));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.getMostPlayedSpotifyTrackFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

@@ -5,46 +5,42 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/tracks';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/tracks';
 import * as actions from './actions';
 
 describe('get most played spotify track reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle GET_MOST_PLAYED_SPOTIFY_TRACK_REQUEST', () => {
-    expect(reducer(initialState, actions.getMostPlayedSpotifyTrackRequest()))
-      .toStrictEqual({...initialState, fetchingFavoriteTrack: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.getMostPlayedSpotifyTrackRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, fetchingFavoriteTrack: true});
+  it('handles GET_MOST_PLAYED_SPOTIFY_TRACK_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const stateTwo: State = {...state, fetching: ['tracks']};
+    const expectedState: State = {...initialState, fetching: ['favorite']};
+    const expectedStateTwo: State = {...initialState, fetching: ['tracks', 'favorite']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.request())).toStrictEqual(expectedStateTwo);
   });
 
-  it('should handle GET_MOST_PLAYED_SPOTIFY_TRACK_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, fetchingFavoriteTrack: true},
-        actions.getMostPlayedSpotifyTrackSuccess(),
-      ),
-    )
-      .toStrictEqual(initialState);
+  it('handles GET_MOST_PLAYED_SPOTIFY_TRACK_SUCCESS', () => {
+    const state: State = {...initialState, fetching: ['favorite']};
+    const stateTwo: State = {...initialState, fetching: ['tracks', 'favorite']};
+    const expectedState: State = {...initialState, fetching: ['tracks']};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success())).toStrictEqual(expectedState);
   });
 
-  it('should handle GET_MOST_PLAYED_SPOTIFY_TRACK_FAILURE', () => {
+  it('handles GET_MOST_PLAYED_SPOTIFY_TRACK_FAILURE', () => {
+    const state: State = {...initialState, fetching: ['favorite']};
+    const stateTwo: State = {...initialState, fetching: ['tracks', 'favorite']};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, fetchingFavoriteTrack: true},
-        actions.getMostPlayedSpotifyTrackFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error: new Error('error')};
+    const expectedStateTwo: State = {...expectedState, fetching: ['tracks']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });
