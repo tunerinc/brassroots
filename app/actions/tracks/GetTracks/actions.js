@@ -16,7 +16,7 @@ import {type Action} from '../../../reducers/tracks';
  * Notify the app of a get tracks request
  * 
  * @alias module:GetTracks
- * @function getTracksRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -24,7 +24,7 @@ import {type Action} from '../../../reducers/tracks';
  *
  * @returns {object}             Redux action with the type of GET_TRACKS_REQUEST and whether the current user is refreshing
  */
-export function getTracksRequest(
+export function request(
   refreshing: boolean,
 ): Action {
   return {
@@ -37,7 +37,7 @@ export function getTracksRequest(
  * Notify the app of a get tracks success
  * 
  * @alias module:GetTracks
- * @function getTracksSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -47,7 +47,7 @@ export function getTracksRequest(
  *
  * @returns {object}                   Redux action with the type of GET_TRACKS_SUCCESS, the tracks from the library, the total number of tracks, and whether to replace the cached tracks
  */
-export function getTracksSuccess(
+export function success(
   tracks: Array<string>,
   total: number,
   replace?: boolean = false,
@@ -64,7 +64,7 @@ export function getTracksSuccess(
  * Notify the app of a get tracks failure
  * 
  * @alias module:GetTracks
- * @function getTracksFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -72,7 +72,7 @@ export function getTracksSuccess(
  *
  * @returns {object}       Redux action with the type of GET_TRACKS_FAILURE and the error which caused the failure
  */
-export function getTracksFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

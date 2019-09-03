@@ -11,10 +11,8 @@
 
 import getMySavedTracks from "../../../utils/spotifyAPI/getMySavedTracks";
 import addMusicItems from '../../../utils/addMusicItems';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../AddTracks';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/tracks';
 
 /**
@@ -47,18 +45,16 @@ export function getTracks(
   };
 
   return async dispatch => {
-    dispatch(actions.getTracksRequest(refreshing));
+    dispatch(actions.request(refreshing));
 
     try {
       const {items, total} = await getMySavedTracks(options);
       const music = addMusicItems(items);
       const tracks: Array<string> = items.map(item => item.track.id)
-      dispatch(addArtists(music.artists));
-      dispatch(addAlbums(music.albums));
-      dispatch(addTracks(music.tracks));
-      dispatch(actions.getTracksSuccess(tracks, total));
+      dispatch(addEntities(music));
+      dispatch(actions.success(tracks, total));
     } catch (err) {
-      dispatch(actions.getTracksFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

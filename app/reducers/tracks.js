@@ -20,7 +20,6 @@ import {type Action as EntitiesAction} from './entities';
 import * as getMostPlayedSpotifyTrack from '../actions/tracks/GetMostPlayedSpotifyTrack/reducers';
 import * as getMostPlayedTracks from '../actions/tracks/GetMostPlayedTracks/reducers';
 import * as getRecentTracks from '../actions/tracks/GetRecentTracks/reducers';
-import * as getTracks from '../actions/tracks/GetTracks/reducers';
 import * as incrementTrackPlays from '../actions/tracks/IncrementTrackPlays/reducers';
 
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
@@ -152,8 +151,6 @@ export function track(
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
       return updateObject(state, {...(action.item ? action.item : {})});
-    case types.INCREMENT_TRACK_PLAYS_SUCCESS:
-      return incrementTrackPlays.increment(state, action);
     default:
       return state;
   }
@@ -179,14 +176,21 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {fetching} = state;
+  const {totalUserTracks, fetching, userTracks, refreshing} = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
-  const updates: State = Array.isArray(fetching)
+  const updates: State = Array.isArray(fetching) && Array.isArray(userTracks)
     ? {
       lastUpdated,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
+      refreshing: action.refreshing && !action.replace ? action.refreshing : false,
       error: haveError ? action.error : null,
+      totalUserTracks: action.total ? action.total : totalUserTracks,
+      userTracks: (Array.isArray(action.tracks) && (refreshing || action.replace))
+        ? [...action.tracks]
+        : Array.isArray(action.tracks)
+        ? [...userTracks, ...action.tracks]
+        : [...userTracks],
     }
     : {};
 
@@ -231,11 +235,9 @@ export default function reducer(
       case types.GET_RECENT_TRACKS_FAILURE:
         return getRecentTracks.failure(state, action);
       case types.GET_TRACKS_REQUEST:
-        return getTracks.request(state, action);
       case types.GET_TRACKS_SUCCESS:
-        return getTracks.success(state, action);
       case types.GET_TRACKS_FAILURE:
-        return getTracks.failure(state, action);
+        return update(state, action, 'tracks');
       case types.INCREMENT_TRACK_PLAYS_REQUEST:
         return incrementTrackPlays.request(state);
       case types.INCREMENT_TRACK_PLAYS_SUCCESS:
