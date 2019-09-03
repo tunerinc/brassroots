@@ -8,8 +8,6 @@
 import reducer, {
   initialState,
   lastUpdated,
-  type Playlist,
-  type PlaylistTrack,
   type State,
 } from '../../../reducers/playlists';
 import * as actions from './actions';

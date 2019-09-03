@@ -7,7 +7,6 @@
 
 import reducer, {
   initialState,
-  type Artist,
   type State,
 } from '../../../reducers/artists';
 import updateObject from '../../../utils/updateObject';

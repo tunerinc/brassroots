@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/tracks';
  * Notify the app of a increment track plays request
  * 
  * @alias module:IncrementTrackPlays
- * @function incrementTrackPlaysRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of INCREMENT_TRACK_PLAYS_REQUEST
  */
-export function incrementTrackPlaysRequest(): Action {
+export function request(): Action {
   return {type: types.INCREMENT_TRACK_PLAYS_REQUEST};
 }
 
@@ -31,13 +31,13 @@ export function incrementTrackPlaysRequest(): Action {
  * Notify the app of a increment track plays success
  * 
  * @alias module:IncrementTrackPlays
- * @function incrementTrackPlaysSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of INCREMENT_TRACK_PLAYS_SUCCESS
  */
-export function incrementTrackPlaysSuccess(): Action {
+export function success(): Action {
   return {type: types.INCREMENT_TRACK_PLAYS_SUCCESS};
 }
 
@@ -45,7 +45,7 @@ export function incrementTrackPlaysSuccess(): Action {
  * Notify the app of a increment track plays failure
  * 
  * @alias module:IncrementTrackPlays
- * @function incrementTrackPlaysFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -53,7 +53,7 @@ export function incrementTrackPlaysSuccess(): Action {
  *
  * @returns {object}       Redux action with the type of INCREMENT_TRACK_PLAYS_FAILURE and the error which caused the failure
  */
-export function incrementTrackPlaysFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

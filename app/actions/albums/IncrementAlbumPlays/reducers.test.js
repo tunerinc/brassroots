@@ -7,7 +7,6 @@
 
 import reducer, {
   initialState,
-  type Album,
   type State,
 } from '../../../reducers/albums';
 import * as actions from './actions';

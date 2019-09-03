@@ -12,12 +12,12 @@ import {type Action} from '../../../reducers/tracks';
 describe('increment track plays synchronous action creators', () => {
   it('creates increment track plays request action', () => {
     const expectedAction: Action = {type: types.INCREMENT_TRACK_PLAYS_REQUEST};
-    expect(actions.incrementTrackPlaysRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates increment track plays success action', () => {
     const expectedAction: Action = {type: types.INCREMENT_TRACK_PLAYS_SUCCESS};
-    expect(actions.incrementTrackPlaysSuccess()).toStrictEqual(expectedAction);
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates increment track plays failure action', () => {
@@ -27,6 +27,6 @@ describe('increment track plays synchronous action creators', () => {
       error,
     };
 
-    expect(actions.incrementTrackPlaysFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

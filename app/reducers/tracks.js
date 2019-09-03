@@ -16,9 +16,6 @@ import {type Action as ArtistAction} from './artists';
 import {type Action as UserAction} from './users';
 import {type Action as EntitiesAction} from './entities';
 
-// Case Functions
-import * as incrementTrackPlays from '../actions/tracks/IncrementTrackPlays/reducers';
-
 export const lastUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
 
 type DispatchAction = Action | AlbumAction | ArtistAction | UserAction | EntitiesAction;
@@ -229,11 +226,11 @@ export default function reducer(
       case types.GET_TRACKS_FAILURE:
         return update(state, action, 'tracks');
       case types.INCREMENT_TRACK_PLAYS_REQUEST:
-        return incrementTrackPlays.request(state);
+        return updateObject(state, {incrementing: true, error: null});
       case types.INCREMENT_TRACK_PLAYS_SUCCESS:
-        return incrementTrackPlays.success(state);
+        return updateObject(state, {incrementing: false, error: null});
       case types.INCREMENT_TRACK_PLAYS_FAILURE:
-        return incrementTrackPlays.failure(state, action);
+        return updateObject(state, {error: action.error, incrementing: false});
       case types.RESET_TRACKS:
         return initialState;
       case types.UPDATE_TRACKS:
