@@ -175,11 +175,13 @@ function update(
   type?: string,
 ): State {
   const {totalUserTracks, fetching, userTracks, refreshing} = state;
+  const isAddRecent: boolean = typeof action.type === 'string' && action.type.includes('ADD_RECENT');
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
   const updates: State = Array.isArray(fetching) && Array.isArray(userTracks)
     ? {
       lastUpdated,
+      addingRecent: add && isAddRecent ? true : false,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: action.refreshing && !action.replace ? action.refreshing : false,
       error: haveError ? action.error : null,
@@ -202,11 +204,9 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.ADD_RECENT_TRACK_REQUEST:
-        return updateObject(state, {addingRecent: true, error: null});
       case types.ADD_RECENT_TRACK_SUCCESS:
-        return updateObject(state, {addingRecent: false, error: null});
       case types.ADD_RECENT_TRACK_FAILURE:
-        return updateObject(state, {error: action.error, addingRecent: false});
+        return update(state, action);
       case types.CHANGE_FAVORITE_TRACK_REQUEST:
       case types.CHANGE_FAVORITE_TRACK_SUCCESS:
       case types.CHANGE_FAVORITE_TRACK_FAILURE:
