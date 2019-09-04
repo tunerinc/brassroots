@@ -22,7 +22,6 @@ import {type Action as ChatAction} from './chat';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import * as changeSessionMode from '../actions/sessions/ChangeSessionMode/reducers';
 import * as createSession from '../actions/sessions/CreateSession/reducers';
 import * as getFollowingSessions from '../actions/sessions/GetFollowingSessions/reducers';
 import * as getNearbySessions from '../actions/sessions/GetNearbySessions/reducers';
@@ -94,7 +93,7 @@ type State = {
   +lastUpdated?: string,
   +currentSessionID?: ?string,
   +fetching?: Array<string>,
-  +changingMode?: boolean,
+  +saving?: boolean,
   +paginating?: boolean,
   +refreshing?: boolean,
   +joining?: boolean,
@@ -168,7 +167,7 @@ const singleState: Session = {
  * @property {string}    lastUpdated                       The date/time the sessions were last updated
  * @property {string}    currentSessionID=null             The Brassroots id of the session the current user is in
  * @property {string[]}  fetching=[]                       Whether the current user is fetching session info
- * @property {boolean}   changingMode=false                Whether the current user is changing the mode of a session
+ * @property {boolean}   saving=false                      Whether the current user is saving a session
  * @property {boolean}   paginating=false                  Whether the current user is paginating sessions
  * @property {boolean}   refreshing=false                  Whether the current user is refreshing sessions
  * @property {boolean}   joining=false                     Whether the current user is joining a session
@@ -191,7 +190,7 @@ export const initialState: State = {
   lastUpdated,
   currentSessionID: null,
   fetching: [],
-  changingMode: false,
+  saving: false,
   paginating: false,
   refreshing: false,
   joining: false,
@@ -264,7 +263,7 @@ export function session(
 }
 
 /**
- * Updates any of the values in the conversations state
+ * Updates any of the values in the sessions state
  * 
  * @function update
  * 
@@ -282,10 +281,12 @@ function update(
   action: Action,
 ): State {
   const {explore: oldExplore} = state;
-  const updates: State = oldExplore && action.updates
+  const updates: State = oldExplore && typeof action.type === 'string'
     ? {
-      ...action.updates,
-      explore: action.updates.explore
+      ...(action.updates ? action.updates : {}),
+      saving: action.type === 'SAVE_SESSION_REQUEST' ? true : false,
+      error: action.error ? action.error : null,
+      explore: action.updates && action.updates.explore
         ? updateObject(oldExplore, action.updates.explore)
         : {...oldExplore},
     }
@@ -300,12 +301,6 @@ export default function reducer(
 ): State {
   if (typeof action.type === 'string') {
     switch (action.type) {
-      case types.CHANGE_SESSION_MODE_REQUEST:
-        return changeSessionMode.request(state);
-      case types.CHANGE_SESSION_MODE_SUCCESS:
-        return changeSessionMode.success(state);
-      case types.CHANGE_SESSION_MODE_FAILURE:
-        return changeSessionMode.failure(state, action);
       case types.CREATE_SESSION_REQUEST:
         return createSession.request(state);
       case types.CREATE_SESSION_SUCCESS:
@@ -368,6 +363,10 @@ export default function reducer(
         return paginateTrendingSessions.failure(state, action);
       case types.RESET_SESSIONS:
         return initialState;
+      case types.SAVE_SESSION_REQUEST:
+      case types.SAVE_SESSION_SUCCESS:
+      case types.SAVE_SESSION_FAILURE:
+        return update(state, action);
       case types.STOP_SESSION_INFO_LISTENER_REQUEST:
         return state;
       case types.STOP_SESSION_INFO_LISTENER_SUCCESS:
