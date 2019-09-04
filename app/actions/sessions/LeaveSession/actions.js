@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/sessions';
  * Notify the app of a leave session request
  * 
  * @alias module:LeaveSession
- * @function leaveSessionRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of LEAVE_SESSION_REQUEST
  */
-export function leaveSessionRequest(): Action {
+export function request(): Action {
   return {type: types.LEAVE_SESSION_REQUEST};
 }
 
@@ -30,22 +30,19 @@ export function leaveSessionRequest(): Action {
  * Notify the app of a leave session success
  * 
  * @alias module:LeaveSession
- * @function leaveSessionSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {boolean} isOwner Whether the current user is the owner of the session they left
  *
- * @param   {string}  sessionID The session id the current user has successfully left
- * @param   {boolean} isOwner   Whether the current user is the owner of the session they're leaving
- *
- * @returns {string}            Redux action with the type of LEAVE_SESSION_SUCCESS and the session the current user left
+ * @returns {string}          Redux action with the type of LEAVE_SESSION_SUCCESS and whether the current user was the owner
  */
-export function leaveSessionSuccess(
-  sessionID: string,
+export function success(
   isOwner: boolean,
 ): Action {
   return {
     type: types.LEAVE_SESSION_SUCCESS,
-    sessionID,
     isOwner,
   };
 }
@@ -54,7 +51,7 @@ export function leaveSessionSuccess(
  * Notify the app of a leave session failure
  * 
  * @alias module:LeaveSession
- * @function leaveSessionFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -62,7 +59,7 @@ export function leaveSessionSuccess(
  *
  * @returns {object}       Redux action with the type of LEAVE_SESSION_FAILURE and the error which caused the failure
  */
-export function leaveSessionFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

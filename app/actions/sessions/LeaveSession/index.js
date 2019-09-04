@@ -13,6 +13,7 @@ import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
 // import GeoFirestore from 'geofirestore';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {stopSessionInfoListener} from '../StopSessionInfoListener';
 import {resetChat} from '../../chat/ResetChat';
 import {stopChatListener} from '../../chat/StopChatListener';
@@ -133,7 +134,7 @@ export function leaveSession(
   owner: Owner,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.leaveSessionRequest());
+    dispatch(actions.request());
     // dispatch(stopChatListener(session.chatUnsubscribe));
     dispatch(stopSessionInfoListener(session.infoUnsubscribe));
     dispatch(stopQueueListener(session.queueUnsubscribe));
@@ -175,19 +176,30 @@ export function leaveSession(
       batch.update(userRef, {currentSessionID: null, online: false});
       batch.update(userRef.collection('sessions').doc(session.id), {timeLeft});
 
-      const promises = [
-        batch.commit(),
-        Spotify.setPlaying(false),
-      ];
+      await Spotify.setPlaying(false);
 
-      dispatch(actions.leaveSessionSuccess(session.id, owner.id === userID));
+      dispatch(
+        addEntities(
+          {
+            sessions: {
+              [session.id]: {
+                id: session.id,
+                totalListeners: session.total - 1,
+                listeners: [],
+              },
+            },
+          },
+        ),
+      );
 
-      await Promise.all(promises);
+      dispatch(actions.success(owner.id === userID));
+
+      await batch.commit();
       dispatch(resetChat());
       dispatch(resetPlayer());
       dispatch(resetQueue());
     } catch (err) {
-      dispatch(actions.leaveSessionFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

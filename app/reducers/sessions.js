@@ -24,7 +24,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
 import * as getTrendingSessions from '../actions/sessions/GetTrendingSessions/reducers';
-import * as leaveSession from '../actions/sessions/LeaveSession/reducers';
 import * as paginateTrendingSessions from '../actions/sessions/PaginateTrendingSessions/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -246,8 +245,6 @@ export function session(
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
       return addOrUpdateSession(state, action);
-    case types.JOIN_SESSION_SUCCESS:
-      return joinSession.join(state, action);
     case types.LEAVE_SESSION_SUCCESS:
       return leaveSession.leave(state);
     default:
@@ -275,17 +272,23 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {joining, explore: oldExplore} = state;
+  const {currentSessionID, joining, explore: oldExplore} = state;
   const updates: State = oldExplore && typeof action.type === 'string'
     ? {
       ...(action.updates ? action.updates : {}),
       lastUpdated,
+      currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS' ? null : currentSessionID,
       joining: action.type === 'CREATE_SESSION_REQUEST' || action.type === 'JOIN_SESSION_REQUEST'
         ? true
         : false,
+      leaving: action.type === 'LEAVE_SESSION_REQUEST' ? true : false,
       saving: action.type === 'SAVE_SESSION_REQUEST' ? true : false,
       error: action.error ? action.error : null,
-      explore: action.updates && action.updates.explore
+      explore: action.isOwner && Array.isArray(oldExplore.trendingIDs)
+        ? updateObject(oldExplore, {
+          trendingIDs: oldExplore.trendingIDs.filter(id => id !== currentSessionID),
+        })
+        : action.updates && action.updates.explore
         ? updateObject(oldExplore, action.updates.explore)
         : {...oldExplore},
     }
@@ -306,6 +309,9 @@ export default function reducer(
       case types.JOIN_SESSION_REQUEST:
       case types.JOIN_SESSION_SUCCESS:
       case types.JOIN_SESSION_FAILURE:
+      case types.LEAVE_SESSION_REQUEST:
+      case types.LEAVE_SESSION_SUCCESS:
+      case types.LEAVE_SESSION_FAILURE:
       case types.SAVE_SESSION_REQUEST:
       case types.SAVE_SESSION_SUCCESS:
       case types.SAVE_SESSION_FAILURE:
@@ -324,12 +330,6 @@ export default function reducer(
         return getTrendingSessions.success(state, action);
       case types.GET_TRENDING_SESSIONS_FAILURE:
         return getTrendingSessions.failure(state, action);
-      case types.LEAVE_SESSION_REQUEST:
-        return leaveSession.request(state);
-      case types.LEAVE_SESSION_SUCCESS:
-        return leaveSession.success(state, action);
-      case types.LEAVE_SESSION_FAILURE:
-        return leaveSession.failure(state, action);
       case types.PAGINATE_TRENDING_SESSIONS_REQUEST:
         return paginateTrendingSessions.request(state);
       case types.PAGINATE_TRENDING_SESSIONS_SUCCESS:
