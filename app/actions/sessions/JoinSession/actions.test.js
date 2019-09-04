@@ -12,17 +12,12 @@ import {type Action} from '../../../reducers/sessions';
 describe('join session synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.JOIN_SESSION_REQUEST};
-    expect(actions.joinSessionRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
-    const sessionID: string = 'foo';
-    const expectedAction: Action = {
-      type: types.JOIN_SESSION_SUCCESS,
-      sessionID,
-    };
-
-    expect(actions.joinSessionSuccess(sessionID)).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.JOIN_SESSION_SUCCESS};
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -32,6 +27,6 @@ describe('join session synchronous action creators', () => {
       error,
     };
 
-    expect(actions.joinSessionFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

@@ -24,7 +24,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
 import * as getTrendingSessions from '../actions/sessions/GetTrendingSessions/reducers';
-import * as joinSession from '../actions/sessions/JoinSession/reducers';
 import * as leaveSession from '../actions/sessions/LeaveSession/reducers';
 import * as paginateTrendingSessions from '../actions/sessions/PaginateTrendingSessions/reducers';
 
@@ -304,6 +303,9 @@ export default function reducer(
       case types.CREATE_SESSION_REQUEST:
       case types.CREATE_SESSION_SUCCESS:
       case types.CREATE_SESSION_FAILURE:
+      case types.JOIN_SESSION_REQUEST:
+      case types.JOIN_SESSION_SUCCESS:
+      case types.JOIN_SESSION_FAILURE:
       case types.SAVE_SESSION_REQUEST:
       case types.SAVE_SESSION_SUCCESS:
       case types.SAVE_SESSION_FAILURE:
@@ -322,12 +324,6 @@ export default function reducer(
         return getTrendingSessions.success(state, action);
       case types.GET_TRENDING_SESSIONS_FAILURE:
         return getTrendingSessions.failure(state, action);
-      case types.JOIN_SESSION_REQUEST:
-        return joinSession.request(state);
-      case types.JOIN_SESSION_SUCCESS:
-        return joinSession.success(state, action);
-      case types.JOIN_SESSION_FAILURE:
-        return joinSession.failure(state, action);
       case types.LEAVE_SESSION_REQUEST:
         return leaveSession.request(state);
       case types.LEAVE_SESSION_SUCCESS:

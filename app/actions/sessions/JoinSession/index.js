@@ -13,8 +13,9 @@ import moment from 'moment';
 // import GeoFirestore from 'geofirestore';
 import {Actions} from 'react-native-router-flux';
 import {leaveSession} from '../LeaveSession';
-import {addCurrentContext} from '../../queue/AddCurrentContext';
+import {updateSessions} from '../UpdateSessions';
 import {updatePlayer} from '../../player/UpdatePlayer';
+import {updateQueue} from '../../queue/UpdateQueue';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/sessions';
 import {type TrackArtist} from '../../../reducers/tracks';
@@ -163,7 +164,7 @@ export function joinSession(
       }
     }
 
-    dispatch(actions.joinSessionRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
@@ -236,13 +237,14 @@ export function joinSession(
 
       await batch.commit();
 
-      if (newSession.context) dispatch(addCurrentContext(newSession.context));
+      if (newSession.context) dispatch(updateQueue({context: newSession.context}));
 
       dispatch(updatePlayer({progress}));
-      dispatch(actions.joinSessionSuccess(session.id));
+      dispatch(updateSessions({currentSessionID: session.id}));
+      dispatch(actions.success());
       Actions.liveSession();
     } catch (err) {
-      dispatch(actions.joinSessionFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

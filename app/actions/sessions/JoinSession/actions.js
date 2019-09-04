@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/sessions';
  * Notify the app of a join session request
  * 
  * @alias module:JoinSession
- * @function joinSessionRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of JOIN_SESSION_REQUEST
  */
-export function joinSessionRequest(): Action {
+export function request(): Action {
   return {type: types.JOIN_SESSION_REQUEST};
 }
 
@@ -30,28 +30,21 @@ export function joinSessionRequest(): Action {
  * Notify the app of a join session success
  * 
  * @alias module:JoinSession
- * @function joinSessionSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} sessionID The id of the session the current user has joined
- *
- * @returns {object}           Redux action with the type of JOIN_SESSION_SUCCESS and the session id
+ * @returns {object} Redux action with the type of JOIN_SESSION_SUCCESS
  */
-export function joinSessionSuccess(
-  sessionID: string,
-): Action {
-  return {
-    type: types.JOIN_SESSION_SUCCESS,
-    sessionID,
-  };
+export function success(): Action {
+  return {type: types.JOIN_SESSION_SUCCESS};
 }
 
 /**
  * Notify the app of a join session failure
  * 
  * @alias module:JoinSession
- * @function joinSessionFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -59,7 +52,7 @@ export function joinSessionSuccess(
  *
  * @returns {object}       Redux action with the type of JOIN_SESSION_FAILURE and the error which caused the failure
  */
-export function joinSessionFailure(
+export function failure(
   error: Error,
 ): Action {
   return {
