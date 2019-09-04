@@ -12,45 +12,26 @@ import reducer, {
 import * as actions from './actions';
 
 describe('paginate trending sessions reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle PAGINATE_TRENDING_SESSIONS_REQUEST', () => {
+  it('handles PAGINATE_TRENDING_SESSIONS_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
-    const expectedState: State = {...initialState, paginatingSessions: true};
-    expect(reducer(state, actions.paginateTrendingSessionsRequest())).toStrictEqual(expectedState);
-    expect(reducer(initialState, actions.paginateTrendingSessionsRequest()))
-      .toStrictEqual(expectedState);
+    const expectedState: State = {...initialState, paginating: true};
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle PAGINATE_TRENDING_SESSIONS_SUCCESS', () => {
-    const sessions: Array<string> = ['bar', 'xyz'];
-    const trendingCanPaginate: boolean = true;
-
-    expect(
-      reducer(
-        {...initialState, paginatingSessions: true, explore: {trendingIDs: ['foo']}},
-        actions.paginateTrendingSessionsSuccess(sessions, trendingCanPaginate),
-      ),
-    )
-      .toStrictEqual(
-        {
-          ...initialState,
-          explore: {
-            trendingCanPaginate,
-            trendingIDs: ['foo', ...sessions],
-            trendingLastUpdated: initialState.lastUpdated,
-          },
-        },
-      );
+  it('handles PAGINATE_TRENDING_SESSIONS_SUCCESS', () => {
+    const state: State = {...initialState, paginating: true};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
   });
 
-  it('should handle PAGINATE_TRENDING_SESSIONS_FAILURE', () => {
-    const state: State = {...initialState, paginatingSessions: true};
+  it('handles PAGINATE_TRENDING_SESSIONS_FAILURE', () => {
+    const state: State = {...initialState, paginating: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.paginateTrendingSessionsFailure(error)))
-      .toStrictEqual(expectedState);
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

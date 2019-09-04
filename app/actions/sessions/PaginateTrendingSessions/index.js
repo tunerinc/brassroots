@@ -15,14 +15,9 @@ import addMusicItems from '../../../utils/addMusicItems';
 import calculateDistance from '../../../utils/calculateDistance';
 import updateObject from '../../../utils/updateObject';
 import getUserLocation from '../../../utils/getUserLocation';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
-import {addPlaylists} from '../../playlists/AddPlaylists';
-import {addUsers} from '../../users/AddUsers';
-import {addSessions} from '../AddSessions';
-import {addCurrentLocation} from '../../users/AddCurrentLocation';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
+import {updateSessions} from '../UpdateSessions';
 import {
   type ThunkAction,
   type Session,
@@ -64,6 +59,7 @@ type Music = {|
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
+ * @param    {string}  userID The Spotify id of the current user
  * @param    {number}  cursor The total number of listeners in the last session retrieved
  * 
  * @return   {Promise}
@@ -71,10 +67,11 @@ type Music = {|
  * @rejects  {Error}          The error which caused the paginate trending sessions failure
  */
 export function paginateTrendingSessions(
+  userID: string,
   cursor: number,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.paginateTrendingSessionsRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionsRef: FirestoreRef = firestore.collection('sessions');
@@ -94,24 +91,25 @@ export function paginateTrendingSessions(
       }
 
       if (pos.coords && Object.keys(pos.coords).length !== 0) {
-        dispatch(addCurrentLocation(pos.coords));
+        users = updateObject(users, {[userID]: {id: userID, coords: pos.coords}});
       }
 
-      const sessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
+      const trendingSessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
         .orderBy('totals.listeners', 'desc')
         .startAfter(cursor)
         .limit(15)
         .get();
 
-      if (sessions.empty) {
-        dispatch(actions.paginateTrendingSessionsSuccess());
+      if (trendingSessions.empty) {
+        dispatch(actions.success());
       } else {
-        const sessionIDs: Array<string> = sessions.docs.map(doc => doc.data().id);
-        const tracksToFetch: Array<string> = sessions.docs.map(doc => doc.data().currentTrackID);
+        const trendingIDs: Array<string> = trendingSessions.docs.map(doc => doc.data().id);
+        const trendingCanPaginate: boolean = trendingIDs.length === 15;
+        const tracksToFetch: Array<string> = trendingSessions.docs.map(doc => doc.data().currentTrackID);
         const trackRes = await Spotify.getTracks(tracksToFetch, {});
         const music: Music = addMusicItems(trackRes.tracks);
 
-        const trendingSessions: Sessions = sessions.docs.reduce((obj, doc) => {
+        const sessions: Sessions = trendingSessions.docs.reduce((obj, doc) => {
           const {
             coords,
             currentTrackID,
@@ -159,31 +157,24 @@ export function paginateTrendingSessions(
           });
         }, {});
 
-        sessions.docs.filter(doc => doc.data().context.type === 'user')
+        trendingSessions.docs.filter(doc => doc.data().context.type === 'user')
           .forEach(doc => {
             const {context: {id, name: displayName}} = doc.data();
             users = updateObject(users, {[id]: {id, displayName}});
           });
 
-        sessions.docs.filter(doc => doc.data().context.type === 'playlist')
+        trendingSessions.docs.filter(doc => doc.data().context.type === 'playlist')
           .forEach(doc => {
             const {context: {id, name}} = doc.data();
             playlists = updateObject(playlists, {[id]: {id, name, members: [], tracks: []}});
           });
 
-        if (Object.keys(playlists).length !== 0) {
-          dispatch(addPlaylists(playlists));
-        }
-
-        dispatch(addArtists(music.artists));
-        dispatch(addAlbums(music.albums));
-        dispatch(addTracks(music.tracks));
-        dispatch(addUsers(users));
-        dispatch(addSessions(trendingSessions));
-        dispatch(actions.paginateTrendingSessionsSuccess(sessionIDs, sessionIDs.length === 15));
+        dispatch(addEntities({...music, playlists, sessions, users}));
+        dispatch(updateSessions({explore: {trendingIDs, trendingCanPaginate}}));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.paginateTrendingSessionsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

@@ -12,20 +12,12 @@ import {type Action} from '../../../reducers/sessions';
 describe('paginate trending sessions synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.PAGINATE_TRENDING_SESSIONS_REQUEST};
-    expect(actions.paginateTrendingSessionsRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
-    const sessions: Array<string> = ['foo', 'bar'];
-    const trendingCanPaginate: boolean = true;
-    const expectedAction: Action = {
-      type: types.PAGINATE_TRENDING_SESSIONS_SUCCESS,
-      sessions,
-      trendingCanPaginate,
-    };
-
-    expect(actions.paginateTrendingSessionsSuccess(sessions, trendingCanPaginate))
-      .toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.PAGINATE_TRENDING_SESSIONS_SUCCESS};
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -35,6 +27,6 @@ describe('paginate trending sessions synchronous action creators', () => {
       error,
     };
 
-    expect(actions.paginateTrendingSessionsFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

@@ -24,7 +24,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
 import * as getTrendingSessions from '../actions/sessions/GetTrendingSessions/reducers';
-import * as paginateTrendingSessions from '../actions/sessions/PaginateTrendingSessions/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -270,9 +269,21 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {currentSessionID, joining, fetching, infoUnsubscribe, explore: oldExplore} = state;
+  const {
+    currentSessionID,
+    joining,
+    fetching,
+    refreshing,
+    infoUnsubscribe,
+    explore: explore,
+  } = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
-  const updates: State = oldExplore && typeof action.type === 'string' && Array.isArray(fetching)
+  const updates: State = (
+    explore
+    && typeof action.type === 'string'
+    && Array.isArray(fetching)
+    && Array.isArray(explore.trendingIDs)
+  )
     ? {
       ...(action.updates ? action.updates : {}),
       lastUpdated,
@@ -285,13 +296,24 @@ function update(
       leaving: action.type === 'LEAVE_SESSION_REQUEST' ? true : false,
       saving: action.type === 'SAVE_SESSION_REQUEST' ? true : false,
       error: action.error ? action.error : null,
-      explore: action.isOwner && Array.isArray(oldExplore.trendingIDs)
-        ? updateObject(oldExplore, {
-          trendingIDs: oldExplore.trendingIDs.filter(id => id !== currentSessionID),
+      explore: action.isOwner && Array.isArray(explore.trendingIDs)
+        ? updateObject(explore, {
+          trendingLastUpdated: lastUpdated,
+          trendingIDs: explore.trendingIDs.filter(id => id !== currentSessionID),
         })
         : action.updates && action.updates.explore
-        ? updateObject(oldExplore, action.updates.explore)
-        : {...oldExplore},
+        ? updateObject(explore, {
+          trendingLastUpdated: lastUpdated,
+          trendingCanPaginate: action.updates.explore.trendingCanPaginate
+            ? action.updates.explore.trendingCanPaginate
+            : explore.trendingCanPaginate,
+          trendingIDs: action.updates.explore.trendingIDs && refreshing
+            ? [...action.updates.explore.trendingIDs]
+            : action.updates.explore.trendingIDs
+            ? [...explore.trendingIDs, ...action.updates.explore.trendingIDs]
+            : [...explore.trendingIDs],
+        })
+        : {...explore},
     }
     : {};
 
@@ -332,11 +354,11 @@ export default function reducer(
       case types.GET_TRENDING_SESSIONS_FAILURE:
         return getTrendingSessions.failure(state, action);
       case types.PAGINATE_TRENDING_SESSIONS_REQUEST:
-        return paginateTrendingSessions.request(state);
+        return updateObject(state, {paginating: true, error: null});
       case types.PAGINATE_TRENDING_SESSIONS_SUCCESS:
-        return paginateTrendingSessions.success(state, action);
+        return updateObject(state, {paginating: false, error: null});
       case types.PAGINATE_TRENDING_SESSIONS_FAILURE:
-        return paginateTrendingSessions.failure(state, action);
+        return updateObject(state, {error: action.error, paginating: false});
 
       case types.RESET_SESSIONS:
         return initialState;

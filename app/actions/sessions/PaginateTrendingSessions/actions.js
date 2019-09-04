@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/sessions';
  * Notify the app of a paginate trending sessions request
  * 
  * @alias module:PaginateTrendingSessions
- * @function paginateTrendingSessionsRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of PAGINATE_TRENDING_SESSIONS_REQUEST
  */
-export function paginateTrendingSessionsRequest(): Action {
+export function request(): Action {
   return {type: types.PAGINATE_TRENDING_SESSIONS_REQUEST};
 }
 
@@ -30,31 +30,21 @@ export function paginateTrendingSessionsRequest(): Action {
  * Notify the app of a paginate trending sessions success
  * 
  * @alias module:PaginateTrendingSessions
- * @function paginateTrendingSessionsSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param  {string[]} [sessions=[]]               The Brassroots ids of the paginated trending sessions
- * @param  {boolean}  [trendingCanPaginate=false] Whether the trending sessions can paginate
- * 
- * @return {object}                               Redux action with the type of PAGINATE_TRENDING_SESSIONS_SUCCESS and the paginated sessions
+ * @return {object} Redux action with the type of PAGINATE_TRENDING_SESSIONS_SUCCESS
  */
-export function paginateTrendingSessionsSuccess(
-  sessions?: Array<string> = [],
-  trendingCanPaginate?: boolean = false,
-): Action {
-  return {
-    type: types.PAGINATE_TRENDING_SESSIONS_SUCCESS,
-    sessions,
-    trendingCanPaginate,
-  };
+export function success(): Action {
+  return {type: types.PAGINATE_TRENDING_SESSIONS_SUCCESS};
 }
 
 /**
  * Notify the app of a paginate trending sessions failure
  * 
  * @alias module:PaginateTrendingSessions
- * @function paginateTrendingSessionsFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -62,7 +52,7 @@ export function paginateTrendingSessionsSuccess(
  * 
  * @return {object}       Redux action with the type of PAGINATE_TRENDING_SESSIONS_FAILURE and the error which caused the failure
  */
-export function paginateTrendingSessionsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {
