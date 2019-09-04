@@ -15,17 +15,12 @@ import {
 describe('create session synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.CREATE_SESSION_REQUEST};
-    expect(actions.createSessionRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
-    const sessionID: string = 'foo';
-    const expectedAction: Action = {
-      type: types.CREATE_SESSION_SUCCESS,
-      sessionID,
-    };
-
-    expect(actions.createSessionSuccess(sessionID)).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.CREATE_SESSION_SUCCESS};
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -35,6 +30,6 @@ describe('create session synchronous action creators', () => {
       error,
     };
 
-    expect(actions.createSessionFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

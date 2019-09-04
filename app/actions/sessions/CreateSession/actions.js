@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/sessions';
  * Notify the app of a create session request
  * 
  * @alias module:CreateSession
- * @function createSessionRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of CREATE_SESSION_REQUEST
  */
-export function createSessionRequest(): Action {
+export function request(): Action {
   return {type: types.CREATE_SESSION_REQUEST};
 }
 
@@ -30,28 +30,21 @@ export function createSessionRequest(): Action {
  * Notify the app of a create session success
  * 
  * @alias module:CreateSession
- * @function createSessionSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string} sessionID The Brassroots id of the created session
- *
- * @returns {object}           Redux action with the type of CREATE_SESSION_REQUEST and the created session id
+ * @returns {object} Redux action with the type of CREATE_SESSION_SUCCESS
  */
-export function createSessionSuccess(
-  sessionID: string,
-): Action {
-  return {
-    type: types.CREATE_SESSION_SUCCESS,
-    sessionID,
-  };
+export function success(): Action {
+  return {type: types.CREATE_SESSION_SUCCESS};
 }
 
 /**
  * Notify the app of a create session failure
  * 
  * @alias module:CreateSession
- * @function createSessionFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -59,7 +52,7 @@ export function createSessionSuccess(
  *
  * @returns {object}       Redux action with the type of CREATE_SESSION_FAILURE and the error which caused the failure
  */
-export function createSessionFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

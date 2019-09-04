@@ -18,23 +18,20 @@ describe('create session reducer', () => {
 
   it('handles CREATE_SESSION_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
-    const expectedState: State = {...initialState, joiningSession: true};
-    expect(reducer(initialState, actions.createSessionRequest())).toStrictEqual(expectedState);
-    expect(reducer(state, actions.createSessionRequest())).toStrictEqual(expectedState);
+    const expectedState: State = {...initialState, joining: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
   it('handles CREATE_SESSION_SUCCESS', () => {
-    const currentSessionID: string = 'foo';
-    const state: State = {...initialState, joiningSession: true};
-    const expectedState: State = {...initialState, currentSessionID};
-    expect(reducer(state, actions.createSessionSuccess(currentSessionID)))
-      .toStrictEqual(expectedState);
+    const state: State = {...initialState, joining: true};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
   });
 
   it('handles CREATE_SESSION_FAILURE', () => {
-    const state: State = {...initialState, joiningSession: true};
+    const state: State = {...initialState, joining: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.createSessionFailure(error))).toStrictEqual(expectedState);
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });

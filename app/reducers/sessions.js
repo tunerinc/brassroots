@@ -22,17 +22,11 @@ import {type Action as ChatAction} from './chat';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import * as createSession from '../actions/sessions/CreateSession/reducers';
-import * as getFollowingSessions from '../actions/sessions/GetFollowingSessions/reducers';
-import * as getNearbySessions from '../actions/sessions/GetNearbySessions/reducers';
 import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
 import * as getTrendingSessions from '../actions/sessions/GetTrendingSessions/reducers';
 import * as joinSession from '../actions/sessions/JoinSession/reducers';
 import * as leaveSession from '../actions/sessions/LeaveSession/reducers';
-import * as paginateFollowingSessions from '../actions/sessions/PaginateFollowingSessions/reducers';
-import * as paginateNearbySessions from '../actions/sessions/PaginateNearbySessions/reducers';
 import * as paginateTrendingSessions from '../actions/sessions/PaginateTrendingSessions/reducers';
-import * as stopSessionInfoListener from '../actions/sessions/StopSessionInfoListener/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -273,17 +267,23 @@ export function session(
  * @param   {object} action         The Redux action
  * @param   {string} action.type    The type of Redux action
  * @param   {object} action.updates The updates to make to the state
+ * @param   {string} type           The type to add/remove from fetching array
  * 
  * @returns {object}                The state updated with the new information
  */
 function update(
   state: State,
   action: Action,
+  type?: string,
 ): State {
-  const {explore: oldExplore} = state;
+  const {joining, explore: oldExplore} = state;
   const updates: State = oldExplore && typeof action.type === 'string'
     ? {
       ...(action.updates ? action.updates : {}),
+      lastUpdated,
+      joining: action.type === 'CREATE_SESSION_REQUEST' || action.type === 'JOIN_SESSION_REQUEST'
+        ? true
+        : false,
       saving: action.type === 'SAVE_SESSION_REQUEST' ? true : false,
       error: action.error ? action.error : null,
       explore: action.updates && action.updates.explore
@@ -302,23 +302,14 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.CREATE_SESSION_REQUEST:
-        return createSession.request(state);
       case types.CREATE_SESSION_SUCCESS:
-        return createSession.success(state, action);
       case types.CREATE_SESSION_FAILURE:
-        return createSession.failure(state, action);
-      case types.GET_FOLLOWING_SESSIONS_REQUEST:
-        return getFollowingSessions.request(state);
-      case types.GET_FOLLOWING_SESSIONS_SUCCESS:
-        return getFollowingSessions.success(state, action);
-      case types.GET_FOLLOWING_SESSIONS_FAILURE:
-        return getFollowingSessions.failure(state, action);
-      case types.GET_NEARBY_SESSIONS_REQUEST:
-        return getNearbySessions.request(state);
-      case types.GET_NEARBY_SESSIONS_SUCCESS:
-        return getNearbySessions.success(state, action);
-      case types.GET_NEARBY_SESSIONS_FAILURE:
-        return getNearbySessions.failure(state, action);
+      case types.SAVE_SESSION_REQUEST:
+      case types.SAVE_SESSION_SUCCESS:
+      case types.SAVE_SESSION_FAILURE:
+      case types.UPDATE_SESSIONS:
+        return update(state, action);
+
       case types.GET_SESSION_INFO_REQUEST:
         return getSessionInfo.request(state);
       case types.GET_SESSION_INFO_SUCCESS:
@@ -343,38 +334,22 @@ export default function reducer(
         return leaveSession.success(state, action);
       case types.LEAVE_SESSION_FAILURE:
         return leaveSession.failure(state, action);
-      case types.PAGINATE_FOLLOWING_SESSIONS_REQUEST:
-        return paginateFollowingSessions.request(state);
-      case types.PAGINATE_FOLLOWING_SESSIONS_SUCCESS:
-        return paginateFollowingSessions.success(state, action);
-      case types.PAGINATE_FOLLOWING_SESSIONS_FAILURE:
-        return paginateFollowingSessions.failure(state, action);
-      case types.PAGINATE_NEARBY_SESSIONS_REQUEST:
-        return paginateNearbySessions.request(state);
-      case types.PAGINATE_NEARBY_SESSIONS_SUCCESS:
-        return paginateNearbySessions.success(state, action);
-      case types.PAGINATE_NEARBY_SESSIONS_FAILURE:
-        return paginateNearbySessions.failure(state, action);
       case types.PAGINATE_TRENDING_SESSIONS_REQUEST:
         return paginateTrendingSessions.request(state);
       case types.PAGINATE_TRENDING_SESSIONS_SUCCESS:
         return paginateTrendingSessions.success(state, action);
       case types.PAGINATE_TRENDING_SESSIONS_FAILURE:
         return paginateTrendingSessions.failure(state, action);
+
       case types.RESET_SESSIONS:
         return initialState;
-      case types.SAVE_SESSION_REQUEST:
-      case types.SAVE_SESSION_SUCCESS:
-      case types.SAVE_SESSION_FAILURE:
-        return update(state, action);
+
       case types.STOP_SESSION_INFO_LISTENER_REQUEST:
         return state;
+
       case types.STOP_SESSION_INFO_LISTENER_SUCCESS:
-        return stopSessionInfoListener.success(state);
       case types.STOP_SESSION_INFO_LISTENER_FAILURE:
-        return stopSessionInfoListener.failure(state, action);
-      case types.UPDATE_SESSIONS:
-        return update(state, action);
+        return update(state, action, 'info');
       default:
         return state;
     }

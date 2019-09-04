@@ -16,10 +16,10 @@ import getMySavedTracks from '../../../utils/spotifyAPI/getMySavedTracks';
 import getUserLocation from '../../../utils/getUserLocation';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addCurrentLocation} from '../../users/AddCurrentLocation';
 import {playTrack} from '../../player/PlayTrack';
-import {addCurrentContext} from '../../queue/AddCurrentContext';
-import {addUsers} from '../../users/AddUsers';
+import {addEntities} from '../../entities/AddEntities';
+import {updateQueue} from '../../queue/UpdateQueue';
+import {updateSessions} from '../UpdateSessions';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {
   type ThunkAction,
@@ -120,7 +120,7 @@ export function createSession(
   mode: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.createSessionRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const geoRef: FirestoreRef = firestore.collection('geo');
@@ -153,7 +153,7 @@ export function createSession(
           lon: pos.coords.longitude
         });
 
-        dispatch(addCurrentLocation(pos.coords));
+        user = updateObject(user, {coords: {...pos}});
       }
 
       if (
@@ -202,12 +202,7 @@ export function createSession(
           repeat: false,
           seeking: false,
           shuffle: false,
-          coords: pos.lat && pos.lon
-            ? {
-              lat: pos.lat,
-              lon: pos.lon,
-            }
-            : null,
+          coords: pos.lat && pos.lon ? {...pos} : null,
           context: {
             ...restOfContext,
             tracks: context.tracks || null,
@@ -278,9 +273,10 @@ export function createSession(
       });
 
       await batch.commit();
-      dispatch(actions.createSessionSuccess(session.id));
-      dispatch(addUsers({[user.id]: {...user, currentSessionID: session.id}}));
-      dispatch(addCurrentContext(context));
+      dispatch(actions.success());
+      dispatch(addEntities({users: {[user.id]: {...user, currentSessionID: session.id}}}));
+      dispatch(updateSessions({currentSessionID: session.id}));
+      dispatch(updateQueue({context}));
       dispatch(
         playTrack(
           user,
@@ -290,7 +286,7 @@ export function createSession(
         ),
       );
     } catch (err) {
-      dispatch(actions.createSessionFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }
