@@ -245,8 +245,6 @@ export function session(
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
       return addOrUpdateSession(state, action);
-    case types.LEAVE_SESSION_SUCCESS:
-      return leaveSession.leave(state);
     default:
       return state;
   }
@@ -272,12 +270,15 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {currentSessionID, joining, explore: oldExplore} = state;
-  const updates: State = oldExplore && typeof action.type === 'string'
+  const {currentSessionID, joining, fetching, infoUnsubscribe, explore: oldExplore} = state;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const updates: State = oldExplore && typeof action.type === 'string' && Array.isArray(fetching)
     ? {
       ...(action.updates ? action.updates : {}),
       lastUpdated,
+      fetching: add && type ? fetching.concat('type') : type ? fetching.filter(id => id !== type) : fetching,
       currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS' ? null : currentSessionID,
+      infoUnsubscribe: action.type === 'STOP_SESSION_INFO_LISTENER_SUCCESS' ? null : infoUnsubscribe,
       joining: action.type === 'CREATE_SESSION_REQUEST' || action.type === 'JOIN_SESSION_REQUEST'
         ? true
         : false,

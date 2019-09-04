@@ -36,13 +36,13 @@ export function stopSessionInfoListener(
   unsubscribe: () => void,
 ): ThunkAction {
   return async dispatch => {
-    dispatch(actions.stopSessionInfoListenerRequest());
+    dispatch(actions.request());
 
     try {
       unsubscribe();
-      dispatch(actions.stopSessionInfoListenerSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.stopSessionInfoListenerFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

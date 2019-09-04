@@ -5,45 +5,33 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/sessions';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/sessions';
 import * as actions from './actions';
 
 const infoUnsubscribe: () => void = () => {return};
 
 describe('stop session info listener reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle STOP_SESSION_INFO_LISTENER_REQUEST', () => {
-    expect(
-      reducer(
-        {...initialState, infoUnsubscribe},
-        actions.stopSessionInfoListenerRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, infoUnsubscribe});
+  it('handles STOP_SESSION_INFO_LISTENER_REQUEST', () => {
+    const state: State = {...initialState, infoUnsubscribe};
+    expect(reducer(state, actions.request())).toStrictEqual(state);
   });
 
-  it('should handle STOP_SESSION_INFO_LISTENER_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, infoUnsubscribe},
-        actions.stopSessionInfoListenerSuccess(),
-      ),
-    )
-      .toStrictEqual(initialState);
+  it('handles STOP_SESSION_INFO_LISTENER_SUCCESS', () => {
+    const state: State = {...initialState, infoUnsubscribe, leaving: true};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
   });
 
-  it('should handle STOP_SESSION_INFO_LISTENER_FAILURE', () => {
+  it('handles STOP_SESSION_INFO_LISTENER_FAILURE', () => {
+    const state: State = {...initialState, infoUnsubscribe, leaving: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, infoUnsubscribe},
-        actions.stopSessionInfoListenerFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, infoUnsubscribe});
+    const expectedState: State = {...state, error, leaving: false};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });
