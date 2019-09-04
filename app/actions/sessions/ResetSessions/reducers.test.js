@@ -5,21 +5,15 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/sessions';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/sessions';
 import * as actions from '../ResetSessions';
 
 describe('reset sessions reducer', () => {
-  it('should handle RESET_SESSIONS', () => {
-    expect(
-      reducer(
-        {
-          ...initialState,
-          trendingSessions: ['foo', 'bar'],
-          isFetching: true,
-        },
-        actions.resetSessions()
-      )
-    )
-      .toStrictEqual(initialState);
+  it('handles RESET_SESSIONS', () => {
+    const state: State = {...initialState, saving: true};
+    expect(reducer(state, actions.resetSessions())).toStrictEqual(initialState);
   });
 });

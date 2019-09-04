@@ -23,7 +23,5 @@ import {type Action} from '../../../reducers/sessions';
  * @returns {object} Redux action with the type of RESET_SESSIONS
  */
 export function resetSessions(): Action {
-  return {
-    type: types.RESET_SESSIONS,
-  };
+  return {type: types.RESET_SESSIONS};
 }
