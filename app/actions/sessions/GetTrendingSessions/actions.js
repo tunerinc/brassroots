@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/sessions';
  * Notify the app of a get trending sessions request
  * 
  * @alias module:GetTrendingSessions
- * @function getTrendingSessionsRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @returns {object} Redux action with the type of GET_TRENDING_SESSIONS_REQUEST
  */
-export function getTrendingSessionsRequest(): Action {
+export function request(): Action {
   return {type: types.GET_TRENDING_SESSIONS_REQUEST};
 }
 
@@ -30,31 +30,21 @@ export function getTrendingSessionsRequest(): Action {
  * Notify the app of a get trending sessions success
  * 
  * @alias module:GetTrendingSessions
- * @function getTrendingSessionsSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param   {string[]} trendingIDs=[]            The Brassroots ids of the trending sessions
- * @param   {boolean}  trendingCanPaginate=false Whether the trending sessions can paginate
- *
- * @returns {object}                             Redux action with the type of GET_TRENDING_SESSIONS_SUCCESS and the trending sessions
+ * @returns {object} Redux action with the type of GET_TRENDING_SESSIONS_SUCCESS
  */
-export function getTrendingSessionsSuccess(
-  trendingIDs?: Array<string> = [],
-  trendingCanPaginate?: boolean = false,
-): Action {
-  return {
-    type: types.GET_TRENDING_SESSIONS_SUCCESS,
-    trendingIDs,
-    trendingCanPaginate,
-  };
+export function success(): Action {
+  return {type: types.GET_TRENDING_SESSIONS_SUCCESS};
 }
 
 /**
  * Notify the app of a get trending sessions failure
  * 
  * @alias module:GetTrendingSessions
- * @function getTrendingSessionsFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -62,7 +52,7 @@ export function getTrendingSessionsSuccess(
  *
  * @returns {object}       Redux action with the type of GET_TRENDING_SESSIONS_FAILURE and the error which caused the failure
  */
-export function getTrendingSessionsFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

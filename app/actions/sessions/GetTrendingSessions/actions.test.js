@@ -12,20 +12,12 @@ import {type Action} from '../../../reducers/sessions';
 describe('get trending sessions synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.GET_TRENDING_SESSIONS_REQUEST};
-    expect(actions.getTrendingSessionsRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
-    const trendingIDs: Array<string> = ['foo', 'bar'];
-    const trendingCanPaginate: boolean = true;
-    const expectedAction: Action = {
-      type: types.GET_TRENDING_SESSIONS_SUCCESS,
-      trendingIDs,
-      trendingCanPaginate,
-    };
-
-    expect(actions.getTrendingSessionsSuccess(trendingIDs, trendingCanPaginate))
-      .toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.GET_TRENDING_SESSIONS_SUCCESS};
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -35,6 +27,6 @@ describe('get trending sessions synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getTrendingSessionsFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

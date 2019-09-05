@@ -23,7 +23,6 @@ import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
 import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
-import * as getTrendingSessions from '../actions/sessions/GetTrendingSessions/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -278,6 +277,7 @@ function update(
     explore: explore,
   } = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
   const updates: State = (
     explore
     && typeof action.type === 'string'
@@ -287,7 +287,8 @@ function update(
     ? {
       ...(action.updates ? action.updates : {}),
       lastUpdated,
-      fetching: add && type ? fetching.concat('type') : type ? fetching.filter(id => id !== type) : fetching,
+      fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
+      refreshing: add && type === 'trending' && explore.trendingIDs.length !== 0 ? true : false,
       currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS' ? null : currentSessionID,
       infoUnsubscribe: action.type === 'STOP_SESSION_INFO_LISTENER_SUCCESS' ? null : infoUnsubscribe,
       joining: action.type === 'CREATE_SESSION_REQUEST' || action.type === 'JOIN_SESSION_REQUEST'
@@ -295,7 +296,7 @@ function update(
         : false,
       leaving: action.type === 'LEAVE_SESSION_REQUEST' ? true : false,
       saving: action.type === 'SAVE_SESSION_REQUEST' ? true : false,
-      error: action.error ? action.error : null,
+      error: haveError ? action.error : null,
       explore: action.isOwner && Array.isArray(explore.trendingIDs)
         ? updateObject(explore, {
           trendingLastUpdated: lastUpdated,
@@ -348,11 +349,9 @@ export default function reducer(
       case types.GET_SESSION_INFO_FAILURE:
         return getSessionInfo.failure(state, action);
       case types.GET_TRENDING_SESSIONS_REQUEST:
-        return getTrendingSessions.request(state);
       case types.GET_TRENDING_SESSIONS_SUCCESS:
-        return getTrendingSessions.success(state, action);
       case types.GET_TRENDING_SESSIONS_FAILURE:
-        return getTrendingSessions.failure(state, action);
+        return update(state, action, 'trending');
       case types.PAGINATE_TRENDING_SESSIONS_REQUEST:
         return updateObject(state, {paginating: true, error: null});
       case types.PAGINATE_TRENDING_SESSIONS_SUCCESS:

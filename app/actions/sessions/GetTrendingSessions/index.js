@@ -16,13 +16,8 @@ import getUserLocation from '../../../utils/getUserLocation';
 import calculateDistance from '../../../utils/calculateDistance';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addSessions} from '../AddSessions';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
-import {addPlaylists} from '../../playlists/AddPlaylists';
-import {addCurrentLocation} from '../../users/AddCurrentLocation';
-import {addUsers} from '../../users/AddUsers';
+import {addEntities} from '../../entities/AddEntities';
+import {updateSessions} from '../UpdateSessions';
 import {
   type ThunkAction,
   type Session,
@@ -63,14 +58,18 @@ type Music = {|
  * @function getTrendingSessions
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param    {string}  userID The Spotify id of the current user
  *
  * @returns  {Promise}
- * @resolves {object}  The session objects retrieved from Ultrasound
- * @rejects  {Error}   The error which caused the get trending sessions failure
+ * @resolves {object}         The session objects retrieved from Ultrasound
+ * @rejects  {Error}          The error which caused the get trending sessions failure
  */
-export function getTrendingSessions(): ThunkAction {
+export function getTrendingSessions(
+  userID: string,
+): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getTrendingSessionsRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionsRef: FirestoreRef = firestore.collection('sessions');
@@ -90,23 +89,24 @@ export function getTrendingSessions(): ThunkAction {
       }
 
       if (pos.coords && Object.keys(pos.coords).length !== 0) {
-        dispatch(addCurrentLocation(pos.coords));
+        users = updateObject(users, {[userID]: {id: userID, coords: pos.coords}});
       }
 
-      const sessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
+      const trendingSessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
         .orderBy('totals.listeners', 'desc')
         .limit(15)
         .get();
 
-      if (sessions.empty) {
-        dispatch(actions.getTrendingSessionsSuccess());
+      if (trendingSessions.empty) {
+        dispatch(actions.success());
       } else {
-        const sessionIDs: Array<string> = sessions.docs.map(doc => doc.data().id);
-        const tracksToFetch: Array<string> = sessions.docs.map(doc => doc.data().currentTrackID);
+        const trendingIDs: Array<string> = trendingSessions.docs.map(doc => doc.data().id);
+        const trendingCanPaginate: boolean = trendingIDs.length === 15;
+        const tracksToFetch: Array<string> = trendingSessions.docs.map(doc => doc.data().currentTrackID);
         const trackRes = await Spotify.getTracks(tracksToFetch, {});
         const music: Music = addMusicItems(trackRes.tracks);
 
-        const trendingSessions: Sessions = sessions.docs.reduce((obj, doc) => {
+        const sessions: Sessions = trendingSessions.docs.reduce((obj, doc) => {
           const {
             coords,
             currentQueueID,
@@ -153,29 +153,24 @@ export function getTrendingSessions(): ThunkAction {
           });
         }, {});
 
-        sessions.docs.filter(doc => doc.data().context.type === 'user')
+        trendingSessions.docs.filter(doc => doc.data().context.type === 'user')
           .forEach(doc => {
             const {context: {id, name: displayName}} = doc.data();
             users = updateObject(users, {[id]: {id, displayName}});
           });
 
-        sessions.docs.filter(doc => doc.data().context.type === 'playlist')
+        trendingSessions.docs.filter(doc => doc.data().context.type === 'playlist')
           .forEach(doc => {
             const {context: {id, name}} = doc.data();
             playlists = updateObject(playlists, {[id]: {id, name, members: [], tracks: []}});
           });
 
-        if (Object.keys(playlists).length !== 0) dispatch(addPlaylists(playlists));
-
-        dispatch(addArtists(music.artists));
-        dispatch(addAlbums(music.albums));
-        dispatch(addTracks(music.tracks));
-        dispatch(addUsers(users));
-        dispatch(addSessions(trendingSessions))
-        dispatch(actions.getTrendingSessionsSuccess(sessionIDs, sessionIDs.length === 15));
+        dispatch(addEntities({...music, playlists, sessions, users}));
+        dispatch(updateSessions({explore: {trendingIDs, trendingCanPaginate}}));
+        dispatch(actions.success());
       }
     } catch (err) {
-      dispatch(actions.getTrendingSessionsFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }
