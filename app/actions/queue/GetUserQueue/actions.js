@@ -19,13 +19,13 @@ import {
  * Notify the app of a get session queue request
  * 
  * @alias module:GetUserQueue
- * @function getUserQueueRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @return {object} Redux action with the type of GET_USER_QUEUE_REQUEST
  */
-export function getUserQueueRequest(): Action {
+export function request(): Action {
   return {type: types.GET_USER_QUEUE_REQUEST};
 }
 
@@ -39,7 +39,7 @@ export function getUserQueueRequest(): Action {
  * Notify the app of a get session queue success
  * 
  * @alias module:GetUserQueue
- * @function getUserQueueSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -48,7 +48,7 @@ export function getUserQueueRequest(): Action {
  *
  * @return {object}                  Redux action with the type of GET_USER_QUEUE_SUCCESS, the queue track ids, and the unsubscribe functions for the listener
  */
-export function getUserQueueSuccess(
+export function success(
   queue: Array<QueueTrack>,
   unsubscribe: () => void,
 ): Action {
@@ -63,7 +63,7 @@ export function getUserQueueSuccess(
  * Notify the app of a get session queue failure
  * 
  * @alias module:GetUserQueue
- * @function getUserQueueFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -71,7 +71,7 @@ export function getUserQueueSuccess(
  *
  * @return {object}       Redux action with the type of GET_USER_QUEUE_FAILURE and the error which caused the failure
  */
-export function getUserQueueFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

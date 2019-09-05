@@ -15,7 +15,7 @@ import {
 describe('get user queue synchronous action creators', () => {
   it('creates get user queue request action', () => {
     const expectedAction: Action = {type: types.GET_USER_QUEUE_REQUEST};
-    expect(actions.getUserQueueRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates get user queue success action', () => {
@@ -28,7 +28,7 @@ describe('get user queue synchronous action creators', () => {
       unsubscribe,
     };
 
-    expect(actions.getUserQueueSuccess(queue, unsubscribe)).toStrictEqual(expectedAction);
+    expect(actions.success(queue, unsubscribe)).toStrictEqual(expectedAction);
   });
 
   it('creates get user queue failure action', () => {
@@ -38,6 +38,6 @@ describe('get user queue synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getUserQueueFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

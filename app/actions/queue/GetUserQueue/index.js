@@ -12,11 +12,8 @@
 import Spotify from 'rn-spotify-sdk';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
-import {addUsers} from '../../users/AddUsers';
-import {addQueueTracks} from '../AddQueueTracks';
 import {removeQueueTrack} from '../RemoveQueueTrack';
+import {addEntities} from '../../entities/AddEntities';
 import {updatePlayer} from '../../player/UpdatePlayer';
 import {
   type ThunkAction,
@@ -49,7 +46,7 @@ export function getUserQueue(
   current: ?string,
 ): ThunkAction {
   return async (dispatch, getState, {getFirestore}) => {
-    dispatch(actions.getUserQueueRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -77,40 +74,43 @@ export function getUserQueue(
 
               if (change.type === 'added') {
                 if (user.id !== userID) {
-                  dispatch(addUsers({[user.id]: user}));
+                  dispatch(addEntities({users: {[user.id]: user}}));
                 }
 
-                dispatch(addArtists(artists));
-                dispatch(addAlbums({[album.id]: album}));
                 dispatch(
-                  addTracks(
+                  addEntities(
                     {
-                      [track.id]: {
-                        id: track.id,
-                        name: track.name,
-                        albumID: album.id,
-                        artists: track.artists,
-                        trackNumber: track.trackNumber,
-                        durationMS: track.durationMS,
+                      artists,
+                      tracks: {
+                        [track.id]: {
+                          id: track.id,
+                          name: track.name,
+                          albumID: album.id,
+                          artists: track.artists,
+                          trackNumber: track.trackNumber,
+                          durationMS: track.durationMS,
+                        },
                       },
                     },
                   ),
                 );
 
                 if (!change.doc.metadata.hasPendingWrites) {
-                  dispatch(actions.getUserQueueSuccess([], unsubscribe));
+                  dispatch(actions.success([], unsubscribe));
                   dispatch(
-                    addQueueTracks(
+                    addEntities(
                       {
-                        [queueTrack.id]: {
-                          id: queueTrack.id,
-                          trackID: track.id,
-                          userID: user.id,
-                          totalLikes: queueTrack.totalLikes,
-                          liked: queueTrack.likes.includes(userID),
-                          seconds: queueTrack.timeAdded.seconds,
-                          nanoseconds: queueTrack.timeAdded.nanoseconds,
-                          isCurrent: queueTrack.isCurrent,
+                        queueTracks: {
+                          [queueTrack.id]: {
+                            id: queueTrack.id,
+                            trackID: track.id,
+                            userID: user.id,
+                            totalLikes: queueTrack.totalLikes,
+                            liked: queueTrack.likes.includes(userID),
+                            seconds: queueTrack.timeAdded.seconds,
+                            nanoseconds: queueTrack.timeAdded.nanoseconds,
+                            isCurrent: queueTrack.isCurrent,
+                          },
                         },
                       },
                     ),
@@ -129,7 +129,7 @@ export function getUserQueue(
                     );
                   } else {
                     dispatch(
-                      actions.getUserQueueSuccess(
+                      actions.success(
                         [
                           {
                             id: queueTrack.id,
@@ -146,17 +146,19 @@ export function getUserQueue(
 
               if (change.type === 'modified') {
                 dispatch(
-                  addQueueTracks(
+                  addEntities(
                     {
-                      [queueTrack.id]: {
-                        id: queueTrack.id,
-                        trackID: track.id,
-                        userID: user.id,
-                        totalLikes: queueTrack.totalLikes,
-                        liked: queueTrack.likes.includes(userID),
-                        seconds: queueTrack.timeAdded.seconds,
-                        nanoseconds: queueTrack.timeAdded.nanoseconds,
-                        isCurrent: queueTrack.isCurrent,
+                      queueTracks: {
+                        [queueTrack.id]: {
+                          id: queueTrack.id,
+                          trackID: track.id,
+                          userID: user.id,
+                          totalLikes: queueTrack.totalLikes,
+                          liked: queueTrack.likes.includes(userID),
+                          seconds: queueTrack.timeAdded.seconds,
+                          nanoseconds: queueTrack.timeAdded.nanoseconds,
+                          isCurrent: queueTrack.isCurrent,
+                        },
                       },
                     },
                   ),
@@ -175,7 +177,7 @@ export function getUserQueue(
                   );
                 } else {
                   dispatch(
-                    actions.getUserQueueSuccess(
+                    actions.success(
                       [
                         {
                           id: queueTrack.id,
@@ -197,7 +199,7 @@ export function getUserQueue(
           error => {throw error},
         );
     } catch (err) {
-      dispatch(actions.getUserQueueFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

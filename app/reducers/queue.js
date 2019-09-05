@@ -16,9 +16,6 @@ import {type Action as PlayerAction} from './player';
 import {type Action as TrackAction} from './tracks';
 import {type Action as EntitiesAction} from './entities';
 
-// Case Functions
-import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
-
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type DispatchAction =
@@ -208,26 +205,49 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {userQueue, totalUserQueue, context, unsubscribe, liking, deleting, failed} = state;
+  const {userQueue, totalUserQueue, context, unsubscribe, liking, deleting, failed, fetching} = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const newQueue = action.queue && userQueue
+    ? [...userQueue, ...action.queue]
+      .filter((el, i, arr) => i === arr.indexOf(el))
+      .sort((a, b) => {
+        if (
+          typeof a.seconds === 'number'
+          && typeof a.nanoseconds === 'number'
+          && typeof b.seconds === 'number'
+          && typeof b.nanoseconds === 'number'
+        ) {
+          const {seconds: secA, nanoseconds: nanA} = a;
+          const {seconds: secB, nanoseconds: nanB} = b;
+          return secA < secB ? -1 : secA > secB ? 1 : nanA < nanB ? -1 : nanA > nanB ? 1 : 0;
+        } else {
+          return 0;
+        }
+      })
+    : userQueue
+    ? [...userQueue]
+    : [];
+
   const updates: State = (
     context
     && Array.isArray(userQueue)
     && Array.isArray(liking)
     && Array.isArray(deleting)
     && Array.isArray(failed)
+    && Array.isArray(fetching)
     && typeof totalUserQueue === 'number'
     && action.type
   )
     ? {
       ...(action.updates ? action.updates : {}),
       lastUpdated,
+      fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       error: haveError ? action.error : null,
       userQueue: action.type === 'REMOVE_QUEUE_TRACK' && typeof action.queueID === 'string'
         ? userQueue.filter(o => o.id !== action.queueID)
-        : userQueue,
-      totalUserQueue: action.type === 'REMOVE_QUEUE_TRACK' ? totalUserQueue - 1 : totalUserQueue,
+        : [...newQueue],
+      totalUserQueue: action.type === 'REMOVE_QUEUE_TRACK' ? totalUserQueue - 1 : newQueue.length,
       liking: type === 'toggle' && add && action.queueID
         ? liking.concat(action.queueID)
         : action.type.includes('TOGGLE_TRACK_LIKE') && action.queueID
@@ -268,11 +288,8 @@ export default function reducer(
       case types.DELETE_QUEUE_TRACK_FAILURE:
         return update(state, action, 'delete');
       case types.GET_USER_QUEUE_REQUEST:
-        return getUserQueue.request(state);
-      case types.GET_USER_QUEUE_SUCCESS:
-        return getUserQueue.success(state, action);
       case types.GET_USER_QUEUE_FAILURE:
-        return getUserQueue.failure(state, action);
+        return update(state, action, 'queue');
       case types.QUEUE_TRACK_REQUEST:
         return updateObject(state, {queueing: true, error: null});
       case types.QUEUE_TRACK_SUCCESS:
@@ -290,6 +307,7 @@ export default function reducer(
       case types.TOGGLE_TRACK_LIKE_SUCCESS:
       case types.TOGGLE_TRACK_LIKE_FAILURE:
         return update(state, action, 'toggle');
+      case types.GET_USER_QUEUE_SUCCESS:
       case types.REMOVE_QUEUE_TRACK:
       case types.UPDATE_QUEUE:
         return update(state, action);
