@@ -12,10 +12,8 @@
 import Spotify from 'rn-spotify-sdk';
 import addMusicItems from '../../../utils/addMusicItems';
 import getPlaylistTracks from '../../../utils/spotifyAPI/getPlaylistTracks';
-import {addAlbums} from '../../albums/AddAlbums';
-import {addArtists} from '../../artists/AddArtists';
-import {addTracks} from '../../tracks/AddTracks';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type Paging} from '../../../utils/spotifyAPI/types';
 import {
   type BRUserTrack,
@@ -56,7 +54,7 @@ export function getContextQueue(
   context: Context,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getContextQueueRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const limit = context && typeof context.total === 'number' ? 3 - context.total : 3;
@@ -95,12 +93,10 @@ export function getContextQueue(
 
       const music = addMusicItems(spotifyTracks);
 
-      dispatch(addArtists(music.artists));
-      dispatch(addAlbums(music.albums));
-      dispatch(addTracks(music.tracks));
-      dispatch(actions.getContextQueueSuccess(spotifyTracks.map(t => t.id)));
+      dispatch(addEntities(music));
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.getContextQueueFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

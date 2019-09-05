@@ -18,7 +18,6 @@ import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
-import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
 import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
 import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
 
@@ -248,12 +247,6 @@ export default function reducer(
         return deleteQueueTrack.success(state, action);
       case types.DELETE_QUEUE_TRACK_FAILURE:
         return deleteQueueTrack.failure(state, action);
-      case types.GET_CONTEXT_QUEUE_REQUEST:
-        return getContextQueue.request(state);
-      case types.GET_CONTEXT_QUEUE_SUCCESS:
-        return getContextQueue.success(state, action);
-      case types.GET_CONTEXT_QUEUE_FAILURE:
-        return getContextQueue.failure(state, action);
       case types.GET_USER_QUEUE_REQUEST:
         return getUserQueue.request(state);
       case types.GET_USER_QUEUE_SUCCESS:

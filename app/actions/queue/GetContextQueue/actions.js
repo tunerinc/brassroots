@@ -16,13 +16,13 @@ import {type Action} from '../../../reducers/queue';
  * Notify the app of a get context queue request
  * 
  * @alias module:GetContextQueue
- * @function getContextQueueRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @returns {object} Redux action with the type of GET_CONTEXT_QUEUE_REQUEST
  */
-export function getContextQueueRequest(): Action {
+export function request(): Action {
   return {type: types.GET_CONTEXT_QUEUE_REQUEST};
 }
 
@@ -30,28 +30,21 @@ export function getContextQueueRequest(): Action {
  * Notify the app of a get context queue success
  * 
  * @alias module:GetContextQueue
- * @function getContextQueueSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param   {string[]} [contextQueue=[]] The Spotify ids of the context queue tracks
- * 
- * @returns {object}                     Redux action with the type of GET_CONTEXT_QUEUE_SUCCESS and the context queue
+ * @returns {object} Redux action with the type of GET_CONTEXT_QUEUE_SUCCESS
  */
-export function getContextQueueSuccess(
-  contextQueue: Array<string> = [],
-): Action {
-  return {
-    type: types.GET_CONTEXT_QUEUE_SUCCESS,
-    contextQueue,
-  };
+export function success(): Action {
+  return {type: types.GET_CONTEXT_QUEUE_SUCCESS};
 }
 
 /**
  * Notify the app of a get context queue failure
  * 
  * @alias module:GetContextQueue
- * @function getContextQueueFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -59,7 +52,7 @@ export function getContextQueueSuccess(
  * 
  * @returns {object}       Redux action with the type of GET_CONTEXT_QUEUE_FAILURE and the error which caused the failure
  */
-export function getContextQueueFailure(
+export function failure(
   error: Error,
 ): Action {
   return {
