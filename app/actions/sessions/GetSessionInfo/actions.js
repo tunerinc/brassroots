@@ -19,13 +19,13 @@ import {
  * Notify the app of a get session info request
  * 
  * @alias module:GetSessionInfo
- * @function getSessionInfoRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of GET_SESSION_INFO_REQUEST
  */
-export function getSessionInfoRequest(): Action {
+export function request(): Action {
   return {type: types.GET_SESSION_INFO_REQUEST};
 }
 
@@ -39,7 +39,7 @@ export function getSessionInfoRequest(): Action {
  * Notify the app of a get session info success
  * 
  * @alias module:GetSessionInfo
- * @function getSessionInfoSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -47,7 +47,7 @@ export function getSessionInfoRequest(): Action {
  * 
  * @return {object}                  Redux action with the type of GET_SESSION_INFO_SUCCESS and the retrieved session info
  */
-export function getSessionInfoSuccess(
+export function success(
   unsubscribe: () => void,
 ): Action {
   return {
@@ -60,7 +60,7 @@ export function getSessionInfoSuccess(
  * Notify the app of a get session info failure
  * 
  * @alias module:GetSessionInfo
- * @function getSessionInfoFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -68,7 +68,7 @@ export function getSessionInfoSuccess(
  * 
  * @return {object}       Redux action with the type of GET_SESSION_INFO_FAILURE and the error which caused the failure
  */
-export function getSessionInfoFailure(
+export function failure(
   error: Error,
 ): Action {
   return {

@@ -11,7 +11,7 @@
 
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addUsers} from '../../users/AddUsers';
+import {addEntities} from '../../entities/AddEntities';
 import {updatePlayer} from '../../player/UpdatePlayer';
 import {type ThunkAction} from '../../../reducers/sessions';
 import {
@@ -37,7 +37,7 @@ export function getSessionInfo(
   sessionID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.getSessionInfoRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -59,12 +59,12 @@ export function getSessionInfo(
           };
 
           dispatch(updatePlayer({paused: doc.data().paused}));
-          dispatch(actions.getSessionInfoSuccess(unsubscribe));
+          dispatch(actions.success(unsubscribe));
         },
         error => {throw error},
       );
     } catch (err) {
-      dispatch(actions.getSessionInfoFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

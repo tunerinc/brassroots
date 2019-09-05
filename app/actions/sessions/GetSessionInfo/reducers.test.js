@@ -18,22 +18,31 @@ describe('get session info reducer', () => {
 
   it('handles GET_SESSION_INFO_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
-    const expectedState: State = {...initialState, fetchingInfo: true};
-    expect(reducer(initialState, actions.getSessionInfoRequest())).toStrictEqual(expectedState);
-    expect(reducer(state, actions.getSessionInfoRequest())).toStrictEqual(expectedState);
+    const stateTwo: State = {...state, fetching: ['trending']};
+    const expectedState: State = {...initialState, fetching: ['info']};
+    const expectedStateTwo: State = {...initialState, fetching: ['trending', 'info']};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
   it('handles GET_SESSION_INFO_SUCCESS', () => {
     const infoUnsubscribe: () => void = () => {return};
-    const state: State = {...initialState, fetchingInfo: true};
+    const state: State = {...initialState, fetching: ['info']};
+    const stateTwo: State = {...initialState, fetching: ['trending', 'info']};
     const expectedState: State = {...initialState, infoUnsubscribe};
-    expect(reducer(state, actions.getSessionInfoSuccess(infoUnsubscribe)))
+    const expectedStateTwo: State = {...expectedState, fetching: ['trending']};
+    expect(reducer(state, actions.success(infoUnsubscribe))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.success(infoUnsubscribe))).toStrictEqual(expectedStateTwo);
   });
 
   it('handles GET_SESSION_INFO_FAILURE', () => {
-    const state: State = {...initialState, fetchingInfo: true};
+    const state: State = {...initialState, fetching: ['info']};
+    const stateTwo: State = {...initialState, fetching: ['trending', 'info']};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};
-    expect(reducer(state, actions.getSessionInfoFailure(error))).toStrictEqual(expectedState);
+    const expectedStateTwo: State = {...expectedState, fetching: ['trending']};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
+    expect(reducer(stateTwo, actions.failure(error))).toStrictEqual(expectedStateTwo);
   });
 });

@@ -15,7 +15,7 @@ import {
 describe('get session info synchronous action creators', () => {
   it('creates request action', () => {
     const expectedAction: Action = {type: types.GET_SESSION_INFO_REQUEST};
-    expect(actions.getSessionInfoRequest()).toStrictEqual(expectedAction);
+    expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
@@ -25,7 +25,7 @@ describe('get session info synchronous action creators', () => {
       unsubscribe,
     };
 
-    expect(actions.getSessionInfoSuccess(unsubscribe)).toStrictEqual(expectedAction);
+    expect(actions.success(unsubscribe)).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
@@ -35,6 +35,6 @@ describe('get session info synchronous action creators', () => {
       error,
     };
 
-    expect(actions.getSessionInfoFailure(error)).toStrictEqual(expectedAction);
+    expect(actions.failure(error)).toStrictEqual(expectedAction);
   });
 });

@@ -21,9 +21,6 @@ import {type Action as TrackAction} from './tracks';
 import {type Action as ChatAction} from './chat';
 import {type Action as EntitiesAction} from './entities';
 
-// Case Functions
-import * as getSessionInfo from '../actions/sessions/GetSessionInfo/reducers';
-
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
 type GetState = () => State;
@@ -290,7 +287,11 @@ function update(
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: add && type === 'trending' && explore.trendingIDs.length !== 0 ? true : false,
       currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS' ? null : currentSessionID,
-      infoUnsubscribe: action.type === 'STOP_SESSION_INFO_LISTENER_SUCCESS' ? null : infoUnsubscribe,
+      infoUnsubscribe: action.type === 'STOP_SESSION_INFO_LISTENER_SUCCESS'
+        ? null
+        : typeof action.unsubscribe === 'function'
+        ? action.unsubscribe
+        : infoUnsubscribe,
       joining: action.type === 'CREATE_SESSION_REQUEST' || action.type === 'JOIN_SESSION_REQUEST'
         ? true
         : false,
@@ -343,11 +344,9 @@ export default function reducer(
         return update(state, action);
 
       case types.GET_SESSION_INFO_REQUEST:
-        return getSessionInfo.request(state);
       case types.GET_SESSION_INFO_SUCCESS:
-        return getSessionInfo.success(state, action);
       case types.GET_SESSION_INFO_FAILURE:
-        return getSessionInfo.failure(state, action);
+        return update(state, action, 'info');
       case types.GET_TRENDING_SESSIONS_REQUEST:
       case types.GET_TRENDING_SESSIONS_SUCCESS:
       case types.GET_TRENDING_SESSIONS_FAILURE:
