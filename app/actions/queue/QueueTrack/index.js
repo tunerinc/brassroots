@@ -96,7 +96,7 @@ export function queueTrack(
   user: User,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.queueTrackRequest());
+    dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
@@ -132,9 +132,9 @@ export function queueTrack(
       );
 
       await batch.commit();
-      dispatch(actions.queueTrackSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.queueTrackFailure(err))
+      dispatch(actions.failure(err))
     }
   };
 }

@@ -5,46 +5,33 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/queue';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/queue';
 import * as actions from './actions';
 
 describe('queue track reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle QUEUE_TRACK_REQUEST', () => {
-    expect(reducer(initialState, actions.queueTrackRequest()))
-      .toStrictEqual({...initialState, queueing: true});
-
-    expect(
-      reducer(
-        {...initialState, error: new Error('error')},
-        actions.queueTrackRequest(),
-      ),
-    )
-      .toStrictEqual({...initialState, queueing: true});
+  it('handles QUEUE_TRACK_REQUEST', () => {
+    const state: State = {...initialState, error: new Error('error')};
+    const expectedState: State = {...initialState, queueing: true};
+    expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
+    expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('should handle QUEUE_TRACK_SUCCESS', () => {
-    expect(
-      reducer(
-        {...initialState, queueing: true},
-        actions.queueTrackSuccess(),
-      ),
-    )
-      .toStrictEqual(initialState);
+  it('handles QUEUE_TRACK_SUCCESS', () => {
+    const state: State = {...initialState, queueing: true};
+    expect(reducer(state, actions.success())).toStrictEqual(initialState);
   });
 
-  it('should handle QUEUE_TRACK_FAILURE', () => {
+  it('handles QUEUE_TRACK_FAILURE', () => {
+    const state: State = {...initialState, queueing: true};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, queueing: true},
-        actions.queueTrackFailure(error),
-      ),
-    )
-      .toStrictEqual({...initialState, error});
+    const expectedState: State = {...initialState, error};
+    expect(reducer(state, actions.failure(error))).toStrictEqual(expectedState);
   });
 });
