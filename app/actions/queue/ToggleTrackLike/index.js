@@ -42,7 +42,7 @@ export function toggleTrackLike(
   liked: boolean,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.toggleTrackLikeRequest(queueID));
+    dispatch(actions.request(queueID));
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
@@ -76,9 +76,9 @@ export function toggleTrackLike(
       ];
       
       await Promise.all(promises);
-      dispatch(actions.toggleTrackLikeSuccess(queueID));
+      dispatch(actions.success(queueID));
     } catch (err) {
-      dispatch(actions.toggleTrackLikeFailure(queueID, err));
+      dispatch(actions.failure(queueID, err));
     }
   };
 }

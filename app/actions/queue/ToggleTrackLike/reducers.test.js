@@ -5,94 +5,52 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/queue';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/queue';
 import * as actions from './actions';
 
 describe('toggle track like reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle TOGGLE_TRACK_LIKE_REQUEST', () => {
+  it('handles TOGGLE_TRACK_LIKE_REQUEST', () => {
     const queueIDOne: string = 'foo';
     const queueIDTwo: string = 'bar';
-
-    expect(reducer(initialState, actions.toggleTrackLikeRequest(queueIDOne)))
-      .toStrictEqual({...initialState, liking: [queueIDOne]});
-
-    expect(
-      reducer(
-        {...initialState, failed: [queueIDOne], error: new Error('error')},
-        actions.toggleTrackLikeRequest(queueIDOne),
-      ),
-    )
-      .toStrictEqual({...initialState, liking: [queueIDOne]});
-
-    expect(
-      reducer(
-        {...initialState, failed: [queueIDOne], error: new Error('error')},
-        actions.toggleTrackLikeRequest(queueIDTwo),
-      ),
-    )
-      .toStrictEqual({...initialState, liking: [queueIDTwo], failed: [queueIDOne]});
-
-    expect(
-      reducer(
-        {...initialState, liking: [queueIDOne]},
-        actions.toggleTrackLikeRequest(queueIDTwo),
-      ),
-    )
-      .toStrictEqual({...initialState, liking: [queueIDOne, queueIDTwo]});
+    const state: State = {...initialState, failed: [queueIDOne], error: new Error('error')};
+    const stateTwo: State = {...initialState, liking: [queueIDOne]};
+    const newState: State = {...initialState, liking: [queueIDOne]};
+    const newStateTwo: State = {...initialState, liking: [queueIDTwo], failed: [queueIDOne]};
+    const newStateThree: State = {...initialState, liking: [queueIDOne, queueIDTwo]};
+    expect(reducer(initialState, actions.request(queueIDOne))).toStrictEqual(newState);
+    expect(reducer(state, actions.request(queueIDOne))).toStrictEqual(newState);
+    expect(reducer(state, actions.request(queueIDTwo))).toStrictEqual(newStateTwo);
+    expect(reducer(stateTwo, actions.request(queueIDTwo))).toStrictEqual(newStateThree);
   });
 
-  it('should handle TOGGLE_TRACK_LIKE_SUCCESS', () => {
+  it('handles TOGGLE_TRACK_LIKE_SUCCESS', () => {
     const queueIDOne: string = 'foo';
     const queueIDTwo: string = 'bar';
-
-    expect(
-      reducer(
-        {...initialState, liking: [queueIDOne]},
-        actions.toggleTrackLikeSuccess(queueIDOne),
-      ),
-    )
-      .toStrictEqual(initialState);
-
-    expect(
-      reducer(
-        {...initialState, liking: [queueIDOne, queueIDTwo]},
-        actions.toggleTrackLikeSuccess(queueIDTwo),
-      ),
-    )
-      .toStrictEqual({...initialState, liking: [queueIDOne]});
+    const state: State = {...initialState, liking: [queueIDOne]};
+    const stateTwo: State = {...initialState, liking: [queueIDOne, queueIDTwo]};
+    expect(reducer(state, actions.success(queueIDOne))).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success(queueIDTwo))).toStrictEqual(state);
   });
 
-  it('should handle TOGGLE_TRACK_LIKE_FAILURE', () => {
+  it('handles TOGGLE_TRACK_LIKE_FAILURE', () => {
     const queueIDOne: string = 'foo';
     const queueIDTwo: string = 'bar';
+    const state: State = {...initialState, liking: [queueIDOne]};
+    const stateTwo: State = {...initialState, liking: [queueIDOne, queueIDTwo]};
+    const stateThree: State = {...initialState, liking: [queueIDOne], failed: [queueIDTwo]};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, liking: [queueIDOne]},
-        actions.toggleTrackLikeFailure(queueIDOne, error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: [queueIDOne]});
-
-    expect(
-      reducer(
-        {...initialState, liking: [queueIDOne, queueIDTwo]},
-        actions.toggleTrackLikeFailure(queueIDTwo, error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, liking: [queueIDOne], failed: [queueIDTwo]});
-
-    expect(
-      reducer(
-        {...initialState, liking: [queueIDOne], failed: [queueIDTwo]},
-        actions.toggleTrackLikeFailure(queueIDOne, error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: [queueIDTwo, queueIDOne]});
+    const newState: State = {...initialState, error, failed: [queueIDOne]};
+    const newStateTwo: State = {...newState, liking: [queueIDOne], failed: [queueIDTwo]};
+    const newStateThree: State = {...newState, failed: [queueIDTwo, queueIDOne]};
+    expect(reducer(state, actions.failure(queueIDOne, error))).toStrictEqual(newState);
+    expect(reducer(stateTwo, actions.failure(queueIDTwo, error))).toStrictEqual(newStateTwo);
+    expect(reducer(stateThree, actions.failure(queueIDOne, error))).toStrictEqual(newStateThree);
   });
 });

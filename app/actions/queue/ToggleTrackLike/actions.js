@@ -16,7 +16,7 @@ import {type Action} from '../../../reducers/queue';
  * Notify the app of a toggle track like request
  * 
  * @alias module:ToggleTrackLike
- * @function toggleTrackLikeRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -24,7 +24,7 @@ import {type Action} from '../../../reducers/queue';
  *
  * @return {object}         Redux action with the type of TOGGLE_TRACK_LIKE_REQUEST and the queueID to toggle like on
  */
-export function toggleTrackLikeRequest(
+export function request(
   queueID: string,
 ): Action {
   return {
@@ -37,15 +37,15 @@ export function toggleTrackLikeRequest(
  * Notify the app of a toggle track like success
  * 
  * @alias module:ToggleTrackLike
- * @function toggleTrackLikeSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @param  {string} queueID The queue id of the track that was toggled
  *
- * @return {object} Redux action with the type of TOGGLE_TRACK_LIKE_SUCCESS and the track id the current user toggled like on
+ * @return {object}         Redux action with the type of TOGGLE_TRACK_LIKE_SUCCESS and the track id the current user toggled like on
  */
-export function toggleTrackLikeSuccess(
+export function success(
   queueID: string,
 ): Action {
   return {
@@ -58,7 +58,7 @@ export function toggleTrackLikeSuccess(
  * Notify the app of a toggle track like failure
  * 
  * @alias module:ToggleTrackLike
- * @function toggleTrackLikeFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
@@ -67,7 +67,7 @@ export function toggleTrackLikeSuccess(
  *
  * @return {object}         Redux action with the type of TOGGLE_TRACK_LIKE_FAILURE and the error which caused the failure on the queue track
  */
-export function toggleTrackLikeFailure(
+export function failure(
   queueID: string,
   error: Error,
 ): Action {

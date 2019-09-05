@@ -19,7 +19,6 @@ import {type Action as EntitiesAction} from './entities';
 // Case Functions
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
-import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -210,9 +209,18 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {userQueue, totalUserQueue, context, unsubscribe} = state;
+  const {userQueue, totalUserQueue, context, unsubscribe, liking, deleting, failed} = state;
+  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
-  const updates: State = context && Array.isArray(userQueue) && typeof totalUserQueue === 'number'
+  const updates: State = (
+    context
+    && Array.isArray(userQueue)
+    && Array.isArray(liking)
+    && Array.isArray(deleting)
+    && Array.isArray(failed)
+    && typeof totalUserQueue === 'number'
+    && action.type
+  )
     ? {
       ...(action.updates ? action.updates : {}),
       lastUpdated,
@@ -221,6 +229,16 @@ function update(
         ? userQueue.filter(o => o.id !== action.queueID)
         : userQueue,
       totalUserQueue: action.type === 'REMOVE_QUEUE_TRACK' ? totalUserQueue - 1 : totalUserQueue,
+      liking: type === 'toggle' && add && action.queueID
+        ? liking.concat(action.queueID)
+        : action.type.includes('TOGGLE_TRACK_LIKE') && action.queueID
+        ? liking.filter(id => id !== action.queueID)
+        : [...liking],
+      failed: type === 'toggle' && haveError && action.queueID
+        ? failed.concat(action.queueID)
+        : type === 'toggle' && typeof action.queueID === 'string'
+        ? failed.filter(id => id !== action.queueID)
+        : [...failed],
       unsubscribe: action.type === 'STOP_QUEUE_LISTENER_SUCCESS'
         ? null
         : typeof action.unsubscribe === 'function'
@@ -267,11 +285,9 @@ export default function reducer(
       case types.STOP_QUEUE_LISTENER_FAILURE:
         return update(state, action, 'queue');
       case types.TOGGLE_TRACK_LIKE_REQUEST:
-        return toggleTrackLike.request(state, action);
       case types.TOGGLE_TRACK_LIKE_SUCCESS:
-        return toggleTrackLike.success(state, action);
       case types.TOGGLE_TRACK_LIKE_FAILURE:
-        return toggleTrackLike.failure(state, action);
+        return update(state, action, 'toggle');
       case types.REMOVE_QUEUE_TRACK:
       case types.UPDATE_QUEUE:
         return update(state, action);
