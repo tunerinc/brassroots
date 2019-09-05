@@ -22,7 +22,6 @@ import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
 import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
 import * as queueTrackThunk from '../actions/queue/QueueTrack/reducers';
 import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
-import * as stopQueueListener from '../actions/queue/StopQueueListener/reducers';
 import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -205,20 +204,29 @@ export function queueTrack(
  * @param   {object} action         The Redux action
  * @param   {string} action.type    The type of Redux action
  * @param   {object} action.updates The updates to make to the state
+ * @param   {string} type           The type of add/remove from the fetching array
  * 
  * @returns {object}                The state updated with the new information
  */
 function update(
   state: State,
   action: Action,
+  type?: string,
 ): State {
-  const {context: oldContext} = state;
-  const updates: State = oldContext && action.updates
+  const {context, unsubscribe} = state;
+  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const updates: State = context
     ? {
-      ...action.updates,
-      context: action.updates.context
-        ? updateObject(oldContext, action.updates.context)
-        : {...oldContext},
+      ...(action.updates ? action.updates : {}),
+      error: haveError ? action.error : null,
+      unsubscribe: action.type === 'STOP_QUEUE_LISTENER_SUCCESS'
+        ? null
+        : typeof action.unsubscribe === 'function'
+        ? action.unsubscribe
+        : unsubscribe,
+      context: action.updates && action.updates.context
+        ? updateObject(context, action.updates.context)
+        : {...context},
     }
     : {};
 
@@ -262,9 +270,8 @@ export default function reducer(
       case types.STOP_QUEUE_LISTENER_REQUEST:
         return state;
       case types.STOP_QUEUE_LISTENER_SUCCESS:
-        return stopQueueListener.success(state);
       case types.STOP_QUEUE_LISTENER_FAILURE:
-        return stopQueueListener.failure(state, action);
+        return update(state, action, 'queue');
       case types.TOGGLE_TRACK_LIKE_REQUEST:
         return toggleTrackLike.request(state, action);
       case types.TOGGLE_TRACK_LIKE_SUCCESS:

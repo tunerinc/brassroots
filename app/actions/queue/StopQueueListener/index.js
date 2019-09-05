@@ -34,13 +34,13 @@ export function stopQueueListener(
   unsubscribe: () => void,
 ): ThunkAction {
   return async dispatch => {
-    dispatch(actions.stopQueueListenerRequest());
+    dispatch(actions.request());
 
     try {
       await unsubscribe();
-      dispatch(actions.stopQueueListenerSuccess());
+      dispatch(actions.success());
     } catch (err) {
-      dispatch(actions.stopQueueListenerFailure(err));
+      dispatch(actions.failure(err));
     }
   };
 }

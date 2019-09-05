@@ -16,39 +16,35 @@ import {type Action} from '../../../reducers/queue';
  * Notify the app of a stop queue listener request
  * 
  * @alias module:StopQueueListener
- * @function stopQueueListenerRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of STOP_QUEUE_LISTENER_REQUEST
  */
-export function stopQueueListenerRequest(): Action {
-  return {
-    type: types.STOP_QUEUE_LISTENER_REQUEST,
-  };
+export function request(): Action {
+  return {type: types.STOP_QUEUE_LISTENER_REQUEST};
 }
 
 /**
  * Notify the app of a stop queue listener success
  * 
  * @alias module:StopQueueListener
- * @function stopQueueListenerSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
  * @return {object} Redux action with the type of STOP_QUEUE_LISTENER_SUCCESS
  */
-export function stopQueueListenerSuccess(): Action {
-  return {
-    type: types.STOP_QUEUE_LISTENER_SUCCESS,
-  };
+export function success(): Action {
+  return {type: types.STOP_QUEUE_LISTENER_SUCCESS};
 }
 
 /**
  * Notify the app of a stop queue listener failure
  * 
  * @alias module:StopQueueListener
- * @function stopQueueListenerFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -56,7 +52,7 @@ export function stopQueueListenerSuccess(): Action {
  * 
  * @return {object}       Redux action with the type of STOP_QUEUE_LISTENER_FAILURE and the error which caused the failure
  */
-export function stopQueueListenerFailure(
+export function failure(
   error: Error,
 ): Action {
   return {
