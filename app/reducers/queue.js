@@ -20,7 +20,6 @@ import {type Action as EntitiesAction} from './entities';
 import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 import * as getContextQueue from '../actions/queue/GetContextQueue/reducers';
 import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
-import {removeQueueTrack} from '../actions/queue/RemoveQueueTrack/reducers';
 import * as toggleTrackLike from '../actions/queue/ToggleTrackLike/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -212,12 +211,17 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {context, unsubscribe} = state;
+  const {userQueue, totalUserQueue, context, unsubscribe} = state;
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
-  const updates: State = context
+  const updates: State = context && Array.isArray(userQueue) && typeof totalUserQueue === 'number'
     ? {
       ...(action.updates ? action.updates : {}),
+      lastUpdated,
       error: haveError ? action.error : null,
+      userQueue: action.type === 'REMOVE_QUEUE_TRACK' && typeof action.queueID === 'string'
+        ? userQueue.filter(o => o.id !== action.queueID)
+        : userQueue,
+      totalUserQueue: action.type === 'REMOVE_QUEUE_TRACK' ? totalUserQueue - 1 : totalUserQueue,
       unsubscribe: action.type === 'STOP_QUEUE_LISTENER_SUCCESS'
         ? null
         : typeof action.unsubscribe === 'function'
@@ -262,8 +266,6 @@ export default function reducer(
         return updateObject(state, {queueing: false, error: null});
       case types.QUEUE_TRACK_FAILURE:
         return updateObject(state, {error: action.error, queueing: false});
-      case types.REMOVE_QUEUE_TRACK:
-        return removeQueueTrack(state, action);
       case types.RESET_QUEUE:
         return initialState;
       case types.STOP_QUEUE_LISTENER_REQUEST:
@@ -277,6 +279,7 @@ export default function reducer(
         return toggleTrackLike.success(state, action);
       case types.TOGGLE_TRACK_LIKE_FAILURE:
         return toggleTrackLike.failure(state, action);
+      case types.REMOVE_QUEUE_TRACK:
       case types.UPDATE_QUEUE:
         return update(state, action);
       default:
