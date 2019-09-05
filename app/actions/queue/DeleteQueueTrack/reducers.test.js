@@ -5,94 +5,53 @@
  * @flow
  */
 
-import reducer, {initialState} from '../../../reducers/queue';
+import reducer, {
+  initialState,
+  type State,
+} from '../../../reducers/queue';
 import * as actions from './actions';
 
 describe('delete queue track reducer', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle DELETE_QUEUE_TRACK_REQUEST', () => {
+  it('handles DELETE_QUEUE_TRACK_REQUEST', () => {
     const queueIDOne: string = 'foo';
     const queueIDTwo: string = 'bar';
-
-    expect(reducer(initialState, actions.deleteQueueTrackRequest(queueIDOne)))
-      .toStrictEqual({...initialState, deleting: [queueIDOne]});
-
-    expect(
-      reducer(
-        {...initialState, failed: [queueIDOne], error: new Error('error')},
-        actions.deleteQueueTrackRequest(queueIDOne),
-      ),
-    )
-      .toStrictEqual({...initialState, deleting: [queueIDOne]});
-
-    expect(
-      reducer(
-        {...initialState, failed: [queueIDOne], error: new Error('error')},
-        actions.deleteQueueTrackRequest(queueIDTwo),
-      ),
-    )
-      .toStrictEqual({...initialState, deleting: [queueIDTwo], failed: [queueIDOne]});
-
-    expect(
-      reducer(
-        {...initialState, deleting: [queueIDOne]},
-        actions.deleteQueueTrackRequest(queueIDTwo),
-      ),
-    )
-      .toStrictEqual({...initialState, deleting: [queueIDOne, queueIDTwo]});
+    const state: State = {...initialState, failed: [queueIDOne], error: new Error('error')};
+    const stateTwo: State = {...initialState, deleting: [queueIDOne]};
+    const newState: State = {...initialState, deleting: [queueIDOne]};
+    const newStateTwo: State = {...initialState, deleting: [queueIDTwo], failed: [queueIDOne]};
+    const newStateThree: State = {...initialState, deleting: [queueIDOne, queueIDTwo]};
+    expect(reducer(initialState, actions.request(queueIDOne))).toStrictEqual(newState);
+    expect(reducer(state, actions.request(queueIDOne))).toStrictEqual(newState);
+    expect(reducer(state, actions.request(queueIDTwo))).toStrictEqual(newStateTwo);
+    expect(reducer(stateTwo, actions.request(queueIDTwo))).toStrictEqual(newStateThree);
   });
 
-  it('should handle DELETE_QUEUE_TRACK_SUCCESS', () => {
+  it('handles DELETE_QUEUE_TRACK_SUCCESS', () => {
     const queueIDOne: string = 'foo';
     const queueIDTwo: string = 'bar';
-
-    expect(
-      reducer(
-        {...initialState, deleting: [queueIDOne]},
-        actions.deleteQueueTrackSuccess(queueIDOne),
-      ),
-    )
-      .toStrictEqual(initialState);
-
-    expect(
-      reducer(
-        {...initialState, deleting: [queueIDOne, queueIDTwo]},
-        actions.deleteQueueTrackSuccess(queueIDTwo),
-      ),
-    )
-      .toStrictEqual({...initialState, deleting: [queueIDOne]});
+    const state: State = {...initialState, deleting: [queueIDOne]};
+    const stateTwo: State = {...initialState, deleting: [queueIDOne, queueIDTwo]};
+    const newState: State = {...initialState, deleting: [queueIDOne]};
+    expect(reducer(state, actions.success(queueIDOne))).toStrictEqual(initialState);
+    expect(reducer(stateTwo, actions.success(queueIDTwo))).toStrictEqual(newState);
   });
 
-  it('should handle DELETE_QUEUE_TRACK_FAILURE', () => {
+  it('handles DELETE_QUEUE_TRACK_FAILURE', () => {
     const queueIDOne: string = 'foo';
     const queueIDTwo: string = 'bar';
+    const state: State = {...initialState, deleting: [queueIDOne]};
+    const stateTwo: State = {...initialState, deleting: [queueIDOne, queueIDTwo]};
+    const stateThree: State = {...initialState, deleting: [queueIDOne], failed: [queueIDTwo]};
     const error: Error = new Error('error');
-
-    expect(
-      reducer(
-        {...initialState, deleting: [queueIDOne]},
-        actions.deleteQueueTrackFailure(queueIDOne, error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: [queueIDOne]});
-
-    expect(
-      reducer(
-        {...initialState, deleting: [queueIDOne, queueIDTwo]},
-        actions.deleteQueueTrackFailure(queueIDTwo, error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, deleting: [queueIDOne], failed: [queueIDTwo]});
-
-    expect(
-      reducer(
-        {...initialState, deleting: [queueIDOne], failed: [queueIDTwo]},
-        actions.deleteQueueTrackFailure(queueIDOne, error),
-      ),
-    )
-      .toStrictEqual({...initialState, error, failed: [queueIDTwo, queueIDOne]});
+    const newState: State = {...initialState, error, failed: [queueIDOne]};
+    const newStateTwo: State = {...initialState, error, deleting: [queueIDOne], failed: [queueIDTwo]};
+    const newStateThree: State = {...initialState, error, failed: [queueIDTwo, queueIDOne]};
+    expect(reducer(state,actions.failure(queueIDOne, error)),).toStrictEqual(newState);
+    expect(reducer(stateTwo,actions.failure(queueIDTwo, error)),).toStrictEqual(newStateTwo);
+    expect(reducer(stateThree,actions.failure(queueIDOne, error)),).toStrictEqual(newStateThree);
   });
 });

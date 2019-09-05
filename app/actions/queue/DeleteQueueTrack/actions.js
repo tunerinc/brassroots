@@ -16,7 +16,7 @@ import {type Action} from '../../../reducers/queue';
  * Notify the app of a delete queue track request
  * 
  * @alias module:DeleteQueueTrack
- * @function deleteQueueTrackRequest
+ * @function request
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -24,7 +24,7 @@ import {type Action} from '../../../reducers/queue';
  * 
  * @returns {object}         Redux action with the type of DELETE_QUEUE_TRACK_REQUEST and the Brassroots id of the queue track
  */
-export function deleteQueueTrackRequest(
+export function request(
   queueID: string,
 ): Action {
   return {
@@ -37,7 +37,7 @@ export function deleteQueueTrackRequest(
  * Notify the app of a delete queue track success
  * 
  * @alias module:DeleteQueueTrack
- * @function deleteQueueTrackSuccess
+ * @function success
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -45,7 +45,7 @@ export function deleteQueueTrackRequest(
  * 
  * @returns {object}         Redux action with the type of DELETE_QUEUE_TRACK_SUCCESS and the Brassroots id of the queue track
  */
-export function deleteQueueTrackSuccess(
+export function success(
   queueID: string,
 ): Action {
   return {
@@ -58,7 +58,7 @@ export function deleteQueueTrackSuccess(
  * Notify the app of a delete queue track failure
  * 
  * @alias module:DeleteQueueTrack
- * @function deleteQueueTrackFailure
+ * @function failure
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
@@ -67,7 +67,7 @@ export function deleteQueueTrackSuccess(
  * 
  * @returns {object}         Redux action with the type of DELETE_QUEUE_TRACK_FAILURE and the error which caused the delete queue track failure for the queue track
  */
-export function deleteQueueTrackFailure(
+export function failure(
   queueID: string,
   error: Error,
 ): Action {

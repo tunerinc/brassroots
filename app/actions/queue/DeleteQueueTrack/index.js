@@ -49,29 +49,23 @@ export function deleteQueueTrack(
   queueID: string,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
-    dispatch(actions.deleteQueueTrackRequest(queueID));
+    dispatch(actions.request(queueID));
 
     const firestore: FirestoreInstance = getFirestore();
-    const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
-    const queueRef: FirestoreDocs = sessionRef.collection('queue');
+    const sessionDoc: FirestoreDoc = firestore.collection('sessions').doc(session.id);
+    const queueRef: FirestoreDocs = sessionDoc.collection('queue');
 
     let batch: FirestoreBatch = firestore.batch();
 
     try {
       const queueTrack: FirestoreDoc = await queueRef.doc(queueID).get();
       const {prevQueueID, prevTrackID, nextQueueID, nextTrackID, likes} = queueTrack.data();
+      const prevDoc: FirestoreDoc = queueRef.doc(prevQueueID);
 
-      if (nextQueueID && nextTrackID) {
-        batch.update(queueRef.doc(prevQueueID), {nextQueueID, nextTrackID});
-      } else {
-        batch.update(
-          queueRef.doc(prevQueueID),
-          {
-            nextQueueID: null,
-            nextTrackID: null,
-          },
-        );
-      }
+      batch.update(prevDoc, {
+        nextQueueID: nextQueueID ? nextQueueID : null,
+        nextTrackID: nextTrackID ? nextTrackID : null,
+      });
 
       if (session.total === 1) {
         dispatch(updatePlayer({nextQueueID: null, nextTrackID: null}));
@@ -83,12 +77,12 @@ export function deleteQueueTrack(
       });
 
       batch.delete(queueRef.doc(queueID));
-      batch.update(sessionRef, {'totals.queue': session.total - 1});
+      batch.update(sessionDoc, {'totals.queue': session.total - 1});
 
       await batch.commit();
-      dispatch(actions.deleteQueueTrackSuccess(queueID));
+      dispatch(actions.success(queueID));
     } catch (err) {
-      dispatch(actions.deleteQueueTrackFailure(queueID, err));
+      dispatch(actions.failure(queueID, err));
     }
   };
 }

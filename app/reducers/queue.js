@@ -17,7 +17,6 @@ import {type Action as TrackAction} from './tracks';
 import {type Action as EntitiesAction} from './entities';
 
 // Case Functions
-import * as deleteQueueTrack from '../actions/queue/DeleteQueueTrack/reducers';
 import * as getUserQueue from '../actions/queue/GetUserQueue/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -234,9 +233,14 @@ function update(
         : action.type.includes('TOGGLE_TRACK_LIKE') && action.queueID
         ? liking.filter(id => id !== action.queueID)
         : [...liking],
-      failed: type === 'toggle' && haveError && action.queueID
+      deleting: type === 'delete' && add && action.queueID
+        ? deleting.concat(action.queueID)
+        : action.type.includes('DELETE_QUEUE') && action.queueID
+        ? deleting.filter(id => id !== action.queueID)
+        : [...deleting],
+      failed: (type === 'toggle' || type === 'delete') && haveError && action.queueID
         ? failed.concat(action.queueID)
-        : type === 'toggle' && typeof action.queueID === 'string'
+        : (type === 'toggle' || type === 'delete') && typeof action.queueID === 'string'
         ? failed.filter(id => id !== action.queueID)
         : [...failed],
       unsubscribe: action.type === 'STOP_QUEUE_LISTENER_SUCCESS'
@@ -260,11 +264,9 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.DELETE_QUEUE_TRACK_REQUEST:
-        return deleteQueueTrack.request(state, action);
       case types.DELETE_QUEUE_TRACK_SUCCESS:
-        return deleteQueueTrack.success(state, action);
       case types.DELETE_QUEUE_TRACK_FAILURE:
-        return deleteQueueTrack.failure(state, action);
+        return update(state, action, 'delete');
       case types.GET_USER_QUEUE_REQUEST:
         return getUserQueue.request(state);
       case types.GET_USER_QUEUE_SUCCESS:
