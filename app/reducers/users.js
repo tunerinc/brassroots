@@ -206,7 +206,9 @@ function addOrUpdateUser(
         : item.topPlaylists
         ? [...topPlaylists, ...item.topPlaylists]
         : [...topPlaylists],
-      recentlyPlayed: item.recentlyPlayed && refreshing
+      recentlyPlayed: Array.isArray(item.recentlyPlayed) && item.recentlyPlayed.length === 1
+        ? [...item.recentlyPlayed, ...recentlyPlayed]
+        : item.recentlyPlayed && refreshing
         ? [...item.recentlyPlayed]
         : item.recentlyPlayed
         ? [...recentlyPlayed, ...item.recentlyPlayed]
@@ -244,17 +246,31 @@ export function user(
   }
 }
 
+/**
+ * Updates any values in the users state
+ * 
+ * @funcion update
+ * 
+ * @author Aldo Gonzalez <aldo@tunerinc.com>
+ * 
+ * @param   {object} state       The Redux state
+ * @param   {object} action      The Redux action
+ * @param   {string} action.type The type of Redux action
+ * @param   {string} type        The type to add/remove from the fetching array
+ * 
+ * @returns {object}             The state updated with the new information
+ */
 function update(
   state: State,
   action: Action,
   type?: string,
 ): State {
-  const {fetching} = state;
+  const {fetching: fetch} = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
-  const updates: State = Array.isArray(fetching)
+  const updates: State = Array.isArray(fetch)
     ? {
-      fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
+      fetching: add && type ? fetch.concat(type) : type ? fetch.filter(t => t !== type) : [...fetch],
       error: haveError ? action.error : null,
     }
     : {};
