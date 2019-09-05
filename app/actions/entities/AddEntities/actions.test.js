@@ -24,9 +24,9 @@ describe('add entities action creator', () => {
     const entities = {
       albums: {
         'foo': {
-          artists,
           userTracks,
           tracks,
+          artists,
           id: 'foo',
           name: 'foo bar',
           small: 'foo',
@@ -38,7 +38,14 @@ describe('add entities action creator', () => {
         'foo': {
           artists,
           id: 'foo',
-          albumID: 'foo',
+          album: {
+            artists,
+            id: 'foo',
+            name: 'foo bar',
+            small: 'foo',
+            medium: 'foo',
+            large: 'foo',
+          },
           name: 'foo',
           trackNumber: 1,
         },

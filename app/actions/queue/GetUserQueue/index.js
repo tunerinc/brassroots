@@ -63,14 +63,7 @@ export function getUserQueue(
               const track = queueTrack.track;
               const album = track.album;
               const artists = [...track.artists, ...album.artists]
-                .reduce((artistList, artist) => {
-                  return updateObject(artistList, {
-                    [artist.id]: {
-                      id: artist.id,
-                      name: artist.name,
-                    },
-                  });
-                }, {});
+                .reduce((artistList, artist) => updateObject(artistList, {[artist.id]: artist}), {});
 
               if (change.type === 'added') {
                 if (user.id !== userID) {
@@ -81,14 +74,16 @@ export function getUserQueue(
                   addEntities(
                     {
                       artists,
+                      albums: {[album.id]: album},
                       tracks: {
                         [track.id]: {
+                          album,
                           id: track.id,
                           name: track.name,
-                          albumID: album.id,
                           artists: track.artists,
                           trackNumber: track.trackNumber,
                           durationMS: track.durationMS,
+                          artists: track.artists,
                         },
                       },
                     },

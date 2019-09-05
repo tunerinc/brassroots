@@ -42,7 +42,7 @@ export function stopPlayer(
     const timeLastPlayed: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
     try {
-      await sessionRef.update({timeLastPlayed, paused: true, currentProgressMS: 0});
+      await sessionRef.update({timeLastPlayed, paused: true, progress: 0});
       dispatch(actions.success())
     } catch (err) {
       dispatch(actions.failure(err));

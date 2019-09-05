@@ -105,7 +105,6 @@ export function getTrendingSessions(
         const tracksToFetch: Array<string> = trendingSessions.docs.map(doc => doc.data().currentTrackID);
         const trackRes = await Spotify.getTracks(tracksToFetch, {});
         const music: Music = addMusicItems(trackRes.tracks);
-
         const sessions: Sessions = trendingSessions.docs.reduce((obj, doc) => {
           const {
             coords,

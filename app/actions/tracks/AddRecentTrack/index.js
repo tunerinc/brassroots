@@ -58,13 +58,13 @@ type Track = {
  * @param    {object}   track.album              The album the track is apart of
  * @param    {string}   track.album.id           The Spotify id of the track's album
  * @param    {string}   track.album.name         The name of the track's album
- * @param    {string}   track.album.small        A small image of the track's album artwork
- * @param    {string}   track.album.medium       A medium image of the track's album artwork
- * @param    {string}   track.album.large        A large image of the track's album artwork
- * @param    {object[]} track.album.artists      The artists on the album
+ * @param    {string}   track.album.small        A 64x64 size of the album's artwork
+ * @param    {string}   track.album.medium       A 320x320 size of the album's artwork
+ * @param    {string}   track.album.large        A 640x640 size of the album's artwork
+ * @param    {object[]} track.album.artists      The album artists
  * @param    {string}   track.album.artists.id   The Spotify id of the album artist
  * @param    {string}   track.album.artists.name The name of the album artist
- * @param    {object[]} track.artists            The artists on the track
+ * @param    {object[]} track.artists            The track artists
  * @param    {string}   track.artists.id         The Spotify id of the track artist
  * @param    {string}   track.artists.name       The name of the track artist
  * 

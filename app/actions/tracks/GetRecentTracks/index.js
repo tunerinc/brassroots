@@ -45,33 +45,24 @@ export function getRecentTracks(
     try {
       const userRef: FirestoreDoc = firestore.collection('users').doc(userID);
       const recentRef: FirestoreDocs = userRef.collection('recentlyPlayed');
-
-      let music = {
-        recent: [],
-        tracks: {},
-        albums: {},
-        artists: {},
-      };
-
       const recentTracks: FirestoreDocs = await recentRef.orderBy('timeAdded', 'desc').limit(25).get();
-      
+
+      let music = {recent: [], tracks: {}, albums: {}, artists: {}};
+
       if (recentTracks.empty || !Array.isArray(recentTracks)) {
         dispatch(actions.success());
       } else {
         const recentlyPlayed: Array<string> = recentTracks.map(t => t.data().trackID);
-
-        let tracks = {};
-
-        recentTracks.forEach(trackDoc => {
-          tracks = updateObject(tracks, {
-            [trackDoc.id]: {
-              ...trackDoc.data(),
-              id: trackDoc.data().trackID,
+        const tracks = recentTracks.reduce((obj, doc) => {
+          return updateObject(obj, {
+            [doc.id]: {
+              ...doc.data(),
+              id: doc.data().trackID,
               trackID: null,
               timeAdded: null,
             },
           });
-        });
+        }, {});
   
         music = addMusicItems(tracks, music);
 

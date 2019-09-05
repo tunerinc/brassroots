@@ -82,8 +82,8 @@ export function getArtists(): ThunkAction {
           const updatedArtist = updateObject(artist, {
             userTracks: [...artist.userTracks, trackID]
               .sort((a, b) => {
-                const albumA = music.albums[music.tracks[a].albumID].name.toLowerCase();
-                const albumB = music.albums[music.tracks[b].albumID].name.toLowerCase();
+                const albumA = music.tracks[a].album.name.toLowerCase();
+                const albumB = music.tracks[b].album.name.toLowerCase();
                 const trackNumberA = music.tracks[a].trackNumber;
                 const trackNumberB = music.tracks[b].trackNumber;
 

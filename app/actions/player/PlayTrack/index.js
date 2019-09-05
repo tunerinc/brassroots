@@ -104,62 +104,65 @@ type Context = ?{
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param    {object}   user                                 The user object of the current user playing a track
- * @param    {string}   user.id                              The id of the current user
- * @param    {string}   user.displayName                     The display name of the current user
- * @param    {string}   user.profileImage                    The profile image of the current user
- * @param    {object}   track                                The track object the current user is wanting to play
- * @param    {string}   [track.id]                           The queue id of the track to play
- * @param    {string}   track.trackID                        The Spotify id of the track to play
- * @param    {string}   track.name                           The name of the track
- * @param    {number}   track.durationMS                     The duration of the track in milliseconds
- * @param    {object}   track.album                          The album the track is in
- * @param    {string}   track.album.id                       The Spotify id of the album
- * @param    {string}   track.album.name                     The name of the album
- * @param    {string}   [track.album.small]                  64x64 size of the album artwork
- * @param    {string}   [track.album.medium]                 300x300 size of the album artwork
- * @param    {string}   [track.album.large]                  640x640 size of the album artwork
- * @param    {object[]} track.artists                        The track artists
- * @param    {string}   track.artists.id                     The Spotify id of the track artist
- * @param    {string}   track.artists.name                   The name of the track artist
- * @param    {object}   session                              The session object the current user is currently in
- * @param    {string}   session.id                           The id of the session the current user is in
- * @param    {number}   session.totalPlayed                  The total amoun of played tracks in the session
- * @param    {number}   [session.totalUsers]                 The total amount of listeners in the session, only if context change
- * @param    {object}   [session.current]                    The currently playing track in the session
- * @param    {string}   session.current.id                   The queue id of the current track, if available
- * @param    {object}   session.current.track                The currently playing track's Spotify information
- * @param    {string}   session.current.track.id             The Spotify track id of the current track
- * @param    {string}   session.current.track.name           The name of the track
- * @param    {number}   session.current.track.durationMS     The duration of the track in milliseconds
- * @param    {number}   session.current.track.trackNumber    The track number of the track within the album
- * @param    {object}   session.current.track.album          The album the track is in
- * @param    {string}   session.current.track.album.id       The Spotify id of the album
- * @param    {string}   session.current.track.album.name     The name of the album
- * @param    {string}   [session.current.track.album.small]  64x64 size of the album artwork
- * @param    {string}   [session.current.track.album.medium] 300x300 size of the album artwork
- * @param    {string}   [session.current.track.album.large]  640x640 size of the album artwork
- * @param    {object[]} session.current.track.artists        The track artists
- * @param    {string}   session.current.track.artists.id     The Spotify id of the track artist
- * @param    {string}   session.current.track.artists.name   The name of the track artist
- * @param    {number}   session.current.totalLikes           The total amount of likes the current track has
- * @param    {string}   session.current.userID               The id of the user who queued the track
- * @param    {string}   [session.current.nextQueueID]        The queue id of the next track from the current track
- * @param    {string}   [session.current.nextTrackID]        The Spotify id of the next track from the current
- * @param    {object}   [session.coords]                     The coordinates of the session the current user is in
- * @param    {number}   session.lat                          The latitude of the gps coordinates
- * @param    {number}   session.lon                          The longitude of the gps coordinates
- * @param    {object}   [context]                            The context of the tracks the current user wants to play, explicitly playing only
- * @param    {string}   context.id                           The id of the context of tracks
- * @param    {string}   context.name                         The name of the context, applicable with playlist, album, artist
- * @param    {string}   context.type                         The type of context, i.e. track, playlist, album, artist
- * @param    {string}   context.displayName                  The display name of the user, applicable with the "user" prefix
+ * @param    {object}   user                                     The user object of the current user playing a track
+ * @param    {string}   user.id                                  The id of the current user
+ * @param    {string}   user.displayName                         The display name of the current user
+ * @param    {string}   user.profileImage                        The profile image of the current user
+ * @param    {object}   track                                    The track object the current user is wanting to play
+ * @param    {string}   [track.id]                               The queue id of the track to play
+ * @param    {string}   track.trackID                            The Spotify id of the track to play
+ * @param    {string}   track.name                               The name of the track
+ * @param    {number}   track.durationMS                         The duration of the track in milliseconds
+ * @param    {object}   track.album                              The album the track is in
+ * @param    {string}   track.album.id                           The Spotify id of the album
+ * @param    {string}   track.album.name                         The name of the album
+ * @param    {string}   [track.album.small]                      64x64 size of the album artwork
+ * @param    {string}   [track.album.medium]                     320x320 size of the album artwork
+ * @param    {string}   [track.album.large]                      640x640 size of the album artwork
+ * @param    {object[]} track.artists                            The track artists
+ * @param    {string}   track.artists.id                         The Spotify id of the track artist
+ * @param    {string}   track.artists.name                       The name of the track artist
+ * @param    {object}   session                                  The session object the current user is currently in
+ * @param    {string}   session.id                               The id of the session the current user is in
+ * @param    {number}   session.totalPlayed                      The total amoun of played tracks in the session
+ * @param    {number}   [session.totalUsers]                     The total amount of listeners in the session, only if context change
+ * @param    {object}   [session.current]                        The currently playing track in the session
+ * @param    {string}   session.current.id                       The queue id of the current track, if available
+ * @param    {object}   session.current.track                    The currently playing track's Spotify information
+ * @param    {string}   session.current.track.id                 The Spotify track id of the current track
+ * @param    {string}   session.current.track.name               The name of the track
+ * @param    {number}   session.current.track.durationMS         The duration of the track in milliseconds
+ * @param    {number}   session.current.track.trackNumber        The track number of the track within the album
+ * @param    {object}   session.current.track.album              The album the track is in
+ * @param    {string}   session.current.track.album.id           The Spotify id of the album
+ * @param    {string}   session.current.track.album.name         The name of the album
+ * @param    {string}   [session.current.track.album.small]      64x64 size of the album artwork
+ * @param    {string}   [session.current.track.album.medium]     320x320 size of the album artwork
+ * @param    {string}   [session.current.track.album.large]      640x640 size of the album artwork
+ * @param    {object[]} session.current.track.album.artists      The album artists
+ * @param    {string}   session.current.track.album.artists.id   The Spotify id of the album artist
+ * @param    {string}   session.current.track.album.artists.name The name of the album artist
+ * @param    {object[]} session.current.track.artists            The track artists
+ * @param    {string}   session.current.track.artists.id         The Spotify id of the track artist
+ * @param    {string}   session.current.track.artists.name       The name of the track artist
+ * @param    {number}   session.current.totalLikes               The total amount of likes the current track has
+ * @param    {string}   session.current.userID                   The id of the user who queued the track
+ * @param    {string}   [session.current.nextQueueID]            The queue id of the next track from the current track
+ * @param    {string}   [session.current.nextTrackID]            The Spotify id of the next track from the current
+ * @param    {object}   [session.coords]                         The coordinates of the session the current user is in
+ * @param    {number}   session.lat                              The latitude of the gps coordinates
+ * @param    {number}   session.lon                              The longitude of the gps coordinates
+ * @param    {object}   [context]                                The context of the tracks the current user wants to play, explicitly playing only
+ * @param    {string}   context.id                               The id of the context of tracks
+ * @param    {string}   context.name                             The name of the context, applicable with playlist, album, artist
+ * @param    {string}   context.type                             The type of context, i.e. track, playlist, album, artist
+ * @param    {string}   context.displayName                      The display name of the user, applicable with the "user" prefix
  * @param    {number}   context.position
  * @param    {number}   context.total
  *
  * @return   {Promise}
- * @resolves {object}                                        The session object with the now playing track
- * @rejects  {Error}                                         The error which caused the play track failure
+ * @resolves {object}                                            The session object with the now playing track
+ * @rejects  {Error}                                             The error which caused the play track failure
  */
 export function playTrack(
   user: User,

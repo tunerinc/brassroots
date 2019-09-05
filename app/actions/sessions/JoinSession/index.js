@@ -83,15 +83,15 @@ type User = {|
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
- * @param    {object}  session                           The session the current user is trying to join
- * @param    {string}  session.id                        The id of the session
- * @param    {object}  [session.owner]                   The user object of the owner of the session the user is leaving
- * @param    {string}  session.owner.id
- * @param    {string}  session.owner.name
- * @param    {string}  session.owner.image               The 
- * @param    {string}  [session.current]                 The id of the current session if the user is leaving
- * @param    {number}  [session.total]                   The total amount of listeners in the session the user is leaving
- * @param    {object}  [session.track]                   The track object of the currently playing song in the session the user is leaving
+ * @param    {object}   session                          The session the current user is trying to join
+ * @param    {string}   session.id                       The id of the session
+ * @param    {object}   [session.owner]                  The user object of the owner of the session the user is leaving
+ * @param    {string}   session.owner.id                 The Spotify id of the owner of the session
+ * @param    {string}   session.owner.name               The name of the owner of the session
+ * @param    {string}   session.owner.image              The image of the owner of the session
+ * @param    {string}   [session.current]                The id of the current session if the user is leaving
+ * @param    {number}   [session.total]                  The total amount of listeners in the session the user is leaving
+ * @param    {object}   [session.track]                  The track object of the currently playing song in the session the user is leaving
  * @param    {string}   session.track.id                 The Spotify id of the track
  * @param    {string}   session.track.name               The name of the track
  * @param    {number}   session.track.trackNumber        The track number of the track within the album
@@ -108,14 +108,14 @@ type User = {|
  * @param    {object[]} session.track.artists            The artists on the track
  * @param    {string}   session.track.artists.id         The Spotify id of the track artist
  * @param    {string}   session.track.artists.name       The name of the track artist
- * @param    {object}  [session.coords]                  The coordinates object of the session the user is leaving
- * @param    {number}  session.coords.lat 
- * @param    {number}  session.coords.lon
- * @param    {object}  user                              The current user object
- * @param    {string}  user.id                           The id of the current user
- * @param    {string}  user.displayName                  The username of the current user
- * @param    {string}  user.profileImage                 The profile image URL of the current user
- * @param    {boolean} leaving                           Whether or not the current user is leaving a session to join a new one
+ * @param    {object}   [session.coords]                 The coordinates object of the session the user is leaving
+ * @param    {number}   session.coords.lat               The latitude value of the coordinates
+ * @param    {number}   session.coords.lon               The longitude value of the coordinates
+ * @param    {object}   user                             The current user object
+ * @param    {string}   user.id                          The id of the current user
+ * @param    {string}   user.displayName                 The username of the current user
+ * @param    {string}   user.profileImage                The profile image URL of the current user
+ * @param    {boolean}  leaving                          Whether or not the current user is leaving a session to join a new one
  *
  * @returns  {Promise}
  * @resolves {string}                                    The session id the current user has successfully joined

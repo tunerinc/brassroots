@@ -75,41 +75,44 @@ type Session = {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
- * @param    {object}   user
- * @param    {string}   user.id
- * @param    {string}   user.displayName
- * @param    {string}   user.profileImage
- * @param    {object}   session
- * @param    {string}   session.id
- * @param    {number}   session.totalPlayed
- * @param    {object}   [session.coords]
- * @param    {number}   session.coords.lat
- * @param    {number}   session.coords.lon
- * @param    {object}   session.current
- * @param    {string}   session.current.id
- * @param    {string}   session.current.userID
- * @param    {number}   session.current.totalLikes
- * @param    {string}   session.current.prevQueueID
- * @param    {string}   session.current.prevTrackID
- * @param    {string}   session.current.nextQueueID
- * @param    {string}   session.current.nextTrackID
- * @param    {string}   session.current.track.id
- * @param    {string}   session.current.track.name
- * @param    {number}   session.current.track.trackNumber
- * @param    {number}   session.current.track.durationMS
- * @param    {object}   session.current.track.album
- * @param    {string}   session.current.track.album.id
- * @param    {string}   session.current.track.album.name
- * @param    {string}   [session.current.track.album.small]
- * @param    {string}   [session.current.track.album.medium]
- * @param    {string}   [session.current.track.album.large]
- * @param    {object[]} session.current.track.artists
- * @param    {string}   session.current.track.artists.id
- * @param    {string}   session.current.track.artists.name
+ * @param    {object}   user                                     The current user
+ * @param    {string}   user.id                                  The Spotify id of the current user
+ * @param    {string}   user.displayName                         The display name of the current user
+ * @param    {string}   user.profileImage                        The profile image of the current user
+ * @param    {object}   session                                  The session the current user is in
+ * @param    {string}   session.id                               The Brassroots id of the current session
+ * @param    {number}   session.totalPlayed                      The total amount of tracks that have been played
+ * @param    {object}   [session.coords]                         The coordinates of the session
+ * @param    {number}   session.coords.lat                       The latitude value of the session
+ * @param    {number}   session.coords.lon                       The longitude value of the session
+ * @param    {object}   session.current                          The queue track that is currently playing
+ * @param    {string}   session.current.id                       The Brassroots id of the current track
+ * @param    {string}   session.current.userID                   The Spotify id of the user who added the current track
+ * @param    {number}   session.current.totalLikes               The total amount of likes on the current track
+ * @param    {string}   session.current.prevQueueID              The Brassroots id of the previous track to play
+ * @param    {string}   session.current.prevTrackID              The Spotify id of the previous track to play
+ * @param    {string}   session.current.nextQueueID              The Brassroots id of the next track to play
+ * @param    {string}   session.current.nextTrackID              The Spotify id fo the next track to play
+ * @param    {string}   session.current.track.id                 The Spotify id of the current track
+ * @param    {string}   session.current.track.name               The name of the track
+ * @param    {number}   session.current.track.trackNumber        The track number for the track inside the album
+ * @param    {number}   session.current.track.durationMS         The duration of the track in milliseconds
+ * @param    {object}   session.current.track.album              The album the track is in
+ * @param    {string}   session.current.track.album.id           The Spotify id of the track's album
+ * @param    {string}   session.current.track.album.name         The name of the album
+ * @param    {string}   [session.current.track.album.small]      64x64 size of the album's artwork
+ * @param    {string}   [session.current.track.album.medium]     320x320 size of the album's artwork
+ * @param    {string}   [session.current.track.album.large]      640x640 size of the album's artwork
+ * @param    {object[]} session.current.track.album.artists      The album artists
+ * @param    {string}   session.current.track.album.artists.id   The Spotfy id of the album artist
+ * @param    {string}   session.current.track.album.artists.name The name of the album artists
+ * @param    {object[]} session.current.track.artists            The track artists
+ * @param    {string}   session.current.track.artists.id         The Spotify id of the track artist
+ * @param    {string}   session.current.track.artists.name       The name of the track artist
  *
  * @returns  {Promise}
- * @resolves {object}                     The now playing session with the previous track playing
- * @reject   {Error}                      The error which caused the previous track failure
+ * @resolves {object}                                            The now playing session with the previous track playing
+ * @reject   {Error}                                             The error which caused the previous track failure
  */
 export function previousTrack(
   user: User,

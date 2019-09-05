@@ -49,13 +49,11 @@ export function getMostPlayedTracks(
         dispatch(actions.success());
       } else {
         const spotifyTracks = await Spotify.getTracks(userTrackDocs.docs.map(doc => doc.id), {});
-
         const music = addMusicItems(spotifyTracks.tracks);
         const mostPlayed = userTrackDocs.docs.map(doc => doc.id)
           .sort((a, b) => {
             const countA: number = typeof a === 'number' ? userTrackDocs.docs[a].data().plays : 0;
             const countB: number = typeof b === 'number' ? userTrackDocs.docs[b].data().plays : 0;
-
             return countA > countB ? -1 : countA < countB ? 1 : 0;
           });
 

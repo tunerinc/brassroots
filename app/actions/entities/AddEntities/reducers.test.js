@@ -31,10 +31,17 @@ describe('add entities reducer', () => {
     const track = {
       artists,
       id: 'foo',
-      albumID: 'foo',
       name: 'foo',
       trackNumber: 1,
       durationMS: 0,
+      album: {
+        artists,
+        id: 'foo',
+        name: 'foo bar',
+        small: 'foo',
+        medium: 'foo',
+        large: 'foo',
+      },
     };
 
     const artist = {

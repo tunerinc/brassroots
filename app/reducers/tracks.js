@@ -11,6 +11,7 @@ import * as types from "../actions/tracks/types";
 import * as entitiesTypes from "../actions/entities/types";
 import {type Firebase} from '../utils/firebaseTypes';
 import {type SpotifyError} from '../utils/spotifyAPI/types';
+import {type Album} from './albums';
 import {type Action as AlbumAction} from './albums';
 import {type Action as ArtistAction} from './artists';
 import {type Action as UserAction} from './users';
@@ -33,7 +34,7 @@ type Track = {
   +lastUpdated?: string,
   +id?: ?string,
   +name?: ?string,
-  +albumID?: ?string,
+  +album?: ?Album,
   +artists?: Array<TrackArtist>,
   +trackNumber?: number,
   +durationMS?: number,
@@ -85,22 +86,28 @@ export type {
  * @alias singleTrackState
  * @type {object}
  * 
- * @property {string}   id=null       The Spotify id of the track
- * @property {string}   name=null     The name of the track
- * @property {string}   albumID=null  The Spotify id of the track's album
- * @property {object[]} artists       The track artists
- * @property {string}   artists.id    The Spotify id of the track artist
- * @property {string}   artists.name  The name of the track artist
- * @property {number}   trackNumber=0 The position of the track within the album
- * @property {number}   durationMS=0  The duration of the track in milliseconds
- * @property {number}   totalPlays=0  The total amount of plays the track has
- * @property {number}   userPlays=0   The amount of plays the current user has on the track
- * @property {boolean}  saved=false   Whether the track is saved in the current user's library
+ * @property {string}   id=null           The Spotify id of the track
+ * @property {string}   name=null         The name of the track
+ * @property {object}   album=null        The object for the track's album
+ * @property {string}   album.id=null     The Spotify id of the album
+ * @property {string}   album.name=null   The name of the album
+ * @property {string}   album.small=null  64x64 size image url for album's artwork
+ * @property {string}   album.medium=null 300x300 size image url for album's artwork
+ * @property {string}   album.large-null  640x640 size image url for album's artwork
+ * @property {string[]} artists           The Spotify ids of the album's artists
+ * @property {object[]} artists           The track artists
+ * @property {string}   artists.id        The Spotify id of the track artist
+ * @property {string}   artists.name      The name of the track artist
+ * @property {number}   trackNumber=0     The position of the track within the album
+ * @property {number}   durationMS=0      The duration of the track in milliseconds
+ * @property {number}   totalPlays=0      The total amount of plays the track has
+ * @property {number}   userPlays=0       The amount of plays the current user has on the track
+ * @property {boolean}  saved=false       Whether the track is saved in the current user's library
  */
 const singleState: Track = {
   id: null,
   name: null,
-  albumID: null,
+  album: null,
   artists: [],
   trackNumber: 0,
   durationMS: 0,
