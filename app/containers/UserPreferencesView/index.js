@@ -15,47 +15,48 @@ class UserPreferencesView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onScroll = this.onScroll.bind(this);
+    this.state = {
+      shadowOpacity: new Animated.Value(0),
+    };
 
-    this.shadowOpacity = new Animated.Value(0);
+    this.onScroll = this.onScroll.bind(this);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
+    const {shadowOpacity} = this.state;
     const {settings: {preference}} = this.props;
+    const opacity = (setting, option) => setting === option ? 1 : 0;
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={this.navBack}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>Preferences</Text>
             <View style={styles.rightIcon}></View>
           </View>
         </Animated.View>
-        <ScrollView
-          style={styles.preferencesWrap}
-          onScroll={this.onScroll}
-          scrollEventThrottle={16}
-        >
+        <ScrollView style={styles.wrap} onScroll={this.onScroll} scrollEventThrottle={16}>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionHeaderText}>PLAYLISTS I CREATE ARE AUTOMATICALLY</Text>
@@ -64,11 +65,10 @@ class UserPreferencesView extends React.Component {
               <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>Hidden</Text>
                 <Ionicons
-                  name='md-checkmark'
-                  color='#2b6dc0'
+                  name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: preference.playlist === 'hidden' ? 1 : 0},
+                    {opacity: opacity(preference.playlist, 'hidden')},
                   ]}
                 />
               </TouchableOpacity>
@@ -77,11 +77,10 @@ class UserPreferencesView extends React.Component {
               <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>VIP</Text>
                 <Ionicons
-                  name='md-checkmark'
-                  color='#2b6dc0'
+                  name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: preference.playlist === 'vip' ? 1 : 0},
+                    {opacity: opacity(preference.playlist, 'vip')},
                   ]}
                 />
               </TouchableOpacity>
@@ -90,11 +89,10 @@ class UserPreferencesView extends React.Component {
               <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>Limitless</Text>
                 <Ionicons
-                  name='md-checkmark'
-                  color='#2b6dc0'
+                  name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: preference.playlist === 'limitless' ? 1 : 0},
+                    {opacity: opacity(preference.playlist, 'limitless')},
                   ]}
                 />
               </TouchableOpacity>
@@ -108,9 +106,8 @@ class UserPreferencesView extends React.Component {
               <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>DJ mode</Text>
                 <Ionicons
-                  name='md-checkmark'
-                  color='#2b6dc0'
-                  style={[styles.optionCheck, {opacity: preference.session === 'dj' ? 1 : 0}]}
+                  name='md-checkmark'                  
+                  style={[styles.optionCheck, {opacity: opacity(preference.session, 'dj')}]}
                 />
               </TouchableOpacity>
             </View>
@@ -118,9 +115,8 @@ class UserPreferencesView extends React.Component {
               <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>Radio mode</Text>
                 <Ionicons
-                  name='md-checkmark'
-                  color='#2b6dc0'
-                  style={[styles.optionCheck, {opacity: preference.session === 'radio' ? 1 : 0}]}
+                  name='md-checkmark'                  
+                  style={[styles.optionCheck, {opacity: opacity(preference.session,  'radio')}]}
                 />
               </TouchableOpacity>
             </View>
@@ -128,9 +124,8 @@ class UserPreferencesView extends React.Component {
               <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>Party mode</Text>
                 <Ionicons
-                  name='md-checkmark'
-                  color='#2b6dc0'
-                  style={[styles.optionCheck, {opacity: preference.session === 'party' ? 1 : 0}]}
+                  name='md-checkmark'                  
+                  style={[styles.optionCheck, {opacity: opacity(preference.session, 'party')}]}
                 />
               </TouchableOpacity>
             </View>
@@ -143,11 +138,10 @@ class UserPreferencesView extends React.Component {
               <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>following</Text>
                 <Ionicons
-                  name='md-checkmark'
-                  color='#2b6dc0'
+                  name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: preference.message === 'following' ? 1 : 0},
+                    {opacity: opacity(preference.message, 'following')},
                   ]}
                 />
               </TouchableOpacity>
@@ -156,11 +150,10 @@ class UserPreferencesView extends React.Component {
               <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>anyone</Text>
                 <Ionicons
-                  name='md-checkmark'
-                  color='#2b6dc0'
+                  name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: preference.message === 'anyone' ? 1 : 0},
+                    {opacity: opacity(preference.message, 'anyone')},
                   ]}
                 />
               </TouchableOpacity>

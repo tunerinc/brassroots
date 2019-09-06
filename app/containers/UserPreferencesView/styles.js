@@ -19,7 +19,7 @@ interface Styles {
   leftIcon: TextStyleProp,
   title: TextStyleProp,
   rightIcon: ViewStyleProp,
-  preferencesWrap: ViewStyleProp,
+  wrap: ViewStyleProp,
   section: ViewStyleProp,
   sectionHeader: ViewStyleProp,
   sectionHeaderText: TextStyleProp,
@@ -58,6 +58,7 @@ const styles: Styles = StyleSheet.create({
     fontSize: 45,
     alignSelf: 'center',
     backgroundColor: 'transparent',
+    color: '#fefefe',
   },
   title: {
     flex: 6,
@@ -74,7 +75,7 @@ const styles: Styles = StyleSheet.create({
     flex: 2,
     alignSelf: 'center',
   },
-  preferencesWrap: {
+  wrap: {
     flex: 1,
     zIndex: -1,
     backgroundColor: 'transparent',
@@ -115,6 +116,7 @@ const styles: Styles = StyleSheet.create({
   },
   optionCheck: {
     fontSize: 25,
+    color: '#2b6dc0',
   },
 });
 
