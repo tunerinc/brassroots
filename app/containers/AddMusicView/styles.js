@@ -31,6 +31,7 @@ const styles: Styles = StyleSheet.create({
   nav: {},
   leftIcon: {
     fontSize: 45,
+    color: '#fefefe',
   },
   title: {},
   rightIcon: {},
