@@ -50,12 +50,7 @@ class UserSettingsView extends React.Component {
       <View style={styles.container}>
         <View style={styles.shadow}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Settings</Text>
             <View style={styles.rightIcon}></View>
           </View>

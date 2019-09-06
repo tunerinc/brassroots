@@ -23,62 +23,55 @@ class TermsServiceView extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      shadowOpacity: new Animated.Value(0),
+    };
+
     this.onScroll = this.onScroll.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
     const {getTerms, legal: {terms: {text}}} = this.props;
-    
-    if (text === '') {
-      getTerms();
-    }
+    if (text === '') getTerms();
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
+    const {shadowOpacity} = this.state;
+
     if (y > 0) {
-      if (this.shadowOpacity != 0.9) {
-        Animated.timing(this.shadowOpacity, {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
           toValue: 0.9,
           duration: 75,
           easing: Easing.linear,
         }).start();
       };
     } else {
-      Animated.timing(this.shadowOpacity, {
+      Animated.timing(shadowOpacity, {
         toValue: 0,
         duration: 75,
         easing: Easing.linear,
-      }).start();
+      }).start()
     }
   }
 
   handleRefresh() {
-    const {getTerms, legal: {terms: {fetchingTerms, refreshingTerms}}} = this.props;
-
-    if (fetchingTerms || refreshingTerms) return;
-
-    getTerms(true);
+    const {getTerms, legal: {terms: {fetching, refreshing}}} = this.props;
+    if (!fetching && !refreshing) getTerms(true);
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
-    const {legal: {terms: {text, fetchingTerms, refreshingTerms, error}}} = this.props;
-    const emptyTerms = fetchingTerms && !refreshingTerms && text === '';
-    const termsExists = (!fetchingTerms || refreshingTerms) && (text !== '' || error);
+    const {shadowOpacity} = this.state;
+    const {legal: {terms: {text, fetching, refreshing, error}}} = this.props;
+    const emptyTerms = fetching && !refreshing && text === '';
+    const termsExists = (!fetching || refreshing) && (text !== '' || error);
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Icon
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Icon name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Terms of Service</Text>
             <View style={styles.rightIcon}></View>
           </View>
@@ -101,7 +94,7 @@ class TermsServiceView extends React.Component {
             onScroll={this.onScroll}
             scrollEventThrottle={16}
             refreshControl={
-              <RefreshControl refreshing={refreshingTerms} onRefresh={this.handleRefresh} />
+              <RefreshControl refreshing={refreshing} onRefresh={this.handleRefresh} />
             }
           >
             <View style={styles.scrollWrap}>
