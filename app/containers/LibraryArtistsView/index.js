@@ -82,7 +82,7 @@ class LibraryArtistsView extends React.Component {
     const {shadowOpacity} = this.state;
     const {
       getArtists,
-      artists: {userArtists, fetchingArtists, refreshingArtists, error: artistError},
+      artists: {userArtists, fetching, refreshingArtists, error: artistError},
     } = this.props;
 
     return (

@@ -21,15 +21,19 @@ import styles from './styles';
 import PlaylistCard from '../../components/PlaylistCard';
 import LoadingPlaylist from '../../components/LoadingPlaylist';
 
-// Icons
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
 // Playlists Action Creators
 import {getPlaylists} from '../../actions/playlists/GetPlaylists';
+
+// Icons
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class LibraryPlaylistsView extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      shadowOpacity: new Animated.Value(0),
+    };
     
     this.onScroll = this.onScroll.bind(this);
     this.renderPlaylist = this.renderPlaylist.bind(this);
@@ -37,17 +41,12 @@ class LibraryPlaylistsView extends React.Component {
     this.onEndReached = this.onEndReached.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
 
-    this.shadowOpacity = new Animated.Value(0);
-
     this._onEndReached = debounce(this.onEndReached, 0);
   }
 
   componentDidMount() {
     const {getPlaylists, playlists: {userPlaylists}, users: {currentUserID}} = this.props;
-
-    if (!userPlaylists.length) {
-      getPlaylists(currentUserID, true, 0);
-    }
+    if (!userPlaylists.length) getPlaylists(currentUserID, true, 0);
   }
 
   navToPlaylist = (dest, playlistID) => () => {
@@ -64,16 +63,18 @@ class LibraryPlaylistsView extends React.Component {
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
+    const {shadowOpacity} = this.state;
+
     if (y > 0) {
-      if (this.shadowOpacity !== 0.9) {
-        Animated.timing(this.shadowOpacity, {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
           toValue: 0.9,
           duration: 75,
           easing: Easing.linear,
         }).start();
       };
     } else {
-      Animated.timing(this.shadowOpacity, {
+      Animated.timing(shadowOpacity, {
         toValue: 0,
         duration: 75,
         easing: Easing.linear,
@@ -83,14 +84,14 @@ class LibraryPlaylistsView extends React.Component {
 
   renderPlaylist({item}) {
     const {
-      playlists: {playlistsByID},
-      users: {currentUserID, usersByID},
+      entities: {playlists, users},
+      users: {currentUserID},
     } = this.props;
-    const {medium, name, members, mode, ownerID} = playlistsByID[item];
+    const {medium, name, members, mode, ownerID} = playlists.byID[item];
     const ownerName = ownerID === 'spotify'
       ? 'Spotify'
       : ownerID !== currentUserID
-      ? usersByID[ownerID].displayName
+      ? users.byID[ownerID].displayName
       : null;
 
     return (
@@ -108,12 +109,12 @@ class LibraryPlaylistsView extends React.Component {
 
   renderFooter() {
     const {
-      playlists: {fetchingPlaylists, refreshingPlaylists, userPlaylists, totalUserPlaylists},
+      playlists: {fetching, refreshing, userPlaylists, totalUserPlaylists},
     } = this.props;
 
     if (
-      !fetchingPlaylists
-      || refreshingPlaylists
+      !fetching.includes('playlists')
+      || refreshing
       || !userPlaylists.length
     ) return null;
 
@@ -139,12 +140,12 @@ class LibraryPlaylistsView extends React.Component {
   onEndReached = () => {
     const {
       getPlaylists,
-      playlists: {fetchingPlaylists, userPlaylists, totalUserPlaylists},
+      playlists: {fetching, userPlaylists, totalUserPlaylists},
       users: {currentUserID},
     } = this.props;
 
     if (
-      fetchingPlaylists
+      fetching.includes('playlists')
       || !userPlaylists.length
       || userPlaylists.length === totalUserPlaylists
     ) return;
@@ -155,31 +156,22 @@ class LibraryPlaylistsView extends React.Component {
   handleRefresh() {
     const {
       getPlaylists,
-      playlists: {refreshingPlaylists},
+      playlists: {refreshing},
       users: {currentUserID},
     } = this.props;
 
-    if (refreshingPlaylists) return;
-
-    getPlaylists(currentUserID, true, 0);
+    if (!refreshing) getPlaylists(currentUserID, true, 0);
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
-    const {
-      playlists: {userPlaylists, refreshingPlaylists, fetchingPlaylists, error: playlistError},
-    } = this.props;
+    const {shadowOpacity} = this.state;
+    const {playlists: {userPlaylists, refreshing, fetching, error: playlistError}} = this.props;
 
     return (
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Playlists</Text>
             <View style={styles.rightIcon}></View>
           </View>
@@ -199,7 +191,7 @@ class LibraryPlaylistsView extends React.Component {
             ListHeaderComponent={this.renderCreateButton}
             ListFooterComponent={this.renderFooter}
             ListEmptyComponent={<Text>Nothing to show</Text>}
-            refreshing={refreshingPlaylists}
+            refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.5}
@@ -207,7 +199,9 @@ class LibraryPlaylistsView extends React.Component {
         }
         {(userPlaylists.length === 0 || !userPlaylists.length) &&
           <View style={styles.playlistsWrap}>
-            {fetchingPlaylists &&
+            {(!fetching.includes('playlists') && !playlistError) && <Text>Nothing to show</Text>}
+            {(!fetching.includes('playlists') && playlistError) && <Text>There was an error.</Text>}
+            {fetching.includes('playlists') &&
               <View>
                 {this.renderCreateButton()}
                 <LoadingPlaylist />
@@ -218,8 +212,6 @@ class LibraryPlaylistsView extends React.Component {
                 <LoadingPlaylist />
               </View>
             }
-            {(!fetchingPlaylists && !playlistError) && <Text>Nothing to show</Text>}
-            {(!fetchingPlaylists && playlistError) && <Text>There was an error.</Text>}
           </View>
         }
       </View>
@@ -228,22 +220,22 @@ class LibraryPlaylistsView extends React.Component {
 }
 
 LibraryPlaylistsView.propTypes = {
+  entities: PropTypes.object.isRequired,
   getPlaylists: PropTypes.func.isRequired,
   playlists: PropTypes.object.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({playlists, users}) {
+function mapStateToProps({entities, playlists, users}) {
   return {
+    entities,
     playlists,
     users,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    getPlaylists,
-  }, dispatch);
+  return bindActionCreators({getPlaylists}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LibraryPlaylistsView);
