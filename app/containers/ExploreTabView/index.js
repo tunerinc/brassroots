@@ -63,12 +63,12 @@ class ExploreTabView extends React.Component {
   componentDidMount() {
     const {
       getTrendingSessions,
-      sessions: {explore: {trendingLastUpdated, trendingSessions}},
+      sessions: {explore: {trendingLastUpdated, trendingIDs}},
     } = this.props;
     const lastUpdated = moment(trendingLastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a');
     const timeDiff = moment().diff(lastUpdated, 'minutes', true);
 
-    if (timeDiff >= 1 || trendingSessions.length === 0) {
+    if (timeDiff >= 1 || trendingIDs.length === 0) {
       getTrendingSessions();
     }
   }
@@ -104,15 +104,14 @@ class ExploreTabView extends React.Component {
   renderSessionModal() {
     const {selectedSession} = this.state;
     const {
-      sessions: {sessionsByID},
-      users: {currentUserID, usersByID},
+      entities: {sessions, users},
+      users: {currentUserID},
     } = this.props;
-    const {following} = usersByID[currentUserID];
-    const sessionExists = typeof sessionsByID[selectedSession] === 'object';
+    const {following} = users.byID[currentUserID];
 
-    if (!sessionExists) return <View></View>;
+    if (!sessions.allIDs.includes(selectedSession)) return <View></View>;
 
-    const sessionOwner = usersByID[sessionsByID[selectedSession].ownerID] || null;
+    const sessionOwner = users.byID[sessions.byID[selectedSession].ownerID] || null;
 
     return (
       <SessionModal
@@ -127,43 +126,25 @@ class ExploreTabView extends React.Component {
   joinSession = sessionID => () => {
     const {
       joinSession,
-      albums: {albumsByID},
+      entities: {sessions, tracks, users},
       player: {currentTrackID},
       queue: {unsubscribe: queueUnsubscribe},
-      sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      sessions: {currentSessionID, infoUnsubscribe},
+      users: {currentUserID},
     } = this.props;
     const inSession = typeof currentSessionID === 'string';
-    const track = inSession ? tracksByID[currentTrackID] : null;
-    const album = inSession ? albumsByID[track.albumID] : null;
-    const owner = inSession ? usersByID[sessionsByID[currentSessionID].ownerID] : null;
-    const user = usersByID[currentUserID];
+    const track = inSession ? tracks.byID[currentTrackID] : null;
+    const owner = inSession ? users.byID[sessions.byID[currentSessionID].ownerID] : null;
+    const user = users.byID[currentUserID];
     const session = {
       queueUnsubscribe,
       infoUnsubscribe,
+      track,
       chatUnsubscribe: inSession ? () => console.log('chat unsub') : null,
       id: sessionID,
       owner: inSession ? {id: owner.id, name: owner.displayName, image: owner.profileImage} : null,
       current: inSession ? currentSessionID : null,
       total: inSession ? sessionsByID[currentSessionID].totalListeners : null,
-      track: inSession
-        ? {
-          id: track.id,
-          name: track.name,
-          trackNumber: track.trackNumber,
-          durationMS: track.durationMS,
-          artists: track.artists,
-          album: {
-            id: album.id,
-            name: album.name,
-            small: album.small,
-            medium: album.medium,
-            large: album.large,
-            artists: album.artists,
-          },
-        }
-        : null,
     };
 
     if (currentSessionID === sessionID) {
@@ -178,19 +159,13 @@ class ExploreTabView extends React.Component {
   }
 
   renderSession({item}) {
-    const {
-      albums: {albumsByID},
-      sessions: {sessionsByID},
-      tracks: {tracksByID},
-      users: {usersByID},
-    } = this.props;
-    const session = sessionsByID[item];
+    const {entities: {sessions, tracks, users}} = this.props;
+    const session = sessions.byID[item];
 
     if (!session) return <View></View>;
 
-    const track = tracksByID[session.currentTrackID];
-    const album = albumsByID[track.albumID];
-    const owner = usersByID[session.ownerID];
+    const track = tracks.byID[session.currentTrackID];
+    const owner = users.byID[session.ownerID];
 
     let listenerTotal = 0;
     let formattedDistance = '';
@@ -232,7 +207,7 @@ class ExploreTabView extends React.Component {
         profileImage={owner.profileImage}
         name={track.name}
         artists={track.artists.map(a => a.name).join(', ')}
-        album={album.name}
+        album={track.album.name}
         listeners={listenerTotal}
         distance={formattedDistance}
       />
@@ -242,33 +217,28 @@ class ExploreTabView extends React.Component {
   paginate() {
     const {
       paginateTrendingSessions,
+      entities: {sessions},
       sessions: {
-        sessionsByID,
-        paginatingSessions,
-        explore: {trendingCanPaginate, trendingSessions},
+        paginating,
+        explore: {trendingCanPaginate, trendingIDs},
       },
     } = this.props;
 
-    if (trendingSessions.length !== 0 && trendingCanPaginate && !paginatingSessions) {
-      const sessionID = trendingSessions[trendingSessions.length - 1];
-      const cursor = sessionsByID[sessionID].totalListeners;
+    if (trendingIDs.length !== 0 && trendingCanPaginate && !paginating) {
+      const sessionID = trendingIDs[trendingIDs.length - 1];
+      const {totalListeners: cursor} = sessions.byID[sessionID];
       paginateTrendingSessions(cursor);
     }
   }
 
   renderFooter() {
-    const {
-      sessions: {
-        paginatingSessions,
-        explore: {trendingCanPaginate},
-      },
-    } = this.props;
+    const {sessions: {paginating, explore: {trendingCanPaginate}}} = this.props;
 
-    if (!paginatingSessions || !trendingCanPaginate) return null;
+    if (!paginating || !trendingCanPaginate) return null;
 
     return (
       <View style={styles.footer}>
-        {(paginatingSessions && trendingCanPaginate) &&
+        {(paginating && trendingCanPaginate) &&
           <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
         }
       </View>
@@ -276,12 +246,8 @@ class ExploreTabView extends React.Component {
   }
 
   refresh() {
-    const {
-      getTrendingSessions,
-      sessions: {refreshingSessions},
-    } = this.props;
-
-    if (!refreshingSessions) getTrendingSessions();
+    const {getTrendingSessions, sessions: {refreshing}} = this.props;
+    if (!refreshing) getTrendingSessions();
   }
 
   render() {
@@ -289,10 +255,10 @@ class ExploreTabView extends React.Component {
     const {
       users: {error: userError},
       sessions: {
-        fetchingSessions,
-        refreshingSessions,
+        fetching,
+        refreshing,
         error: sessionError,
-        explore: {trendingSessions},
+        explore: {trendingIDs},
       },
     } = this.props;
 
@@ -305,12 +271,12 @@ class ExploreTabView extends React.Component {
             <View style={styles.rightIcon} />
           </View>
         </Animated.View>
-        {trendingSessions.length !== 0 &&
+        {trendingIDs.length !== 0 &&
           <VirtualizedList
             style={styles.scrollContainer}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
-            data={trendingSessions}
+            data={trendingIDs}
             renderItem={this.renderSession}
             keyExtractor={item => item}
             ListFooterComponent={this.renderFooter}
@@ -321,23 +287,23 @@ class ExploreTabView extends React.Component {
             onEndReached={this.paginate}
             onEndReachedThreshold={0.7}
             onRefresh={this.refresh}
-            refreshing={refreshingSessions}
+            refreshing={refreshing}
           />
         }
-        {(trendingSessions.length === 0 || !trendingSessions.length) &&
+        {(trendingIDs.length === 0 || !trendingIDs.length) &&
           <ScrollView
             style={styles.scrollContainer}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
             refreshControl={
               <RefreshControl
-                refreshing={refreshingSessions}
+                refreshing={refreshing}
                 onRefresh={this.refresh}
               />
             }
           >
             <View style={styles.scrollWrap}>
-              {fetchingSessions &&
+              {fetching.includes('trending') &&
                 <View>
                   <LoadingSession />
                   <LoadingSession />
@@ -345,7 +311,7 @@ class ExploreTabView extends React.Component {
                   <LoadingSession />
                 </View>
               }
-              {!fetchingSessions &&
+              {!fetching.includes('trending') &&
                 <View style={styles.inner}>
                   {sessionError === 'Unauthorized' && <Text>Allow permission to access location</Text>}
                   {(!userError || !sessionError) && <Text>Nothing to show</Text>}
@@ -380,8 +346,7 @@ class ExploreTabView extends React.Component {
 }
 
 ExploreTabView.propTypes = {
-  albums: PropTypes.object,
-  artists: PropTypes.object,
+  entities: PropTypes.object.isRequired,
   getFollowingSessions: PropTypes.func.isRequired,
   getNearbySessions: PropTypes.func.isRequired,
   getTrendingSessions: PropTypes.func.isRequired,
@@ -396,10 +361,9 @@ ExploreTabView.propTypes = {
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, player, queue, sessions, tracks, users}) {
+function mapStateToProps({entities, player, queue, sessions, tracks, users}) {
   return {
-    albums,
-    artists,
+    entities,
     player,
     queue,
     sessions,
