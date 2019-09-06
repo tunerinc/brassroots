@@ -29,17 +29,14 @@ class LibraryArtistsView extends React.Component {
     this.onScroll = this.onScroll.bind(this);
     this.renderArtist = this.renderArtist.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
-    this.handleRefresh = this.handleRefresh.bind(this);
   }
 
   componentDidMount() {
-    const {getArtists, artists: {userArtists, fetchingArtists}} = this.props;
-    if (!userArtists.length && !fetchingArtists) getArtists();
+    const {getArtists, artists: {userArtists, fetching}} = this.props;
+    if (!userArtists.length && !fetching.includes('artists')) getArtists();
   }
 
-  navToArtist = artistID => () => {
-    Actions.librarySingleArtist({artistToView: artistID});
-  }
+  navToArtist = artistID => () => Actions.librarySingleArtist({artistToView: artistID});
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
     const {shadowOpacity} = this.state;
@@ -62,8 +59,8 @@ class LibraryArtistsView extends React.Component {
   }
 
   renderArtist({item}) {
-    const {artists: {artistsByID}} = this.props;
-    const {medium, name, userTracks} = artistsByID[item];
+    const {entities: {artists}} = this.props;
+    const {medium, name, userTracks} = artists.byID[item];
 
     return (
       <ArtistCard
@@ -77,21 +74,14 @@ class LibraryArtistsView extends React.Component {
   }
 
   renderFooter() {
-    const {artists: {fetchingArtists}} = this.props;
-
-    if (!fetchingArtists) return null;
-
-    return <LoadingArtist />;
-  }
-
-  handleRefresh() {
-    const {getArtists} = this.props;
-    getArtists();
+    const {artists: {fetching}} = this.props;
+    if (fetching.includes('artists')) return <LoadingArtist />;
   }
 
   render() {
     const {shadowOpacity} = this.state;
     const {
+      getArtists,
       artists: {userArtists, fetchingArtists, refreshingArtists, error: artistError},
     } = this.props;
 
@@ -99,12 +89,7 @@ class LibraryArtistsView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Artists</Text>
             <View style={styles.rightIcon}></View>
           </View>
@@ -125,14 +110,16 @@ class LibraryArtistsView extends React.Component {
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={<Text>Nothing to show</Text>}
-            refreshing={refreshingArtists}
-            onRefresh={this.handleRefresh}
+            refreshing={refreshing}
+            onRefresh={getArtists}
           />
         }
         {(userArtists.length === 0 || !userArtists.length) &&
           <View style={styles.scrollContainer}>
             <View style={styles.scrollWrap}>
-              {fetchingArtists &&
+              {(!fetching.includes('artists') && !artistError) && <Text>Nothing to show</Text>}
+              {(!fetching.includes('artists') && artistError) && <Text>There was an error.</Text>}
+              {fetching.includes('artists') &&
                 <View>
                   <LoadingArtist />
                   <LoadingArtist />
@@ -143,8 +130,6 @@ class LibraryArtistsView extends React.Component {
                   <LoadingArtist />
                 </View>
               }
-              {(!fetchingArtists && !artistError) && <Text>Nothing to show</Text>}
-              {(!fetchingArtists && artistError) && <Text>There was an error.</Text>}
             </View>
           </View>
         }
@@ -155,21 +140,19 @@ class LibraryArtistsView extends React.Component {
 
 LibraryArtistsView.propTypes = {
   artists: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   getArtists: PropTypes.func.isRequired,
-  users: PropTypes.object.isRequired,
 }
 
-function mapStateToProps({artists, users}) {
+function mapStateToProps({artists, entities}) {
   return {
     artists,
-    users,
+    entities,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    getArtists,
-  }, dispatch);
+  return bindActionCreators({getArtists}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LibraryArtistsView);
