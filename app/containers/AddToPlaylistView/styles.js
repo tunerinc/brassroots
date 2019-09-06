@@ -53,6 +53,7 @@ const styles: Styles = StyleSheet.create({
     flex: 2,
     height: 45,
     backgroundColor: 'transparent',
+    color: '#fefefe',
   },
   title: {
     flex: 6,
