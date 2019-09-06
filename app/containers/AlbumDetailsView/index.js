@@ -43,13 +43,12 @@ class AlbumDetailsView extends React.Component {
       getAlbumTopListeners,
       getAlbumTopPlaylists,
       getAlbumTopTracks,
-      albums: {albumsByID},
-      artists: {artistsByID},
+      entities: {albums, artists},
     } = this.props;
-    const {artists, topListeners, topPlaylists, topTracks} = albumsByID[albumToView];
+    const {artists, topListeners, topPlaylists, topTracks} = albums.byID[albumToView];
     const artistsToFetch = artists
       .map(a => {
-        const {small, medium, large} = artistsByID[a.id];
+        const {small, medium, large} = artists.byID[a.id];
         const fetchSmall = typeof small !== 'string' || small === '';
         const fetchMedium = typeof medium !== 'string' || medium === '';
         const fetchLarge = typeof large !== 'string' || large === '';
@@ -76,32 +75,32 @@ class AlbumDetailsView extends React.Component {
 
   renderPerson = (type) => ({item, index}) => {
     const {
-      artists: {artistsByID, fetchingImages},
-      users: {usersByID},
+      artists: {fetching},
+      entities: {artists, users},
     } = this.props;
 
     if (
-      (type === 'artist' && !artistsByID[item.id])
-      || (type === 'user' && !usersByID[item])
+      (type === 'artist' && !artists.byID[item.id])
+      || (type === 'user' && !users.byID[item])
     ) return <View></View>;
 
     const image = type === 'artist'
-      ? artistsByID[item.id].medium
+      ? artists.byID[item.id].medium
       : type === 'user'
-      ? usersByID[item].profileImage
+      ? users.byID[item].profileImage
       : '';
 
     const name = type === 'artist'
-    ? artistsByID[item.id].name
+    ? artists.byID[item.id].name
     : type === 'user'
-    ? usersByID[item].displayName
+    ? users.byID[item].displayName
     : '';
 
     return (
       <RoundPerson
         onPress={() => console.log(`${type} pressed`)}
         marginLeft={index === 0 ? 20 : 0}
-        loading={type === 'artist' ? fetchingImages : false}
+        loading={type === 'artist' ? fetching.includes('images') : false}
         image={image}
         text={name}
       />
@@ -113,12 +112,8 @@ class AlbumDetailsView extends React.Component {
   }
 
   renderTopTrack({item, index}) {
-    const {
-      albums: {albumsByID},
-      tracks: {tracksByID},
-    } = this.props;
-    const {name, totalPlays, albumID, artists} = tracksByID[item];
-    const {name: albumName} = albumsByID[albumID];
+    const {entities: {tracks}} = this.props;
+    const {name, totalPlays, album, artists} = tracks.byID[item];
 
     let trackCount;
 
@@ -138,9 +133,9 @@ class AlbumDetailsView extends React.Component {
     return (
       <TrackCard
         key={item}
-        albumName={albumName}
+        albumName={album.name}
         artists={artists.map(a => a.name).join(', ')}
-        context={{type: 'album-most', id: albumID, name: albumName}}
+        context={{type: 'album-most', id: albumID, name: album.name}}
         name={name}
         trackCount={trackCount}
         trackIndex={index}
@@ -152,10 +147,11 @@ class AlbumDetailsView extends React.Component {
   render() {
     const {
       albumToView,
-      albums: {albumsByID, fetchingListeners, fetchingTracks, error: albumsError},
-      artists: {artistsByID, fetchingImages},
+      entities: {albums, artists},
+      albums: {fetching: albumFetching, error: albumsError},
+      artists: {fetching: artistFetching},
     } = this.props;
-    const {artists, topListeners, topTracks, totalPlays, large, name} = albumsByID[albumToView];
+    const {artists, topListeners, topTracks, totalPlays, large, name} = albums.byID[albumToView];
 
     return (
       <View style={styles.container}>
@@ -176,16 +172,16 @@ class AlbumDetailsView extends React.Component {
               }
               {artists.length === 1 &&
                 <ArtistCard
-                  artistImage={artistsByID[artists[0].id].small}
-                  artistName={artistsByID[artists[0].id].name}
+                  artistImage={artists.byID[artists[0].id].small}
+                  artistName={artists.byID[artists[0].id].name}
                   navToArtist={() => console.log('artist pressed')}
-                  fetchingImage={fetchingImages}
+                  fetchingImage={artistFetching.includes('images')}
                 />
               }
             </View>
             <View style={styles.topListeners}>
               <Text style={styles.sectionTitle}>TOP LISTENERS</Text>
-              {(!fetchingListeners && topListeners.length !== 0) &&
+              {(!albumFetching.includes('topListeners') && topListeners.length !== 0) &&
                 <FlatList
                   data={topListeners}
                   renderItem={this.renderPerson('user')}
@@ -193,14 +189,14 @@ class AlbumDetailsView extends React.Component {
                   horizontal
                 />
               }
-              {(fetchingListeners || topListeners.length === 0 || albumsError) &&
+              {(albumFetching.includes('topListeners') || topListeners.length === 0 || albumsError) &&
                 <View>
-                  {(!fetchingListeners && albumsError) &&
+                  {(!albumFetching.includes('topListeners') && albumsError) &&
                     <View style={styles.topListenersError}>
                       <Text style={styles.topListenersErrorText}>Unable to load top listeners</Text>
                     </View>
                   }
-                  {(fetchingListeners && !albumsError) &&
+                  {(albumFetching.includes('topListeners') && !albumsError) &&
                     <View style={styles.loadingSection}>
                       <LoadingUser />
                       <LoadingUser />
@@ -234,21 +230,21 @@ class AlbumDetailsView extends React.Component {
                   {paddingBottom: 10},
                 ]}
               >TOP TRACKS</Text>
-              {(!fetchingTracks && !albumsError && topTracks.length !== 0) &&
+              {(!albumFetching.includes('topTracks') && !albumsError && topTracks.length !== 0) &&
                 <FlatList
                   data={topTracks}
                   renderItem={this.renderTopTrack}
                   keyExtractor={item => item}
                 />
               }
-              {(fetchingTracks || albumsError || topTracks.length === 0) &&
+              {(albumFetching.includes('topTracks') || albumsError || topTracks.length === 0) &&
                 <View>
-                  {(!fetchingTracks && albumsError) &&
+                  {(!albumFetching.includes('topTracks') && albumsError) &&
                     <View style={styles.topTracksError}>
                       <Text style={styles.topTracksErrorText}>Unable to load top tracks</Text>
                     </View>
                   }
-                  {(fetchingTracks && !albumsError) &&
+                  {(albumFetching.includes('topTracks') && !albumsError) &&
                     <View>
                       <LoadingTrack type='top' />
                     </View>
@@ -269,12 +265,7 @@ class AlbumDetailsView extends React.Component {
             <View style={styles.headerFilter} />
           </View>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>
@@ -290,6 +281,7 @@ AlbumDetailsView.propTypes = {
   albums: PropTypes.object.isRequired,
   albumToView: PropTypes.string.isRequired,
   artists: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   getArtistImages: PropTypes.func.isRequired,
   getAlbumTopListeners: PropTypes.func.isRequired,
   getAlbumTopPlaylists: PropTypes.func.isRequired,
@@ -298,10 +290,11 @@ AlbumDetailsView.propTypes = {
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, tracks, users}) {
+function mapStateToProps({albums, artists, entities, tracks, users}) {
   return {
     albums,
     artists,
+    entities,
     tracks,
     users,
   };
@@ -316,4 +309,4 @@ function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default connect( mapStateToProps, mapDispatchToProps)(AlbumDetailsView);
+export default connect(mapStateToProps, mapDispatchToProps)(AlbumDetailsView);

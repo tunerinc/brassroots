@@ -226,6 +226,7 @@ const styles: Styles = StyleSheet.create({
     paddingTop: 7,
     backgroundColor: 'transparent',
     alignSelf: 'center',
+    color: '#fefefe',
   },
   title: {
     flex: 6,
