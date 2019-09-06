@@ -18,17 +18,13 @@ class LanguageRegionView extends React.Component {
   
   render() {
     const {settings: {language, region}} = this.props;
+    const opacity = (setting, option) => setting === option ? 1 : 0;
 
     return (
       <View style={styles.container}>
         <View style={styles.shadow}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Language & Region</Text>
             <View style={styles.rightIcon}></View>
           </View>
@@ -39,12 +35,11 @@ class LanguageRegionView extends React.Component {
               <Text style={styles.sectionHeaderText}>LANGUAGE</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
                 <Text style={styles.sectionOptionText}>english</Text>
                 <Ionicons
                   name='md-checkmark'
-                  color='#2b6dc0'
-                  style={[styles.optionCheck, {opacity: language === 'english' ? 1 : 0}]}
+                  style={[styles.optionCheck, {opacity: opacity(language, 'english')}]}
                 />
               </TouchableOpacity>
             </View>
@@ -54,12 +49,11 @@ class LanguageRegionView extends React.Component {
               <Text style={styles.sectionHeaderText}>REGION</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
                 <Text style={styles.sectionOptionText}>united states</Text>
                 <Ionicons
                   name='md-checkmark'
-                  color='#2b6dc0'
-                  style={[styles.optionCheck, {opacity: region === 'us' ? 1 : 0}]}
+                  style={[styles.optionCheck, {opacity: opacity(region, 'us')}]}
                 />
               </TouchableOpacity>
             </View>
