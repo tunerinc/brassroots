@@ -15,47 +15,47 @@ class DisplaySoundView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onScroll = this.onScroll.bind(this);
+    this.state = {
+      shadowOpacity: new Animated.Value(0),
+    };
 
-    this.shadowOpacity = new Animated.Value(0);
+    this.onScroll = this.onScroll.bind(this);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
+    const {shadowOpacity} = this.state;
     const {settings: {theme, soundEffects}} = this.props;
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Display & Sound</Text>
             <View style={styles.rightIcon}></View>
           </View>
         </Animated.View>
-        <ScrollView
-          style={styles.displaySoundWrap}
-          onScroll={this.onScroll}
-          scrollEventThrottle={16}
-        >
+        <ScrollView style={styles.wrap} onScroll={this.onScroll} scrollEventThrottle={16}>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionHeaderText}>SOUND EFFECTS</Text>
@@ -65,7 +65,6 @@ class DisplaySoundView extends React.Component {
                 <Text style={styles.sectionOptionText}>off</Text>
                 <Ionicons
                   name='md-checkmark'
-                  color='#2b6dc0'
                   style={[styles.optionCheck, {opacity: soundEffects ? 0 : 1}]}
                 />
               </TouchableOpacity>
@@ -75,7 +74,6 @@ class DisplaySoundView extends React.Component {
                 <Text style={styles.sectionOptionText}>on</Text>
                 <Ionicons
                   name='md-checkmark'
-                  color='#2b6dc0'
                   style={[styles.optionCheck, {opacity: soundEffects ? 1 : 0}]}
                 />
               </TouchableOpacity>
@@ -90,7 +88,6 @@ class DisplaySoundView extends React.Component {
                 <Text style={styles.sectionOptionText}>light</Text>
                 <Ionicons
                   name='md-checkmark'
-                  color='#2b6dc0'
                   style={[styles.optionCheck, {opacity: theme === 'light' ? 1 : 0}]}
                 />
               </TouchableOpacity>
@@ -100,7 +97,6 @@ class DisplaySoundView extends React.Component {
                 <Text style={styles.sectionOptionText}>dark</Text>
                 <Ionicons
                   name='md-checkmark'
-                  color='#2b6dc0'
                   style={[styles.optionCheck, {opacity: theme === 'dark' ? 1 : 0}]}
                 />
               </TouchableOpacity>
