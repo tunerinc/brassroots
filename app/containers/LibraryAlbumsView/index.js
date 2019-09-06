@@ -40,25 +40,18 @@ class LibraryAlbumsView extends React.Component {
 
   componentDidMount() {
     const {getAlbums, albums: {userAlbums}} = this.props;
-
-    if (!userAlbums.length) {
-      getAlbums(true, 0);
-    }
+    if (!userAlbums.length) getAlbums(true, 0);
   }
 
   onEndReached() {
-    const {getAlbums, albums: {fetchingAlbums, userAlbums, totalUserAlbums}} = this.props;
-
-    if (fetchingAlbums || !userAlbums.length || userAlbums.length === totalUserAlbums) return;
-
+    const {getAlbums, albums: {fetching, userAlbums, totalUserAlbums}} = this.props;
+    if (fetching.includes('albums') || !userAlbums.length || userAlbums.length === totalUserAlbums) return;
     getAlbums(false, userAlbums.length);
   }
 
   handleRefresh() {
-    const {getAlbums, albums: {refreshingAlbums}} = this.props;
-
-    if (refreshingAlbums) return;
-
+    const {getAlbums, albums: {refreshing}} = this.props;
+    if (refreshing) return;
     getAlbums(true, 0);
   }
 
@@ -82,13 +75,11 @@ class LibraryAlbumsView extends React.Component {
     }
   }
 
-  navToAlbum = albumID => () => {
-    Actions.librarySingleAlbum({albumToView: albumID});
-  }
+  navToAlbum = albumID => () => Actions.librarySingleAlbum({albumToView: albumID});
 
   renderAlbum({item}) {
-    const {albums: {albumsByID}} = this.props;
-    const {medium, name, artists} = albumsByID[item];
+    const {entities: {albums}} = this.props;
+    const {medium, name, artists} = albums.byID[item];
 
     return (
       <AlbumCard
@@ -102,11 +93,11 @@ class LibraryAlbumsView extends React.Component {
   }
 
   renderFooter() {
-    const {albums: {fetchingAlbums, refreshingAlbums, userAlbums, totalUserAlbums}} = this.props;
+    const {albums: {fetching, refreshing, userAlbums, totalUserAlbums}} = this.props;
 
     if (
-      !fetchingAlbums
-      || refreshingAlbums
+      !fetching.includes('albums')
+      || refreshing
       || !userAlbums.length
       || userAlbums.length === totalUserAlbums
     ) return <View></View>;
@@ -122,7 +113,7 @@ class LibraryAlbumsView extends React.Component {
 
   render() {
     const {shadowOpacity} = this.state;
-    const {albums: {userAlbums, fetchingAlbums, refreshingAlbums, error: albumError}} = this.props;
+    const {albums: {userAlbums, fetching, refreshing, error: albumError}} = this.props;
 
     return (
       <View style={styles.container}>
@@ -149,7 +140,7 @@ class LibraryAlbumsView extends React.Component {
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={<Text>Nothing to show</Text>}
-            refreshing={refreshingAlbums}
+            refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.5}
@@ -158,7 +149,7 @@ class LibraryAlbumsView extends React.Component {
         {(userAlbums.length === 0 || !userAlbums.length) &&
           <View style={styles.scrollContainer}>
             <View style={styles.scrollWrap}>
-              {fetchingAlbums &&
+              {fetching.includes('albums') &&
                 <View>
                   <LoadingAlbum />
                   <LoadingAlbum />
@@ -169,8 +160,8 @@ class LibraryAlbumsView extends React.Component {
                   <LoadingAlbum />
                 </View>
               }
-              {(!fetchingAlbums && !albumError) && <Text>Nothing to show</Text>}
-              {(!fetchingAlbums && albumError) && <Text>There was an error.</Text>}
+              {(!fetching.includes('albums') && !albumError) && <Text>Nothing to show</Text>}
+              {(!fetching.includes('albums') && albumError) && <Text>There was an error.</Text>}
             </View>
           </View>
         }
@@ -181,23 +172,21 @@ class LibraryAlbumsView extends React.Component {
 
 LibraryAlbumsView.propTypes = {
   albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   getAlbums: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, users}) {
+function mapStateToProps({albums, entities, users}) {
   return {
     albums,
-    artists,
+    entities,
     users,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    getAlbums,
-  },  dispatch);
+  return bindActionCreators({getAlbums},  dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LibraryAlbumsView);
