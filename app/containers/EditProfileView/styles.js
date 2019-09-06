@@ -177,8 +177,10 @@ const styles: Styles = StyleSheet.create({
   leftIcon: {
     flex: 2,
     height: 45,
+    fontSize: 45,
     alignSelf: 'center',
     backgroundColor: 'transparent',
+    color: '#fefefe',
   },
   title: {
     flex: 6,

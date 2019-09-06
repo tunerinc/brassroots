@@ -61,10 +61,11 @@ class EditProfileView extends React.Component {
   componentDidMount() {
     const {
       getMostPlayedSpotifyTrack,
+      entities: {users},
       onboarding: {onboarding},
-      users: {currentUserID, usersByID},
+      users: {currentUserID},
     } = this.props;
-    const {favoriteTrackID, bio, location, website} = usersByID[currentUserID];
+    const {favoriteTrackID, bio, location, website} = user.byID[currentUserID];
 
     this.setState({
       tempBio: bio,
@@ -149,15 +150,13 @@ class EditProfileView extends React.Component {
     } = this.state;
     const {
       title,
-      albums: {albumsByID, totalAlbums},
-      artists: {totalArtists},
-      tracks: {tracksByID, fetchingFavoriteTrack},
-      users: {currentUserID, usersByID, changingImage},
+      entities: {tracks, users},
+      tracks: {fetching},
+      users: {currentUserID, changingImage},
     } = this.props;
-    const user = usersByID[currentUserID];
+    const user = users.byID[currentUserID];
     const {email, displayName, birthdate, coverImage, profileImage, favoriteTrackID} = user;
-    const track = favoriteTrackID ? tracksByID[favoriteTrackID] : null;
-    const album = track ? albumsByID[track.albumID] : null;
+    const track = tracks.allIDs.includes(favoriteTrackID) ? tracks.byID[favoriteTrackID] : null;
 
     return (
       <View style={styles.container}>
@@ -171,11 +170,11 @@ class EditProfileView extends React.Component {
             {(user && track) &&
               <View style={styles.favoriteWrapper}>
                 <TrackCard
-                  albumName={album.name}
+                  albumName={track.album.name}
                   type='favorite'
-                  context={{displayName, id: track.albumID, name: album.name, type:'favorite'}}
+                  context={{displayName, id: track.album.id, name: track.album.name, type:'favorite'}}
                   editing={true}
-                  image={album.small}
+                  image={track.album.small}
                   name={track.name}
                   showFavoriteIcon={true}
                   showSquareImage={true}
@@ -308,7 +307,8 @@ class EditProfileView extends React.Component {
             {height: headerHeight, shadowOpacity: headerShadowOpacity},
           ]}
         >
-          {user && favoriteTrackID && !fetchingFavoriteTrack && totalAlbums !== 0 && coverImage !== '' &&
+          {(fetching.includes('favorite') || coverImage === '') && <View></View>}
+          {user && track && !fetching.includes('favorite') && coverImage !== '' &&
             <Animated.View style={[styles.headerBackground, {height: headerHeight}]}>
               <Animated.Image
                 blurRadius={80}
@@ -326,25 +326,12 @@ class EditProfileView extends React.Component {
               ></Animated.View>
             </Animated.View>
           }
-          {fetchingFavoriteTrack || totalAlbums === 0 || coverImage === '' &&
-            <View></View>
-          }
           <View style={styles.nav}>
             {title !== 'Create Profile' &&
-              <Ionicons
-                name='ios-arrow-back'
-                size={45}
-                color='#fefefe'
-                style={styles.leftIcon}
-                onPress={Actions.pop}
-              />
+              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             }
-            {title === 'Create Profile' &&
-              <View style={styles.leftIcon}></View>
-            }
-            {title !== 'Create Profile' &&
-              <Text style={styles.title}>Edit Profile</Text>
-            }
+            {title === 'Create Profile' && <View style={styles.leftIcon}></View>}
+            {title !== 'Create Profile' && <Text style={styles.title}>Edit Profile</Text>}
             {title === 'Create Profile' &&
               <Text style={styles.title}>
                 {title}
@@ -352,10 +339,7 @@ class EditProfileView extends React.Component {
             }
             {(
               (
-                (
-                  websiteValid
-                  && tempWebsite !== ''
-                )
+                (websiteValid && tempWebsite !== '')
                 || tempWebsite === ''
               )
               && !changingImage
@@ -383,7 +367,7 @@ class EditProfileView extends React.Component {
               {(
                 user
                 && profileImage !== ''
-                && (!changingImage || (changingImage && changingImage === 'cover'))
+                && (!changingImage || (changingImage === 'cover'))
               ) &&
                 <TouchableOpacity
                   style={styles.photoButton}
@@ -392,7 +376,7 @@ class EditProfileView extends React.Component {
                   <View style={styles.roundPhotoWrap}>
                     <Image style={styles.roundPhoto} source={{uri: profileImage}} />
                     <View style={styles.roundPhotoFilter}>
-                      <MaterialIcons name='edit' size={40} style={styles.editIcon} />
+                      <MaterialIcons name='edit' style={styles.editIcon} />
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -400,7 +384,7 @@ class EditProfileView extends React.Component {
               {(
                 !profileImage
                 || profileImage === ''
-                || (changingImage && changingImage === 'profile')
+                || (changingImage === 'profile')
               ) &&
                 <Placeholder.Media
                   hasRadius
@@ -415,7 +399,7 @@ class EditProfileView extends React.Component {
               {(
                 user
                 && coverImage !== ''
-                && (!changingImage || (changingImage && changingImage === 'profile'))
+                && (!changingImage || (changingImage === 'profile'))
               ) &&
                 <TouchableOpacity
                   style={styles.photoButton}
@@ -424,12 +408,12 @@ class EditProfileView extends React.Component {
                   <View style={styles.roundPhotoWrap}>
                     <Image style={styles.roundPhoto} source={{uri: coverImage}} />
                     <View style={styles.roundPhotoFilter}>
-                      <MaterialIcons name='edit' size={40} style={styles.editIcon} />
+                      <MaterialIcons name='edit' style={styles.editIcon} />
                     </View>
                   </View>
                 </TouchableOpacity>
               }
-              {(!coverImage || coverImage === '' || (changingImage && changingImage === 'cover')) &&
+              {(!coverImage || coverImage === '' || changingImage === 'cover') &&
                 <Placeholder.Media
                   hasRadius
                   size={70}
@@ -447,8 +431,7 @@ class EditProfileView extends React.Component {
 }
 
 EditProfileView.propTypes = {
-  albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   tracks: PropTypes.object.isRequired,
   users: PropTypes.object.isRequired,
   changeCoverPhoto: PropTypes.func.isRequired,
@@ -459,10 +442,11 @@ EditProfileView.propTypes = {
   getMostPlayedSpotifyTrack: PropTypes.func.isRequired,
 };
 
-function mapStateToProps({albums, artists, onboarding, tracks, users}) {
+function mapStateToProps({albums, artists, entities, onboarding, tracks, users}) {
   return {
     albums,
     artists,
+    entities,
     onboarding,
     tracks,
     users,
