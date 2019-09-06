@@ -135,7 +135,7 @@ class AlbumDetailsView extends React.Component {
         key={item}
         albumName={album.name}
         artists={artists.map(a => a.name).join(', ')}
-        context={{type: 'album-most', id: albumID, name: album.name}}
+        context={{type: 'album-most', id: album.id, name: album.name}}
         name={name}
         trackCount={trackCount}
         trackIndex={index}
