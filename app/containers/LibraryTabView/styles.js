@@ -114,6 +114,7 @@ const styles: Styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 55,
     marginRight: 10,
+    color: '#fefefe',
   },
   libraryOptionText: {
     flex: 6,

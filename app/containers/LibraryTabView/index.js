@@ -120,20 +120,21 @@ class LibraryTabView extends React.Component {
     }
   }
 
-  navToPlaylist = playlistID => () => {
-    Actions.profileSinglePlaylist({playlistToView: playlistID});
-  }
+  navToPlaylist = playlistID => () => Actions.profileSinglePlaylist({playlistToView: playlistID});
 
   renderPlaylist({item}) {
-    const {playlists: {playlistsByID}, users: {currentUserID, usersByID}} = this.props;
+    const {
+      entities: {playlists, users},
+      users: {currentUserID},
+    } = this.props;
 
-    if (!item || !playlistsByID[item]) return null;
+    if (!item || !playlists.allIDs.includes(item)) return null;
 
-    const {image, name, members, mode, ownerID, ownerType} = playlistsByID[item];
+    const {image, name, members, mode, ownerID, ownerType} = playlists.byID[item];
     const ownerName = ownerID === 'spotify'
       ? 'Spotify'
-      : ownerID !== currentUserID && usersByID[ownerID]
-      ? usersByID[ownerID].displayName
+      : ownerID !== currentUserID && users.allIDs.includes(ownerID)
+      ? users.byID[ownerID].displayName
       : null;
 
     return (
@@ -151,17 +152,14 @@ class LibraryTabView extends React.Component {
 
   renderTrack = type => ({item, index}) => {
     const {
-      albums: {albumsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      entities: {tracks, users},
+      users: {currentUserID},
     } = this.props;
-    const {displayName} = usersByID[currentUserID];
+    const {displayName} = users.byID[currentUserID];
 
-    if (!item || !tracksByID[item]) return null;
+    if (!item || !tracks.allIDs.includes(item)) return null;
 
-    const {albumID, artists} = tracksByID[item];
-    const {small, name: albumName} = albumsByID[albumID];
-    const artistNames = artists.map(a => a.name).join(', ');
+    const {name, album, artists} = tracks.byID[item];
 
     return (
       <TrackCard
@@ -170,18 +168,16 @@ class LibraryTabView extends React.Component {
         context={{type, displayName, id: currentUserID, name: displayName}}
         openModal={this.openModal(item)}
         name={name}
-        artists={artistNames}
+        artists={artists.map(a => a.name).join(', ')}
         showSquareImage={true}
         showOptions={true}
-        image={small}
-        albumName={albumName}
+        image={album.small}
+        albumName={album.name}
       />
     );
   }
 
-  openModal = selectedTrack => () => {
-    this.setState({selectedTrack, isTrackMenuOpen: true});
-  }
+  openModal = selectedTrack => () => this.setState({selectedTrack, isTrackMenuOpen: true});
 
   closeModal() {
     this.setState({isTrackMenuOpen: false});
@@ -211,53 +207,28 @@ class LibraryTabView extends React.Component {
     const {selectedTrack} = this.state;
     const {
       queueTrack,
-      albums: {albumsByID},
-      artists: {artistsByID},
-      player: {prevQueueID},
-      queue: {userQueue, queueByID, totalQueue},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      entities: {queueTracks, sessions, tracks, users},
+      player: {currentQueueID},
+      queue: {userQueue, totalUserQueue: totalQueue},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
 
-    if (currentSessionID && sessionsByID[currentSessionID]) {
-      const {listeners, ownerID} = sessionsByID[currentSessionID];
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {listeners, ownerID} = sessions.byID[currentSessionID];
       const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-      const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
-      const {displayName, profileImage} = usersByID[currentUserID];
+      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+      const {displayName, profileImage} = users.byID[currentUserID];
 
-      if (isListenerOwner && !songQueued) {
-        const {name, durationMS, albumID, artists} = tracksByID[selectedTrack];
-        const {name: albumName, small, medium, large, artists: albumArtists} = albumsByID[albumID];
-        const trackToQueue = {
-          name,
-          durationMS,
-          id: selectedTrack,
-          artists: artists.map(a => a.name).join(', '),
-          album: {
-            small,
-            medium,
-            large,
-            id: albumID,
-            name: albumName,
-            artists: albumArtists.map(a => a.name).join(', '),
-          },
-        };
+      if (isListenerOwner && !songInQueue) {
+        const track = tracks.byID[selectedTrack];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+        const prevTrackID = queueTracks.byID[prevQueueID];
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
 
         this.closeModal();
-        queueTrack(
-          {
-            prevQueueID,
-            totalQueue,
-            id: currentSessionID,
-          },
-          trackToQueue,
-          {
-            displayName,
-            profileImage,
-            id: currentUserID,
-          },
-        );
+        queueTrack(session, track, user);
       }
     }
   }
@@ -265,16 +236,15 @@ class LibraryTabView extends React.Component {
   renderModalContent() {
     const {selectedTrack} = this.state;
     const {
-      albums: {albumsByID},
-      queue: {userQueue, queueByID},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
+      entities: {albums, queueTracks, sessions, tracks},
+      queue: {userQueue},
+      sessions: {currentSessionID},
       users: {currentUserID},
     } = this.props;
 
-    if (!selectedTrack || !tracksByID[selectedTrack]) return <View></View>;
+    if (!selectedTrack || !tracks.allIDs.includes(selectedTrack)) return <View></View>;
 
-    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+    const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
     const songQueued = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);
     const isListenerOwner = sessionExists
       && (
@@ -287,10 +257,10 @@ class LibraryTabView extends React.Component {
         trackID={selectedTrack}
         closeModal={this.closeModal}
         queueTrack={this.handleAddTrack}
-        name={tracksByID[selectedTrack].name}
-        artists={tracksByID[selectedTrack].artists.map(a => a.name).join(', ')}
-        albumName={albumsByID[tracksByID[selectedTrack].albumID].name}
-        albumImage={albumsByID[tracksByID[selectedTrack].albumID].small}
+        name={tracks.byID[selectedTrack].name}
+        artists={tracks.byID[selectedTrack].artists.map(a => a.name).join(', ')}
+        albumName={tracks.byID[selectedTrack].album.name}
+        albumImage={tracks.byID[selectedTrack].album.small}
         trackInQueue={songQueued}
         isListenerOwner={sessionExists ? isListenerOwner : null}
       />
@@ -307,20 +277,20 @@ class LibraryTabView extends React.Component {
       syncIndex,
     } = this.state;
     const {
-      albums: {albumsByID},
-      playlists: {fetchingTopPlaylists, error: playlistError},
+      entities: {albums, sessions, tracks, users},
+      playlists: {fetching: playlistFetching, error: playlistError},
       queue: {userQueue, queueing, error: queueError},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID, fetchingRecent, fetchingMostPlayed, error: trackError},
-      users: {currentUserID, usersByID, error: userError},
+      sessions: {currentSessionID},
+      tracks: {fetching: trackFetching, error: trackError},
+      users: {currentUserID, error: userError},
     } = this.props;
-    const {mostPlayed, recentlyPlayed, topPlaylists} = usersByID[currentUserID];
-    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+    const {mostPlayed, recentlyPlayed, topPlaylists} = users.byID[currentUserID];
+    const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
     const queueHasTracks = sessionExists && userQueue.length > 0;
     const inSession = sessionExists
       && (
-        sessionsByID[currentSessionID].listeners.includes(currentUserID)
-        || sessionsByID[currentSessionID].ownerID === currentUserID
+        sessions.byID[currentSessionID].listeners.includes(currentUserID)
+        || sessions.byID[currentSessionID].ownerID === currentUserID
       );
 
     return (
@@ -345,24 +315,24 @@ class LibraryTabView extends React.Component {
           showsVerticalScrollIndicator={false}
         >
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("playlists")}>
-            <MaterialIcons name="library-books" color="#fefefe" style={styles.libraryOptionIcon} />
+            <MaterialIcons name="library-books" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Playlists</Text>
-            <Ionicons name="ios-arrow-forward" color="#fefefe" style={styles.libraryOptionArrow} />
+            <Ionicons name="ios-arrow-forward" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("artists")}>
-            <Ionicons name="md-microphone" color="#fefefe" style={styles.libraryOptionIcon} />
+            <Ionicons name="md-microphone" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Artists</Text>
-            <Ionicons name="ios-arrow-forward" color="#fefefe" style={styles.libraryOptionArrow} />
+            <Ionicons name="ios-arrow-forward" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("albums")}>
-            <MaterialCommunityIcons name="album" color="#fefefe" style={styles.libraryOptionIcon} />
+            <MaterialCommunityIcons name="album" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Albums</Text>
             <Ionicons name="ios-arrow-forward" Color="#fefefe" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("tracks")}>
-            <Ionicons name="ios-musical-notes" color="#fefefe" style={styles.libraryOptionIcon} />
+            <Ionicons name="ios-musical-notes" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Songs</Text>
-            <Ionicons name="ios-arrow-forward" color="#fefefe" style={styles.libraryOptionArrow} />
+            <Ionicons name="ios-arrow-forward" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
@@ -390,11 +360,11 @@ class LibraryTabView extends React.Component {
             }
             {(recentlyPlayed.length === 0 || !recentlyPlayed.length) &&
               <View>
-                {fetchingRecent && <LoadingTrack type="cover" />}
-                {(!fetchingRecent && trackError) &&
+                {trackFetching.includes('recent') && <LoadingTrack type="cover" />}
+                {(!trackFetching.includes('recent') && trackError) &&
                   <Text style={styles.nothing}>Error loading tracks</Text>
                 }
-                {(!fetchingRecent && !trackError) &&
+                {(!trackFetching.includes('recent') && !trackError) &&
                   <View style={styles.empty}>
                     <Text style={styles.emptyTitle}>No songs played</Text>
                     <Text style={styles.emptySub}>Recently Played is your listening history</Text>
@@ -426,8 +396,13 @@ class LibraryTabView extends React.Component {
             }
             {(topPlaylists.length === 0 || !topPlaylists.length) &&
               <View>
-                {fetchingTopPlaylists && <LoadingPlaylist />}
-                {!fetchingTopPlaylists && <Text style={styles.nothing}>Nothing to show</Text>}
+                {playlistFetching.includes('topPlaylists') && <LoadingPlaylist />}
+                {(!playlistFetching.includes('recent') && playlistError) &&
+                  <Text style={styles.nothing}>Error loading tracks</Text>
+                }
+                {!playlistFetching.includes('topPlaylists') && !playlistError &&
+                  <Text style={styles.nothing}>Nothing to show</Text>
+                }
               </View>
             }
           </View>
@@ -454,8 +429,13 @@ class LibraryTabView extends React.Component {
             }
             {(mostPlayed.length === 0 || !mostPlayed.length) &&
               <View>
-                {fetchingMostPlayed && <LoadingTrack type="cover" />}
-                {!fetchingMostPlayed && <Text style={styles.nothing}>Nothing to show</Text>}
+                {trackFetching.includes('mostPlayed') && <LoadingTrack type="cover" />}
+                {(!trackFetching.includes('mostPlayed') && trackError) &&
+                  <Text style={styles.nothing}>Error loading tracks</Text>
+                }
+                {!trackFetching.includes('mostPlayed') && !trackError &&
+                  <Text style={styles.nothing}>Nothing to show</Text>
+                }
               </View>
             }
           </View>
@@ -477,13 +457,13 @@ class LibraryTabView extends React.Component {
         >
           {this.renderModalContent()}
         </Modal>
-        {(typeof selectedTrack === 'string' && tracksByID[selectedTrack]) &&
+        {(typeof selectedTrack === 'string' && tracks.allIDs.includes(selectedTrack)) &&
           <AddToQueueDialog
             queueing={queueing}
             error={queueError}
             inSession={inSession}
             queueHasTracks={queueHasTracks}
-            image={albumsByID[tracksByID[selectedTrack].albumID].medium}
+            image={tracks.byID[selectedTrack].album.medium}
           />
         }
       </View>
@@ -492,8 +472,6 @@ class LibraryTabView extends React.Component {
 }
 
 LibraryTabView.propTypes = {
-  albums: PropTypes.object,
-  artists: PropTypes.object,
   getMostPlayedTracks: PropTypes.func,
   createSession: PropTypes.func,
   getRecentTracks: PropTypes.func,
@@ -508,15 +486,13 @@ LibraryTabView.propTypes = {
   users: PropTypes.object
 };
 
-function mapStateToProps({albums, artists, player, playlists, queue, sessions, settings, tracks, users}) {
+function mapStateToProps({entities, player, playlists, queue, sessions, tracks, users}) {
   return {
-    albums,
-    artists,
+    entities,
     player,
     playlists,
     queue,
     sessions,
-    settings,
     tracks,
     users,
   };
