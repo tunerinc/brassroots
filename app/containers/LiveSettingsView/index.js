@@ -19,32 +19,43 @@ class LiveSettingsView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {selectedMode: ''};
+    this.state = {
+      selectedMode: '',
+      shadowOpacity: new Animated.Value(0),
+    };
 
     this.onScroll = this.onScroll.bind(this);
     this.navBack = this.navBack.bind(this);
     this.save = this.save.bind(this);
     this.selectMode = this.selectMode.bind(this);
-    
-    this.shadowOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
-    const {sessions: {currentSessionID, sessionsByID}} = this.props;
-    const {mode: selectedMode} = sessionsByID[sessionID];
+    const {
+      entities: {sessions},
+      sessions: {currentSessionID},
+    } = this.props;
+    const {mode: selectedMode} = sessions.byID[sessionID];
     this.setState({selectedMode});
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
@@ -52,16 +63,15 @@ class LiveSettingsView extends React.Component {
     const {selectedMode} = this.state;
     const {
       changeSessionMode,
-      sessions: {currentSessionID, sessionsByID},
+      entities: {sessions},
+      sessions: {currentSessionID},
       users: {currentUserID},
     } = this.props;
-    const {ownerID, mode} = sessionsByID[currentSessionID];
+    const {ownerID, mode} = sessions.byID[currentSessionID];
     
     Actions.pop();
 
-    if (ownerID === currentUserID && mode !== selectedMode) {
-      changeSessionMode(currentSessionID, selectedMode);
-    }
+    if (ownerID === currentUserID && mode !== selectedMode) this.save();
   }
 
   save() {
@@ -70,31 +80,26 @@ class LiveSettingsView extends React.Component {
     changeSessionMode(currentSessionID, selectedMode);
   }
 
-  selectMode = mode => () => {
-    this.setState({selectedMode: mode});
-  }
+  selectMode = selectedMode => () => this.setState({selectedMode});
 
   render() {
-    const animatedHeaderStyle = { shadowOpacity: this.shadowOpacity };
-    const {selectedMode} = this.state;
+    const {selectedMode, shadowOpacity} = this.state;
     const {
-      sessions: {currentSessionID, sessionsByID, changingMode},
+      entities: {sessions},
+      sessions: {currentSessionID, changingMode},
       users: {currentUserID},
     } = this.props;
-    const {ownerID, mode} = sessionsByID[currentSessionID];
+    const {ownerID, mode} = sessions.byID[currentSessionID];
+    const titleText = ownerID === currentUserID ? 'Change Mode' : 'Live Settings';
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={this.navBack}
-            />
-            {ownerID === currentUserID && <Text style={styles.title}>Change Mode</Text>}
-            {ownerID !== currentUserID && <Text style={styles.title}>Live Settings</Text>}
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Text style={styles.title}>
+              {titleText}
+            </Text>
             <TouchableOpacity
               style={styles.rightIconButton}
               onPress={this.save}
@@ -108,7 +113,7 @@ class LiveSettingsView extends React.Component {
                   ]}
                 >save</Text>
               }
-              {ownerID === userID && changingMode &&
+              {changingMode &&
                 <Text
                   style={[
                     styles.rightIconText,
@@ -124,21 +129,21 @@ class LiveSettingsView extends React.Component {
             <LiveSettingOption
               mode='dj'
               selected={selectedMode === 'dj'}
-              selectMode={this.selectMode}
+              selectMode={this.selectMode('dj')}
               ownerID={ownerID}
               currentUserID={currentUserID}
             />
             <LiveSettingOption
               mode='radio'
               selected={selectedMode === 'radio'}
-              selectMode={this.selectMode}
+              selectMode={this.selectMode('radio')}
               ownerID={ownerID}
               currentUserID={currentUserID}
             />
             <LiveSettingOption
               mode='party'
               selected={selectedMode === 'party'}
-              selectMode={this.selectMode}
+              selectMode={this.selectMode('party')}
               ownerID={ownerID}
               currentUserID={currentUserID}
             />
@@ -151,16 +156,15 @@ class LiveSettingsView extends React.Component {
 
 LiveSettingsView.propTypes = {
   changeSessionMode: PropTypes.func.isRequired,
-  sessions: PropTypes.object,
-  settings: PropTypes.object,
-  title: PropTypes.string,
-  users: PropTypes.object,
+  entities: PropTypes.object.isRequired,
+  sessions: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({sessions, settings, users}) {
+function mapStateToProps({entities, sessions, users}) {
   return {
+    entities,
     sessions,
-    settings,
     users,
   };
 }

@@ -51,6 +51,7 @@ const styles: Styles = StyleSheet.create({
     fontSize: 45,
     backgroundColor: 'transparent',
     alignSelf: 'center',
+    color: '#fefefe',
   },
   title: {
     flex: 6,
