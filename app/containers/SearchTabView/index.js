@@ -22,30 +22,31 @@ class SearchTabView extends React.Component {
     this.state = {
       scrollEnabled: true,
       tempQuery: '',
+      shadowOpacity: new Animated.Value(0),
+      filterIndex: new Animated.Value(-2),
+      filterOpacity: new Animated.Value(0)
     };
 
     this.handleOnFocus = this.handleOnFocus.bind(this);
     this.handleOnCancel = this.handleOnCancel.bind(this);
     this.onScroll = this.onScroll.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
-    this.filterIndex = new Animated.Value(-2);
-    this.filterOpacity = new Animated.Value(0);
   }
 
   handleOnFocus() {
+    const {filterIndex, filterOpacity} = this.state;
+
     return new Promise((resolve, reject) => {
       try {
         this.setState(
           {scrollEnabled: false},
           () => {
             Animated.sequence([
-              Animated.timing(this.filterIndex, {
+              Animated.timing(filterIndex, {
                 toValue: 2,
                 duration: 1,
                 easing: Easing.linear
               }),
-              Animated.timing(this.filterOpacity, {
+              Animated.timing(filterOpacity, {
                 toValue: 0.9,
                 duration: 230,
                 easing: Easing.linear
@@ -66,18 +67,20 @@ class SearchTabView extends React.Component {
   }
 
   handleOnCancel() {
+    const {filterIndex, filterOpacity} = this.state;
+
     return new Promise((resolve, reject) => {
       try {
         this.setState(
           {scrollEnabled: true},
           () => {
             Animated.sequence([
-              Animated.timing(this.filterOpacity, {
+              Animated.timing(filterOpacity, {
                 toValue: 0,
                 duration: 230,
                 easing: Easing.linear
               }),
-              Animated.timing(this.filterIndex, {
+              Animated.timing(filterIndex, {
                 toValue: -2,
                 duration: 1,
                 easing: Easing.linear
@@ -98,15 +101,22 @@ class SearchTabView extends React.Component {
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
@@ -136,30 +146,27 @@ class SearchTabView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = { shadowOpacity: this.shadowOpacity };
-    const {scrollEnabled} = this.state;
+    const {scrollEnabled, shadowOpacity, filterIndex, filterOpacity} = this.state;
     const {
       search: {
-        query,
-        searching,
-        fetchingRecent,
-        fetchingTrending,
-        fetchingNearby,
+        recentSearches,
+        nearbySearches,
+        trendingSearches,
         userResults,
         trackResults,
         playlistResults,
         albumResults,
         artistResults,
         groupResults,
-        recentSearches,
-        nearbySearches,
-        trendingSearches,
+        query,
+        fetching,
+        searching,
       },
     } = this.props;
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <Search
             ref='search_box'
             onFocus={this.handleOnFocus}
@@ -189,7 +196,7 @@ class SearchTabView extends React.Component {
           <Animated.View
             style={[
               styles.activeSearchFilter,
-              {opacity: this.filterOpacity, zIndex: this.filterIndex},
+              {opacity: filterOpacity, zIndex: filterIndex},
             ]}
           ></Animated.View>
           {!searching &&
@@ -225,10 +232,10 @@ class SearchTabView extends React.Component {
                         </TouchableOpacity>
                       }
                     </View>
-                    {!fetchingRecent && recentSearches.length !== 0 &&
+                    {!fetching.includes('recent') && recentSearches.length !== 0 &&
                       <Text>We have other stuff</Text>
                     }
-                    {fetchingRecent && recentSearches.length === 0 &&
+                    {fetching.includes('recent') && recentSearches.length === 0 &&
                       <View>
                         <LoadingSearch />
                         <LoadingSearch />
@@ -240,10 +247,10 @@ class SearchTabView extends React.Component {
                     <View style={styles.sectionHeader}>
                       <Text style={styles.sectionTitle}>Trending</Text>
                     </View>
-                    {!fetchingTrending && trendingSearches.length !== 0 &&
+                    {!fetching.includes('trending') && trendingSearches.length !== 0 &&
                       <Text>We have other stuff</Text>
                     }
-                    {fetchingTrending && trendingSearches.length === 0 &&
+                    {fetching.includes('trending') && trendingSearches.length === 0 &&
                       <View>
                         <LoadingSearch />
                         <LoadingSearch />
@@ -255,10 +262,10 @@ class SearchTabView extends React.Component {
                     <View style={styles.sectionHeader}>
                       <Text style={styles.sectionTitle}>Nearby</Text>
                     </View>
-                    {!fetchingNearby && nearbySearches.length !== 0 &&
+                    {!fetching.includes('nearby') && nearbySearches.length !== 0 &&
                       <Text>We have other stuff</Text>
                     }
-                    {fetchingNearby && nearbySearches.length === 0 &&
+                    {fetching.includes('nearby') && nearbySearches.length === 0 &&
                       <View>
                         <LoadingSearch />
                         <LoadingSearch />
