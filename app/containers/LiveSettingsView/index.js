@@ -13,7 +13,7 @@ import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Sessions Action Creators
-import {changeSessionMode} from '../../actions/sessions/ChangeSessionMode';
+import {saveSession} from '../../actions/sessions/SaveSession';
 
 class LiveSettingsView extends React.Component {
   constructor(props) {
@@ -62,7 +62,6 @@ class LiveSettingsView extends React.Component {
   navBack() {
     const {selectedMode} = this.state;
     const {
-      changeSessionMode,
       entities: {sessions},
       sessions: {currentSessionID},
       users: {currentUserID},
@@ -75,9 +74,9 @@ class LiveSettingsView extends React.Component {
   }
 
   save() {
-    const {selectedMode} = this.state;
-    const {changeSessionMode, sessions: {currentSessionID}} = this.props;
-    changeSessionMode(currentSessionID, selectedMode);
+    const {selectedMode: mode} = this.state;
+    const {saveSession, sessions: {currentSessionID}} = this.props;
+    saveSession(currentSessionID, {mode});
   }
 
   selectMode = selectedMode => () => this.setState({selectedMode});
@@ -155,7 +154,7 @@ class LiveSettingsView extends React.Component {
 }
 
 LiveSettingsView.propTypes = {
-  changeSessionMode: PropTypes.func.isRequired,
+  saveSession: PropTypes.func.isRequired,
   entities: PropTypes.object.isRequired,
   sessions: PropTypes.object.isRequired,
   users: PropTypes.object.isRequired,
@@ -170,9 +169,7 @@ function mapStateToProps({entities, sessions, users}) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    changeSessionMode,
-  }, dispatch);
+  return bindActionCreators({saveSession}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LiveSettingsView);
