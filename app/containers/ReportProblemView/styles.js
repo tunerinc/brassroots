@@ -54,7 +54,7 @@ const styles: Styles = StyleSheet.create({
     paddingHorizontal: 20,
     zIndex: 1,
     alignSelf: 'stretch',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   nav: {
     flex: 1,
@@ -66,6 +66,7 @@ const styles: Styles = StyleSheet.create({
     fontSize: 45,
     alignSelf: 'center',
     backgroundColor: 'transparent',
+    color: '#fefefe',
   },
   title: {
     flex: 6,
