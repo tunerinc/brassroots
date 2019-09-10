@@ -181,7 +181,7 @@ class LibrarySingleArtistView extends React.Component {
             queueUnsubscribe,
             track,
             id: sessionID,
-            total: sessions.byID[sessionID].totalListeners,
+            total: session.totalListeners,
             chatUnsubscribe: () => console.log('chat'),
           },
           {
@@ -509,6 +509,7 @@ class LibrarySingleArtistView extends React.Component {
 LibrarySingleArtistView.propTypes = {
   artistToView: PropTypes.string,
   createSession: PropTypes.func.isRequired,
+  entities: PropTypes.object.isRequired,
   leaveSession: PropTypes.func.isRequired,
   player: PropTypes.object.isRequired,
   playTrack: PropTypes.func.isRequired,

@@ -191,8 +191,8 @@ class LibrarySingleAlbumView extends React.Component {
             infoUnsubscribe,
             queueUnsubscribe,
             track,
-            id: sessionID,
-            total: sessions.byID[sessionID].totalListeners,
+            id: currentSessionID,
+            total: session.totalListeners,
             chatUnsubscribe: () => console.log('chat'),
           },
           {

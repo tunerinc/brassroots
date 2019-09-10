@@ -58,12 +58,8 @@ class LibraryTracksView extends React.Component {
 
   componentDidMount() {
     const {getTracks, tracks: {userTracks}} = this.props;
-
     this.closeModal();
-
-    if (!userTracks.length) {
-      getTracks(true, 0);
-    }
+    if (!userTracks.length) getTracks(true, 0);
   }
 
   openModal = selectedTrack => () => {
@@ -75,19 +71,20 @@ class LibraryTracksView extends React.Component {
   }
 
   onEndReached() {
-    const {getTracks, tracks: {fetchingTracks, userTracks, totalUserTracks}} = this.props;
+    const {getTracks, tracks: {fetching, userTracks, totalUserTracks}} = this.props;
 
-    if (fetchingTracks || !userTracks.length || userTracks.length === totalUserTracks) return;
+    if (
+      fetching.includes('tracks')
+      || !userTracks.length
+      || userTracks.length === totalUserTracks
+    ) return;
 
     getTracks(false, userTracks.length);
   }
 
   handleRefresh() {
-    const {getTracks, tracks: {refreshingTracks}} = this.props;
-
-    if (refreshingTracks) return;
-
-    getTracks(true, 0);
+    const {getTracks, tracks: {refreshing}} = this.props;
+    if (!refreshing) getTracks(true, 0);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -112,18 +109,16 @@ class LibraryTracksView extends React.Component {
 
   renderTrack({item, index}) {
     const {
-      albums: {albumsByID},
-      tracks: {tracksByID},
-      users: {usersByID, currentUserID: id},
+      entities: {tracks, users},
+      users: {currentUserID: id},
     } = this.props;
-    const {displayName} = usersByID[id];
-    const {albumID, artists, name} = tracksByID[item];
-    const {name: albumName} = albumsByID[albumID];
+    const {displayName} = users.byID[id];
+    const {album, artists, name} = tracks.byID[item];
 
     return (
       <TrackCard
         key={item}
-        albumName={albumName}
+        albumName={album.name}
         type='basic'
         context={{id, displayName, type: 'user-tracks', name: displayName}}
         name={name}
@@ -136,11 +131,11 @@ class LibraryTracksView extends React.Component {
   }
 
   renderFooter() {
-    const {tracks: {fetchingTracks, refreshingTracks, userTracks, totalUserTracks}} = this.props;
+    const {tracks: {fetching, refreshing, userTracks, totalUserTracks}} = this.props;
 
     if (
-      !fetchingTracks
-      || refreshingTracks
+      !fetching.includes('tracks')
+      || refreshing
       || !userTracks.length
       || userTracks.length === totalUserTracks
     ) return null;
@@ -159,70 +154,40 @@ class LibraryTracksView extends React.Component {
       createSession,
       playTrack,
       leaveSession,
-      albums: {albumsByID},
+      entities: {albums, queueTracks, sessions, tracks, users},
       player: {prevQueueID, prevTrackID, nextQueueID, nextTrackID, currentQueueID},
-      queue: {queueByID, unsubscribe: queueUnsubscribe},
-      sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
+      queue: {unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, infoUnsubscribe},
       settings: {preference: {session: mode}},
-      tracks: {userTracks, totalUserTracks, tracksByID},
-      users: {currentUserID, usersByID},
+      tracks: {userTracks, totalUserTracks},
+      users: {currentUserID},
     } = this.props;
-    const currentSession = sessionsByID[currentSessionID];
-    const currentTrack = currentSession ? tracksByID[currentSession.currentTrackID] : null;
-    const currentAlbum = currentSession ? albumsByID[currentTrack.albumID] : null;
-    const currentQueue = currentSession ? queueByID[currentSession.currentQueueID] : null;
-    const {displayName, profileImage, totalFollowers} = usersByID[currentUserID];
-    const {name, durationMS, trackNumber, albumID, artists} = tracksByID[trackID];
-    const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
+    const session = sessions.byID[currentSessionID];
+    const track = session ? tracks.byID[session.currentTrackID] : null;
+    const queueTrack = session ? queueTracks.byID[session.currentQueueID] : null;
+    const {displayName, profileImage, totalFollowers} = users.byID[currentUserID];
+    const trackToPlay = tracks.byID[trackID];
     const user = {displayName, profileImage, id: currentUserID};
-    const track = {
-      name,
-      durationMS,
-      trackNumber,
-      artists,
-      id: trackID,
-      album: {
-        small,
-        medium,
-        large,
-        id: albumID,
-        name: albumName,
-        artists: albumArtists,
-      },
-    };
 
-    if (currentSession && currentSession.ownerID === currentUserID) {
-      if (currentSession.currentTrackID === trackID) {
+    if (session && session.ownerID === currentUserID) {
+      if (session.currentTrackID === trackID) {
         Actions.liveSession();
       } else {
         playTrack(
           user,
-          {...track, id: null, trackID: track.id},
+          {...trackToPlay, id: null, trackID: track.id},
           {
-            id: currentSession.id,
-            totalPlayed: currentSession.totalPlayed,
+            id: session.id,
+            totalPlayed: session.totalPlayed,
             current: {
               prevQueueID,
               prevTrackID,
               nextQueueID,
               nextTrackID,
+              track,
               id: currentQueueID,
               totalLikes: currentQueue.totalLikes,
               userID: currentQueue.userID,
-              track: {
-                id: currentTrack.id,
-                name: currentTrack.name,
-                durationMS: currentTrack.durationMS,
-                artists: currentTrack.artists,
-                album: {
-                  id: currentAlbum.id,
-                  name: currentAlbum.name,
-                  small: currentAlbum.small,
-                  medium: currentAlbum.medium,
-                  large: currentAlbum.large,
-                  artists: currentAlbum.artists,
-                },
-              },
             },
           },
           {
@@ -237,35 +202,21 @@ class LibraryTracksView extends React.Component {
         );
       }
     } else {
-      if (currentSession) {
+      if (session) {
         leaveSession(
           currentUserID,
           {
             infoUnsubscribe,
             queueUnsubscribe,
+            track,
             id: currentSessionID,
-            total: sessionsByID[currentSessionID].totalListeners,
+            total: session.totalListeners,
             chatUnsubscribe: () => console.log('chat'),
-            track: {
-              id: currentTrack.id,
-              name: currentTrack.name,
-              trackNumber: currentTrack.trackNumber,
-              durationMS: currentTrack.durationMS,
-              artists: currentTrack.artists,
-              album: {
-                id: currentAlbum.id,
-                name: currentAlbum.name,
-                small: currentAlbum.small,
-                medium: currentAlbum.medium,
-                large: currentAlbum.large,
-                artists: currentAlbum.artists,
-              },
-            },
           },
           {
-            id: currentSession.ownerID,
-            name: usersByID[currentSession.ownerID].displayName,
-            image: usersByID[currentSession.ownerID].profileImage,
+            id: session.ownerID,
+            name: users.byID[session.ownerID].displayName,
+            image: users.byID[session.ownerID].profileImage,
           },
         );
       }
@@ -274,7 +225,7 @@ class LibraryTracksView extends React.Component {
 
       createSession(
         {...user, totalFollowers},
-        track,
+        trackToPlay,
         {
           displayName,
           id: currentUserID,
@@ -293,43 +244,25 @@ class LibraryTracksView extends React.Component {
     const {selectedTrack} = this.state;
     const {
       queueTrack,
-      albums: {albumsByID},
+      entities: {queueTracks, sessions, tracks, users},
       player: {currentQueueID},
-      queue: {userQueue, queueByID, totalQueue},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      queue: {userQueue, totalUserQueue: totalQueue},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
-    const currentSession = sessionsByID[currentSessionID];
 
-    if (currentSession) {
-      const {listeners, ownerID} = currentSession;
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {listeners, ownerID} = sessions.byID[currentSessionID];
       const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-      const songInQueue = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);
-      const {displayName, profileImage} = usersByID[currentUserID];
+      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+      const {displayName, profileImage} = users.byID[currentUserID];
 
       if (isListenerOwner && !songInQueue) {
-        const {name, durationMS, trackNumber, albumID, artists} = tracksByID[selectedTrack];
-        const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
-        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1] : currentQueueID;
-        const {trackID: prevTrackID} = queueByID[prevQueueID];
+        const track = tracks.byID[selectedTrack];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+        const prevTrackID = queueTracks.byID[prevQueueID];
         const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
         const user = {displayName, profileImage, id: currentUserID};
-        const track = {
-          name,
-          durationMS,
-          trackNumber,
-          artists,
-          id: selectedTrack,
-          album: {
-            small,
-            medium,
-            large,
-            id: albumID,
-            name: albumName,
-            artists: albumArtists,
-          },
-        };
 
         this.closeModal();
         queueTrack(session, track, user);
@@ -340,21 +273,20 @@ class LibraryTracksView extends React.Component {
   renderModalContent() {
     const {selectedTrack} = this.state;
     const {
-      albums: {albumsByID},
-      queue: {userQueue, queueByID},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
+      entities: {queueTracks, sessions, tracks},
+      queue: {userQueue},
+      sessions: {currentSessionID},
       users: {currentUserID},
     } = this.props;
 
-    if (!selectedTrack || !tracksByID[selectedTrack]) return <View></View>;
+    if (!selectedTrack || !tracks.allIDs.includes(selectedTrack)) return <View></View>;
 
-    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
-    const songQueued = userQueue.map(id => queueByID[id].trackID).includes(selectedTrack);
+    const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
+    const songQueued = userQueue.map(o => o.trackID).includes(selectedTrack);
     const isListenerOwner = sessionExists
       && (
-        sessionsByID[currentSessionID].listeners.includes(currentUserID)
-        || sessionsByID[currentSessionID].ownerID === currentUserID
+        sessions.byID[currentSessionID].listeners.includes(currentUserID)
+        || sessions.byID[currentSessionID].ownerID === currentUserID
       );
 
     return (
@@ -362,10 +294,10 @@ class LibraryTracksView extends React.Component {
         trackID={selectedTrack}
         closeModal={this.closeModal}
         queueTrack={this.handleAddTrack}
-        name={tracksByID[selectedTrack].name}
-        artists={tracksByID[selectedTrack].artists.map(a => a.name).join(', ')}
-        albumName={albumsByID[tracksByID[selectedTrack].albumID].name}
-        albumImage={albumsByID[tracksByID[selectedTrack].albumID].small}
+        name={tracks.byID[selectedTrack].name}
+        artists={tracks.byID[selectedTrack].artists.map(a => a.name).join(', ')}
+        albumName={tracks.byID[selectedTrack].album.name}
+        albumImage={tracks.byID[selectedTrack].album.small}
         trackInQueue={songQueued}
         isListenerOwner={sessionExists ? isListenerOwner : null}
       />
@@ -375,18 +307,18 @@ class LibraryTracksView extends React.Component {
   render() {
     const {isTrackMenuOpen, selectedTrack, shadowOpacity} = this.state;
     const {
-      albums: {albumsByID},
+      entities: {albums, sessions, tracks},
       queue: {userQueue, queueing, error: queueError},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {userTracks, fetchingTracks, refreshingTracks, tracksByID, error: trackError},
+      sessions: {currentSessionID},
+      tracks: {userTracks, fetching, refreshing, error: trackError},
       users: {currentUserID},
     } = this.props;
-    const sessionExists = currentSessionID && sessionsByID[currentSessionID];
+    const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
     const queueHasTracks = sessionExists && userQueue.length > 0;
     const inSession = sessionExists
       && (
-        sessionsByID[currentSessionID].listeners.includes(currentUserID)
-        || sessionsByID[currentSessionID].ownerID === currentUserID
+        sessions.byID[currentSessionID].listeners.includes(currentUserID)
+        || sessions.byID[currentSessionID].ownerID === currentUserID
       );
 
     return (
@@ -414,7 +346,7 @@ class LibraryTracksView extends React.Component {
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={<Text>Nothing to show</Text>}
-            refreshing={refreshingTracks}
+            refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.5}
@@ -423,7 +355,9 @@ class LibraryTracksView extends React.Component {
         {(userTracks.length === 0 || !userTracks.length) &&
           <View style={styles.scrollContainer}>
             <View style={styles.scrollWrap}>
-            {fetchingTracks &&
+              {(!fetching.includes('tracks') && !trackError) && <Text>Nothing to show</Text>}
+              {(!fetching.includes('tracks') && trackError) && <Text>There was an error.</Text>}
+              {fetching.includes('tracks') &&
                 <View>
                   <LoadingTrack />
                   <LoadingTrack />
@@ -434,8 +368,6 @@ class LibraryTracksView extends React.Component {
                   <LoadingTrack />
                 </View>
               }
-              {(!fetchingTracks && !trackError) && <Text>Nothing to show</Text>}
-              {(!fetchingTracks && trackError) && <Text>There was an error.</Text>}
             </View>
           </View>
         }
@@ -456,13 +388,13 @@ class LibraryTracksView extends React.Component {
         >
           {this.renderModalContent()}
         </Modal>
-        {(typeof selectedTrack === 'string' && tracksByID[selectedTrack]) &&
+        {(typeof selectedTrack === 'string' && tracks.allIDs.includes(selectedTrack)) &&
           <AddToQueueDialog
             queueing={queueing}
             error={queueError}
             inSession={inSession}
             queueHasTracks={queueHasTracks}
-            image={albumsByID[tracksByID[selectedTrack].albumID].medium}
+            image={tracksByID[selectedTrack].album.medium}
           />
         }
       </View>
@@ -471,8 +403,8 @@ class LibraryTracksView extends React.Component {
 }
 
 LibraryTracksView.propTypes = {
-  albums: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
+  entities: PropTypes.object.isRequired,
   getTracks: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
   playTrack: PropTypes.func.isRequired,
@@ -480,13 +412,12 @@ LibraryTracksView.propTypes = {
   sessions: PropTypes.object.isRequired,
   settings: PropTypes.object.isRequired,
   tracks: PropTypes.object.isRequired,
-  title: PropTypes.string.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, player, playlists, queue, sessions, settings, tracks, users}) {
+function mapStateToProps({entities, player, playlists, queue, sessions, settings, tracks, users}) {
   return {
-    albums,
+    entities,
     player,
     playlists,
     queue,

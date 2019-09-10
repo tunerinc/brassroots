@@ -472,18 +472,18 @@ class LibraryTabView extends React.Component {
 }
 
 LibraryTabView.propTypes = {
-  getMostPlayedTracks: PropTypes.func,
-  createSession: PropTypes.func,
-  getRecentTracks: PropTypes.func,
-  leaveSession: PropTypes.func,
-  player: PropTypes.object,
-  playlists: PropTypes.object,
-  queue: PropTypes.object,
-  queueTrack: PropTypes.func,
-  sessions: PropTypes.object,
-  tracks: PropTypes.object,
-  title: PropTypes.string,
-  users: PropTypes.object
+  createSession: PropTypes.func.isRequired,
+  entities: PropTypes.object.isRequired,
+  getMostPlayedTracks: PropTypes.func.isRequired,
+  getRecentTracks: PropTypes.func.isRequired,
+  leaveSession: PropTypes.func.isRequired,
+  player: PropTypes.object.isRequired,
+  playlists: PropTypes.object.isRequired,
+  queue: PropTypes.object.isRequired,
+  queueTrack: PropTypes.func.isRequired,
+  sessions: PropTypes.object.isRequired,
+  tracks: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
 };
 
 function mapStateToProps({entities, player, playlists, queue, sessions, tracks, users}) {
