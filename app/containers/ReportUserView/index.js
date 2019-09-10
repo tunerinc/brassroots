@@ -12,80 +12,78 @@ import styles from './styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Settings Action Creators
-import {setReportMessage} from '../../actions/feedback/SetReportMessage';
+import {updateFeedback} from '../../actions/feedback/UpdateFeedback';
 
 class ReportUserView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {inputHeight: 64};
+    this.state = {
+      inputHeight: 64,
+      shadowOpacity: new Animated.Value(0),
+    };
 
     this.onScroll = this.onScroll.bind(this);
     this.handleSetReportMessage = this.handleSetReportMessage.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
   handleSetReportMessage({nativeEvent: {text, contentSize: {height}}}) {
-    const {setReportMessage} = this.props;
+    const {updateFeedback} = this.props;
 
     this.setState({inputHeight: height});
-    setReportMessage(text);
+    updateFeedback({text});
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
-    const {inputHeight} = this.state;
-    const {feedback: {types, message}} = this.props;
+    const {inputHeight, shadowOpacity} = this.state;
+    const {feedback: {types, text}} = this.props;
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Report User</Text>
-            {types.length !== 0 && message !== '' &&
+            {types.length !== 0 && text !== '' &&
               <TouchableOpacity style={styles.rightIcon} disabled={true}>
                 <Text style={[styles.rightIconText, styles.enabledText]}>send</Text>
               </TouchableOpacity>
             }
-            {types.length === 0 || message === '' &&
+            {(types.length === 0 || text === '') &&
               <TouchableOpacity style={styles.rightIcon} disabled={true}>
                 <Text style={[styles.rightIconText, styles.disabledText]}>send</Text>
               </TouchableOpacity>
             }
           </View>
         </Animated.View>
-        <ScrollView
-          style={styles.reportWrap}
-          onScroll={this.onScroll}
-          scrollEventThrottle={16}
-        >
+        <ScrollView style={styles.reportWrap} onScroll={this.onScroll} scrollEventThrottle={16}>
           <View style={styles.sectionOption}>
             <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
               <Text style={styles.sectionOptionText}>It's Spam</Text>
-              {types.indexOf('spam') !== -1 &&
+              {types.includes('spam') &&
                 <Ionicons name='md-radio-button-on' color='#2b6dc0' style={styles.optionCheck} />
               }
-              {types.indexOf('spam') === -1 &&
+              {!types.includes('spam') &&
                 <Ionicons name='md-radio-button-off' color='#fefefe' style={styles.optionCheck} />
               }
             </TouchableOpacity>
@@ -93,10 +91,10 @@ class ReportUserView extends React.Component {
           <View style={styles.sectionOption}>
             <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
               <Text style={styles.sectionOptionText}>Something Isn't Working</Text>
-              {types.indexOf('inappropriate') !== -1 &&
+              {types.includes('inappropriate') &&
                 <Ionicons name='md-radio-button-on' color='#2b6dc0' style={styles.optionCheck} />
               }
-              {types.indexOf('inappropriate') === -1 &&
+              {!types.includes('inappropriate') &&
                 <Ionicons name='md-radio-button-off' color='#fefefe' style={styles.optionCheck} />
               }
             </TouchableOpacity>
@@ -108,7 +106,7 @@ class ReportUserView extends React.Component {
               placeholder='Add a message...'
               placeholderTextColor='#888'
               placeholderStyle={{fontWeight: '600'}}
-              value={message}
+              value={text}
               maxLength={300}
               style={[
                 styles.input,
@@ -128,7 +126,7 @@ class ReportUserView extends React.Component {
 
 ReportUserView.propTypes = {
   feedback: PropTypes.object.isRequired,
-  setReportMessage: PropTypes.func.isRequired,
+  updateFeedback: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({feedback}) {
@@ -136,7 +134,7 @@ function mapStateToProps({feedback}) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({setReportMessage}, dispatch);
+  return bindActionCreators({updateFeedback}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReportUserView);
