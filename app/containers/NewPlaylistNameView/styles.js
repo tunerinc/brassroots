@@ -22,23 +22,23 @@ interface Styles {
   rightIconText: TextStyleProp,
   enabledText: TextStyleProp,
   disabledText: TextStyleProp,
-  newPlaylistWrap: ViewStyleProp,
-  newPlaylistImageName: ViewStyleProp,
-  newPlaylistImage: ViewStyleProp,
-  newPlaylistImageIcon: TextStyleProp,
-  newPlaylistName: ViewStyleProp,
+  wrap: ViewStyleProp,
+  imageName: ViewStyleProp,
+  image: ViewStyleProp,
+  imageIcon: TextStyleProp,
+  name: ViewStyleProp,
   input: TextStyleProp,
-  newPlaylistMode: ViewStyleProp,
-  newPlaylistModeWrap: ViewStyleProp,
-  newPlaylistModeIcon: TextStyleProp,
-  newPlaylistModeInfo: ViewStyleProp,
-  newPlaylistModeName: ViewStyleProp,
-  newPlaylistModeNameText: TextStyleProp,
-  newPlaylistModeDesc: ViewStyleProp,
-  newPlaylistModeDescBullet: ViewStyleProp,
-  newPlaylistModeDescBulletText: TextStyleProp,
-  newPlaylistModeDescText: TextStyleProp,
-  newPlaylistModeSelect: TextStyleProp,
+  mode: ViewStyleProp,
+  modeWrap: ViewStyleProp,
+  modeIcon: TextStyleProp,
+  modeInfo: ViewStyleProp,
+  modeName: ViewStyleProp,
+  modeNameText: TextStyleProp,
+  modeDesc: ViewStyleProp,
+  descBullet: ViewStyleProp,
+  bulletText: TextStyleProp,
+  descText: TextStyleProp,
+  modeSelect: TextStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -72,6 +72,7 @@ const styles: Styles = StyleSheet.create({
     fontSize: 35,
     backgroundColor: 'transparent',
     alignSelf: 'center',
+    color: '#fefefe',
   },
   title: {
     flex: 6,
@@ -101,19 +102,19 @@ const styles: Styles = StyleSheet.create({
   disabledText: {
     color: '#888',
   },
-  newPlaylistWrap: {
+  wrap: {
     flex: 1,
     zIndex: -1,
     backgroundColor: '#1b1b1e',
   },
-  newPlaylistImageName: {
+  imageName: {
     flexDirection: 'row',
     paddingVertical: 15,
     paddingHorizontal: 20,
     backgroundColor: '#323232',
     zIndex: -2,
   },
-  newPlaylistImage: {
+  image: {
     backgroundColor: '#888',
     alignItems: 'center',
     justifyContent: 'center',
@@ -121,10 +122,11 @@ const styles: Styles = StyleSheet.create({
     width: 50,
     borderRadius: 25,
   },
-  newPlaylistImageIcon: {
+  imageIcon: {
     fontSize: 28,
+    color: '#fefefe',
   },
-  newPlaylistName: {
+  name: {
     flex: 6,
   },
   input: {
@@ -137,40 +139,40 @@ const styles: Styles = StyleSheet.create({
     color: '#fefefe',
     paddingLeft: 10,
   },
-  newPlaylistMode: {
+  mode: {
     flex: 1,
     borderColor: '#323232',
     borderBottomWidth: 1,
   },
-  newPlaylistModeWrap: {
+  modeWrap: {
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 20,
     alignItems: 'center',
   },
-  newPlaylistModeIcon: {
+  modeIcon: {
     flex: 2,
     fontSize: 50,
   },
-  newPlaylistModeInfo: {
+  modeInfo: {
     flex: 6,
   },
-  newPlaylistModeName: {
+  modeName: {
     marginBottom: 5,
   },
-  newPlaylistModeNameText: {
+  modeNameText: {
     color: '#fefefe',
     fontSize: 18,
     fontWeight: '600',
     lineHeight: 23.4,
   },
-  newPlaylistModeDesc: {
+  modeDesc: {
     paddingRight: 30,
   },
-  newPlaylistModeDescBullet: {
+  descBullet: {
     flexDirection: 'row',
   },
-  newPlaylistModeDescBulletText: {
+  bulletText: {
     fontFamily: 'Muli',
     fontSize: 9,
     fontWeight: '800',
@@ -178,14 +180,14 @@ const styles: Styles = StyleSheet.create({
     color: '#888',
     marginRight: 5,
   },
-  newPlaylistModeDescText: {
+  descText: {
     fontFamily: 'Muli',
     fontSize: 14,
     fontWeight: '800',
     lineHeight: 16.8,
     color: '#888',
   },
-  newPlaylistModeSelect: {
+  modeSelect: {
     flex: 1,
     textAlign: 'right',
     fontSize: 35,

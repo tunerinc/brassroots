@@ -6,6 +6,7 @@ import {Text, View, TouchableOpacity, TextInput} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import {initialState} from '../../reducers/playlists';
 import styles from './styles';
 
 // Icons
@@ -16,9 +17,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Foundation from 'react-native-vector-icons/Foundation';
 
 // Playlists Action Creators
-import {clearNewPlaylist} from '../../actions/playlists/ClearNewPlaylist';
-import {setNewPlaylistMode} from '../../actions/playlists/SetNewPlaylistMode';
-import {setNewPlaylistName} from '../../actions/playlists/SetNewPlaylistName';
+import {updatePlaylists} from '../../actions/playlists/UpdatePlaylists';
 
 class NewPlaylistNameView extends React.Component {
   constructor(props) {
@@ -30,19 +29,19 @@ class NewPlaylistNameView extends React.Component {
   }
 
   navBack() {
-    const {clearNewPlaylist} = this.props;
-    clearNewPlaylist();
+    const {updatePlaylists} = this.props;
+    updatePlaylists({newPlaylist: initialState.newPlaylist});
     Actions.pop();
   }
 
   handleSetPlaylistMode = mode => () => {
-    const {setNewPlaylistMode} = this.props;
-    setNewPlaylistMode(mode);
+    const {updatePlaylists} = this.props;
+    updatePlaylists({newPlaylist: {mode}});
   }
 
   handleSetPlaylistName(name) {
-    const {setNewPlaylistName} = this.props;
-    setNewPlaylistName(name);
+    const {updatePlaylists} = this.props;
+    updatePlaylists({newPlaylist: {name}});
   }
 
   goToSelectPhoto() {
@@ -56,12 +55,7 @@ class NewPlaylistNameView extends React.Component {
       <View style={styles.container}>
         <View style={styles.shadow}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={this.navBack}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>New Playlist</Text>
             {(name !== '' && mode !== '') &&
               <TouchableOpacity style={styles.rightIcon} onPress={Actions.libraryAddMembers}>
@@ -75,12 +69,12 @@ class NewPlaylistNameView extends React.Component {
             }
           </View>
         </View>
-        <View style={styles.newPlaylistWrap}>
-          <View style={styles.newPlaylistImageName}>
-            <TouchableOpacity style={styles.newPlaylistImage} onPress={this.goToSelectPhoto}>
-              <FontAwesome name='camera' color='#fefefe' style={styles.newPlaylistImageIcon} />
+        <View style={styles.wrap}>
+          <View style={styles.imageName}>
+            <TouchableOpacity style={styles.image} onPress={this.goToSelectPhoto}>
+              <FontAwesome name='camera' style={styles.imageIcon} />
             </TouchableOpacity>
-            <View style={styles.newPlaylistName}>
+            <View style={styles.name}>
               <TextInput
                 style={styles.input}
                 onChangeText={this.handleSetPlaylistName}
@@ -96,7 +90,7 @@ class NewPlaylistNameView extends React.Component {
           </View>
           <View
             style={[
-              styles.newPlaylistMode,
+              styles.mode,
               {
                 shadowOpacity: 0.5,
                 shadowColor: '#1b1b1e',
@@ -107,30 +101,30 @@ class NewPlaylistNameView extends React.Component {
             ]}
           >
             <TouchableOpacity
-              style={styles.newPlaylistModeWrap}
+              style={styles.modeWrap}
               onPress={this.handleSetPlaylistMode('hidden')}
             >
               <Octicons
                 name='telescope'
                 color={mode === 'hidden' ? '#2b6dc0' : '#888'}
-                style={styles.newPlaylistModeIcon}
+                style={styles.modeIcon}
               />
-              <View style={styles.newPlaylistModeInfo}>
-                <View style={styles.newPlaylistModeName}>
-                  <Text style={styles.newPlaylistModeNameText}>Hidden</Text>
+              <View style={styles.modeInfo}>
+                <View style={styles.modeName}>
+                  <Text style={styles.modeNameText}>Hidden</Text>
                 </View>
-                <View style={styles.newPlaylistModeDesc}>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>Hidden from public</Text>
+                <View style={styles.modeDesc}>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>Hidden from public</Text>
                   </View>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>Invite-only</Text>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>Invite-only</Text>
                   </View>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>Members may only add tracks</Text>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>Members may only add tracks</Text>
                   </View>
                 </View>
               </View>
@@ -138,89 +132,81 @@ class NewPlaylistNameView extends React.Component {
                 <Ionicons
                   name='md-radio-button-on'
                   color='#2b6dc0'
-                  style={styles.newPlaylistModeSelect}
+                  style={styles.modeSelect}
                 />
               }
               {mode !== 'hidden' &&
                 <Ionicons
                   name='md-radio-button-off'
                   color='#fefefe'
-                  style={styles.newPlaylistModeSelect}
+                  style={styles.modeSelect}
                 />
               }
             </TouchableOpacity>
           </View>
-          <View style={styles.newPlaylistMode}>
+          <View style={styles.mode}>
             <TouchableOpacity
-              style={styles.newPlaylistModeWrap}
+              style={styles.modeWrap}
               onPress={this.handleSetPlaylistMode('vip')}
             >
               <Foundation
                 name='ticket'
                 color={mode === 'vip' ? '#2b6dc0' : '#888'}
-                style={styles.newPlaylistModeIcon}
+                style={styles.modeIcon}
               />
-              <View style={styles.newPlaylistModeInfo}>
-                <View style={styles.newPlaylistModeName}>
-                  <Text style={styles.newPlaylistModeNameText}>VIP</Text>
+              <View style={styles.modeInfo}>
+                <View style={styles.modeName}>
+                  <Text style={styles.modeNameText}>VIP</Text>
                 </View>
-                <View style={styles.newPlaylistModeDesc}>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>Public</Text>
+                <View style={styles.modeDesc}>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>Public</Text>
                   </View>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>Request / invite to join</Text>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>Request / invite to join</Text>
                   </View>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>Members may only add tracks</Text>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>Members may only add tracks</Text>
                   </View>
                 </View>
               </View>
               {mode === 'vip' &&
-                <Ionicons
-                  name='md-radio-button-on'
-                  color='#2b6dc0'
-                  style={styles.newPlaylistModeSelect}
-                />
+                <Ionicons name='md-radio-button-on' color='#2b6dc0' style={styles.modeSelect} />
               }
               {mode !== 'vip' &&
-                <Ionicons
-                  name='md-radio-button-off'
-                  color='#fefefe'
-                  style={styles.newPlaylistModeSelect}
-                />
+                <Ionicons name='md-radio-button-off' color='#fefefe' style={styles.modeSelect} />
               }
             </TouchableOpacity>
           </View>
-          <View style={styles.newPlaylistMode}>
+          <View style={styles.mode}>
             <TouchableOpacity
-              style={styles.newPlaylistModeWrap}
+              style={styles.modeWrap}
               onPress={this.handleSetPlaylistMode('limitless')}
             >
               <MaterialIcons
                 name='all-inclusive'
                 color={mode === 'limitless' ? '#2b6dc0' : '#888'}
-                style={styles.newPlaylistModeIcon}
+                style={styles.modeIcon}
               />
-              <View style={styles.newPlaylistModeInfo}>
-                <View style={styles.newPlaylistModeName}>
-                  <Text style={styles.newPlaylistModeNameText}>Limitless</Text>
+              <View style={styles.modeInfo}>
+                <View style={styles.modeName}>
+                  <Text style={styles.modeNameText}>Limitless</Text>
                 </View>
-                <View style={styles.newPlaylistModeDesc}>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>Public</Text>
+                <View style={styles.modeDesc}>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>Public</Text>
                   </View>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>Anyone may join</Text>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>Anyone may join</Text>
                   </View>
-                  <View style={styles.newPlaylistModeDescBullet}>
-                    <Text style={styles.newPlaylistModeDescBulletText}>•</Text>
-                    <Text style={styles.newPlaylistModeDescText}>
+                  <View style={styles.descBullet}>
+                    <Text style={styles.bulletText}>•</Text>
+                    <Text style={styles.descText}>
                       Members may add and delete tracks
                     </Text>
                   </View>
@@ -230,14 +216,14 @@ class NewPlaylistNameView extends React.Component {
                 <Ionicons
                   name='md-radio-button-on'
                   color='#2b6dc0'
-                  style={styles.newPlaylistModeSelect}
+                  style={styles.modeSelect}
                 />
               }
               {mode !== 'limitless' &&
                 <Ionicons
                   name='md-radio-button-off'
                   color='#fefefe'
-                  style={styles.newPlaylistModeSelect}
+                  style={styles.modeSelect}
                 />
               }
             </TouchableOpacity>
@@ -249,10 +235,8 @@ class NewPlaylistNameView extends React.Component {
 }
 
 NewPlaylistNameView.propTypes = {
-  clearNewPlaylist: PropTypes.func.isRequired,
   playlists: PropTypes.object.isRequired,
-  setNewPlaylistMode: PropTypes.func.isRequired,
-  setNewPlaylistName: PropTypes.func.isRequired,
+  updatePlaylists: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({playlists}) {
@@ -260,11 +244,7 @@ function mapStateToProps({playlists}) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    clearNewPlaylist,
-    setNewPlaylistMode,
-    setNewPlaylistName,
-  }, dispatch);
+  return bindActionCreators({updatePlaylists}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewPlaylistNameView);
