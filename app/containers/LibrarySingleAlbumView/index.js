@@ -80,19 +80,18 @@ class LibrarySingleAlbumView extends React.Component {
 
   renderTrack = albumToView => ({item, index}) => {
     const {
-      entities: {albums, tracks, users},
+      entities: {tracks, users},
       users: {currentUserID},
     } = this.props;
     const {displayName} = users.byID[currentUserID];
-    const {artists, name, trackNumber} = tracks.byID[item];
-    const {name: albumName} = albums.byID[albumToView];
+    const {artists, name, album, trackNumber} = tracks.byID[item];
 
     return (
       <TrackCard
         key={item}
-        albumName={albumName}
+        albumName={album.name}
         type='album'
-        context={{displayName, id: albumToView, name: albumName, type: 'user-album'}}
+        context={{displayName, id: albumToView, name: album.name, type: 'user-album'}}
         name={name}
         onPress={this.handlePlay(item, index)}
         openModal={this.openModal(item, 'track')}
@@ -151,6 +150,7 @@ class LibrarySingleAlbumView extends React.Component {
     const queueTrack = session ? queueTracks.byID[session.currentQueueID] : null;
     const {displayName, profileImage, totalFollowers} = users.byID[currentUserID];
     const trackToPlay = tracks.byID[trackID];
+    const {userTracks} = albums.byID[trackToPlay.album.id];
     const user = {displayName, profileImage, id: currentUserID};
 
     if (session && session.ownerID === currentUserID) {
@@ -355,7 +355,7 @@ class LibrarySingleAlbumView extends React.Component {
           <Animated.View
             style={[
               styles.animatedHeader,
-              {height: headerHeight},
+              {height: headerHeight, backgroundColor: large === '' ? '#888' : '#1b1b1e'},
             ]}
           />
         </View>
@@ -404,6 +404,7 @@ class LibrarySingleAlbumView extends React.Component {
             {
               height: headerHeight,
               shadowOpacity: headerShadowOpacity,
+              backgroundColor: large === '' ? '#888' : '#1b1b1e',
             }
           ]}
         >
@@ -485,7 +486,7 @@ class LibrarySingleAlbumView extends React.Component {
         >
           {this.renderModalContent('album', albumToView)}
         </Modal>
-        {(typeof selectedTrack === 'string' && selectedTrack !== '' && tracks.allIDs.includes(selectedTrack)) &&
+        {(typeof selectedTrack === 'string' && tracks.allIDs.includes(selectedTrack)) &&
           <AddToQueueDialog
             queueing={queueing}
             error={queueError}

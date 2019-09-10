@@ -160,6 +160,7 @@ const styles: Styles = StyleSheet.create({
   shareIcon: {
     marginRight: 5,
     fontSize: 30,
+    color: '#fefefe',
   },
   shareText: {
     color: '#fefefe',
