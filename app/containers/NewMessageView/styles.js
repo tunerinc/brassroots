@@ -97,6 +97,7 @@ const styles: Styles = StyleSheet.create({
   newGroupIcon: {
     marginRight: 10,
     fontSize: 45,
+    color: '#fefefe',
   },
   newGroupText: {
     fontFamily: 'Muli',

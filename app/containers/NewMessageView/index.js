@@ -16,21 +16,30 @@ class NewMessageView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onScroll = this.onScroll.bind(this);
+    this.state = {
+      shadowOpacity: new Animated.Value(0),
+    };
 
-    this.shadowOpacity = new Animated.Value(0);
+    this.onScroll = this.onScroll.bind(this);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
@@ -39,16 +48,16 @@ class NewMessageView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
+    const {shadowOpacity} = this.state;
     const {
       title,
-      groups: {fetchingGroups},
-      users: {fetchingUsers},
+      groups: {fetching: groupFetching},
+      users: {fetching: userFetching},
     } = this.props;
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <View style={styles.leftIcon}></View>
             <Text style={styles.title}>
@@ -61,15 +70,15 @@ class NewMessageView extends React.Component {
         </Animated.View>
         <ScrollView style={styles.messageWrap} onScroll={this.onScroll} scrollEventThrottle={16}>
           <TouchableOpacity style={styles.newGroupButton} onPress={this.goToNewGroup}>
-            <Foundation name='torsos-all' color='#fefefe' style={styles.newGroupIcon} />
+            <Foundation name='torsos-all' style={styles.newGroupIcon} />
             <Text style={styles.newGroupText}>New Group</Text>
           </TouchableOpacity>
-          {fetchingUsers && !fetchingGroups &&
+          {userFetching.includes('users') && !groupFetching.includes('groups') &&
             <View>
               <Text>Not fetching</Text>
             </View>
           }
-          {!fetchingUsers || fetchingGroups &&
+          {(!userFetching.includes('users') || groupFetching.includes('groups')) &&
             <View>
               <LoadingUser />
               <LoadingUser />
