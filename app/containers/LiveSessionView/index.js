@@ -77,6 +77,13 @@ class LiveSessionView extends React.Component {
       seekTime: 0,
       editingQueue: false,
       message: '',
+      shadowOpacity: new Animated.Value(0),
+      playerOpacity: new Animated.Value(1),
+      chatOpacity: new Animated.Value(0),
+      animatedHeight: new Animated.Value(0),
+      animatedOpacity: new Animated.Value(0),
+      animatedIndex: new Animated.Value(-5),
+      animatedDJOptionOpacity: new Animated.Value(0),
 
       // most likely will get removed
       fetchedChat: false,
@@ -84,6 +91,7 @@ class LiveSessionView extends React.Component {
       fetchedQueue: false,
     };
 
+    this.progressInterval;
     this.updateSlider = this.updateSlider.bind(this);
     this.seekTrack = this.seekTrack.bind(this);
     this.changeActiveView = this.changeActiveView.bind(this);
@@ -109,15 +117,6 @@ class LiveSessionView extends React.Component {
     this.renderHeader = this.renderHeader.bind(this);
     this.toggleLike = this.toggleLike.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
-
-    this.progressInterval;
-    this.shadowOpacity = new Animated.Value(0);
-    this.playerOpacity = new Animated.Value(1);
-    this.chatOpacity = new Animated.Value(0);
-    this.animatedHeight = new Animated.Value(0);
-    this.animatedOpacity = new Animated.Value(0);
-    this.animatedIndex = new Animated.Value(-5);
-    this.animatedDJOptionOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
@@ -126,10 +125,10 @@ class LiveSessionView extends React.Component {
       getChat,
       getSessionInfo,
       getUserQueue,
-      chat: {fetchingChat, chatUnsubscribe},
+      chat: {fetching: chatFetching, chatUnsubscribe},
       player: {currentQueueID},
-      queue: {fetchingQueue, unsubscribe: queueUnsubscribe},
-      sessions: {currentSessionID, fetchingInfo, infoUnsubscribe},
+      queue: {fetching: queueFetching, unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, fetching: sessionFetching, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     
@@ -139,12 +138,12 @@ class LiveSessionView extends React.Component {
       //   getChat(currentSessionID);
       // }
 
-      if (!fetchedInfo && !fetchingInfo && !infoUnsubscribe) {
+      if (!fetchedInfo && !sessionFetching.includes('info') && !infoUnsubscribe) {
         this.setState({fetchedInfo: true});
         getSessionInfo(currentSessionID);
       }
 
-      if (!fetchedQueue && !fetchingQueue && !queueUnsubscribe) {
+      if (!fetchedQueue && !queueFetching.includes('queue') && !queueUnsubscribe) {
         this.setState({fetchedQueue: true});
         getUserQueue(currentUserID, currentSessionID, currentQueueID);
       }
@@ -157,10 +156,10 @@ class LiveSessionView extends React.Component {
       getChat,
       getSessionInfo,
       getUserQueue,
-      chat: {fetchingChat, chatUnsubscribe},
+      chat: {fetching: chatFetching, chatUnsubscribe},
       player: {progress, currentQueueID},
-      queue: {userQueue, fetchingQueue, unsubscribe: queueUnsubscribe},
-      sessions: {currentSessionID, fetchingInfo, infoUnsubscribe},
+      queue: {userQueue, fetching: queueFetching, unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, fetching: sessionFetching, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     const {player: {progress: newProgress}} = nextProps;
@@ -171,12 +170,12 @@ class LiveSessionView extends React.Component {
       //   getChat(currentSessionID);
       // }
 
-      if (!fetchedInfo && !fetchingInfo && !infoUnsubscribe) {
+      if (!fetchedInfo && !sessionFetching.includes('info') && !infoUnsubscribe) {
         this.setState({fetchedInfo: true});
         getSessionInfo(currentSessionID);
       }
 
-      if (!fetchedQueue && !fetchingQueue && !queueUnsubscribe) {
+      if (!fetchedQueue && !queueFetching.includes('queue') && !queueUnsubscribe) {
         this.setState({fetchedQueue: true});
         getUserQueue(currentUserID, currentSessionID, currentQueueID);
       }
@@ -193,12 +192,9 @@ class LiveSessionView extends React.Component {
   }
 
   updateSlider(pos) {
-    const {seekTime} = this.state;;
+    const {seekTime} = this.state;
     const timeDiff = Math.abs(seekTime - pos);
-
-    if (timeDiff >= 999) {
-      this.setState({seekTime: pos});
-    }
+    if (timeDiff >= 999) this.setState({seekTime: pos});
   }
 
   seekTrack() {
@@ -218,20 +214,20 @@ class LiveSessionView extends React.Component {
   }
 
   onScroll({nativeEvent: {contentOffset, contentSize, layoutMeasurement: {height: layoutHeight}}}) {
-    const {viewingChat, viewingPlayer} = this.state;
+    const {viewingChat, viewingPlayer, shadowOpacity} = this.state;
     const scrollingPlayer = viewingPlayer && contentOffset.y > 0;
     const scrollingChat = viewingChat && (contentSize.height - layoutHeight - 20) > contentOffset.y;
 
     if (scrollingPlayer || scrollingChat) {
-      if (this.shadowOpacity !== 0.9) {
-        Animated.timing(this.shadowOpacity, {
+      if (shadowOpacity !== 0.9) {
+        Animated.timing(shadowOpacity, {
           toValue: 0.9,
           duration: 230,
           easing: Easing.linear
         }).start();
       }
     } else {
-      Animated.timing(this.shadowOpacity, {
+      Animated.timing(shadowOpacity, {
         toValue: 0,
         duration: 230,
         easing: Easing.linear
@@ -247,15 +243,14 @@ class LiveSessionView extends React.Component {
   leave() {
     const {
       leaveSession,
-      albums: {albumsByID},
+      entiites: {sessions, tracks, users},
       player: {currentTrackID},
       queue: {unsubscribe: queueUnsubscribe},
-      sessions: {currentSessionID, sessionsByID, infoUnsubscribe},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      sessions: {currentSessionID, infoUnsubscribe},
+      users: {currentUserID},
     } = this.props;
-    const track = tracksByID[currentTrackID];
-    const owner = usersByID[sessionsByID[currentSessionID].ownerID];
+    const track = tracks.byID[currentTrackID];
+    const owner = users.byID[sessions.byID[currentSessionID].ownerID];
 
     setTimeout(Actions.pop, 200);
 
@@ -264,24 +259,10 @@ class LiveSessionView extends React.Component {
       {
         infoUnsubscribe,
         queueUnsubscribe,
+        track,
         id: currentSessionID,
-        total: sessionsByID[currentSessionID].totalListeners,
+        total: sessions.byID[currentSessionID].totalListeners,
         chatUnsubscribe: () => console.log('chat'),
-        track: {
-          id: track.id,
-          name: track.name,
-          trackNumber: track.trackNumber,
-          durationMS: track.durationMS,
-          artists: track.artists,
-          album: {
-            id: track.albumID,
-            name: albumsByID[track.albumID].name,
-            small: albumsByID[track.albumID].small,
-            medium: albumsByID[track.albumID].medium,
-            large: albumsByID[track.albumID].large,
-            artists: albumsByID[track.albumID].artists,
-          },
-        },
       },
       {
         id: owner.id,
@@ -309,13 +290,14 @@ class LiveSessionView extends React.Component {
   skipNext() {
     const {
       nextTrack,
+      entities: {sessions, users},
       player: {nextQueueID, currentQueueID: current},
-      queue: {totalQueue},
-      sessions: {currentSessionID, sessionsByID},
-      users: {currentUserID, usersByID},
+      queue: {totalUserQueue: totalQueue},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
-    const {displayName, profileImage} = usersByID[currentUserID];
-    const {totalPlayed, totalListeners: totalUsers} = sessionsByID[currentSessionID];
+    const {displayName, profileImage} = users.byID[currentUserID];
+    const {totalPlayed, totalListeners: totalUsers} = sessions.byID[currentSessionID];
 
     nextTrack(
       {displayName, profileImage, id: currentUserID},
@@ -327,18 +309,15 @@ class LiveSessionView extends React.Component {
   skipPrev() {
     const {
       previousTrack,
-      albums: {albumsByID},
+      entities: {queueTracks, sessions, tracks, users},
       player: {prevQueueID, prevTrackID, currentTrackID, currentQueueID, nextQueueID, nextTrackID},
-      queue: {queueByID},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
-    const {displayName, profileImage} = usersByID[currentUserID];
-    const {totalPlayed} = sessionsByID[currentSessionID];
-    const {userID, totalLikes} = queueByID[currentQueueID];
-    const {name, trackNumber, durationMS, albumID, artists} = tracksByID[currentTrackID];
-    const {small, medium, large, name: albumName, artists: albumArtists} = albumsByID[albumID];
+    const {displayName, profileImage} = users.byID[currentUserID];
+    const {totalPlayed} = sessions.byID[currentSessionID];
+    const {userID, totalLikes} = queueTracks.byID[currentQueueID];
+    const track = tracks.byID[currentTrackID];
     const user = {displayName, profileImage, id: currentUserID};
     const session = {
       totalPlayed,
@@ -350,22 +329,8 @@ class LiveSessionView extends React.Component {
         prevTrackID,
         nextQueueID,
         nextTrackID,
+        track,
         id: currentQueueID,
-        track: {
-          name,
-          trackNumber,
-          durationMS,
-          artists,
-          id: currentTrackID,
-          album: {
-            small,
-            medium,
-            large,
-            id: albumID,
-            name: albumName,
-            artists: albumArtists,
-          },
-        },
       },
     };
 
@@ -375,47 +340,46 @@ class LiveSessionView extends React.Component {
   delete = queueID => () => {
     const {
       deleteQueueTrack,
-      queue: {userQueue},
+      queue: {totalUserQueue: total},
       sessions: {currentSessionID: id},
     } = this.props;
 
-    deleteQueueTrack({id, total: userQueue.length}, queueID);
+    deleteQueueTrack({id, total}, queueID);
   }
 
   renderTrack({item, index}) {
     const {editingQueue} = this.state;
     const {
-      queue: {queueByID, deleting, liking, error: queueError},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {usersByID},
+      entities: {queueTracks, sessions, tracks, users},
+      queue: {deleting, liking, error: queueError},
+      sessions: {currentSessionID},
     } = this.props;
 
-    if (!currentSessionID || !queueByID[item] || !tracksByID[queueByID[item].trackID]) return <View></View>;
+    if (!currentSessionID || !tracks.allIDs.includes(item.trackID)) return <View></View>;
 
     const {ownerID} = sessionsByID[currentSessionID];
-    const {trackID, liked, totalLikes, userID} = queueByID[item];
-    const {name, artists} = tracksByID[trackID];
-    const {displayName} = usersByID[ownerID];
-    const {profileImage, displayName: trackOwnerName} = usersByID[userID];
+    const {liked, totalLikes, userID} = queueTracks.byID[item.id];
+    const {name, artists} = tracks.byID[item.trackID];
+    const {displayName} = users.byID[ownerID];
+    const {profileImage, displayName: trackOwnerName} = users.byID[userID];
 
     return (
       <TrackCard
         key={item}
         artists={artists.map(a => a.name).join(', ')}
         context={{id: ownerID, type: 'userQueue', displayName, name: 'userQueue'}}
-        deleting={deleting.includes(item)}
-        deleteTrack={this.delete(item)}
+        deleting={deleting.includes(item.id)}
+        deleteTrack={this.delete(item.id)}
         editing={editingQueue}
         image={profileImage}
-        liking={liking.includes(item)}
+        liking={liking.includes(item.id)}
         liked={liked}
         name={name}
         queueError={queueError}
         showRoundImage={true}
-        toggleLike={this.toggleLike(item, liked)}
+        toggleLike={this.toggleLike(item.id, liked)}
         totalLikes={totalLikes}
-        trackID={item}
+        trackID={item.trackID}
         type='userQueue'
         displayName={trackOwnerName}
       />
@@ -424,11 +388,11 @@ class LiveSessionView extends React.Component {
 
   renderMessage({item}) {
     const {
-      sessions: {chatByID},
-      users: {currentUserID, usersByID},
+      entities: {messages, users},
+      users: {currentUserID},
     } = this.props;
-    const {text, timestamp, userID: chatOwner} = chatByID[item];
-    const {profileImage} = usersByID[chatOwner];
+    const {text, timestamp, userID: chatOwner} = messages.byID[item];
+    const {profileImage} = users.byID[chatOwner];
 
     return (
       <ChatMessage
@@ -441,52 +405,50 @@ class LiveSessionView extends React.Component {
   }
 
   toggleMenu() {
-    const {isMenuOpen} = this.state;
-    const {sessions: {currentSessionID, sessionsByID}, users: {currentUserID}} = this.props;
-    const currentSession = sessionsByID[currentSessionID];
-    const height = currentSession && currentSession.ownerID === currentUserID ? 352 : 306;
+    const {
+      isMenuOpen,
+      animatedDJOptionOpacity,
+      animatedHeight,
+      animatedOpacity,
+      animatedIndex,
+    } = this.state;
+    const {
+      entities: {sessions},
+      sessions: {currentSessionID},
+      users: {currentUserID},
+    } = this.props;
+    const session = sessions.byID[currentSessionID];
+    const height = session && session.ownerID === currentUserID ? 352 : 306;
 
-    if (currentSession) {
+    if (session) {
       if (isMenuOpen) {
         Animated.sequence([
           Animated.parallel([
             Animated.timing(
-              this.animatedDJOptionOpacity,
+              animatedDJOptionOpacity,
               {toValue: 0, duration: 115, easing: Easing.linear}
             ),
             Animated.timing(
-              this.animatedHeight,
+              animatedHeight,
               {toValue: 0, duration: 115, delay: 58, easing: Easing.linear}
             ),
             Animated.timing(
-              this.animatedOpacity,
+              animatedOpacity,
               {toValue: 0, duration: 230, delay: 58, easing: Easing.linear}
             )
           ]),
-          Animated.timing(
-            this.animatedIndex,
-            {toValue: -5, duration: 1, easing: Easing.linear}
-          )
+          Animated.timing(animatedIndex, {toValue: -5, duration: 1, easing: Easing.linear})
         ]).start();
       } else {
         Animated.sequence([
-          Animated.timing(
-            this.animatedIndex,
-            {toValue: 5, duration: 1, easing: Easing.linear}
-          ),
+          Animated.timing(animatedIndex, {toValue: 5, duration: 1, easing: Easing.linear}),
           Animated.parallel([
+            Animated.timing(animatedHeight, {toValue: height, duration: 115, easing: Easing.linear}),
             Animated.timing(
-              this.animatedHeight,
-              {toValue: height, duration: 115, easing: Easing.linear}
-            ),
-            Animated.timing(
-              this.animatedDJOptionOpacity,
+              animatedDJOptionOpacity,
               {toValue: 1, duration: 115, delay: 58, easing: Easing.linear}
             ),
-            Animated.timing(
-              this.animatedOpacity,
-              {toValue: 0.7, duration: 58, easing: Easing.linear}
-            )
+            Animated.timing(animatedOpacity, {toValue: 0.7, duration: 58, easing: Easing.linear})
           ])
         ]).start();
       }
@@ -504,8 +466,7 @@ class LiveSessionView extends React.Component {
   }
 
   toggleEdit() {
-    const {editingQueue} = this.state;
-    this.setState({editingQueue: !editingQueue});
+    this.setState({editingQueue: !this.state.editingQueue});
   }
 
   handleChangeInputHeight({nativeEvent: {contentSize: {height: inputHeight}}}) {
@@ -520,33 +481,29 @@ class LiveSessionView extends React.Component {
     const {message} = this.state;
     const {
       sendChatMessage,
-      chat: {totalChatMessages},
+      chat: {totalCurrentChat},
+      entities: {users},
       sessions: {currentSessionID},
-      users: {currentUserID, usersByID},
+      users: {currentUserID},
     } = this.props;
-    const {displayName, profileImage} = usersByID[currentUserID];
+    const {displayName, profileImage} = users.byID[currentUserID];
     const user = {displayName, profileImage, id: currentUserID};
 
-    sendChatMessage(currentSessionID, message, user, totalChatMessages + 1);
+    sendChatMessage(currentSessionID, message, user, totalCurrentChat + 1);
   }
 
   togglePause() {
     const {
       togglePause,
+      entities: {sessions},
       player: {paused, currentTrackID, progress},
-      sessions: {currentSessionID, sessionsByID},
+      sessions: {currentSessionID},
       users: {currentUserID},
     } = this.props;
-    const currentSession = sessionsByID[currentSessionID];
+    const session = sessions.byID[currentSessionID];
+    const currentSession = {progress, id: currentSessionID, current: currentTrackID};
 
-    if (currentSession) {
-      togglePause(
-        currentUserID,
-        currentSession.ownerID,
-        {progress, id: currentSessionID, current: currentTrackID},
-        !paused,
-      );
-    }
+    if (session) togglePause(currentUserID, session.ownerID, currentSession, !paused);
   }
 
   renderModalContent() {
@@ -556,26 +513,25 @@ class LiveSessionView extends React.Component {
   renderHeader() {
     const {seekTime, editingQueue} = this.state;
     const {
-      albums: {albumsByID},
+      entities: {queueTracks, sessions, tracks, users},
       player: {currentTrackID, currentQueueID, paused, prevTrackID, nextTrackID, progress},
-      queue: {userQueue, queueByID},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID, userTracks},
-      users: {currentUserID, usersByID},
+      queue: {userQueue},
+      sessions: {currentSessionID},
+      tracks: {userTracks},
+      users: {currentUserID},
     } = this.props;
 
     if (
       !currentSessionID
       || !currentTrackID
-      || !sessionsByID[currentSessionID]
-      || !queueByID[currentQueueID]
+      || !sessions.allIDs.includes(currentSessionID)
+      || !queueTracks.allIDs.includes(currentQueueID)
     ) return <View></View>;
 
-    const {totalListeners, distance, mode, ownerID} = sessionsByID[currentSessionID];
-    const {albumID, durationMS, name, artists} = tracksByID[currentTrackID];
-    const {large} = albumsByID[albumID];
-    const {userID} = queueByID[currentQueueID];
-    const {displayName} = usersByID[userID];
+    const {totalListeners, distance, mode, ownerID} = sessions.byID[currentSessionID];
+    const {album, durationMS, name, artists} = tracks.byID[currentTrackID];
+    const {userID} = queueTracks.byID[currentQueueID];
+    const {displayName} = users.byID[userID];
 
     let listenerTotal = 0;
     let formattedDistance = '';
@@ -622,7 +578,7 @@ class LiveSessionView extends React.Component {
         seekTime={seekTime}
         seeking={seekTime !== 0}
         editingQueue={editingQueue}
-        image={large}
+        image={album.large}
         mode={mode}
         prevTrackID={prevTrackID}
         nextTrackID={nextTrackID}
@@ -655,21 +611,25 @@ class LiveSessionView extends React.Component {
 
   renderFooter() {
     const {
+      entities: {sessions, tracks, users},
       player: {currentTrackID},
       queue: {contextQueue, context},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
-    const {profileImage} = usersByID[currentUserID];
+    const {profileImage, displayName} = users.byID[currentUserID];
 
-    if (!currentSessionID || !sessionsByID[currentSessionID] || !currentTrackID) return <View></View>;
+    if (
+      !currentSessionID
+      || !currentTrackID
+      || !sessions.allIDs.includes(currentSessionID)
+    ) return <View></View>;
 
     const contextTracks = contextQueue.map(id => {
       return {
         id,
-        name: tracksByID[id].name,
-        artists: tracksByID[id].artists.map(a => a.name).join(', '),
+        name: tracks.byID[id].name,
+        artists: tracks.byID[id].artists.map(a => a.name).join(', '),
       };
     });
 
@@ -677,7 +637,7 @@ class LiveSessionView extends React.Component {
       <SessionFooter
         toggleLike={() => console.log('like pressed')}
         currentUserID={currentUserID}
-        displayName={usersByID[currentUserID].displayName}
+        displayName={displayName}
         image={profileImage}
         contextQueue={contextTracks}
         context={context}
@@ -686,7 +646,6 @@ class LiveSessionView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
     const {
       inputHeight,
       viewingPlayer,
@@ -694,60 +653,54 @@ class LiveSessionView extends React.Component {
       isSessionMenuOpen,
       isMenuOpen,
       message,
+      shadowOpacity,
     } = this.state;
     const animatedBottomMargin = {marginBottom: inputHeight > 24 ? inputHeight + 44 : 68};
     const {
-      albums: {albumsByID},
+      entities: {sessions, tracks, users},
       chat: {currentChat},
       player: {currentTrackID},
       queue: {userQueue},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {usersByID, currentUserID},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
-    const currentUser = usersByID[currentUserID];
-    const currentSession = currentSessionID ? sessionsByID[currentSessionID] : null;
-    const currentTrack = currentTrackID ? tracksByID[currentTrackID] : null;
-    const currentAlbum = currentTrack ? albumsByID[currentTrack.albumID] : null;
-    const sessionOwner = currentSession ? usersByID[currentSession.ownerID] : currentUser;
+    const user = users.byID[currentUserID];
+    const session = currentSessionID ? sessions.byID[currentSessionID] : null;
+    const track = currentTrackID ? tracks.byID[currentTrackID] : null;
+    const sessionOwner = currentSession ? users.byID[session.ownerID] : currentUser;
 
     return (
       <View style={styles.container}>
         <View style={styles.headerBackground}>
-          {(currentSession && currentTrack && currentAlbum) &&
+          {(session && track) &&
             <Image
               style={styles.headerBackgroundImage}
-              source={{uri: currentAlbum.large}}
+              source={{uri: track.album.large}}
               blurRadius={90}
             />
           }
           <View style={styles.backgroundFilter}></View>
         </View>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.shadowBackground}>
             <View style={styles.shadowBackgroundWrap}>
-              {(currentSession && currentTrack && currentAlbum) &&
+              {(session && track) &&
                 <Image
                   style={styles.shadowBackgroundImage}
                   blurRadius={90}
-                  source={{uri: currentAlbum.large}}
+                  source={{uri: track.album.large}}
                 />
               }
               <View style={styles.backgroundFilter}></View>
             </View>
           </View>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-down'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
-            {(currentSessionID === '' || !currentSession || !sessionOwner) && <LoadingDJ />}
-            {(currentSession && sessionOwner) &&
+            <Ionicons name='ios-arrow-down' style={styles.leftIcon} onPress={Actions.pop} />
+            {(currentSessionID === '' || !session || !sessionOwner) && <LoadingDJ />}
+            {(session && sessionOwner) &&
               <DJCard
                 isMenuOpen={isMenuOpen}
-                ownerID={currentSession.ownerID}
+                ownerID={session.ownerID}
                 profileImage={sessionOwner.profileImage}
                 toggleMenu={this.toggleMenu}
                 displayName={sessionOwner.displayName}
@@ -760,7 +713,7 @@ class LiveSessionView extends React.Component {
             />
           </View>
         </Animated.View>
-        {(currentSession && currentTrack && viewingPlayer) &&
+        {(session && track && viewingPlayer) &&
           <VirtualizedList
             data={userQueue}
             renderItem={this.renderTrack}
@@ -777,7 +730,7 @@ class LiveSessionView extends React.Component {
             style={styles.playerWrap}
           />
         }
-        {(currentSession && currentTrack && viewingChat) &&
+        {(session && track && viewingChat) &&
           <View style={styles.chatWrap}>
             <AnimatedVirtualizedList
               data={currentChat}
@@ -795,15 +748,15 @@ class LiveSessionView extends React.Component {
               style={[styles.chatList, animatedBottomMargin]}
             />
             <View style={styles.chatMessageBar}>
-              {(currentTrack && currentAlbum) &&
+              {track &&
                 <TouchableOpacity
                   style={styles.chatMessageArtButton}
                   onPress={this.changeActiveView}
                 >
-                  <Image style={styles.chatMessageArt} source={{uri: currentAlbum.small}} />
+                  <Image style={styles.chatMessageArt} source={{uri: track.album.small}} />
                 </TouchableOpacity>
               }
-              {(!currentTrack || !currentAlbum) &&
+              {!track &&
                 <View style={styles.chatMessageArt}>
                   <Placeholder.Media
                     animate='fade'
@@ -882,17 +835,15 @@ class LiveSessionView extends React.Component {
 }
 
 LiveSessionView.propTypes = {
-  albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
   chat: PropTypes.object.isRequired,
   deleteQueueTrack: PropTypes.func.isRequired,
+  entities: PropTypes.object.isRequired,
   getChat: PropTypes.func.isRequired,
   getSessionInfo: PropTypes.func.isRequired,
   getUserQueue: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
   nextTrack: PropTypes.func.isRequired,
   player: PropTypes.object.isRequired,
-  playlists: PropTypes.object.isRequired,
   previousTrack: PropTypes.func.isRequired,
   queue: PropTypes.object.isRequired,
   seekPosition: PropTypes.func.isRequired,
@@ -913,14 +864,13 @@ LiveSessionView.propTypes = {
 };
 
 function mapStateToProps(
-  {albums, artists, chat, player, playlists, queue, sessions, settings, tracks, users},
+  {artists, chat, entities, player, queue, sessions, settings, tracks, users},
 ) {
   return {
-    albums,
     artists,
     chat,
+    entities,
     player,
-    playlists,
     queue,
     sessions,
     settings,

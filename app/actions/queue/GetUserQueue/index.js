@@ -128,6 +128,7 @@ export function getUserQueue(
                         [
                           {
                             id: queueTrack.id,
+                            trackID: track.id,
                             seconds: queueTrack.timeAdded.seconds,
                             nanoseconds: queueTrack.timeAdded.nanoseconds,
                           },
@@ -176,6 +177,7 @@ export function getUserQueue(
                       [
                         {
                           id: queueTrack.id,
+                          trackID: track.id,
                           seconds: queueTrack.timeAdded.seconds,
                           nanoseconds: queueTrack.timeAdded.nanoseconds,
                         },

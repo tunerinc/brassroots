@@ -123,6 +123,7 @@ const styles: Styles = StyleSheet.create({
     paddingTop: 10,
     backgroundColor: 'transparent',
     alignSelf: 'center',
+    color: '#fefefe',
   },
   modal: {
     justifyContent: 'flex-end',
