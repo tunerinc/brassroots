@@ -34,10 +34,10 @@ interface Styles {
   shareButton: ViewStyleProp,
   shareIcon: TextStyleProp,
   shareText: TextStyleProp,
-  playlistDetailsWrap: ViewStyleProp,
-  playlistModeButton: ViewStyleProp,
-  playlistModeIcon: TextStyleProp,
-  playlistMemberButton: ViewStyleProp,
+  detailsWrap: ViewStyleProp,
+  modeButton: ViewStyleProp,
+  modeIcon: TextStyleProp,
+  memberButton: ViewStyleProp,
   memberIcon: TextStyleProp,
   optionsWrap: ViewStyleProp,
   options: TextStyleProp,
@@ -188,7 +188,7 @@ const styles: Styles = StyleSheet.create({
     fontFamily: 'Muli',
     lineHeight: 20.8, // x1.3
   },
-  playlistDetailsWrap: {
+  detailsWrap: {
     flex: 1,
     alignSelf: 'center',
     backgroundColor: 'transparent',
@@ -196,16 +196,16 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  playlistModeButton: {
+  modeButton: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
   },
-  playlistModeIcon: {
+  modeIcon: {
     fontSize: 30,
     color: '#fefefe',
   },
-  playlistMemberButton: {
+  memberButton: {
     marginLeft: 20,
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -265,6 +265,7 @@ const styles: Styles = StyleSheet.create({
   plus: {
     paddingTop: 4,
     fontSize: 40,
+    color: '#fefefe',
   },
   playlistTrackError: {
     flex: 1,
