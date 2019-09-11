@@ -39,6 +39,7 @@ class RecentlyPlayedView extends React.Component {
     this.state = {
       isTrackMenuOpen: false,
       selectedTrack: '',
+      shadowOpacity: new Animated.Value(0),
     };
 
     this.refresh = this.refresh.bind(this);
@@ -48,61 +49,72 @@ class RecentlyPlayedView extends React.Component {
     this.renderModalContent = this.renderModalContent.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
     const {
       getRecentTracks,
       selectedUser,
-      users: {currentUserID, usersByID},
+      entities: {users},
+      users: {currentUserID},
     } = this.props;
     const userID = selectedUser || currentUserID;
-    const {recentlyPlayed} = usersByID[userID];
+    const {recentlyPlayed} = users.byID[userID];
 
     this.closeModal();
 
-    if (!recentlyPlayed.length) {
-      getRecentTracks(userID);
-    }
+    if (!recentlyPlayed.length) getRecentTracks(userID);
   }
 
   refresh() {
     const {
       getRecentTracks,
       selectedUser,
-      tracks: {refreshingTracks},
+      tracks: {refreshing},
       users: {currentUserID},
     } = this.props;
     const userID = selectedUser || currentUserID;
 
-    if (refreshingTracks) return;
-
-    getRecentTracks(userID);
+    if (!refreshing) getRecentTracks(userID);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
   renderTrack({item, index}) {
-    const {selectedUser, users: {currentUserID, usersByID}} = this.props;
-    const {username} = usersByID[selectedUser] || usersByID[currentUserID];
+    const {
+      selectedUser,
+      entities: {tracks, users},
+      users: {currentUserID},
+    } = this.props;
+
+    if (!tracks.allIDs.includes(item)) return <View></View>;
+
+    const userID = selectedUser || currentUserID;
+    const {album, artists, name} = tracks.byID[item];
+    const {username} = users.byID[userID];
 
     return (
       <TrackCard
         key={item}
-        albumName={albumName}
+        albumName={album.name}
         artists={artists.map(a => a.name).join(', ')}
         context={{
           displayName,
@@ -110,7 +122,7 @@ class RecentlyPlayedView extends React.Component {
           type: 'user-recently',
           name: displayName,
         }}
-        image={small}
+        image={album.small}
         name={name}
         openModal={this.openModal}
         showOptions={true}
@@ -124,53 +136,28 @@ class RecentlyPlayedView extends React.Component {
     const {selectedTrack} = this.state;
     const {
       queueTrack,
-      albums: {albumsByID},
-      artists: {artistsByID},
-      player: {prevQueueID},
-      queue: {userQueue, queueByID, contextQueue, totalQueue},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      entities: {queueTracks, sessions, tracks, users},
+      player: {currentQueueID},
+      queue: {userQueue, totalUserQueue: totalQueue},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
 
-    if (currentSessionID && Object.keys(sessionsByID).indexOf(currentSessionID)) {
-      const {listeners, ownerID} = sessionsByID[currentSessionID];
-      const isListenerOwner = listeners.indexOf(currentUserID) !== -1 || ownerID === currentUserID;
-      const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
-      const {displayName, profileImage} = usersByID[currentUserID];
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {listeners, ownerID} = sessions.byID[currentSessionID];
+      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+      const {displayName, profileImage} = users.byID[currentUserID];
 
-      if (isListenerOwner && !songQueued) {
-        const {name, durationMS, albumID, artists} = tracksByID[selectedTrack];
-        const {name: albumName, small, medium, large, artists: albumArtists} = albumsByID[albumID];
-        const trackToQueue = {
-          name,
-          durationMS,
-          id: selectedTrack,
-          artists: artists.map(a => a.name).join(', '),
-          album: {
-            small,
-            medium,
-            large,
-            id: albumID,
-            name: albumName,
-            artists: albumArtists.map(a => a.name).join(', '),
-          },
-        };
+      if (isListenerOwner && !songInQueue) {
+        const track = tracks.byID[selectedTrack];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+        const prevTrackID = queueTracks.byID[prevQueueID];
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
 
         this.closeModal();
-        queueTrack(
-          {
-            prevQueueID,
-            totalQueue,
-            id: currentSessionID,
-          },
-          trackToQueue,
-          {
-            displayName,
-            profileImage,
-            id: currentUserID,
-          },
-        );
+        queueTrack(session, track, user);
       }
     }
   }
@@ -178,26 +165,33 @@ class RecentlyPlayedView extends React.Component {
   renderModalContent() {
     const {selectedTrack} = this.state;
     const {
-      albums: {albumsByID},
+      entities: {queueTracks, sessions, tracks},
       queue: {userQueue},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
+      sessions: {currentSessionID},
       users: {currentUserID},
     } = this.props;
-    const isListenerOwner = sessionsByID[currentSessionID].listeners.includes(currentUserID)
-      || sessionsByID[currentSessionID].ownerID === currentUserID;
+
+    if (!selectedTrack || !tracks.allIDs.includes(selectedTrack)) return <View></View>;
+
+    const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
+    const songQueued = userQueue.map(o => o.trackID).includes(selectedTrack);
+    const isListenerOwner = sessionExists
+      && (
+        sessions.byID[currentSessionID].listeners.includes(currentUserID)
+        || sessions.byID[currentSessionID].ownerID === currentUserID
+      );
 
     return (
       <TrackModal
+        trackID={selectedTrack}
         closeModal={this.closeModal}
         queueTrack={this.handleAddTrack}
-        name={tracksByID[selectedTrack].name}
-        artists={tracksByID[selectedTrack].artists.map(a => a.name).join(', ')}
-        albumName={albumsByID[tracksByID[selectedTrack].albumID].name}
-        albumImage={albumsByID[tracksByID[selectedTrack].albumID].small}
-        trackID={selectedTrack}
-        trackInQueue={userQueue.includes(selectedTrack)}
-        isListenerOwner={isListenerOwner}
+        name={tracks.byID[selectedTrack].name}
+        artists={tracks.byID[selectedTrack].artists.map(a => a.name).join(', ')}
+        albumName={tracks.byID[selectedTrack].album.name}
+        albumImage={tracks.byID[selectedTrack].album.small}
+        trackInQueue={songQueued}
+        isListenerOwner={sessionExists ? isListenerOwner : null}
       />
     );
   }
@@ -211,33 +205,29 @@ class RecentlyPlayedView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = {shadowOpacity: this.shadowOpacity};
-    const {isTrackMenuOpen} = this.state;
+    const {isTrackMenuOpen, shadowOpacity} = this.state;
     const {
       selectedUser,
-      albums: {albumsByID},
+      entities: {albums, sessions, tracks, users},
       queue: {userQueue, queueing, error: queueError},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID, fetchingRecent, refreshingTracks, error: trackError},
-      users: {currentUserID, usersByID},
+      sessions: {currentSessionID},
+      tracks: {fetching, refreshing, error: trackError},
+      users: {currentUserID},
     } = this.props;
-    const {recentlyPlayed} = usersByID[selectedUser] || usersByID[currentUserID];
-    const session = sessionsByID[currentSessionID];
-    const inSession = session
-      && session.listeners.indexOf(currentUserID) !== -1
-      || session.ownerID === currentUserID;
+    const userID = selectedUser || currentUserID;
+    const {recentlyPlayed} = users.byID[userID];
+    const session = sessions.byID[currentSessionID];
+    const inSession = sessions.allIDs.includes(currentSessionID)
+      && (
+        session.listeners.includes(currentUserID)
+        || session.ownerID === currentUserID
+      );
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              size={45}
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={this.navBack}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>Recently Played</Text>
             <View style={styles.rightIcon}></View>
           </View>
@@ -257,7 +247,7 @@ class RecentlyPlayedView extends React.Component {
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={<Text>Nothing to show</Text>}
-            refreshing={refreshingTracks}
+            refreshing={refreshing}
             onRefresh={this.refresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.7}
@@ -266,7 +256,9 @@ class RecentlyPlayedView extends React.Component {
         {(!recentlyPlayed || !recentlyPlayed.length || recentlyPlayed.length === 0) &&
           <View style={styles.recentlyPlayedWrap}>
             <ShuffleButton disabled={true} />
-            {(fetchingRecent && !trackError) &&
+            {(!fetching.includes('recent') && trackError) && <Text>Something went wrong</Text>}
+            {(!fetching.includes('recent') && !trackError) && <Text>Nothing to show</Text>}
+            {(fetching.includes('recent') && !trackError) &&
               <View>
                 <LoadingTrack type='cover' />
                 <LoadingTrack type='cover' />
@@ -275,8 +267,6 @@ class RecentlyPlayedView extends React.Component {
                 <LoadingTrack type='cover' />
               </View>
             }
-            {(!fetchingRecent && trackError) && <Text>Something went wrong</Text>}
-            {(!fetchingRecent && !trackError) && <Text>Nothing to show</Text>}
           </View>
         }
         <Modal
@@ -301,7 +291,7 @@ class RecentlyPlayedView extends React.Component {
           error={queueError}
           inSession={inSession}
           queueHasTracks={userQueue.length > 0}
-          image={albumsByID[tracksByID[selectedTrack].albumID].medium}
+          image={tracks.byID[selectedTrack].album.medium}
         />
       </View>
     );
@@ -309,8 +299,7 @@ class RecentlyPlayedView extends React.Component {
 }
 
 RecentlyPlayedView.propTypes = {
-  albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
   player: PropTypes.func.isRequired,
@@ -319,15 +308,13 @@ RecentlyPlayedView.propTypes = {
   queueTrack: PropTypes.func.isRequired,
   selectedUser: PropTypes.string,
   sessions: PropTypes.object.isRequired,
-  title: PropTypes.string.isRequired,
   tracks: PropTypes.object.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, player, queue, sessions, tracks, users}) {
+function mapStateToProps({entities, player, queue, sessions, tracks, users}) {
   return {
-    albums,
-    artists,
+    entities,
     player,
     queue,
     sessions,
