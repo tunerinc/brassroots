@@ -22,51 +22,57 @@ class TopPlaylistsView extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      shadowOpacity: new Animated.Value(0),
+    };
+
     this.refresh = this.refresh.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.renderPlaylist = this.renderPlaylist.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
   }
 
   componentDidMount() {
     const {
       getTopPlaylists,
       selectedUser,
-      users: {currentUserID, usersByID},
+      entities: {users},
+      users: {currentUserID},
     } = this.props;
     const userID = selectedUser || currentUserID;
-    const {topPlaylists} = usersByID[userID];
+    const {topPlaylists} = users.byID[userID];
 
-    if (!topPlaylists.length) {
-      getTopPlaylists(userID);
-    }
+    if (!topPlaylists.length) getTopPlaylists(userID);
   }
 
   refresh() {
     const {
       getTopPlaylists,
       selectedUser,
-      playlists: {refreshingPlaylists},
+      playlists: {refreshing},
       users: {currentUserID},
     } = this.props;
     const userID = selectedUser || currentUserID;
 
-    if (refreshingPlaylists) return;
-
-    getTopPlaylists(userID);
+    if (!refreshing) getTopPlaylists(userID);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity != 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
@@ -85,21 +91,21 @@ class TopPlaylistsView extends React.Component {
 
   renderPlaylist({item}) {
     const {
-      playlists: {playlistsByID},
-      users: {currentUserID, usersByID},
+      entities: {playlists, users},
+      users: {currentUserID},
     } = this.props;
-    const {image, name, members, mode, ownerID, ownerType} = playlistsByID[item];
+    const {image, name, members, mode, ownerID, ownerType} = playlists.byID[item];
     const ownerName = ownerID === 'spotify'
       ? 'Spotify'
       : ownerID !== currentUserID
-      ? usersByID[ownerID].displayName
+      ? users.byID[ownerID].displayName
       : null;
 
     return (
       <PlaylistCard
         key={item}
         image={image}
-        isMember={members.indexOf(currentUserID) !== -1}
+        isMember={members.includes(currentUserID)}
         name={name}
         navToPlaylist={this.navToPlaylist(title.toLowerCase(), item)}
         mode={mode}
@@ -109,25 +115,21 @@ class TopPlaylistsView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = { shadowOpacity: this.shadowOpacity };
+    const {shadowOpacity} = this.state;
     const {
       selectedUser,
-      playlists: {fetchingTopPlaylists, error: playlistError},
-      users: {currentUserID, usersByID},
+      entities: {users},
+      playlists: {fetching, refreshing, error},
+      users: {currentUserID},
     } = this.props;
     const userID = selectedUser || currentUserID;
-    const {topPlaylists} = usersByID[userID];
+    const {topPlaylists} = users.byID[userID];
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={this.navBack}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>Top Playlists</Text>
             <View style={styles.rightIcon}></View>
           </View>
@@ -146,7 +148,7 @@ class TopPlaylistsView extends React.Component {
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={<Text>Nothing to show</Text>}
-            refreshing={refreshingPlaylists}
+            refreshing={refreshing}
             onRefresh={this.refresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.7}
@@ -154,9 +156,9 @@ class TopPlaylistsView extends React.Component {
         }
         {topPlaylists.length === 0 &&
           <View style={styles.topPlaylistsWrap}>
-            {(!fetchingTopPlaylists && !playlistError) && <Text>Nothing to show</Text>}
-            {(!fetchingTopPlaylists && playlistError) && <Text>There was an error</Text>}
-            {fetchingTopPlaylists &&
+            {(!fetching.includes('topPlaylists') && !error) && <Text>Nothing to show</Text>}
+            {(!fetching.includes('topPlaylists') && error) && <Text>There was an error</Text>}
+            {fetching.includes('topPlaylists') &&
               <View>
                 <LoadingPlaylist />
                 <LoadingPlaylist />
@@ -173,23 +175,23 @@ class TopPlaylistsView extends React.Component {
 }
 
 TopPlaylistsView.propTypes = {
+  entities: PropTypes.object.isRequired,
   getTopPlaylists: PropTypes.func.isRequired,
   playlists: PropTypes.object.isRequired,
   selectedUser: PropTypes.string,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({playlists, users}) {
+function mapStateToProps({entities, playlists, users}) {
   return {
+    entities,
     playlists,
     users,
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    getTopPlaylists,
-  }, dispatch);
+  return bindActionCreators({getTopPlaylists}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopPlaylistsView);

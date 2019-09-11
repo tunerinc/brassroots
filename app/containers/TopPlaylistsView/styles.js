@@ -50,7 +50,8 @@ export default StyleSheet.create({
     height: 45,
     fontSize: 45,
     backgroundColor: 'transparent',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    color: '#fefefe',
   },
   title: {
     flex: 6,
