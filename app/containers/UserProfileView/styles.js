@@ -193,8 +193,10 @@ const styles: Styles = StyleSheet.create({
   leftIcon: {
     flex: 1,
     height: 45,
+    fontSize: 45,
     alignSelf: 'center',
     backgroundColor: 'transparent',
+    color: '#fefefe',
   },
   title: {
     flex: 6,
@@ -213,6 +215,7 @@ const styles: Styles = StyleSheet.create({
     alignSelf: 'center',
     textAlign: 'right',
     backgroundColor: 'transparent',
+    color: '#fefefe',
   },
   profileHeader: {
     overflow: 'hidden',

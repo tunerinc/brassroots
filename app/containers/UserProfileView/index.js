@@ -61,8 +61,6 @@ class UserProfileView extends React.Component {
     this.renderTrack = this.renderTrack.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
-
-    this.imageBlurRadius = new Animated.Value(0);
   }
 
   openModal = selectedTrack => () => {
@@ -140,14 +138,14 @@ class UserProfileView extends React.Component {
 
   renderPlaylist({item}) {
     const {
-      playlists: {playlistsByID},
-      users: {currentUserID, usersByID},
+      entities: {playlists, users},
+      users: {currentUserID},
     } = this.props;
-    const {image, name, members, mode, ownerID, ownerType} = playlistsByID[item];
+    const {image, name, members, mode, ownerID, ownerType} = playlists.byID[item];
     const ownerName = ownerID === 'spotify'
       ? 'Spotify'
       : ownerID !== currentUserID
-      ? usersByID[ownerID].displayName
+      ? users.byID[ownerID].displayName
       : null;
 
     return (
@@ -166,15 +164,12 @@ class UserProfileView extends React.Component {
   renderTrack = type => ({item, index}) => {
     const {
       selectedUser,
-      albums: {albumsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      entities: {tracks, users},
+      users: {currentUserID},
     } = this.props;
     const userID = selectedUser || currentUserID;
-    const {displayName} = usersByID[userID];
-    const {albumID, artists} = tracksByID[item];
-    const {small, name: albumName} = albumsByID[albumID];
-    const artistNames = artists.map(a => a.name).join(', ');
+    const {displayName} = users.byID[userID];
+    const {name, album, artists} = tracks.byID[item];
 
     return (
       <TrackCard
@@ -183,11 +178,11 @@ class UserProfileView extends React.Component {
         context={{type, displayName, id: userID, name: displayName}}
         openModal={this.openModal}
         name={name}
-        artists={artistNames}
+        artists={artists.map(a => a.name).join(', ')}
         showSquareImage={true}
         showOptions={true}
-        image={small}
-        albumName={albumName}
+        image={album.small}
+        albumName={album.name}
       />
     );
   }
@@ -196,53 +191,28 @@ class UserProfileView extends React.Component {
     const {selectedTrack} = this.state;
     const {
       queueTrack,
-      albums: {albumsByID},
-      artists: {artistsByID},
-      player: {prevQueueID},
-      queue: {userQueue, queueByID, contextQueue, totalQueue},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {currentUserID, usersByID},
+      entities: {queueTracks, sessions, tracks, users},
+      player: {currentQueueID},
+      queue: {userQueue, totalUserQueue: totalQueue},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
 
-    if (currentSessionID && Object.keys(sessionsByID).indexOf(currentSessionID)) {
-      const {listeners, ownerID} = sessionsByID[currentSessionID];
-      const isListenerOwner = listeners.indexOf(currentUserID) !== -1 || ownerID === currentUserID;
-      const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
-      const {displayName, profileImage} = usersByID[currentUserID];
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {listeners, ownerID} = sessions.byID[currentSessionID];
+      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+      const {displayName, profileImage} = users.byID[currentUserID];
 
-      if (isListenerOwner && !songQueued) {
-        const {name, durationMS, albumID, artists} = tracksByID[selectedTrack];
-        const {name: albumName, small, medium, large, artists: albumArtists} = albumsByID[albumID];
-        const trackToQueue = {
-          name,
-          durationMS,
-          id: selectedTrack,
-          artists: artists.map(a => a.name).join(', '),
-          album: {
-            small,
-            medium,
-            large,
-            id: albumID,
-            name: albumName,
-            artists: albumArtists.map(a => a.name).join(', '),
-          },
-        };
+      if (isListenerOwner && !songInQueue) {
+        const track = tracks.byID[selectedTrack];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+        const prevTrackID = queueTracks.byID[prevQueueID];
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
 
         this.closeModal();
-        queueTrack(
-          {
-            prevQueueID,
-            totalQueue,
-            id: currentSessionID,
-          },
-          trackToQueue,
-          {
-            displayName,
-            profileImage,
-            id: currentUserID,
-          },
-        );
+        queueTrack(session, track, user);
       }
     }
   }
@@ -250,29 +220,33 @@ class UserProfileView extends React.Component {
   renderModalContent() {
     const {selectedTrack} = this.state;
     const {
-      albums: {albumsByID},
-      queue: {userQueue, queueByID},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
+      entities: {queueTracks, sessions, tracks},
+      queue: {userQueue},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
 
-    if (!selectedTrack || !tracksByID[selectedTrack]) return null;
+    if (!selectedTrack || !tracks.allIDs.includes(selectedTrack)) return <View></View>;
 
-    const {listeners, ownerID} = sessionsByID[currentSessionID];
-    const isListenerOwner = listeners.indexOf(currentUserID) !== -1 || ownerID === currentUserID;
-    const songQueued = userQueue.map(id => queueByID[id].trackID).indexOf(selectedTrack) !== -1;
+    const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
+    const songQueued = userQueue.map(o => o.trackID).includes(selectedTrack);
+    const isListenerOwner = sessionExists
+      && (
+        sessions.byID[currentSessionID].listeners.includes(currentUserID)
+        || sessions.byID[currentSessionID].ownerID === currentUserID
+      );
 
     return (
       <TrackModal
         trackID={selectedTrack}
         closeModal={this.closeModal}
         queueTrack={this.handleAddTrack}
-        name={tracksByID[selectedTrack].name}
-        artists={tracksByID[selectedTrack].artists.map(a => a.name).join(', ')}
-        albumName={albumsByID[tracksByID[selectedTrack].albumID].name}
-        albumImage={albumsByID[tracksByID[selectedTrack].albumID].small}
+        name={tracks.byID[selectedTrack].name}
+        artists={tracks.byID[selectedTrack].artists.map(a => a.name).join(', ')}
+        albumName={tracks.byID[selectedTrack].album.name}
+        albumImage={tracks.byID[selectedTrack].album.small}
         trackInQueue={songQueued}
-        isListenerOwner={isListenerOwner}
+        isListenerOwner={sessionExists ? isListenerOwner : null}
       />
     );
   }
@@ -359,39 +333,34 @@ class UserProfileView extends React.Component {
       extrapolate: 'clamp',
     });
 
+    const {scrollY, bioLines} = this.state;
     const {
       routeName,
       title,
       userToView,
-      albums: {albumsByID},
-      playlists: {fetchingTopPlaylists, error: playlistError},
-      sessions: {sessionsByID, fetchingSessions, error: sessionError},
-      tracks: {
-        tracksByID,
-        fetchingFavoriteTrack,
-        fetchingMostPlayed,
-        fetchingRecent,
-        error: trackError,
-      },
-      users: {currentUserID, usersByID, fetchingUsers, error: userError},
+      entities: {sessions, tracks, users},
+      playlists: {fetching: playlistFetching, error: playlistError},
+      sessions: {fetching: sessionFetching, error: sessionError},
+      tracks: {fetching: trackFetching, error: trackError},
+      users: {currentUserID, fetching: userFetching, error: userError},
     } = this.props;
-    const currentUser = usersByID[currentUserID];
-    const user = usersByID[userToView] || currentUser;
-    const session = sessionsByID[user.currentSessionID];
-    const favoriteTrack = tracksByID[user.favoriteTrackID];
-    const favoriteAlbum = albumsByID[favoriteTrack.albumID];
+    const userID = userToView || currentUserID;
+    const currentUser = users.byID[currentUserID];
+    const user = users.byID[userID];
+    const session = sessions.byID[user.currentSessionID];
+    const track = tracks.byID[user.favoriteTrackID];
     
     return (
       <View style={styles.container}>
         <AnimatedScrollView
           style={styles.scrollContainer}
           scrollEventThrottle={16}
-          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.state.scrollY}}}])}
+          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}])}
         >
           <View
             style={[
               styles.scrollWrap,
-              {marginTop: HEADER_MAX_HEIGHT+(this.state.bioLines*10)},
+              {marginTop: HEADER_MAX_HEIGHT + ( bioLines * 10)},
             ]}
           >
             <View style={styles.profileTrack}>
@@ -399,9 +368,13 @@ class UserProfileView extends React.Component {
                 <View>
                   {session &&
                     <View style={styles.liveSession}>
-                      {fetchingSessions && <LoadingSession />}
-                      {(!fetchingSessions && sessionError) && <Text>Something went wrong</Text>}
-                      {(!fetchingSessions && !sessionError) && <Text>We have stuff</Text>}
+                      {sessionFetching.includes('sessions') && <LoadingSession />}
+                      {(!sessionFetching.includes('sessions') && sessionError) &&
+                        <Text>Something went wrong</Text>
+                      }
+                      {(!sessionFetching.includes('sessions') && !sessionError) &&
+                        <Text>We have stuff</Text>
+                      }
                     </View>
                   }
                   {!session &&
@@ -410,21 +383,23 @@ class UserProfileView extends React.Component {
                         <Foundation name='star' style={styles.favoriteTrackIcon} />
                         <Text style={styles.favoriteTrackHeaderText}>Favorite Track</Text>
                       </View>
-                      {fetchingFavoriteTrack && <LoadingTrack type='cover' />}
-                      {(!fetchingFavoriteTrack && trackError) && <Text>Something went wrong.</Text>}
-                      {(favoriteTrack && !trackError) &&
+                      {trackFetching.includes('favorite') && <LoadingTrack type='cover' />}
+                      {(!trackFetching.includes('favorite') && trackError) &&
+                        <Text>Something went wrong.</Text>
+                      }
+                      {(track && !trackError) &&
                         <TrackCard
-                          key={favoriteTrack}
-                          albumName={favoriteAlbum.name}
-                          artists={favoriteTrack.artists.map(a => a.name).join(', ')}
+                          key={track}
+                          albumName={track.album.name}
+                          artists={track.artists.map(a => a.name).join(', ')}
                           context={{
                             id: currentUserID,
                             type: 'user-favorite',
                             username: user.displayName,
                             name: user.displayName,
                           }}
-                          image={favoriteAlbum.small}
-                          name={favoriteTrack.name}
+                          image={track.album.small}
+                          name={track.name}
                           openModal={this.openModal(favoriteTrack.id)}
                           showOptions={true}
                           showSquareImage={true}
@@ -453,14 +428,24 @@ class UserProfileView extends React.Component {
                   </TouchableOpacity>
                 }
               </View>
-              {(!user.mostPlayed.length || user.mostPlayed.length === 0 || fetchingMostPlayed) &&
+              {(
+                !user.mostPlayed.length
+                || user.mostPlayed.length === 0
+                || trackFetching.includes('mostPlayed')
+              ) &&
                 <View>
-                  {(fetchingMostPlayed && !trackError) && <LoadingTrack type='cover' />}
-                  {(!fetchingMostPlayed && !trackError) && <Text>Nothing to show</Text>}
-                  {(!fetchingMostPlayed && trackError) && <Text>Something went wrong.</Text>}
+                  {(trackFetching.includes('mostPlayed') && !trackError) &&
+                    <LoadingTrack type='cover' />
+                  }
+                  {(!trackFetching.includes('mostPlayed') && !trackError) &&
+                    <Text>Nothing to show</Text>
+                  }
+                  {(!trackFetching.includes('mostPlayed') && trackError) &&
+                    <Text>Something went wrong.</Text>
+                  }
                 </View>
               }
-              {(user.mostPlayed.length !== 0 && !fetchingMostPlayed) &&
+              {(user.mostPlayed.length !== 0 && !trackFetching.includes('mostPlayed')) &&
                 <FlatList
                   data={user.mostPlayed.slice(0, 3)}
                   renderItem={this.renderTrack('user-most')}
@@ -488,19 +473,21 @@ class UserProfileView extends React.Component {
               {(
                 !user.topPlaylists.length
                 || user.topPlaylists.length === 0
-                || fetchingTopPlaylists
+                || playlistFetching.includes('topPlaylists')
               ) &&
                 <View>
-                  {(fetchingTopPlaylists && !playlistError) && <LoadingPlaylist />}
-                  {(!fetchingTopPlaylists && !playlistError) &&
+                  {(playlistFetching.includes('topPlaylists') && !playlistError)
+                    && <LoadingPlaylist />
+                  }
+                  {(!playlistFetching.includes('topPlaylists') && !playlistError) &&
                     <Text style={styles.nothing}>Nothing to show</Text>
                   }
-                  {(!fetchingTopPlaylists && playlistError) &&
+                  {(!playlistFetching.includes('topPlaylists') && playlistError) &&
                     <Text style={styles.nothing}>Something went wrong.</Text>
                   }
                 </View>
               }
-              {(user.topPlaylists.length !== 0 && !fetchingTopPlaylists) &&
+              {(user.topPlaylists.length !== 0 && !playlistFetching.includes('topPlaylists')) &&
                 <FlatList
                   data={user.topPlaylists.slice(0, 3)}
                   renderItem={this.renderPlaylist}
@@ -528,19 +515,21 @@ class UserProfileView extends React.Component {
               {(
                 !user.recentlyPlayed.length
                 || user.recentlyPlayed.length === 0
-                || fetchingRecent
+                || trackFetching.includes('recent')
               ) &&
                 <View>
-                  {(fetchingRecent && !trackError) && <LoadingTrack type='cover' />}
-                  {(!fetchingRecent && !trackError) &&
+                  {(trackFetching.includes('recent') && !trackError) &&
+                    <LoadingTrack type='cover' />
+                  }
+                  {(!trackFetching.includes('recent') && !trackError) &&
                     <Text style={styles.nothing}>Nothing to show</Text>
                   }
-                  {(!fetchingRecent && trackError) &&
+                  {(!trackFetching.includes('recent') && trackError) &&
                     <Text style={styles.nothing}>Something went wrong.</Text>
                   }
                 </View>
               }
-              {(user.recentlyPlayed.length !== 0 && !fetchingRecent) &&
+              {(user.recentlyPlayed.length !== 0 && !trackFetching.includes('recent')) &&
                 <FlatList
                   data={user.recentlyPlayed.slice(0, 3)}
                   renderItem={this.renderTrack('user-recently')}
@@ -598,13 +587,7 @@ class UserProfileView extends React.Component {
               <View style={styles.leftIcon}></View>
             }
             {(user.id !== currentUserID || title !== 'Profile' || routeName !== 'profileUser') &&
-              <Ionicons
-                name='ios-arrow-back'
-                size={45}
-                color='#fefefe'
-                style={styles.leftIcon}
-                onPress={Actions.pop}
-              />
+              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             }
             <Animated.Text style={[styles.title, {opacity: titleOpacity, bottom: titleOffset}]}>
               {user.displayName}
@@ -612,19 +595,18 @@ class UserProfileView extends React.Component {
             {user.id === currentUserID &&
               <Ionicons
                 name='md-settings'
-                color='#fefefe'
                 style={styles.rightIcon}
                 onPress={this.navToSettings(title)}
               />
             }
             {user.id !== currentUserID &&
-              <SimpleLineIcons name='options' color='#fefefe' style={styles.rightIcon} />
+              <SimpleLineIcons name='options' style={styles.rightIcon} />
             }
           </View>
           <Animated.View style={[styles.profileHeader, {height: profileHeaderHeight}]}>
             <Animated.View style={[styles.user, {opacity: userOpacity, bottom: userOffset}]}>
               <View style={styles.userPhoto}>
-                {!fetchingUsers &&
+                {!userFetching.includes('users') &&
                   <View>
                     {(!user.profileImage || user.profileImage === '') &&
                       <Text>Nothing to show</Text>
@@ -634,7 +616,7 @@ class UserProfileView extends React.Component {
                     }
                   </View>
                 }
-                {fetchingUsers &&
+                {userFetching.includes('users') &&
                   <View>
                     <Placeholder.Media animate='fade' size={70} hasRadius={true} color='#888' />
                   </View>
@@ -686,10 +668,10 @@ class UserProfileView extends React.Component {
                     <Text style={[styles.bioText, {color: '#2b6dc0'}]}>Add a bio</Text>
                   </TouchableOpacity>
                 }
-                {(user.id !== currentUserID && !fetchingUsers && !userError && user.bio === '') &&
+                {(user.id !== currentUserID && !userFetching.includes('users') && !userError && user.bio === '') &&
                   <Text style={[styles.bioText, styles.disabledText]}>No bio</Text>
                 }
-                {(user.id !== currentUserID && fetchingUsers && (!user.bio || user.bio === '')) &&
+                {(user.id !== currentUserID && userFetching.includes('users') && (!user.bio || user.bio === '')) &&
                   <View style={styles.loadingInfo}>
                     <Placeholder.Line
                       animate='fade'
@@ -724,7 +706,7 @@ class UserProfileView extends React.Component {
                 }
                 {(
                   user.id !== currentUserID
-                  && !fetchingUsers
+                  && !userFetching.includes('users')
                   && !userError
                   && user.location === ''
                 ) &&
@@ -732,7 +714,7 @@ class UserProfileView extends React.Component {
                 }
                 {(
                   user.id !== currentUserID
-                  && fetchingUsers
+                  && userFetching.includes('users')
                   && (!user.location || user.location === '')
                 ) &&
                   <View style={styles.loadingInfo}>
@@ -767,7 +749,7 @@ class UserProfileView extends React.Component {
                 }
                 {(
                   user.id !== currentUserID
-                  && !fetchingUsers
+                  && !userFetching.includes('users')
                   && !userError
                   && user.website === ''
                 ) &&
@@ -775,7 +757,7 @@ class UserProfileView extends React.Component {
                 }
                 {(
                   user.id !== currentUserID
-                  && fetchingUsers
+                  && userFetching.includes('users')
                   && (!user.website || user.website === '')
                 ) &&
                   <View style={styles.loadingInfo}>
@@ -802,10 +784,10 @@ class UserProfileView extends React.Component {
                     {user.totalFollowers}
                   </Text>
                 }
-                {(!user.totalFollowers && !fetchingUsers && userError) &&
+                {(!user.totalFollowers && !userFetching.includes('users') && userError) &&
                   <Text style={styles.followersCount}>-</Text>
                 }
-                {(!user.totalFollowers && fetchingUsers && !userError) &&
+                {(!user.totalFollowers && userFetching.includes('users') && !userError) &&
                   <View style={styles.loadingFollow}>
                     <Placeholder.Line
                       animate='fade'
@@ -824,10 +806,10 @@ class UserProfileView extends React.Component {
                     {user.totalFollowing}
                   </Text>
                 }
-                {(!user.totalFollowing && !fetchingUsers && userError) &&
+                {(!user.totalFollowing && !userFetching.includes('users') && userError) &&
                   <Text style={styles.followingCount}>-</Text>
                 }
-                {(!user.totalFollowing && fetchingUsers && !userError) &&
+                {(!user.totalFollowing && userFetching.includes('users') && !userError) &&
                   <View style={styles.loadingFollowing}>
                     <Placeholder.Line
                       animate='fade'
@@ -849,8 +831,7 @@ class UserProfileView extends React.Component {
 }
 
 UserProfileView.propTypes = {
-  albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
   player: PropTypes.object.isRequired,
@@ -865,10 +846,9 @@ UserProfileView.propTypes = {
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, player, playlists, queue, sessions, tracks, users}) {
+function mapStateToProps({entities, player, playlists, queue, sessions, tracks, users}) {
   return {
-    albums,
-    artists,
+    entities,
     playlists,
     queue,
     sessions,
