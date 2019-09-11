@@ -102,6 +102,7 @@ export default StyleSheet.create({
     fontSize: 55,
     marginRight: 10,
     borderRadius: 27.5,
+    color: '#fefefe',
   },
   playlistCreatorImage: {
     width: 55,
@@ -320,6 +321,7 @@ export default StyleSheet.create({
     paddingTop: 7,
     backgroundColor: 'transparent',
     alignSelf: 'center',
+    color: '#fefefe',
   },
   title: {
     flex: 6,

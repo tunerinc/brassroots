@@ -48,20 +48,20 @@ class PlaylistDetailsView extends React.Component {
     const {
       getUserImage,
       playlistToView,
-      playlists: {playlistsByID},
-      users: {usersByID, fetchingImages},
+      entities: {playlists, users},
+      users: {fetching},
     } = this.props;
 
       if (
         playlistToView
-        && playlistsByID[playlistToView]
-        && !fetchingImages
+        && playlists.allIDs.includes(playlistToView)
+        && !fetching.includes('images')
         && (
-          !usersByID[playlistsByID[playlistToView].ownerID].profileImage
-          || usersByID[playlistsByID[playlistToView].ownerID].profileImage === ''
+          !users.byID[playlists.byID[playlistToView].ownerID]
+          || users.byID[playlists.byID[playlistToView].ownerID].profileImage === ''
         )
       ) {
-        getUserImage(playlistsByID[playlistToView].ownerID);
+        getUserImage(playlists.byID[playlistToView].ownerID);
       }
   };
 
@@ -82,14 +82,16 @@ class PlaylistDetailsView extends React.Component {
     const {
       playlistToView,
       title,
-      playlists: {playlistsByID, fetchingMembers},
-      users: {usersByID},
+      entities: {playlists, users},
+      playlists: {fetching},
     } = this.props;
     
-    if (!usersByID[item] || !playlistToView || !playlistsByID[playlistToView]) return <View></View>;
+    if (!users.allIDs.includes(item) || !playlistToView || !playlists.byID[playlistToView]) return (
+      <View></View>
+    );
     
-    const playlist = playlistsByID[playlistToView];
-    const user = usersByID[item];
+    const playlist = playlists.byID[playlistToView];
+    const user = users.byID[item];
     const filterText = (index !== 2 || playlist.members.length <= 3)
       ? ''
       : playlist.members.length - 3 > 100
@@ -100,7 +102,7 @@ class PlaylistDetailsView extends React.Component {
       <RoundPerson
         onPress={() => console.log(user)}
         marginLeft={index === 0 ? 20 : 0}
-        loading={fetchingMembers}
+        loading={fetching.includes('topMembers')}
         image={user.profileImage}
         text={index === 2 && playlist.members.length > 3 ? 'view all' : user.displayName}
         showFilter={index === 2 && playlist.members.length > 3}
@@ -112,15 +114,12 @@ class PlaylistDetailsView extends React.Component {
   renderTopTrack({item, index}) {
     const {
       playlistToView,
-      albums: {albumsByID},
-      playlists: {playlistsByID, playlistTracksByID},
-      tracks: {tracksByID},
-      users: {usersByID},
+      entities: {albums, playlists, playlistTracks, tracks, users},
     } = this.props;
-    const {ownerID, name: playlistName} = playlistsByID[playlistToView];
-    const {displayName} = usersByID[ownerID];
-    const {totalPlays, userID} = playlistTracksByID[`${playlistToView}-${item}`];
-    const {displayName: trackOwner} = usersByID[userID];
+    const {ownerID, name: playlistName} = playlists.byID[playlistToView];
+    const {displayName} = users.byID[ownerID];
+    const {totalPlays, userID} = playlistTracks.byID[`${playlistToView}-${item}`];
+    const {displayName: trackOwner} = users.byID[userID];
 
     let trackCount;
 
@@ -153,14 +152,18 @@ class PlaylistDetailsView extends React.Component {
   }
 
   renderHeader() {
-    const {playlistToView, playlists: {playlistsByID}, users: {currentUserID}} = this.props;
-    const {ownerID, members} = playlistsByID[playlistToView];
+    const {
+      playlistToView,
+      entities: {playlists},
+      users: {currentUserID},
+    } = this.props;
+    const {ownerID, members} = playlists.byID[playlistToView];
 
     return (
       <RoundPerson
         onPress={() => console.log('header pressed')}
         image={null}
-        text={(members.indexOf(currentUserID) !== -1 || ownerID === currentUserID) ? 'invite' : 'join'}
+        text={(members.includes(currentUserID) || ownerID === currentUserID) ? 'invite' : 'join'}
         showPlus={true}
       />
     );
@@ -170,8 +173,9 @@ class PlaylistDetailsView extends React.Component {
     const {
       playlistToView,
       title,
-      playlists: {playlistsByID, fetchingMembers, fetchingTopTracks, error: playlistError},
-      users: {usersByID, fetchingImages},
+      entities: {playlists, users},
+      playlists: {fetching: playlistFetching, error: playlistError},
+      users: {fetching: userFetching},
     } = this.props;
     const {
       ownerID,
@@ -181,8 +185,8 @@ class PlaylistDetailsView extends React.Component {
       totalPlays,
       large,
       name,
-    } = playlistsByID[playlistToView];
-    const owner = usersByID[ownerID];
+    } = playlists.byID[playlistToView];
+    const owner = users.byID[ownerID];
 
     return (
       <View style={styles.container}>
@@ -192,29 +196,34 @@ class PlaylistDetailsView extends React.Component {
               <Text style={styles.sectionTitle}>CREATOR</Text>
               {ownerID === 'spotify' &&
                 <TouchableOpacity style={styles.playlistCreatorSpotify} disabled={true}>
-                  <MaterialCommunityIcons
-                    name='spotify'
-                    color='#888'
-                    style={styles.playlistCreatorSpotifyImage}
-                  />
+                  <MaterialCommunityIcons name='spotify' style={styles.playlistCreatorSpotifyImage} />
                   <Text style={[styles.playlistCreatorName, {color: '#888'}]}>Spotify</Text>
                   <Ionicons name='ios-arrow-forward' color='#888' style={styles.arrowForward} />
                 </TouchableOpacity>
               }
               {ownerID !== 'spotify' &&
-                <TouchableOpacity
-                  style={styles.playlistCreator}
-                  onPress={() => console.log(owner)}
-                >
+                <TouchableOpacity style={styles.playlistCreator} onPress={() => console.log(owner)}>
                   {(typeof owner.profileImage === 'string' && owner.profileImage !== '') &&
                     <Image style={styles.playlistCreatorImage} source={{uri: owner.profileImage}} />
                   }
-                  {(!fetchingImages && (!owner.profileImage || owner.profileImage === '')) &&
+                  {(
+                    !userFetching.includes('images')
+                    && (
+                      !owner.profileImage
+                      || owner.profileImage === ''
+                    )
+                  ) &&
                     <View style={styles.default}>
                       <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
                     </View>
                   }
-                  {(fetchingImages && (!owner.profileImage || owner.profileImage === '')) &&
+                  {(
+                    userFetching.includes('images')
+                    && (
+                      !owner.profileImage
+                      || owner.profileImage === ''
+                    )
+                  ) &&
                     <View style={styles.playlistCreatorImage}>
                       <Placeholder.Media
                         animate='fade'
@@ -239,7 +248,7 @@ class PlaylistDetailsView extends React.Component {
             {ownerID  !== 'spotify' &&
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>MEMBERS</Text>
-                {(!fetchingMembers && members.length !== 0) &&
+                {(!playlistFetching.includes('topMembers') && members.length !== 0) &&
                   <FlatList
                     data={members}
                     renderItem={this.renderMember}
@@ -251,19 +260,23 @@ class PlaylistDetailsView extends React.Component {
                     ListHeaderComponent={this.renderHeader}
                   />
                 }
-                {(fetchingMembers || members.length === 0) &&
+                {(playlistFetching.includes('topMembers') || members.length === 0) &&
                   <View>
-                    {(!fetchingMembers && playlistError) &&
+                    {(!playlistFetching.includes('topMembers') && playlistError) &&
                       <View style={styles.membersError}>
                         <Text style={styles.membersErrorText}>Unable to load members</Text>
                       </View>
                     }
-                    {(!fetchingMembers && !playlistError && members.length === 0) &&
+                    {(
+                      !playlistFetching.includes('topMembers')
+                      && !playlistError
+                      && members.length === 0
+                    ) &&
                       <View style={styles.topTracksEmpty}>
                         <Text style={styles.topTracksEmptyText}>No members</Text>
                       </View>
                     }
-                    {fetchingMembers &&
+                    {playlistFetching.includes('topMembers') &&
                       <View style={styles.loadingSection}>
                         <LoadingMember marginLeft={20} />
                         <LoadingMember />
@@ -291,7 +304,7 @@ class PlaylistDetailsView extends React.Component {
             }
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, {paddingBottom: 10}]}>TOP TRACKS</Text>
-              {(!fetchingTopTracks && !playlistError && topTracks.length > 0) &&
+              {(!playlistFetching.includes('topTracks') && !playlistError && topTracks.length > 0) &&
                 <FlatList
                   data={topTracks}
                   renderItem={this.renderTopTrack}
@@ -300,17 +313,21 @@ class PlaylistDetailsView extends React.Component {
                   getItemCount={data => data.length}
                 />
               }
-              {(!fetchingTopTracks && playlistError) &&
+              {(!playlistFetching.includes('topTracks') && playlistError) &&
                 <View style={styles.topTracksError}>
                   <Text style={styles.topTracksErrorText}>Unable to load top tracks</Text>
                 </View>
               }
-              {(!fetchingTopTracks && !playlistError && topTracks.length === 0) &&
+              {(
+                !playlistFetching.includes('topTracks')
+                && !playlistError
+                && topTracks.length === 0
+              ) &&
                 <View style={styles.topTracksEmpty}>
                   <Text style={styles.topTracksEmptyText}>No tracks</Text>
                 </View>
               }
-              {fetchingTopTracks && <LoadingTrack type='top' />}
+              {playlistFetching.includes('topTracks') && <LoadingTrack type='top' />}
             </View>
           </View>
         </ScrollView>
@@ -325,12 +342,7 @@ class PlaylistDetailsView extends React.Component {
             <View style={styles.headerFilter}></View>
           </View>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>
@@ -343,9 +355,8 @@ class PlaylistDetailsView extends React.Component {
 }
 
 PlaylistDetailsView.propTypes = {
-  albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
+  entities: PropTypes.object.isRequired,
   getPlaylistTopMembers: PropTypes.func.isRequired,
   getPlaylistTopTracks: PropTypes.func.isRequired,
   getUserImage: PropTypes.func.isRequired,
@@ -353,20 +364,14 @@ PlaylistDetailsView.propTypes = {
   playlistToView: PropTypes.string,
   playTrack: PropTypes.func.isRequired,
   queueTrack: PropTypes.func.isRequired,
-  sessions: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired,
-  tracks: PropTypes.object.isRequired,
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, playlists, sessions, settings, tracks, users}) {
+function mapStateToProps({entities, playlists, sessions, users}) {
   return {
-    albums,
-    artists,
+    entities,
     playlists,
     sessions,
-    settings,
-    tracks,
     users,
   };
 }
