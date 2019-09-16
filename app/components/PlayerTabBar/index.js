@@ -16,7 +16,6 @@ import MiniPlayer from '../MiniPlayer';
 // Player Action Creators
 import {nextTrack} from '../../actions/player/NextTrack';
 import {pausePlayer} from '../../actions/player/PausePlayer';
-import {setProgress} from '../../actions/player/SetProgress';
 import {startPlayer} from '../../actions/player/StartPlayer';
 import {stopPlayer} from '../../actions/player/StopPlayer';
 import {togglePause} from '../../actions/player/TogglePause';
@@ -177,11 +176,8 @@ class PlayerTabBar extends React.Component {
   }
 
   setProgress() {
-    const {setProgress, player: {progress, seeking, durationMS}} = this.props;
-
-    if (typeof progress === 'number' && !seeking) {
-      setProgress(progress + 1000);
-    }
+    const {updatePlayer, player: {progress, seeking, durationMS}} = this.props;
+    if (typeof progress === 'number' && !seeking) updatePlayer({progress: progress + 1000});
   }
 
   handleDoneTrack() {
@@ -346,7 +342,6 @@ PlayerTabBar.propTypes = {
   pausePlayer: PropTypes.func.isRequired,
   queue: PropTypes.object.isRequired,
   sessions: PropTypes.object.isRequired,
-  setProgress: PropTypes.func.isRequired,
   startPlayer: PropTypes.func.isRequired,
   stopPlayer: PropTypes.func.isRequired,
   togglePause: PropTypes.func.isRequired,
@@ -372,7 +367,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     nextTrack,
     pausePlayer,
-    setProgress,
     startPlayer,
     stopPlayer,
     togglePause,
