@@ -1,0 +1,90 @@
+platform :ios, '9.0'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+target 'brassroots' do
+  # Pods for brassroots
+
+  # Firebase
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Functions'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/Storage'
+
+  # React Native
+  pod 'React', :path => '../node_modules/react-native'
+  pod 'React-Core', :path => '../node_modules/react-native/React'
+  pod 'React-DevSupport', :path => '../node_modules/react-native/React'
+  pod 'React-RCTLinking', :path => '../node_modules/react-native/Libraries/LinkingIOS'
+  pod 'React-RCTActionSheet', :path => '../node_modules/react-native/Libraries/ActionSheetIOS'
+  pod 'React-RCTAnimation', :path => '../node_modules/react-native/Libraries/NativeAnimation'
+  pod 'React-RCTBlob', :path => '../node_modules/react-native/Libraries/Blob'
+  pod 'React-RCTImage', :path => '../node_modules/react-native/Libraries/Image'
+  pod 'React-RCTNetwork', :path => '../node_modules/react-native/Libraries/Network'
+  pod 'React-RCTSettings', :path => '../node_modules/react-native/Libraries/Settings'
+  pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text'
+  pod 'React-RCTVibration', :path => '../node_modules/react-native/Libraries/Vibration'
+  pod 'React-RCTWebSocket', :path => '../node_modules/react-native/Libraries/WebSocket'
+
+  # Yoga'
+  pod 'React-cxxreact', :path => '../node_modules/react-native/ReactCommon/cxxreact'
+  pod 'React-jsi', :path => '../node_modules/react-native/ReactCommon/jsi'
+  pod 'React-jsiexecutor', :path => '../node_modules/react-native/ReactCommon/jsiexecutor'
+  pod 'React-jsinspector', :path => '../node_modules/react-native/ReactCommon/jsinspector'
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+
+  # Third Party
+  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+  # React Native Permissions
+  pod 'ReactNativePermissions', :path=> '../node_modules/react-native-permissions'
+
+  # React Native Interactable
+  # pod 'Interactable', :path => '../node_modules/react-native-interactable'
+
+  # Background Timer
+  pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
+
+  # Vector Icons
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  # Image Pickers
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+  pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
+
+  # Gradient
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
+  target 'brassrootsTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  # Temporary workaround for https://github.com/invertase/react-native-firebase/issues/395
+  post_install do |installer|
+    `rm -rf Pods/leveldb-library/port/win`
+    installer.pods_project.targets.each do |target|
+        if target.name == 'React'
+            target.remove_from_project
+        end
+
+        if target.name == 'yoga'
+          target.remove_from_project
+        end
+    end
+end
+
+  use_native_modules!
+end
+
+target 'brassroots-tvOS' do
+  # Pods for brassroots-tvOS
+
+  target 'brassroots-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
