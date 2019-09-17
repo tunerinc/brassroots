@@ -227,6 +227,8 @@ PODS:
     - React-Core (= 0.60.5)
   - ReactNativePermissions (1.2.0):
     - React
+  - RNCAsyncStorage (1.6.1):
+    - React
   - RNImageCropPicker (0.25.2):
     - QBImagePickerController
     - React-Core
@@ -270,6 +272,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-RCTWebSocket (from `../node_modules/react-native/Libraries/WebSocket`)
   - ReactNativePermissions (from `../node_modules/react-native-permissions`)
+  - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -358,6 +361,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/WebSocket"
   ReactNativePermissions:
     :path: "../node_modules/react-native-permissions"
+  RNCAsyncStorage:
+    :path: "../node_modules/@react-native-community/async-storage"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
   RNVectorIcons:
@@ -418,6 +423,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 2105b2e0e2b66a6408fc69a46c8a7fb5b2fdade0
   React-RCTWebSocket: cd932a16b7214898b6b7f788c8bddb3637246ac4
   ReactNativePermissions: f0aec11433d43d45953c678b6982921d83ad94c8
+  RNCAsyncStorage: 621bad7a889b5bf1583a52547f2dcd3a4d1ff15e
   RNImageCropPicker: f675353bbe18f66113a39b319c0aeb36655a6e4c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
