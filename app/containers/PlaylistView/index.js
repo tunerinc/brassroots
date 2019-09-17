@@ -229,7 +229,7 @@ class PlaylistView extends React.Component {
     const queueTrack = session ? queueTracks.byID[session.currentQueueID] : null;
     const {displayName, profileImage, totalFollowers} = users.byID[currentUserID];
     const trackToPlay = tracks.byID[trackID];
-    const {tracks, ownerID, name: playlistName, total} = playlists.byID[playlistToView];
+    const {ownerID, name: playlistName, total} = playlists.byID[playlistToView];
     const user = {displayName, profileImage, id: currentUserID};
 
     if (session && session.ownerID === currentUserID) {
