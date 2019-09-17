@@ -107,9 +107,7 @@ class AlbumDetailsView extends React.Component {
     );
   }
 
-  goToProfile = userToView => () => {
-    Actions.libraryProfileMain({userToView});
-  }
+  goToProfile = userToView => () => Actions.libProMain({userToView});
 
   renderTopTrack({item, index}) {
     const {entities: {tracks}} = this.props;

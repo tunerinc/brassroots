@@ -50,15 +50,12 @@ class LibraryPlaylistsView extends React.Component {
   }
 
   navToPlaylist = (dest, playlistID) => () => {
-    switch (dest) {
-      case 'library':
-        Actions.librarySinglePlaylist({playlistToView: playlistID});
-        return;
-      case 'profile':
-        Actions.profileSinglePlaylist({playlistToView: playlistID});
-        return;
-      default:
-        return;
+    if (dest === 'library') {
+      Actions.libSinglePlaylist({playlistToView: playlistID});
+    }
+
+    if (dest === 'profile') {
+      Actions.proSinglePlaylist({playlistToView: playlistID});
     }
   }
 
@@ -108,9 +105,7 @@ class LibraryPlaylistsView extends React.Component {
   }
 
   renderFooter() {
-    const {
-      playlists: {fetching, refreshing, userPlaylists, totalUserPlaylists},
-    } = this.props;
+    const {playlists: {fetching, refreshing, userPlaylists, totalUserPlaylists}} = this.props;
 
     if (
       !fetching.includes('playlists')
@@ -131,7 +126,7 @@ class LibraryPlaylistsView extends React.Component {
 
   renderCreateButton() {
     return (
-      <TouchableOpacity style={styles.addButton} onPress={Actions.libraryNewPlaylist}>
+      <TouchableOpacity style={styles.addButton} onPress={Actions.libNewPlaylist}>
         <Text style={styles.addButtonText}>CREATE PLAYLIST</Text>
       </TouchableOpacity>
     );

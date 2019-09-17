@@ -245,7 +245,7 @@ class PlayerTabBar extends React.Component {
     const currentSession = sessionsByID[currentSessionID];
 
     // if (currentSession) {
-    //   Actions.libraryProfileMain({userToView: currentSession.ownerID});
+    //   Actions.libProMain({userToView: currentSession.ownerID});
     // }
   }
 

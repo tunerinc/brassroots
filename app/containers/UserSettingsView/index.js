@@ -21,22 +21,22 @@ class UserSettingsView extends React.Component {
 
     switch (setting) {
       case 'notifications':
-        title === 'Library' ? Actions.libraryProfileNotifications() : Actions.profileNotifications();
+        title === 'Library' ? Actions.libProNotifications() : Actions.proNotifications();
         return;
       case 'preferences':
-        title === 'Library' ? Actions.libraryProfilePreferences() : Actions.profilePreferences();
+        title === 'Library' ? Actions.libProPreferences() : Actions.proPreferences();
         return;
       case 'displaySound':
-        title === 'Library' ? Actions.libraryProfileDisplaySound() : Actions.profileDisplaySound();
+        title === 'Library' ? Actions.libProDisplaySound() : Actions.proDisplaySound();
         return;
       case 'langRegion':
-        title === 'Library' ? Actions.libraryProfileLanguageRegion() : Actions.profileLanguageRegion();
+        title === 'Library' ? Actions.libProLanguageRegion() : Actions.proLanguageRegion();
         return;
       case 'about':
-        title === 'Library' ? Actions.libraryProfileAboutApp() : Actions.profileAboutApp();
+        title === 'Library' ? Actions.libProAboutApp() : Actions.proAboutApp();
         return;
       case 'report':
-        title === 'Library' ? Actions.libraryProfileReportUser() : Actions.profileReportUser();
+        title === 'Library' ? Actions.libProReportUser() : Actions.proReportUser();
         return;
       default:
         return;

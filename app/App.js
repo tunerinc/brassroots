@@ -117,6 +117,7 @@ export default class App extends React.Component<Props> {
           <Modal>
             <Scene key="welcome" hideNavBar>
               <Scene key="welcomeMain" type="jump" component={WelcomeView} title="Welcome" initial />
+              <Scene key="welTermsService" component={TermsServiceView} title="Terms of Service" />
               <Scene key="welPrivacyPolicy" component={PrivacyPolicyView} title="Privacy Policy" />
               <Scene key="createProfile" component={EditProfileView} title="Create Profile" />
             </Scene>

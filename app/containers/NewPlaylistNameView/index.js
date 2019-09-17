@@ -45,7 +45,7 @@ class NewPlaylistNameView extends React.Component {
   }
 
   goToSelectPhoto() {
-    Actions.librarySelectPlaylistPhoto({direction: 'vertical', isSelectingPlaylistPhoto: true});
+    Actions.libSelectPlaylistPhoto({direction: 'vertical', isSelectingPlaylistPhoto: true});
   }
 
   render() {
@@ -58,7 +58,7 @@ class NewPlaylistNameView extends React.Component {
             <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>New Playlist</Text>
             {(name !== '' && mode !== '') &&
-              <TouchableOpacity style={styles.rightIcon} onPress={Actions.libraryAddMembers}>
+              <TouchableOpacity style={styles.rightIcon} onPress={Actions.libAddMembers}>
                 <Text style={[styles.rightIconText, styles.enabledText]}>next</Text>
               </TouchableOpacity>
             }

@@ -68,10 +68,10 @@ class PlaylistDetailsView extends React.Component {
   navToProfile = title => () => {
     switch (title) {
       case 'Library':
-        Actions.libraryProfileMain({userToView: item});
+        Actions.libProMain({userToView: item});
         return;
       case 'Profile':
-        Actions.profileUser({userToView: item});
+        Actions.proUser({userToView: item});
         return;
       default:
         return;

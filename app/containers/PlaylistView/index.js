@@ -145,10 +145,10 @@ class PlaylistView extends React.Component {
   navToDetails = (playlistToView, title) => () => {
     switch (title) {
       case 'Library':
-        Actions.libraryPlaylistDetails({playlistToView});
+        Actions.libPlaylistDetails({playlistToView});
         return;
       case 'Profile':
-        Actions.profilePlaylistDetails({playlistToView});
+        Actions.proPlaylistDetails({playlistToView});
         return;
       default:
         return;

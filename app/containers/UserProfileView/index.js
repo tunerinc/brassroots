@@ -74,10 +74,10 @@ class UserProfileView extends React.Component {
   navToMostPlayed = (selectedUser, title) => () => {
     switch (title) {
       case 'Library':
-        Actions.libraryProfileMostPlayed({selectedUser});
+        Actions.libProMostPlayed({selectedUser});
         return;
       case 'Profile':
-        Actions.profileMostPlayed({selectedUser});
+        Actions.proMostPlayed({selectedUser});
         return;
       default:
         return;
@@ -87,10 +87,10 @@ class UserProfileView extends React.Component {
   navToTopPlaylists = (selectedUser, title) => () => {
     switch (title) {
       case 'Library':
-        Actions.libraryTopPlaylists({selectedUser});
+        Actions.libTopPlaylists({selectedUser});
         return;
       case 'Profile':
-        Actions.profileTopPlaylists({selectedUser});
+        Actions.proTopPlaylists({selectedUser});
         return;
       default:
         return;
@@ -100,10 +100,10 @@ class UserProfileView extends React.Component {
   navToRecentlyPlayed = (selectedUser, title) => () => {
     switch (title) {
       case 'Library':
-        Actions.libraryProfileRecentlyPlayed({selectedUser});
+        Actions.libProRecentlyPlayed({selectedUser});
         return;
       case 'Profile':
-        Actions.profileRecentlyPlayed({selectedUser});
+        Actions.proRecentlyPlayed({selectedUser});
         return;
       default:
         return;
@@ -113,10 +113,10 @@ class UserProfileView extends React.Component {
   navToSettings = title => () => {
     switch (title) {
       case 'Library':
-        Actions.libraryProfileSettings();
+        Actions.libProSettings();
         return;
       case 'Profile':
-        Actions.profileSettings();
+        Actions.proSettings();
         return;
       default:
         return;
@@ -126,10 +126,10 @@ class UserProfileView extends React.Component {
   navToEditProfile = title => () => {
     switch (title) {
       case 'Library':
-        Actions.libraryProfileEditProfile();
+        Actions.libProEditProfile();
         return;
       case 'Profile':
-        Actions.profileEditProfile();
+        Actions.proEditProfile();
         return;
       default:
         return;

@@ -96,31 +96,31 @@ class LibraryTabView extends React.Component {
 
     switch (route) {
       case "playlists":
-        Actions.libraryPlaylists();
+        Actions.libPlaylists();
         return;
       case "artists":
-        Actions.libraryArtists();
+        Actions.libArtists();
         return;
       case "albums":
-        Actions.libraryAlbums();
+        Actions.libAlbums();
         return;
       case "tracks":
-        Actions.libraryTracks();
+        Actions.libTracks();
         return;
       case "recent":
-        Actions.libraryRecentlyPlayed({selectedUser: currentUserID});
+        Actions.libRecentlyPlayed({selectedUser: currentUserID});
         return;
       case "top":
-        Actions.libraryTopPlaylists({selectedUser: currentUserID});
+        Actions.libTopPlaylists({selectedUser: currentUserID});
         return;
       case "most":
-        Actions.libraryMostPlayed({selectedUser: currentUserID});
+        Actions.libMostPlayed({selectedUser: currentUserID});
       default:
         return;
     }
   }
 
-  navToPlaylist = playlistID => () => Actions.profileSinglePlaylist({playlistToView: playlistID});
+  navToPlaylist = playlistID => () => Actions.proSinglePlaylist({playlistToView: playlistID});
 
   renderPlaylist({item}) {
     const {

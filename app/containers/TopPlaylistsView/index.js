@@ -77,16 +77,8 @@ class TopPlaylistsView extends React.Component {
   }
 
   navToPlaylist(dest, playlistID) {
-    switch (dest) {
-      case 'library':
-        Actions.librarySinglePlaylist({playlistToView: playlistID});
-        return;
-      case 'profile':
-        Actions.profileSinglePlaylist({playlistToView: playlistID});
-        return;
-      default:
-        return;
-    }
+    if (dest === 'library') Actions.libSinglePlaylist({playlistToView: playlistID});
+    if (dest === 'profile') Actions.proSinglePlaylist({playlistToView: playlistID});
   }
 
   renderPlaylist({item}) {

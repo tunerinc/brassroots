@@ -63,7 +63,7 @@ class LibrarySingleArtistView extends React.Component {
     this.closeModal();
   }
 
-  navToDetails = artistToView => () => Actions.libraryArtistDetails({artistToView});
+  navToDetails = artistToView => () => Actions.libArtistDetails({artistToView});
 
   renderTrack = artistToView => ({item, index}) => {
     const {

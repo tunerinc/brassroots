@@ -75,7 +75,7 @@ class LibraryAlbumsView extends React.Component {
     }
   }
 
-  navToAlbum = albumID => () => Actions.librarySingleAlbum({albumToView: albumID});
+  navToAlbum = albumID => () => Actions.libSingleAlbum({albumToView: albumID});
 
   renderAlbum({item}) {
     const {entities: {albums}} = this.props;

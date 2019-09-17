@@ -32,10 +32,10 @@ class AboutAppView extends React.Component {
 
     switch (title) {
       case 'Library':
-        Actions.libraryProfileTermsService();
+        Actions.libProTermsService();
         return;
       case 'Profile':
-        Actions.profileTermsService();
+        Actions.proTermsService();
         return;
       default:
         return;
@@ -47,10 +47,10 @@ class AboutAppView extends React.Component {
 
     switch (title) {
       case 'Library':
-        Actions.libraryProfilePrivacyPolicy();
+        Actions.libProPrivacyPolicy();
         return;
       case 'Profile':
-        Actions.profilePrivacyPolicy();
+        Actions.proPrivacyPolicy();
         return;
       default:
         return;

@@ -99,7 +99,7 @@ class SocialTabView extends React.Component {
           }
           {viewing === 'messages' &&
             <Animated.View style={[styles.messagesWrap, {opacity: this.messagesOpacity}]}>
-              <TouchableOpacity style={styles.newMessageButton} onPress={Actions.socialNewMessage}>
+              <TouchableOpacity style={styles.newMessageButton} onPress={Actions.socNewMessage}>
                 <Text style={styles.newMessageButtonText}>NEW MESSAGE</Text>
               </TouchableOpacity>
               {fetchingConversations &&

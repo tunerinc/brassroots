@@ -62,7 +62,7 @@ class ArtistDetailsView extends React.Component {
   }
 
   goToProfile = userToView => () => {
-    Actions.libraryProfileMain({userToView});
+    Actions.libProMain({userToView});
   }
 
   renderTopListener({item, index}) {
