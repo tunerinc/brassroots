@@ -22,6 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "7.6.0",
+    "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/geolocation": "2.0.2",
     "@react-native-community/netinfo": "4.2.1",
     "core-js": "3.2.1",

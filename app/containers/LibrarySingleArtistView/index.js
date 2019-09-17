@@ -71,22 +71,22 @@ class LibrarySingleArtistView extends React.Component {
       users: {currentUserID},
     } = this.props;
     const {displayName} = users.byID[currentUserID];
-    const {name, album, artists} = tracks.byID[item];
-    const {name: artistName} = artists.byID[artistToView];
+    const track = tracks.byID[item];
+    const artist = artists.byID[artistToView];
 
     return (
       <TrackCard
         key={item}
         albumName={album.name}
         type='cover'
-        context={{displayName, name: artistName, id: artistToView, type: 'user-artist'}}
-        name={name}
+        context={{displayName, name: artist.name, id: artistToView, type: 'user-artist'}}
+        name={track.name}
         onPress={this.handlePlay(item, index)}
         openModal={this.openModal(item, 'track')}
         showOptions={true}
         showSquareImage={true}
-        image={album.medium}
-        artists={artists.map(a => a.name).join(', ')}
+        image={track.album.medium}
+        artists={track.artists.map(a => a.name).join(', ')}
       />
     );
   }

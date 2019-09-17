@@ -45,8 +45,8 @@ class AlbumDetailsView extends React.Component {
       getAlbumTopTracks,
       entities: {albums, artists},
     } = this.props;
-    const {artists, topListeners, topPlaylists, topTracks} = albums.byID[albumToView];
-    const artistsToFetch = artists
+    const album = albums.byID[albumToView];
+    const artistsToFetch = album.artists
       .map(a => {
         const {small, medium, large} = artists.byID[a.id];
         const fetchSmall = typeof small !== 'string' || small === '';
@@ -60,15 +60,15 @@ class AlbumDetailsView extends React.Component {
       getArtistImages(artistsToFetch);
     }
 
-    if (topListeners.length === 0) {
+    if (album.topListeners.length === 0) {
       // getAlbumTopListeners(albumToView);
     }
 
-    if (topPlaylists.length === 0) {
+    if (album.topPlaylists.length === 0) {
       // getAlbumTopPlaylists(albumToView);
     }
 
-    if (topTracks.length === 0) {
+    if (album.topTracks.length === 0) {
       // getAlbumTopTracks(albumToView);
     }
   }
@@ -151,16 +151,16 @@ class AlbumDetailsView extends React.Component {
       albums: {fetching: albumFetching, error: albumsError},
       artists: {fetching: artistFetching},
     } = this.props;
-    const {artists, topListeners, topTracks, totalPlays, large, name} = albums.byID[albumToView];
+    const album = albums.byID[albumToView];
 
     return (
       <View style={styles.container}>
         <ScrollView style={styles.scrollContainer} keyboardDismissMode='interactive'>
           <View style={styles.scrollWrap}>
             <View style={styles.albumArtists}>
-              {artists.length > 1 && <Text style={styles.sectionTitle}>ARTISTS</Text>}
-              {artists.length === 1 && <Text style={styles.sectionTitle}>ARTIST</Text>}
-              {artists.length > 1 &&
+              {album.artists.length > 1 && <Text style={styles.sectionTitle}>ARTISTS</Text>}
+              {album.artists.length === 1 && <Text style={styles.sectionTitle}>ARTIST</Text>}
+              {album.artists.length > 1 &&
                 <FlatList
                   data={artists}
                   extraData={this.props}
@@ -170,10 +170,10 @@ class AlbumDetailsView extends React.Component {
                   showsHorizontalScrollIndicator={false}
                 />
               }
-              {artists.length === 1 &&
+              {album.artists.length === 1 &&
                 <ArtistCard
-                  artistImage={artists.byID[artists[0].id].small}
-                  artistName={artists.byID[artists[0].id].name}
+                  artistImage={artists.byID[album.artists[0].id].small}
+                  artistName={artists.byID[album.artists[0].id].name}
                   navToArtist={() => console.log('artist pressed')}
                   fetchingImage={artistFetching.includes('images')}
                 />
@@ -181,15 +181,19 @@ class AlbumDetailsView extends React.Component {
             </View>
             <View style={styles.topListeners}>
               <Text style={styles.sectionTitle}>TOP LISTENERS</Text>
-              {(!albumFetching.includes('topListeners') && topListeners.length !== 0) &&
+              {(!albumFetching.includes('topListeners') && album.topListeners.length !== 0) &&
                 <FlatList
-                  data={topListeners}
+                  data={album.topListeners}
                   renderItem={this.renderPerson('user')}
                   keyExtractor={item => item}
                   horizontal
                 />
               }
-              {(albumFetching.includes('topListeners') || topListeners.length === 0 || albumsError) &&
+              {(
+                albumFetching.includes('topListeners')
+                || album.topListeners.length === 0
+                || albumsError
+              ) &&
                 <View>
                   {(!albumFetching.includes('topListeners') && albumsError) &&
                     <View style={styles.topListenersError}>
@@ -207,18 +211,18 @@ class AlbumDetailsView extends React.Component {
                 </View>
               }
             </View>
-            {totalPlays === 1 &&
+            {album.totalPlays === 1 &&
               <Text style={styles.albumPlays}>
                 <Text style={styles.albumPlaysNumber}>
-                  {totalPlays}
+                  {album.totalPlays}
                 </Text>{' '}
                 PLAY
               </Text>
             }
-            {totalPlays !== 1 &&
+            {album.totalPlays !== 1 &&
               <Text style={styles.albumPlays}>
                 <Text style={styles.albumPlaysNumber}>
-                  {totalPlays}
+                  {album.totalPlays}
                 </Text>{' '}
                 PLAYS
               </Text>
@@ -230,14 +234,22 @@ class AlbumDetailsView extends React.Component {
                   {paddingBottom: 10},
                 ]}
               >TOP TRACKS</Text>
-              {(!albumFetching.includes('topTracks') && !albumsError && topTracks.length !== 0) &&
+              {(
+                !albumFetching.includes('topTracks')
+                && !albumsError
+                && album.topTracks.length !== 0
+              ) &&
                 <FlatList
-                  data={topTracks}
+                  data={album.topTracks}
                   renderItem={this.renderTopTrack}
                   keyExtractor={item => item}
                 />
               }
-              {(albumFetching.includes('topTracks') || albumsError || topTracks.length === 0) &&
+              {(
+                albumFetching.includes('topTracks')
+                || albumsError
+                || album.topTracks.length === 0
+              ) &&
                 <View>
                   {(!albumFetching.includes('topTracks') && albumsError) &&
                     <View style={styles.topTracksError}>
@@ -258,7 +270,7 @@ class AlbumDetailsView extends React.Component {
           <View style={styles.headerBackground}>
             <Image
               style={styles.headerBackground}
-              source={{uri: large}}
+              source={{uri: album.large}}
               resizeMode='cover'
               blurRadius={80}
             />
@@ -267,7 +279,7 @@ class AlbumDetailsView extends React.Component {
           <View style={styles.nav}>
             <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
-              {name}
+              {album.name}
             </Text>
             <View style={styles.rightIcon} />
           </View>

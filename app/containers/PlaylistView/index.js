@@ -444,7 +444,7 @@ class PlaylistView extends React.Component {
     const {
       playlistToView,
       title,
-      entities: {albums, playlists, sessions, tracks},
+      entities: {albums, playlists, sessions, tracks: trackEntities},
       playlists: {fetching, refreshing, error: playlistError},
       queue: {userQueue, queueing, error: queueError},
       sessions: {currentSessionID},
@@ -635,13 +635,13 @@ class PlaylistView extends React.Component {
         >
           {this.renderModalContent('playlist', playlistToView)}
         </Modal>
-        {(typeof selectedTrack === 'string' && tracks.byID[selectedTrack]) &&
+        {(typeof selectedTrack === 'string' && trackEntities.byID[selectedTrack]) &&
           <AddToQueueDialog
             queueing={queueing}
             error={queueError}
             inSession={inSession}
             queueHasTracks={queueHasTracks}
-            image={tracks.byID[selectedTrack].album.medium}
+            image={trackEntities.byID[selectedTrack].album.medium}
           />
         }
       </View>

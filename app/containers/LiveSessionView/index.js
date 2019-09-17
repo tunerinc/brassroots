@@ -42,11 +42,11 @@ import {nextTrack} from '../../actions/player/NextTrack';
 import {playTrack} from '../../actions/player/PlayTrack';
 import {previousTrack} from '../../actions/player/PreviousTrack';
 import {seekPosition} from '../../actions/player/SeekPosition';
-import {setProgress} from '../../actions/player/SetProgress';
 import {toggleMute} from '../../actions/player/ToggleMute';
 import {togglePause} from '../../actions/player/TogglePause';
 import {toggleRepeat} from '../../actions/player/ToggleRepeat';
 import {toggleShuffle} from '../../actions/player/ToggleShuffle';
+import {updatePlayer} from '../../actions/player/UpdatePlayer';
 
 // Queue Action Creators
 import {deleteQueueTrack} from '../../actions/queue/DeleteQueueTrack';
@@ -849,7 +849,6 @@ LiveSessionView.propTypes = {
   seekPosition: PropTypes.func.isRequired,
   sendChatMessage: PropTypes.func.isRequired,
   sessions: PropTypes.object.isRequired,
-  setProgress: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   stopSessionInfoListener: PropTypes.func.isRequired,
   stopQueueListener: PropTypes.func.isRequired,
@@ -860,6 +859,7 @@ LiveSessionView.propTypes = {
   toggleRepeat: PropTypes.func.isRequired,
   toggleShuffle: PropTypes.func.isRequired,
   toggleTrackLike: PropTypes.func.isRequired,
+  updatePlayer: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 };
 
@@ -893,7 +893,6 @@ function mapDispatchToProps(dispatch) {
     queueTrack,
     seekPosition,
     sendChatMessage,
-    setProgress,
     stopSessionInfoListener,
     stopQueueListener,
     toggleMute,
@@ -901,6 +900,7 @@ function mapDispatchToProps(dispatch) {
     toggleRepeat,
     toggleShuffle,
     toggleTrackLike,
+    updatePlayer,
   }, dispatch);
 }
 
