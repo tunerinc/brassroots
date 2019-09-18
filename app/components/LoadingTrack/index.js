@@ -8,17 +8,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {View} from 'react-native';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
 import Foundation from 'react-native-vector-icons/Foundation';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-type Props = {|
-  type: string,
-|};
-
+type Props = {|type: string|};
 type State = {||};
 
 export default class LoadingTrack extends React.PureComponent<Props, State> {
@@ -28,54 +25,41 @@ export default class LoadingTrack extends React.PureComponent<Props, State> {
 
   render() {
     const {type} = this.props;
+    const topStyles = [styles.text, styles.topText];
+    const showOptions: boolean = (type !== 'top' && type !== 'favorite') || typeof type !== 'string';
+    const showPosition: boolean = type === 'most' || type === 'album' || type === 'top';
+    const showImage: boolean = type === 'cover' || type === 'favorite';
 
     return (
       <View style={styles.track}>
-        {(type === 'cover' || type === 'favorite') &&
-          <View style={styles.image}>
-            <Placeholder.Media
-              animate='fade'
-              size={55}
-              hasRadius={false}
-              color='#888'
-            />
+        {showImage &&
+          <View style={styles.imageWrap}>
+            <Placeholder Animate={Fade} Left={() => <PlaceholderMedia style={styles.image} />} />
           </View>
         }
-        {(type === 'most' || type === 'album' || type === 'top') &&
-          <View style={styles.position}>
-            <Placeholder.Media
-              animate='fade'
-              size={14}
-              hasRadius={true}
-              color='#888'
+        {showPosition &&
+          <View style={styles.positionWrap}>
+            <Placeholder
+              Animate={Fade}
+              Left={() => <PlaceholderMedia isRound={true} style={styles.position} />}
             />
           </View>
         }
         <View style={styles.info}>
-          <Placeholder.Paragraph
-            animate='fade'
-            lineNumber={2}
-            textSize={16}
-            lineSpacing={6.2}
-            color='#888'
-            width='100%'
-          />
+          <Placeholder Animate={Fade}>
+            <PlaceholderLine width={100} style={topStyles} />
+            <PlaceholderLine width={100} style={styles.text} />
+          </Placeholder>
         </View>
         {type === 'most' &&
-          <View style={styles.plays}>
-            <Placeholder.Line
-              animate='fade'
-              textSize={14}
-              lineSpacing={5.6}
-              color='#888'
-              width='100%'
-            />
+          <View style={styles.playsWrap}>
+            <Placeholder Animate={Fade}>
+              <PlaceholderLine width={100} style={styles.plays} />
+            </Placeholder>
           </View>
         }
-        {type === 'favorite' && <Foundation name='star' style={styles.favoriteTrackIcon} />}
-        {(type !== 'top' || type !== 'favorite' || !type) &&
-          <SimpleLineIcons name='options' style={styles.options} />
-        }
+        {type === 'favorite' && <Foundation name='star' style={styles.favoriteIcon} />}
+        {showOptions && <SimpleLineIcons name='options' style={styles.options} />}
       </View>
     );
   }
