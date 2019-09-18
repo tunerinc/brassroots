@@ -8,7 +8,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import HTML from 'react-native-render-html';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
@@ -78,14 +78,11 @@ class PrivacyPolicyView extends React.Component {
         </Animated.View>
         {emptyPolicy &&
           <View style={styles.spinnerWrap}>
-            <Placeholder.Paragraph
-              animate='fade'
-              lineNumber={25}
-              textSize={14}
-              lineSpacing={8.4}
-              color='#888'
-              width='100%'
-            />
+            <Placeholder Animation={Fade}>
+              {[...Array(40)].map(e => (
+                <PlaceholderLine key={e} width={100} style={styles.loading} />
+              ))}
+            </Placeholder>
           </View>
         }
         {policyExists &&

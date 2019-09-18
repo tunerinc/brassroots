@@ -90,7 +90,7 @@ class WelcomeView extends React.Component {
             <Text
               allowFontScaling={false}
               style={styles.footLink}
-              onPress={Actions.welTermsOfService}
+              onPress={Actions.welTermsService}
             >Terms of Service</Text>
             <Text allowFontScaling={false} style={styles.footText}> and </Text>
             <Text
