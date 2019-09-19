@@ -23,6 +23,9 @@ export default class LoadingTrack extends React.PureComponent<Props, State> {
     super(props);
   }
 
+  renderImage = () => <PlaceholderMedia style={styles.image} />;
+  renderPosition = () => <PlaceholderMedia isRound={true} style={styles.position} />;
+
   render() {
     const {type} = this.props;
     const topStyles = [styles.text, styles.topText];
@@ -34,15 +37,12 @@ export default class LoadingTrack extends React.PureComponent<Props, State> {
       <View style={styles.track}>
         {showImage &&
           <View style={styles.imageWrap}>
-            <Placeholder Animate={Fade} Left={() => <PlaceholderMedia style={styles.image} />} />
+            <Placeholder Animate={Fade} Left={this.renderImage} />
           </View>
         }
         {showPosition &&
           <View style={styles.positionWrap}>
-            <Placeholder
-              Animate={Fade}
-              Left={() => <PlaceholderMedia isRound={true} style={styles.position} />}
-            />
+            <Placeholder Animate={Fade} Left={this.renderPosition} />
           </View>
         }
         <View style={styles.info}>

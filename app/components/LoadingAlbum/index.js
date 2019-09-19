@@ -9,7 +9,6 @@ import React from 'react';
 import {View} from 'react-native';
 import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
-import {type ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -22,7 +21,8 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
     super(props);
   }
 
-  renderLeft = (styles: ViewStyleProp) => () => <PlaceholderMedia isRound={true} style={styles} />; 
+  renderImage = () => <PlaceholderMedia style={styles.image} />;
+  renderPosition = () => <PlaceholderMedia isRound={true} style={styles.position} />;
 
   render() {
     const {showIndex} = this.props;
@@ -30,14 +30,14 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
 
     return (
       <View style={styles.album}>
-        {typeof showIndex === 'boolean' && showIndex &&
-          <View style={styles.positionWrap}>
-            <Placeholder Animate={Fade} Left={this.renderLeft(styles.position)} />
-          </View>
-        }
         {typeof showIndex !== 'boolean' &&
           <View style={styles.imageWrap}>
-            <Placeholder Animate={Fade} Left={this.renderLeft(styles.image)} />
+            <Placeholder Animate={Fade} Left={this.renderImage} />
+          </View>
+        }
+        {typeof showIndex === 'boolean' && showIndex &&
+          <View style={styles.positionWrap}>
+            <Placeholder Animate={Fade} Left={this.renderPosition} />
           </View>
         }
         <View style={styles.info}>
