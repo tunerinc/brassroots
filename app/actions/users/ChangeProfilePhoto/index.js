@@ -9,11 +9,12 @@
  * @module ChangeProfilePhoto
  */
 
-import {Platform} from 'react-native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import ImagePicker from 'react-native-image-picker';
 import fetchRemoteURL from '../../../utils/fetchRemoteURL';
+import selectPhoto from '../../../utils/selectPhoto';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/users';
 import {type Blob} from '../../../utils/brassrootsTypes';
 import {
@@ -71,6 +72,7 @@ export function changeProfilePhoto(
         ];
 
         await Promise.all(promises);
+        dispatch(addEntities({users: {[userID]: {id: userID, profileImage}}}));
       }
 
       dispatch(actions.success());
@@ -78,26 +80,4 @@ export function changeProfilePhoto(
       dispatch(actions.failure(err));
     }
   };
-}
-
-function selectPhoto(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const options = {
-      title: 'Change Profile Photo',
-      mediaType: 'photo',
-      quality: 1,
-      skipBackup: true,
-    };
-
-    ImagePicker.showImagePicker(options, res => {
-      if (res.didCancel) {
-        resolve('cancelled');
-      } else if (res.error) {
-        reject(res.error);
-      } else {
-        const uri: string = Platform.OS === 'ios' ? res.uri.replace('file://', '') : res.uri;
-        resolve(uri);
-      }
-    });
-  });
 }
