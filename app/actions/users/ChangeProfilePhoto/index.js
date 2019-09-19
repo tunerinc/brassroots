@@ -47,7 +47,7 @@ export function changeProfilePhoto(
     const storage: StorageRef = firebase.storage().ref();
 
     try {
-      const photoURI: string = await selectPhoto();
+      const photoURI: string = await selectPhoto('Change Profile Photo');
 
       if (photoURI !== 'cancelled') {
         const croppedImage = await ImageCropPicker.openCropper(

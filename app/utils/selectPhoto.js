@@ -19,14 +19,18 @@ import ImagePicker from 'react-native-image-picker';
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  * 
+ * @param    {string}  title The title of the view when selecting the image
+ * 
  * @returns  {Promise}
- * @resolves {string}  The uri of the image selected from the phone
- * @rejects  {Error}   The error which caused the failure
+ * @resolves {string}        The uri of the image selected from the phone
+ * @rejects  {Error}         The error which caused the failure
  */
-function selectPhoto(): Promise<string> {
+function selectPhoto(
+  title: string,
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const options = {
-      title: 'Change Profile Photo',
+      title,
       mediaType: 'photo',
       quality: 1,
       skipBackup: true,
