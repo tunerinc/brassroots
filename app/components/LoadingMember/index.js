@@ -7,13 +7,10 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
-type Props = {|
-  marginLeft: ?number,
-|};
-
+type Props = {|marginLeft: ?number|};
 type State = {||};
 
 export default class LoadingMember extends React.PureComponent<Props, State> {
@@ -23,30 +20,18 @@ export default class LoadingMember extends React.PureComponent<Props, State> {
 
   render() {
     const {marginLeft} = this.props;
+    const containerStyles = [styles.container, {marginLeft: marginLeft || 0}];
 
     return (
-      <View
-        style={[
-          styles.container,
-          {marginLeft: marginLeft || 0}
-        ]}
-      >
-        <View style={styles.image}>
-          <Placeholder.Media
-            animate='fade'
-            size={60}
-            color='#888'
-            hasRadius={true}
-          />
-        </View>
-        <View>
-          <Placeholder.Line
-            animate='fade'
-            textSize={20}
-            lineSpacing={6}
-            color='#888'
-          />
-        </View>
+      <View style={containerStyles}>
+        <Placeholder Animate={Fade}>
+          <View style={styles.imageWrap}>
+            <PlaceholderMedia isRound={true} style={styles.image} />
+          </View>
+        </Placeholder>
+        <Placeholder Animate={Fade}>
+          <PlaceholderLine width={100} style={styles.text} />
+        </Placeholder>
       </View>
     );
   }

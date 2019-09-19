@@ -11,7 +11,9 @@ import {type ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
   container: ViewStyleProp,
+  imageWrap: ViewStyleProp,
   image: ViewStyleProp,
+  text: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -22,8 +24,18 @@ const styles: Styles = StyleSheet.create({
     marginRight: 20,
     justifyContent: 'space-between',
   },
-  image: {
+  imageWrap: {
     alignItems: 'center',
+  },
+  image: {
+    height: 55,
+    width: 55,
+    borderRadius: 27.5,
+    backgroundColor: '#888',
+  },
+  text: {
+    height: 20,
+    backgroundColor: '#888',
   },
 });
 
