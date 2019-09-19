@@ -17,12 +17,15 @@ interface Styles {
   header: ViewStyleProp,
   owner: ViewStyleProp,
   live: ViewStyleProp,
+  headerText: ViewStyleProp,
   info: ViewStyleProp,
   image: ViewStyleProp,
-  track: ViewStyleProp,
+  text: ViewStyleProp,
+  topText: ViewStyleProp,
   footer: ViewStyleProp,
   action: ViewStyleProp,
-  text: ViewStyleProp,
+  icon: ViewStyleProp,
+  iconText: ViewStyleProp,
   options: TextStyleProp,
 };
 
@@ -37,16 +40,16 @@ const styles: Styles = StyleSheet.create({
   },
   header: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingBottom: 5,
   },
   owner: {
     flex: 4,
   },
   live: {
     flex: 1,
+  },
+  headerText: {
+    height: 16,
+    backgroundColor: '#888',
   },
   info: {
     flex: 2,
@@ -57,10 +60,16 @@ const styles: Styles = StyleSheet.create({
   image: {
     width: 55,
     height: 55,
+    borderRadius: 27.5,
     marginRight: 10,
+    backgroundColor: '#888',
   },
-  track: {
-    flex: 1,
+  text: {
+    height: 16,
+    backgroundColor: '#888',
+  },
+  topText: {
+    marginBottom: 6.2,
   },
   footer: {
     flex: 1,
@@ -76,9 +85,15 @@ const styles: Styles = StyleSheet.create({
     marginRight: 20,
     height: 45,
   },
-  text: {
-    flex: 1,
-    paddingLeft: 10,
+  icon: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    backgroundColor: '#888',
+  },
+  iconText: {
+    height: 14,
+    backgroundColor: '#888',
   },
   options: {
     flex: 1,

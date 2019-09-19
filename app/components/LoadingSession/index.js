@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import {View} from 'react-native';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
@@ -17,80 +17,43 @@ type Props = {||};
 type State = {||};
 
 export default class LoadingSession extends React.PureComponent<Props, State> {
+  renderImage = () => <PlaceholderMedia isRound={true} style={styles.image} />;
+  renderIcon = () => <PlaceholderMedia isRound={true} style={styles.icon} />;
+
   render() {
+    const topStyles = [styles.text, styles.topText];
+
     return (
       <View style={styles.session}>
         <View style={styles.header}>
-          <View style={styles.owner}>
-            <Placeholder.Line
-              animate='fade'
-              textSize={16}
-              lineSpacing={6.2}
-              color='#888'
-              width='65%'
-            />
-          </View>
-          <View style={styles.live}>
-            <Placeholder.Line
-              animate='fade'
-              textSize={16}
-              lineSpacing={6.2}
-              color='#888'
-            />
-          </View>
+          <Placeholder Animate={Fade}>
+            <View style={styles.owner}>
+              <PlaceholderLine width={65} style={styles.headerText} />
+            </View>
+            <View style={styles.live}>
+              <PlaceholderLine width={100} style={styles.headerText} />
+            </View>
+          </Placeholder>
         </View>
         <View style={styles.info}>
-          <View style={styles.image}>
-            <Placeholder.ImageContent
-              animate='fade'
-              size={55}
-              position='left'
-              hasRadius={true}
-              lineNumber={2}
-              textSize={16}
-              lineSpacing={6.2}
-              color='#888'
-            />
-          </View>
-          <View style={styles.track}>
-            <Placeholder.Paragraph
-              animate='fade'
-              lineNumber={2}
-              textSize={16}
-              lineSpacing={6.2}
-              color='#888'
-              width='100%'
-            />
-          </View>
+          <Placeholder Animate={Fade} Left={this.renderImage}>
+            <PlaceholderLine width={100} style={topStyles} />
+            <PlaceholderLine width={100} style={styles.text} />
+          </Placeholder>
         </View>
         <View style={styles.footer}>
-          {renderAction()}
-          {renderAction()}
-          {renderAction()}
+          <Placeholder Animate={Fade} Left={this.renderIcon}>
+            <PlaceholderLine width={100} style={styles.iconText} />
+          </Placeholder>
+          <Placeholder Animate={Fade} Left={this.renderIcon}>
+            <PlaceholderLine width={100} style={styles.iconText} />
+          </Placeholder>
+          <Placeholder Animate={Fade} Left={this.renderIcon}>
+            <PlaceholderLine width={100} style={styles.iconText} />
+          </Placeholder>
           <SimpleLineIcons name='options' style={styles.options} />
         </View>
       </View>
     );
   }
-}
-
-function renderAction(): React.Node {
-  return (
-    <View style={styles.action}>
-      <Placeholder.Media
-        animate='fade'
-        size={20}
-        color='#888'
-        hasRadius={true}
-      />
-      <View style={styles.text}>
-        <Placeholder.Line
-          animate='fade'
-          textSize={14}
-          lineSpacing={2.8}
-          color='#888'
-        />
-      </View>
-    </View>
-  );
 }
