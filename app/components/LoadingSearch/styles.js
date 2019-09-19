@@ -11,6 +11,7 @@ import {type ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
   container: ViewStyleProp,
+  text: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -18,6 +19,10 @@ const styles: Styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     opacity: 0.3,
+  },
+  text: {
+    height: 20,
+    backgroundColor: '#888',
   },
 });
 
