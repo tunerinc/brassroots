@@ -15,8 +15,11 @@ interface Styles {
   info: ViewStyleProp,
   top: ViewStyleProp,
   images: ViewStyleProp,
+  image: ViewStyleProp,
+  timestampWrap: ViewStyleProp,
   timestamp: ViewStyleProp,
   bottom: ViewStyleProp,
+  text: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -30,16 +33,18 @@ const styles: Styles = StyleSheet.create({
     opacity: 0.3,
   },
   type: {
-    flex: 1,
-    alignSelf: 'flex-start',
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    backgroundColor: '#888',
   },
   info: {
-    flex: 7,
+    flex: 1,
   },
   top: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginBottom: 10,
   },
   images: {
@@ -48,11 +53,25 @@ const styles: Styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingRight: 20,
   },
-  timestamp: {
+  image: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    backgroundColor: '#888',
+  },
+  timestampWrap: {
     flex: 1,
+  },
+  timestamp: {
+    height: 16,
+    backgroundColor: '#888',
   },
   bottom: {
     flex: 1,
+  },
+  text: {
+    height: 20,
+    backgroundColor: '#888',
   },
 });
 
