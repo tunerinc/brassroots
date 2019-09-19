@@ -38,6 +38,7 @@ const styles: Styles = StyleSheet.create({
   position: {
     width: 14,
     height: 14,
+    borderRadius: 7,
     backgroundColor: '#888',
   },
   imageWrap: {
