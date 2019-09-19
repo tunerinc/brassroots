@@ -15,7 +15,8 @@ import {
 interface Styles {
   playlist: ViewStyleProp,
   image: ViewStyleProp,
-  info: ViewStyleProp,
+  text: ViewStyleProp,
+  topText: ViewStyleProp,
   arrow: TextStyleProp,
 };
 
@@ -30,10 +31,16 @@ const styles: Styles =  StyleSheet.create({
   image: {
     height: 55,
     width: 55,
+    borderRadius: 27.5,
     marginRight: 10,
+    backgroundColor: '#888',
   },
-  info: {
-    flex: 6,
+  text: {
+    height: 16,
+    backgroundColor: '#888',
+  },
+  topText: {
+    marginBottom: 6.2,
   },
   arrow: {
     flex: 1,
