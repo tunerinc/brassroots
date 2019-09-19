@@ -7,7 +7,7 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
@@ -17,32 +17,15 @@ type Props = {||};
 type State = {||};
 
 export default class LoadingGroup extends React.PureComponent<Props, State> {
+  renderImage = () => <PlaceholderMedia isRound={true} style={styles.image} />;
+
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.image}>
-          <Placeholder.Media
-            animate='fade'
-            size={60}
-            hasRadius={true}
-            color='#888'
-          />
-        </View>
-        <View style={styles.info}>
-          <Placeholder.Line
-            animate='fade'
-            textSize={20}
-            lineSpacing={4}
-            color='#888'
-            width='100%'
-          />
-        </View>
-        <Ionicons
-          name='ios-arrow-forward'
-          size={45}
-          style={styles.arrowForward}
-          color='#888'
-        />
+        <Placeholder Animate={Fade} Left={this.renderImage}>
+          <PlaceholderLine width={100} style={styles.text} />
+        </Placeholder>
+        <Ionicons name='ios-arrow-forward' style={styles.arrow} />
       </View>
     );
   }
