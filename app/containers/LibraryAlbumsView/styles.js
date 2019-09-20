@@ -11,6 +11,7 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
+  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -22,6 +23,8 @@ interface Styles {
   rightIcon: ViewStyleProp,
   scrollContainer: ViewStyleProp,
   scrollWrap: ViewStyleProp,
+  footer: ViewStyleProp,
+  loadingGif: ImageStyleProp,
 };
 
 const screenHeight = Dimensions.get('window').height;
@@ -86,6 +89,19 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
     zIndex: -1,
     backgroundColor: 'transparent',
+  },
+  footer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  loadingGif: {
+    width: 60,
+    height: 72.6,
+    shadowColor: '#101010',
+    shadowOffset: {width: 0, height: 4},
+    shadowRadius: 5,
+    shadowOpacity: 0.7,
   },
 });
 

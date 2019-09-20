@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   Animated,
   Easing,
-  VirtualizedList
+  VirtualizedList,
+  Image,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -111,15 +112,11 @@ class LibraryPlaylistsView extends React.Component {
       !fetching.includes('playlists')
       || refreshing
       || !userPlaylists.length
-    ) return null;
-
-    const total = totalUserPlaylists - userPlaylists.length < 50
-      ? totalUserPlaylists - userPlaylists.length
-      : 50;
+    ) return <View></View>;
 
     return (
-      <View>
-        {[...Array(total)].map(e => <LoadingPlaylist />)}
+      <View style={styles.footer}>
+        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }

@@ -2,7 +2,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import {Text, View, ActivityIndicator, Animated, Easing, VirtualizedList} from "react-native";
+import {Text, View, ActivityIndicator, Animated, Easing, VirtualizedList, Image} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
@@ -102,11 +102,9 @@ class LibraryAlbumsView extends React.Component {
       || userAlbums.length === totalUserAlbums
     ) return <View></View>;
 
-    const total = totalUserAlbums - userAlbums.length < 50 ? totalUserAlbums - userAlbums.length : 50;
-
     return (
-      <View>
-        {[...Array(total)].map(e => <LoadingAlbum />)}
+      <View style={styles.footer}>
+        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }

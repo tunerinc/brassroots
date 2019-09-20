@@ -138,13 +138,11 @@ class LibraryTracksView extends React.Component {
       || refreshing
       || !userTracks.length
       || userTracks.length === totalUserTracks
-    ) return null;
-
-    const total = totalUserTracks - userTracks.length < 50 ? totalUserTracks - userTracks.length : 50;
+    ) return <View></View>;
 
     return (
-      <View>
-        {[...Array(total)].map(e => <LoadingTrack />)}
+      <View style={styles.footer}>
+        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }
