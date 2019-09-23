@@ -30,7 +30,6 @@
 		609D726E23306B7600957C99 /* libRNSpotify.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 609D726D23306B6600957C99 /* libRNSpotify.a */; };
 		609D72BD2330800100957C99 /* RSKImageCropper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609D72BB2330800100957C99 /* RSKImageCropper.framework */; };
 		609D72BE2330800100957C99 /* QBImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609D72BC2330800100957C99 /* QBImagePicker.framework */; };
-		609D72BF2330801100957C99 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 609D72AB23307EF600957C99 /* libBVLinearGradient.a */; };
 		60AE31DA232C62B7004DED3B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 60AE31D9232C62B7004DED3B /* GoogleService-Info.plist */; };
 		60AE31DC232C6326004DED3B /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		809BB250C776D38D1335D4FB /* libPods-brassroots-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A3FF898A8E39E2AB7FE1847 /* libPods-brassroots-tvOS.a */; };
@@ -331,7 +330,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				60153E5B233188970073CA28 /* libReactNativePermissions.a in Frameworks */,
-				609D72BF2330801100957C99 /* libBVLinearGradient.a in Frameworks */,
 				609D72BD2330800100957C99 /* RSKImageCropper.framework in Frameworks */,
 				609D72BE2330800100957C99 /* QBImagePicker.framework in Frameworks */,
 				609D726E23306B7600957C99 /* libRNSpotify.a in Frameworks */,

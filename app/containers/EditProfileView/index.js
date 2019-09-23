@@ -47,7 +47,7 @@ class EditProfileView extends React.Component {
       tempBio: '',
       tempLocation: '',
       tempWebsite: '',
-      websiteValid: false,
+      websiteValid: true,
     };
 
     this.handleChangePhoto = this.handleChangePhoto.bind(this);
@@ -344,6 +344,8 @@ class EditProfileView extends React.Component {
               )
               && !userFetch.includes('cover')
               && !userFetch.includes('profile')
+              && coverImage
+              && profileImage
             ) ? (
               <TouchableOpacity style={styles.rightIcon} onPress={this.handleSaveProfile}>
                 <Text style={[styles.createText, styles.enabledText]}>
@@ -360,7 +362,7 @@ class EditProfileView extends React.Component {
           </View>
           <Animated.View style={[styles.photos, {opacity: photosOpacity, bottom: photosOffset}]}>
             <View style={styles.editProfilePhoto}>
-              {(user && profileImage !== '' && userFetch.includes('profile')) &&
+              {(user && profileImage && profileImage !== '' && !userFetch.includes('profile')) &&
                 <TouchableOpacity
                   style={styles.photoButton}
                   onPress={this.handleChangePhoto('profile')}
@@ -373,7 +375,7 @@ class EditProfileView extends React.Component {
                   </View>
                 </TouchableOpacity>
               }
-              {(!profileImage || profileImage === '' || !userFetch.includes('profile')) &&
+              {(!profileImage || profileImage === '' || userFetch.includes('profile')) &&
                 <Placeholder Animate={Fade}>
                   <View style={styles.placeholderWrap}>
                     <PlaceholderMedia isRound={true} style={styles.loadingImage} />
@@ -383,7 +385,7 @@ class EditProfileView extends React.Component {
               <Text style={styles.editPhotoText}>profile photo</Text>
             </View>
             <View style={styles.editCoverPhoto}>
-              {(user && coverImage !== '' && !userFetch.includes('cover')) &&
+              {(user && coverImage && coverImage !== '' && !userFetch.includes('cover')) &&
                 <TouchableOpacity
                   style={styles.photoButton}
                   onPress={this.handleChangePhoto('cover')}
@@ -397,11 +399,10 @@ class EditProfileView extends React.Component {
                 </TouchableOpacity>
               }
               {(!coverImage || coverImage === '' || userFetch.includes('cover')) &&
-                <Placeholder
-                  Animate={Fade}
-                  Left={() => <PlaceholderMedia isRound={true} style={styles.loadingImage} />}
-                >
-                  <PlaceholderLine />
+                <Placeholder Animate={Fade}>
+                  <View style={styles.placeholderWrap}>
+                    <PlaceholderMedia isRound={true} style={styles.loadingImage} />
+                  </View>
                 </Placeholder>
               }
               <Text style={styles.editPhotoText}>cover photo</Text>
