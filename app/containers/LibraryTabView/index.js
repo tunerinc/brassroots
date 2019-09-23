@@ -319,11 +319,6 @@ class LibraryTabView extends React.Component {
             <Text style={styles.libraryOptionText}>Playlists</Text>
             <Ionicons name="ios-arrow-forward" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("artists")}>
-            <Ionicons name="md-microphone" style={styles.libraryOptionIcon} />
-            <Text style={styles.libraryOptionText}>Artists</Text>
-            <Ionicons name="ios-arrow-forward" style={styles.libraryOptionArrow} />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.libraryOption} onPress={this.navToLibrary("albums")}>
             <MaterialCommunityIcons name="album" style={styles.libraryOptionIcon} />
             <Text style={styles.libraryOptionText}>Albums</Text>
