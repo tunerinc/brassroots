@@ -11,7 +11,7 @@
 
 import getMySavedAlbums from '../../../utils/spotifyAPI/getMySavedAlbums';
 import updateObject from '../../../utils/updateObject';
-import {addEntities} from '../../entities/AddEntities/reducers';
+import {addEntities} from '../../entities/AddEntities';
 import * as actions from './actions';
 import {
   lastUpdated,
@@ -27,24 +27,6 @@ import {
 } from '../../../utils/spotifyAPI/types';
 
 type AlbumsFromSpotify = Array<SavedAlbum | FullAlbum | SimpleAlbum>;
-type Albums = {+[id: string]: Album};
-type Artists = {+[id: string]: Artist};
-type Tracks = {
-  +[id: string]: {
-    id: string,
-    name: string,
-    albumID: string,
-    artists: Array<
-      {
-        id: string,
-        name: string,
-      }
-    >,
-    trackNumber: number,
-    durationMS: number,
-  },
-};
-
 
 /**
  * Async function that fetches the user's albums from Spotify
@@ -77,10 +59,10 @@ export function getAlbums(
       const {items, total} = await getMySavedAlbums({limit, offset, market});
       const albumsFromSpotify = items.map(item => item.album);
 
-      let artists: Artists = {};
-      let tracks: Tracks = {};
+      let artists= {};
+      let tracks= {};
 
-      const albums: Albums = albumsFromSpotify.reduce((albumList, album) => {
+      const albums = albumsFromSpotify.reduce((albumList, album) => {
         const hasImages: boolean = Array.isArray(album.images) && album.images.length === 3;
         const albumToSave: Album = {
           id: album.id,
@@ -92,7 +74,7 @@ export function getAlbums(
           artists: album.artists.map(a => ({id: a.id, name: a.name})),
         };
 
-        const albumArtists: Artists = album.artists.reduce((artistList, artist) => {
+        const albumArtists = album.artists.reduce((artistList, artist) => {
           return updateObject(artistList, {
             [artist.id]: {
               id: artist.id,
@@ -106,8 +88,8 @@ export function getAlbums(
 
         artists = updateObject(artists, albumArtists);
 
-        const albumTracks: Tracks = album.tracks.items.reduce((trackList, track) => {
-          const trackArtists: Artists = track.artists.reduce((artistList, artist) => {
+        const albumTracks = album.tracks.items.reduce((trackList, track) => {
+          const trackArtists = track.artists.reduce((artistList, artist) => {
             return updateObject(artistList, {
               [artist.id]: {
                 id: artist.id,

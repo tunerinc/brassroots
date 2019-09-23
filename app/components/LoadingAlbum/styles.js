@@ -14,6 +14,7 @@ import {
 
 interface Styles {
   album: ViewStyleProp,
+  placeholderWrap: ViewStyleProp,
   positionWrap: ViewStyleProp,
   position: ViewStyleProp,
   imageWrap: ViewStyleProp,
@@ -31,6 +32,11 @@ const styles: Styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: 'center',
     height: 75,
+  },
+  placeholderWrap: {
+    height: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   positionWrap: {
     flex: 1,
@@ -59,6 +65,7 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#888',
   },
   topText: {
+    marginTop: 10,
     marginBottom: 6.4,
   },
   arrow: {

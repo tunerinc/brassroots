@@ -240,7 +240,7 @@ function update(
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: action.refreshing && !action.replace ? action.refreshing : false,
       error: haveError ? action.error : null,
-      totalUserAlbums: action.total ? action.total : totalUserAlbums,
+      totalUserAlbums: typeof action.total === 'number' ? action.total : totalUserAlbums,
       userAlbums: (Array.isArray(action.albums) && (refreshing || action.replace))
         ? [...action.albums]
         : Array.isArray(action.albums)

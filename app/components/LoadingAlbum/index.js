@@ -42,8 +42,10 @@ export default class LoadingAlbum extends React.PureComponent<Props, State> {
         }
         <View style={styles.info}>
           <Placeholder Animate={Fade}>
-            <PlaceholderLine width={100} style={topStyles} />
-            <PlaceholderLine width={100} style={styles.text} />
+            <View style={styles.placeholderWrap}>
+              <PlaceholderLine width={100} style={topStyles} />
+              <PlaceholderLine width={100} style={styles.text} />
+            </View>
           </Placeholder>
         </View>
         <Ionicons name='ios-arrow-forward' style={styles.arrow} />
