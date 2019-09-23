@@ -71,6 +71,7 @@ class PlayerTabBar extends React.Component {
       pausePlayer,
       startPlayer,
       updatePlayer,
+      entities: {sessions},
       player: {
         paused,
         seeking,
@@ -82,13 +83,14 @@ class PlayerTabBar extends React.Component {
         error: playerError,
       },
       queue: {context},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {fetchingMostPlayed, error: tracksError},
+      sessions: {currentSessionID},
+      tracks: {fetching, error: tracksError},
       users: {currentUserID},
     } = this.props;
     const {
-      sessions: {sessionsByID: oldSessionsByID, currentSessionID: oldSessionID},
-      tracks: {fetchingMostPlayed: oldFetchingMostPlayed},
+      entities: {sessions: oldSessions},
+      sessions: {currentSessionID: oldSessionID},
+      tracks: {fetching: oldFetching},
       queue: {context: oldContext},
       player: {
         paused: oldPaused,
@@ -100,8 +102,8 @@ class PlayerTabBar extends React.Component {
         skippingNext: oldSkippingNext,
       },
     } = prevProps;
-    const currentSession = sessionsByID[currentSessionID];
-    const oldSession = oldSessionsByID[currentSessionID];
+    const currentSession = sessions.byID[currentSessionID];
+    const oldSession = oldSessions.byID[currentSessionID];
 
     if (currentSession && this.tabBarBGColor !== 'rgba(27,27,30,0.7)') {
       this.tabBarBGColor = 'rgba(27,27,30,0.7)';
@@ -184,15 +186,16 @@ class PlayerTabBar extends React.Component {
     const {
       nextTrack,
       stopPlayer,
-      player: {nextQueueID, currentQueueID: current},
+      entities: {sessions, users},
+      player: {nextQueueID, seeking, currentQueueID: current},
       queue: {userQueue, contextQueue, totalQueue},
-      sessions: {currentSessionID, sessionsByID},
-      users: {currentUserID, usersByID},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
-    const {displayName, profileImage} = usersByID[currentUserID];
+    const {displayName, profileImage} = users.byID[currentUserID];
     
-    if (currentSessionID && sessionsByID[currentSessionID]) {
-      const {ownerID, totalPlayed, totalListeners: totalUsers} = sessionsByID[currentSessionID];
+    if (currentSessionID && sessions.allIDs.includes(currentSessionID)) {
+      const {ownerID, totalPlayed, totalListeners: totalUsers} = sessions.byID[currentSessionID];
 
       clearInterval(this.progressInterval);
       BackgroundTimer.stop();
@@ -200,7 +203,7 @@ class PlayerTabBar extends React.Component {
       // add seeking edge case when song close to end
 
       if (ownerID === currentUserID) {
-        if (typeof nextQueueID === 'string') {
+        if (typeof nextQueueID === 'string' && !seeking) {
           nextTrack(
             {displayName, profileImage, id: currentUserID},
             {totalQueue, totalPlayed, totalUsers, current, id: currentSessionID},
@@ -241,8 +244,11 @@ class PlayerTabBar extends React.Component {
   }
 
   navToProfile() {
-    const {sessions: {currentSessionID, sessionsByID}} = this.props;
-    const currentSession = sessionsByID[currentSessionID];
+    const {
+      entities: {sessions},
+      sessions: {currentSessionID},
+    } = this.props;
+    const currentSession = sessions.byID[currentSessionID];
 
     // if (currentSession) {
     //   Actions.libProMain({userToView: currentSession.ownerID});
@@ -267,16 +273,18 @@ class PlayerTabBar extends React.Component {
   handleTogglePause() {
     const {
       togglePause,
+      entities: {sessions},
       player: {paused, currentTrackID, progress},
-      sessions: {currentSessionID, sessionsByID},
+      sessions: {currentSessionID},
       users: {currentUserID},
     } = this.props;
-    const currentSession = sessionsByID[currentSessionID];
 
-    if (currentSession) {
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {ownerID} = sessions.byID[currentSessionID];
+
       togglePause(
         currentUserID,
-        currentSession.ownerID,
+        ownerID,
         {progress, id: currentSessionID, current: currentTrackID},
         !paused,
       );
@@ -288,15 +296,14 @@ class PlayerTabBar extends React.Component {
     const animatedCover = {opacity: coverOpacity, zIndex: coverIndex};
     const animatedBGColor = {backgroundColor: this.tabBarBGColor};
     const {
-      albums: {albumsByID},
+      entities: {albums, sessions, tracks, users},
       navigation: {state: {routes}},
       player: {currentTrackID, durationMS, paused, progress},
-      sessions: {currentSessionID, sessionsByID},
-      tracks: {tracksByID},
-      users: {usersByID, currentUserID},
+      sessions: {currentSessionID},
+      users: {currentUserID},
     } = this.props;
-    const session = sessionsByID[currentSessionID];
-    const track = tracksByID[currentTrackID];
+    const session = sessions.byID[currentSessionID];
+    const track = tracks.byID[currentTrackID];
 
     return (
       <Animated.View style={[styles.container, {shadowOpacity}]}>
@@ -307,7 +314,7 @@ class PlayerTabBar extends React.Component {
                 style={styles.playerBackgroundImage}
                 resizeMode='cover'
                 blurRadius={90}
-                source={{uri: albumsByID[track.albumID].large}}
+                source={{uri: track.album.large}}
               />
             </View>
             <MiniPlayer
@@ -316,10 +323,10 @@ class PlayerTabBar extends React.Component {
               togglePause={this.handleTogglePause}
               progress={progress}
               durationMS={durationMS}
-              profileImage={usersByID[session.ownerID].profileImage}
+              profileImage={users.byID[session.ownerID].profileImage}
               name={track.name}
               artists={track.artists.map(a => a.name).join(', ')}
-              displayName={usersByID[session.ownerID].displayName}
+              displayName={users.byID[session.ownerID].displayName}
               paused={paused}
               isOwner={session.ownerID === currentUserID}
             />
@@ -335,8 +342,7 @@ class PlayerTabBar extends React.Component {
 }
 
 PlayerTabBar.propTypes = {
-  albums: PropTypes.object.isRequired,
-  artists: PropTypes.object.isRequired,
+  entities: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
   nextTrack: PropTypes.func.isRequired,
   pausePlayer: PropTypes.func.isRequired,
@@ -351,10 +357,9 @@ PlayerTabBar.propTypes = {
   users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({albums, artists, player, queue, sessions, tracks, users}) {
+function mapStateToProps({entities, player, queue, sessions, tracks, users}) {
   return {
-    albums,
-    artists,
+    entities,
     player,
     queue,
     sessions,
