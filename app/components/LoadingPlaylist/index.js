@@ -25,8 +25,10 @@ export default class LoadingPlaylist extends React.PureComponent<Props, State> {
     return (
       <View style={styles.playlist}>
         <Placeholder Animate={Fade} Left={this.renderImage}>
-          <PlaceholderLine width={100} style={topStyles} />
-          <PlaceholderLine width={100} style={styles.text} />
+          <View style={styles.placeholderWrap}>
+            <PlaceholderLine width={100} style={topStyles} />
+            <PlaceholderLine width={100} style={styles.text} />
+          </View>
         </Placeholder>
         <Ionicons name='ios-arrow-forward' style={styles.arrow} />
       </View>

@@ -14,6 +14,7 @@ import {
 
 interface Styles {
   playlist: ViewStyleProp,
+  placeholderWrap: ViewStyleProp,
   image: ViewStyleProp,
   text: ViewStyleProp,
   topText: ViewStyleProp,
@@ -28,10 +29,14 @@ const styles: Styles =  StyleSheet.create({
     alignItems: 'center',
     height: 75,
   },
+  placeholderWrap: {
+    height: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   image: {
     height: 55,
     width: 55,
-    borderRadius: 27.5,
     marginRight: 10,
     backgroundColor: '#888',
   },
@@ -40,6 +45,7 @@ const styles: Styles =  StyleSheet.create({
     backgroundColor: '#888',
   },
   topText: {
+    marginTop: 10,
     marginBottom: 6.2,
   },
   arrow: {

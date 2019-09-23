@@ -110,7 +110,7 @@ class LibraryPlaylistsView extends React.Component {
 
     if (
       !fetching.includes('playlists')
-      || refreshing
+      || refreshing.includes('playlists')
       || !userPlaylists.length
     ) return <View></View>;
 
@@ -152,7 +152,7 @@ class LibraryPlaylistsView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    if (!refreshing) getPlaylists(currentUserID, true, 0);
+    if (!refreshing.includes('playlists')) getPlaylists(currentUserID, true, 0);
   }
 
   render() {
@@ -161,7 +161,7 @@ class LibraryPlaylistsView extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Playlists</Text>
@@ -183,7 +183,7 @@ class LibraryPlaylistsView extends React.Component {
             ListHeaderComponent={this.renderCreateButton}
             ListFooterComponent={this.renderFooter}
             ListEmptyComponent={<Text>Nothing to show</Text>}
-            refreshing={refreshing}
+            refreshing={refreshing.includes('playlists')}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.5}
@@ -196,6 +196,11 @@ class LibraryPlaylistsView extends React.Component {
             {fetching.includes('playlists') &&
               <View>
                 {this.renderCreateButton()}
+                <LoadingPlaylist />
+                <LoadingPlaylist />
+                <LoadingPlaylist />
+                <LoadingPlaylist />
+                <LoadingPlaylist />
                 <LoadingPlaylist />
                 <LoadingPlaylist />
                 <LoadingPlaylist />
