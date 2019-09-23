@@ -28,7 +28,7 @@ export function getArtistImages(
     dispatch(actions.request());
 
     try {
-      const {artistsToAdd} = await Spotify.getArtists(artistIDs);
+      const {artists: artistsToAdd} = await Spotify.getArtists(artistIDs);
       const artists = artistsToAdd.reduce((artistList, {id, images}) => {
         const large: string = Array.isArray(images) && images.length ? images[0].url : '';
         const medium: string = Array.isArray(images) && images.length === 3 ? images[1].url : large;

@@ -80,8 +80,8 @@ class AlbumDetailsView extends React.Component {
     } = this.props;
 
     if (
-      (type === 'artist' && !artists.byID[item.id])
-      || (type === 'user' && !users.byID[item])
+      (type === 'artist' && !artists.allIDs.includes(item.id))
+      || (type === 'user' && !users.allIDs.includes(item))
     ) return <View></View>;
 
     const image = type === 'artist'
@@ -160,7 +160,7 @@ class AlbumDetailsView extends React.Component {
               {album.artists.length === 1 && <Text style={styles.sectionTitle}>ARTIST</Text>}
               {album.artists.length > 1 &&
                 <FlatList
-                  data={artists}
+                  data={album.artists}
                   extraData={this.props}
                   renderItem={this.renderPerson('artist')}
                   keyExtractor={item => item.id}
