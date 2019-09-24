@@ -16,12 +16,12 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginVertical: 5,
     opacity: 0.3,
   },
   text: {
-    height: 20,
+    height: 16,
     backgroundColor: '#888',
   },
 });

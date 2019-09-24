@@ -85,6 +85,7 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 15,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontFamily: 'Muli',
