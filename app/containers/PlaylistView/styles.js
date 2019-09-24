@@ -49,6 +49,8 @@ interface Styles {
   playlistTrackError: ViewStyleProp,
   playlistTrackErrorText: TextStyleProp,
   modal: ViewStyleProp,
+  footer: ViewStyleProp,
+  loadingGif: ImageStyleProp,
 };
 
 const screenHeight: number = Dimensions.get('window').height;
@@ -287,6 +289,20 @@ const styles: Styles = StyleSheet.create({
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
+  },
+  footer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  loadingGif: {
+    width: 60,
+    height: 72.6,
+    backgroundColor: '#1b1b1e',
+    shadowColor: '#101010',
+    shadowOffset: {width: 0, height: 4},
+    shadowRadius: 5,
+    shadowOpacity: 0.7,
   },
 });
 

@@ -104,18 +104,18 @@ class PlaylistView extends React.Component {
     } = this.props;
 
     if (
-      fetching.includes('tracks')
-      || !playlistToView
-      || !playlists.byID[playlistToView].tracks.length
-      || playlists.byID[playlistToView].tracks.length === playlists.byID[playlistToView].total
-    ) return;
-
-    getPlaylistTracks(playlistToView, false, playlists.byID[playlistToView].tracks.length);
+      !fetching.includes('tracks')
+      && playlistToView
+      && playlists.byID[playlistToView].tracks.length
+      && playlists.byID[playlistToView].tracks.length !== playlists.byID[playlistToView].total
+    ) {
+      getPlaylistTracks(playlistToView, false, playlists.byID[playlistToView].tracks.length);
+    }
   }
 
   handleRefresh() {
-    const {getPlaylistTracks, playlistToView, playlists: {refreshingTracks}} = this.props;
-    if (!refreshing && playlistToView) getPlaylistTracks(playlistToView, true);
+    const {getPlaylistTracks, playlistToView, playlists: {refreshing}} = this.props;
+    if (!refreshing.includes('tracks') && playlistToView) getPlaylistTracks(playlistToView, true);
   }
 
   renderFooter() {
@@ -128,7 +128,7 @@ class PlaylistView extends React.Component {
 
     if (
       !fetching.includes('tracks')
-      || refreshing
+      || refreshing.includes('tracks')
       || !tracks.length
       || tracks.length === totalTracks
     ) return <View></View>;
@@ -136,8 +136,8 @@ class PlaylistView extends React.Component {
     const total = totalTracks - tracks.length < 100 ? totalTracks - tracks.length : 100;
 
     return (
-      <View>
-        {[...Array(total)].map(e => <LoadingTrack type='cover' />)}
+      <View style={styles.footer}>
+        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }
@@ -166,7 +166,7 @@ class PlaylistView extends React.Component {
 
     return (
       <TrackCard
-        key={item}
+        key={`${item}-${index}`}
         albumName={album.name}
         type='cover'
         context={{displayName, name: playlistName, id: playlistToView, type: 'playlist'}}
@@ -315,11 +315,12 @@ class PlaylistView extends React.Component {
       || (type === 'playlist' && !playlists.allIDs.includes(item))
     ) return <View></View>;
 
+    const entity = type === 'track' ? tracks.byID[item] : playlists.byID[item];
+
     switch (type) {
       case 'track': {
-        const entity = type === 'track' ? tracks.byID[item] : playlists.byID[item];
         const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
-        const songQueued = userQueue.map(o => o.trackID).includes(trackID);
+        const songQueued = userQueue.map(o => o.trackID).includes(item);
         const isListenerOwner = sessionExists
           && (
             sessions.byID[currentSessionID].listeners.includes(currentUserID)
@@ -343,10 +344,10 @@ class PlaylistView extends React.Component {
       case 'playlist': {
         const {displayName} = users.byID[entity.ownerID];
         const {displayName: currentName} = users.byID[currentUserID];
-        const isOwnerMember = ownerID === currentUserID || members.includes(currentUserID);
+        const isOwnerMember = entity.ownerID === currentUserID || members.includes(currentUserID);
         const ownerName = displayName && displayName !== currentName
           ? displayName
-          : ownerID === 'spotify'
+          : entity.ownerID === 'spotify'
           ? 'Spotify'
           : null;
 
@@ -479,7 +480,7 @@ class PlaylistView extends React.Component {
               extraData={this.props}
               style={styles.list}
               renderItem={this.renderTrack(playlistToView)}
-              keyExtractor={item => item}
+              keyExtractor={(item, index) => `${item}-${index}`}
               getItem={(data, index) => data[index]}
               getItemCount={data => data.length}
               removeClippedSubviews={false}
@@ -491,7 +492,7 @@ class PlaylistView extends React.Component {
               canCancelContentTouches={scrollEnabled}
               scrollEnabled={scrollEnabled}
               bounces={true}
-              refreshing={refreshing}
+              refreshing={refreshing.includes('tracks')}
               onRefresh={this.handleRefresh}
               onEndReached={this._onEndReached}
               onEndReachedThreshold={0.5}

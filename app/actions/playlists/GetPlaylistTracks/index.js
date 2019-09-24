@@ -50,6 +50,7 @@ export function getPlaylistTracks(
       const items = res.items.filter(item => !item.is_local && typeof item.track.id === 'string');
       const music = addMusicItems(items);
       const tracks = items.map(i => i.track.id);
+      const playlists = {[playlistID]: {id: playlistID, tracks}};
       const playlistTracks = items.reduce((obj, item) => {
         const {added_by, track} = item;
         const playlistTrackID = `${playlistID}-${track.id}`;
@@ -63,7 +64,7 @@ export function getPlaylistTracks(
         });
       }, {});
 
-      dispatch(addEntities({...music, playlistTracks, playlists: {[playlistID]: {tracks}}}));
+      dispatch(addEntities({...music, playlistTracks, playlists}));
       dispatch(actions.success());
     } catch (err) {
       dispatch(actions.failure(err));
