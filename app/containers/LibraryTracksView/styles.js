@@ -123,6 +123,7 @@ const styles: Styles = StyleSheet.create({
   loadingGif: {
     width: 60,
     height: 72.6,
+    backgroundColor: '#1b1b1e',
     shadowColor: '#101010',
     shadowOffset: {width: 0, height: 4},
     shadowRadius: 5,

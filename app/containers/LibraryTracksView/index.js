@@ -2,7 +2,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import {Text, View, Animated, Easing, VirtualizedList, ActivityIndicator} from "react-native";
+import {Text, View, Animated, Easing, VirtualizedList, ActivityIndicator, Image} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
@@ -73,13 +73,9 @@ class LibraryTracksView extends React.Component {
   onEndReached() {
     const {getTracks, tracks: {fetching, userTracks, totalUserTracks}} = this.props;
 
-    if (
-      fetching.includes('tracks')
-      || !userTracks.length
-      || userTracks.length === totalUserTracks
-    ) return;
-
-    getTracks(false, userTracks.length);
+    if (!fetching.includes('tracks') && userTracks.length && userTracks.length !== totalUserTracks) {
+      getTracks(false, userTracks.length);
+    }
   }
 
   handleRefresh() {
@@ -117,7 +113,7 @@ class LibraryTracksView extends React.Component {
 
     return (
       <TrackCard
-        key={item}
+        key={`${item}-${index}`}
         albumName={album.name}
         type='basic'
         context={{id, displayName, type: 'user-tracks', name: displayName}}
@@ -334,7 +330,7 @@ class LibraryTracksView extends React.Component {
             extraData={this.props}
             style={styles.scrollContainer}
             renderItem={this.renderTrack}
-            keyExtractor={item => item}
+            keyExtractor={(item, index) => `${item}-${index}`}
             getItem={(data, index) => data[index]}
             getItemCount={data => data.length}
             ListHeaderComponent={<View />}
@@ -357,13 +353,17 @@ class LibraryTracksView extends React.Component {
               {(!fetching.includes('tracks') && trackError) && <Text>There was an error.</Text>}
               {fetching.includes('tracks') &&
                 <View>
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
                 </View>
               }
             </View>
@@ -392,7 +392,7 @@ class LibraryTracksView extends React.Component {
             error={queueError}
             inSession={inSession}
             queueHasTracks={queueHasTracks}
-            image={tracksByID[selectedTrack].album.medium}
+            image={tracks.byID[selectedTrack].album.medium}
           />
         }
       </View>
