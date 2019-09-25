@@ -19,7 +19,9 @@ export default class LoadingNotification extends React.PureComponent<Props, Stat
   render() {
     return (
       <View style={styles.container}>
-        <Placeholder Animate={Fade} Left={this.renderImage} />
+        <View style={styles.typeWrap}>
+          <Placeholder Animate={Fade} Left={this.renderImage} />
+        </View>
         <View style={styles.info}>
           <Placeholder Animate={Fade}>
             <View style={styles.top}>
@@ -34,7 +36,7 @@ export default class LoadingNotification extends React.PureComponent<Props, Stat
               </View>
             </View>
             <View style={styles.bottom}>
-              <PlaceholderLine width={100} style={styles.text} />
+              <PlaceholderLine width={100} style={[styles.text, styles.topText]} />
               <PlaceholderLine width={100} style={styles.text} />
             </View>
           </Placeholder>

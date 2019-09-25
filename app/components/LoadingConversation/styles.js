@@ -26,8 +26,8 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     alignItems: 'center',
     borderColor: '#323232',
     borderBottomWidth: 1,
@@ -51,7 +51,7 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   memberWrap: {
     flex: 3,
@@ -61,14 +61,14 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
   },
   timestamp: {
-    height: 16,
+    height: 14,
     backgroundColor: '#888',
   },
   content: {
-    flex: 2,
+    marginBottom: -10,
   },
   text: {
-    height: 20,
+    height: 16,
     backgroundColor: '#888',
   },
   topText: {
