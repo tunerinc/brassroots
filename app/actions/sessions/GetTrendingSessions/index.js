@@ -34,22 +34,12 @@ import {type Album} from '../../../reducers/albums';
 import {type Artist} from '../../../reducers/artists';
 import {type Track} from '../../../reducers/tracks';
 
-type Sessions = {+[id: string]: Session};
-type Playlists = {+[id: string]: Playlist};
-type Users = {+[id: string]: User};
-
 type Coords = {
   coords?: {
     latitude: number,
     longitude: number,
   },
 };
-
-type Music = {|
-  +tracks: {+[id: string]: Track},
-  +albums: {+[id: string]: Album},
-  +artists: {+[id: string]: Artist},
-|};
 
 /**
  * Async function which gets the current trending sessions from Ultrasound
@@ -74,8 +64,8 @@ export function getTrendingSessions(
     const firestore: FirestoreInstance = getFirestore();
     const sessionsRef: FirestoreRef = firestore.collection('sessions');
 
-    let playlists: Playlists = {};
-    let users: Users = {};
+    let playlists = {};
+    let users = {};
     let pos: Coords = {coords: {}};
 
     try {
@@ -98,14 +88,15 @@ export function getTrendingSessions(
         .get();
 
       if (trendingSessions.empty) {
+        dispatch(updateSessions({explore: {trendingIDs: [], trendingCanPaginate: true}}));
         dispatch(actions.success());
       } else {
         const trendingIDs: Array<string> = trendingSessions.docs.map(doc => doc.data().id);
         const trendingCanPaginate: boolean = trendingIDs.length === 15;
         const tracksToFetch: Array<string> = trendingSessions.docs.map(doc => doc.data().currentTrackID);
         const trackRes = await Spotify.getTracks(tracksToFetch, {});
-        const music: Music = addMusicItems(trackRes.tracks);
-        const sessions: Sessions = trendingSessions.docs.reduce((obj, doc) => {
+        const music = addMusicItems(trackRes.tracks);
+        const sessions = trendingSessions.docs.reduce((obj, doc) => {
           const {
             coords,
             currentQueueID,

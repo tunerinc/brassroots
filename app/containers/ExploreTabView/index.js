@@ -218,12 +218,13 @@ class ExploreTabView extends React.Component {
         paginating,
         explore: {trendingCanPaginate, trendingIDs},
       },
+      users: {currentUserID},
     } = this.props;
 
     if (trendingIDs.length !== 0 && trendingCanPaginate && !paginating) {
       const sessionID = trendingIDs[trendingIDs.length - 1];
       const {totalListeners: cursor} = sessions.byID[sessionID];
-      paginateTrendingSessions(cursor);
+      paginateTrendingSessions(currentUserID, cursor);
     }
   }
 
@@ -301,6 +302,10 @@ class ExploreTabView extends React.Component {
             <View style={styles.scrollWrap}>
               {fetching.includes('trending') &&
                 <View>
+                  <LoadingSession />
+                  <LoadingSession />
+                  <LoadingSession />
+                  <LoadingSession />
                   <LoadingSession />
                   <LoadingSession />
                   <LoadingSession />

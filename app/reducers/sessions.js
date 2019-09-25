@@ -306,7 +306,7 @@ function update(
         : action.updates && action.updates.explore
         ? updateObject(explore, {
           trendingLastUpdated: lastUpdated,
-          trendingCanPaginate: action.updates.explore.trendingCanPaginate
+          trendingCanPaginate: typeof action.updates.explore.trendingCanPaginate === 'boolean'
             ? action.updates.explore.trendingCanPaginate
             : explore.trendingCanPaginate,
           trendingIDs: action.updates.explore.trendingIDs && refreshing

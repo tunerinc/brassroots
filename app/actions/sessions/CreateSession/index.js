@@ -201,7 +201,7 @@ export function createSession(
           repeat: false,
           seeking: false,
           shuffle: false,
-          coords: pos.lat && pos.lon ? {...pos} : null,
+          coords: typeof pos.lat === 'number' && typeof pos.lon === 'number' ? {...pos} : null,
           context: {
             ...restOfContext,
             tracks: context.tracks || null,

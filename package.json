@@ -99,6 +99,7 @@
     "@babel/preset-typescript": "7.6.0",
     "@babel/register": "7.6.0",
     "@babel/runtime": "7.6.0",
+    "@google-cloud/firestore": "^2.3.0",
     "@react-native-community/eslint-config": "0.0.5",
     "babel-core": "6.26.3",
     "babel-eslint": "10.0.3",

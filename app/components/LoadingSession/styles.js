@@ -39,7 +39,9 @@ const styles: Styles = StyleSheet.create({
     opacity: 0.3,
   },
   header: {
-    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   owner: {
     flex: 4,
@@ -52,8 +54,8 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#888',
   },
   info: {
-    flex: 2,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 5,
   },
@@ -70,9 +72,9 @@ const styles: Styles = StyleSheet.create({
   },
   topText: {
     marginBottom: 6.2,
+    marginTop: 10,
   },
   footer: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -84,15 +86,18 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 20,
     height: 45,
+    marginBottom: -10,
   },
   icon: {
     height: 20,
     width: 20,
     borderRadius: 10,
+    marginRight: 5,
     backgroundColor: '#888',
   },
   iconText: {
     height: 14,
+    marginTop: 3,
     backgroundColor: '#888',
   },
   options: {

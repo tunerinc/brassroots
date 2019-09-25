@@ -4,6 +4,8 @@
  * @module GetUserLocation
  */
 
+import Geolocation from '@react-native-community/geolocation';
+
 /**
  * A function that promisifies the getCurrentPosition method from navigator
  * 
@@ -13,7 +15,7 @@
  */
 function getUserLocation() {
   return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject);
+    Geolocation.getCurrentPosition(resolve, reject);
   });
 }
 
