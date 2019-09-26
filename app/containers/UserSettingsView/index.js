@@ -16,13 +16,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {logOut} from '../../actions/settings/LogOut';
 
 class UserSettingsView extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   navToSetting = setting => () => {
     const {title} = this.props;
 
     switch (setting) {
-      case 'notifications':
-        title === 'Library' ? Actions.libProNotifications() : Actions.proNotifications();
-        return;
       case 'preferences':
         title === 'Library' ? Actions.libProPreferences() : Actions.proPreferences();
         return;
@@ -56,7 +57,6 @@ class UserSettingsView extends React.Component {
           </View>
         </View>
         <View style={styles.settings}>
-          <UserSettingOption action={this.navToSetting('notifications')} title='Notifications' />
           <UserSettingOption action={this.navToSetting('preferences')} title='Preferences' />
           <UserSettingOption action={this.navToSetting('displaySound')} title='Display & Sound' />
           <UserSettingOption action={this.navToSetting('langRegion')} title='Language & Region' />

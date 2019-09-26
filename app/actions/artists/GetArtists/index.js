@@ -50,14 +50,12 @@ export function getArtists(): ThunkAction {
     try {
       const fetchAlbumsFromSpotify = async (limit, offset) => {
         const {items, next} = await getMySavedAlbums({limit, offset, market});
-        console.log('album', next)
         albumsFromSpotify = [...albumsFromSpotify, ...items];
         if (next) await fetchAlbumsFromSpotify(limit, offset + limit);
       };
 
       const fetchTracksFromSpotify = async (limit, offset) => {
         const {items, next} = await getMySavedTracks({limit, offset, market});
-        console.log('track', next)
         tracksFromSpotify = [...tracksFromSpotify, ...items];
         if (next) await fetchTracksFromSpotify(limit, offset + limit);
       };
@@ -77,8 +75,6 @@ export function getArtists(): ThunkAction {
       });
 
       let music = addMusicItems([...tracksFromSpotify, ...albumTracks]);
-
-      console.log(music)
 
       Object.keys(music.tracks).forEach(trackID => {
         music.tracks[trackID].artists.forEach(({id: artistID}) => {

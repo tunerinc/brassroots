@@ -28,8 +28,8 @@ const styles: Styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    height: 55,
-    paddingHorizontal: 20,
+    height: 50,
+    paddingHorizontal: 15,
     paddingVertical: 5,
     alignItems: 'center',
     justifyContent: 'center',
@@ -43,15 +43,18 @@ const styles: Styles = StyleSheet.create({
   text: {
     flex: 3,
     fontFamily: 'Muli',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 24,
+    lineHeight: 19.2, // x1.2
     color: '#fefefe',
     backgroundColor: 'transparent',
   },
   arrow: {
     flex: 1,
     textAlign: 'right',
+    fontSize: 30,
+    alignSelf: 'center',
+    color: '#fefefe',
   },
 });
 
