@@ -7,8 +7,6 @@ import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import styles from './styles';
 import moment from 'moment';
-import settings from '../../reducers/settings';
-import {ExtractReturn} from '../../utils/extractFunction';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,14 +15,10 @@ class AboutAppView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {year: 0};
+    this.state = {year: moment().format('YYYY')};
 
     this.navToTerms = this.navToTerms.bind(this);
     this.navToPolicy = this.navToPolicy.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState({year: moment().format('YYYY')});
   }
 
   navToTerms() {
@@ -65,34 +59,29 @@ class AboutAppView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity: 0}]}>
           <View style={styles.nav}>
-            <Ionicons
-              name='ios-arrow-back'
-              color='#fefefe'
-              style={styles.leftIcon}
-              onPress={Actions.pop}
-            />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>About</Text>
             <View style={styles.rightIcon}></View>
           </View>
         </Animated.View>
-        <View style={styles.aboutWrap}>
+        <View style={styles.wrap}>
           <View style={styles.aboutOptions}>
             <View style={styles.option}>
               <TouchableOpacity style={styles.optionWrap} onPress={this.navToTerms}>
                 <Text style={styles.optionText}>Terms of Service</Text>
-                <Ionicons name='ios-arrow-forward' color='#fefefe' style={styles.arrowForward} />
+                <Ionicons name='ios-arrow-forward' style={styles.arrow} />
               </TouchableOpacity>
             </View>
             <View style={styles.option}>
               <TouchableOpacity style={styles.optionWrap} onPress={this.navToPolicy}>
                 <Text style={styles.optionText}>Privacy Policy</Text>
-                <Ionicons name='ios-arrow-forward' color='#fefefe' style={styles.arrowForward} />
+                <Ionicons name='ios-arrow-forward' style={styles.arrow} />
               </TouchableOpacity>
             </View>
             <View style={styles.option}>
               <TouchableOpacity style={styles.optionWrap}>
                 <Text style={styles.optionText}>Third-Party Software</Text>
-                <Ionicons name='ios-arrow-forward' color='#fefefe' style={styles.arrowForward} />
+                <Ionicons name='ios-arrow-forward' style={styles.arrow} />
               </TouchableOpacity>
             </View>
           </View>
