@@ -176,12 +176,13 @@ const styles: Styles = StyleSheet.create({
     paddingTop: 10,
   },
   leftIcon: {
-    flex: 2,
+    flex: 1,
     height: 45,
-    fontSize: 45,
-    alignSelf: 'center',
-    backgroundColor: 'transparent',
+    fontSize: 30,
+    paddingTop: 7.5,
     color: '#fefefe',
+    backgroundColor: 'transparent',
+    alignSelf: 'center',
   },
   title: {
     flex: 6,
@@ -195,7 +196,7 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   rightIcon: {
-    flex: 2,
+    flex: 1,
     height: 45,
     alignSelf: 'center',
     justifyContent: 'center',

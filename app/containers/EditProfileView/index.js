@@ -308,7 +308,7 @@ class EditProfileView extends React.Component {
           ]}
         >
           {(trackFetch.includes('favorite') || coverImage === '') && <View></View>}
-          {user && track && !trackFetch.includes('favorite') && coverImage !== '' &&
+          {(user && coverImage !== '') &&
             <Animated.View style={[styles.headerBackground, {height: headerHeight}]}>
               <Animated.Image
                 blurRadius={80}
