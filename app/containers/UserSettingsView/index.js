@@ -37,7 +37,7 @@ class UserSettingsView extends React.Component {
         title === 'Library' ? Actions.libProAboutApp() : Actions.proAboutApp();
         return;
       case 'report':
-        title === 'Library' ? Actions.libProReportUser() : Actions.proReportUser();
+        title === 'Library' ? Actions.libProReportProblem() : Actions.proReportProblem();
         return;
       default:
         return;
