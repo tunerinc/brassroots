@@ -19,13 +19,11 @@ class ReportProblemView extends React.Component {
     super(props);
 
     this.state = {
-      inputHeight: 64,
       shadowOpacity: new Animated.Value(0),
     };
 
     this.onScroll = this.onScroll.bind(this);
     this.handleSetReportMessage = this.handleSetReportMessage.bind(this);
-    this.handleChangeHeight = this.handleChangeHeight.bind(this);
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -53,12 +51,8 @@ class ReportProblemView extends React.Component {
     updateFeedback({text});
   }
 
-  handleChangeHeight({nativeEvent: {contentSize: {height}}}) {
-    this.setState({inputHeight: height});
-  }
-
   render() {
-    const {inputHeight, shadowOpacity} = this.state;
+    const {shadowOpacity} = this.state;
     const {feedback: {types, text}} = this.props;
 
     return (
@@ -117,7 +111,6 @@ class ReportProblemView extends React.Component {
             <TextInput
               multiline={true}
               onChangeText={this.handleSetReportMessage}
-              onContentSizeChange={this.handleChangeHeight}
               textAlignVertical='top'
               numberOfLines={5}
               scrollEnabled={false}

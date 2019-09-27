@@ -19,7 +19,6 @@ class ReportUserView extends React.Component {
     super(props);
 
     this.state = {
-      inputHeight: 64,
       shadowOpacity: new Animated.Value(0),
     };
 
@@ -47,15 +46,13 @@ class ReportUserView extends React.Component {
     }
   }
 
-  handleSetReportMessage({nativeEvent: {text, contentSize: {height}}}) {
+  handleSetReportMessage(text) {
     const {updateFeedback} = this.props;
-
-    this.setState({inputHeight: height});
     updateFeedback({text});
   }
 
   render() {
-    const {inputHeight, shadowOpacity} = this.state;
+    const {shadowOpacity} = this.state;
     const {feedback: {types, text}} = this.props;
 
     return (
@@ -65,57 +62,53 @@ class ReportUserView extends React.Component {
             <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Report User</Text>
             {types.length !== 0 && text !== '' &&
-              <TouchableOpacity style={styles.rightIcon} disabled={true}>
-                <Text style={[styles.rightIconText, styles.enabledText]}>send</Text>
+              <TouchableOpacity style={styles.rightIcon} disabled>
+                <Text style={[styles.rightIconText, styles.white]}>send</Text>
               </TouchableOpacity>
             }
             {(types.length === 0 || text === '') &&
-              <TouchableOpacity style={styles.rightIcon} disabled={true}>
-                <Text style={[styles.rightIconText, styles.disabledText]}>send</Text>
+              <TouchableOpacity style={styles.rightIcon} disabled>
+                <Text style={[styles.rightIconText, styles.gray]}>send</Text>
               </TouchableOpacity>
             }
           </View>
         </Animated.View>
         <ScrollView style={styles.reportWrap} onScroll={this.onScroll} scrollEventThrottle={16}>
           <View style={styles.sectionOption}>
-            <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
+            <TouchableOpacity style={styles.sectionOptionWrap} disabled>
               <Text style={styles.sectionOptionText}>It's Spam</Text>
               {types.includes('spam') &&
-                <Ionicons name='md-radio-button-on' color='#2b6dc0' style={styles.optionCheck} />
+                <Ionicons name='md-radio-button-on' style={[styles.optionCheck, styles.blue]} />
               }
               {!types.includes('spam') &&
-                <Ionicons name='md-radio-button-off' color='#fefefe' style={styles.optionCheck} />
+                <Ionicons name='md-radio-button-off' style={[styles.optionCheck, styles.white]} />
               }
             </TouchableOpacity>
           </View>
           <View style={styles.sectionOption}>
-            <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
+            <TouchableOpacity style={styles.sectionOptionWrap} disabled>
               <Text style={styles.sectionOptionText}>Something Isn't Working</Text>
               {types.includes('inappropriate') &&
-                <Ionicons name='md-radio-button-on' color='#2b6dc0' style={styles.optionCheck} />
+                <Ionicons name='md-radio-button-on' style={[styles.optionCheck, styles.blue]} />
               }
               {!types.includes('inappropriate') &&
-                <Ionicons name='md-radio-button-off' color='#fefefe' style={styles.optionCheck} />
+                <Ionicons name='md-radio-button-off' style={[styles.optionCheck, styles.white]} />
               }
             </TouchableOpacity>
           </View>
           <View style={styles.reportMessage}>
-            <TextInput
+          <TextInput
               multiline={true}
-              onChange={this.handleSetReportMessage}
+              onChangeText={this.handleSetReportMessage}
+              textAlignVertical='top'
+              numberOfLines={5}
+              scrollEnabled={false}
               placeholder='Add a message...'
               placeholderTextColor='#888'
               placeholderStyle={{fontWeight: '600'}}
               value={text}
               maxLength={300}
-              style={[
-                styles.input,
-                {
-                  height: Math.max(64, inputHeight),
-                  paddingTop: 18,
-                  paddingBottom: 18,
-                }
-              ]}
+              style={styles.input}
             />
           </View>
         </ScrollView>
