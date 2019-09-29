@@ -38,6 +38,9 @@ import {toggleTrackLike} from '../../actions/queue/ToggleTrackLike';
 import {createSession} from '../../actions/sessions/CreateSession';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 
+// Tracks Action Creators
+import {getFavoriteTrack} from '../../actions/tracks/GetFavoriteTrack';
+
 const screenHeight = Dimensions.get('window').height;
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 const HEADER_MAX_HEIGHT = screenHeight * 0.6;
@@ -61,6 +64,21 @@ class UserProfileView extends React.Component {
     this.renderTrack = this.renderTrack.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
+  }
+
+  componentDidMount() {
+    const {
+      getFavoriteTrack,
+      userToView,
+      entities: {tracks, users},
+      users: {currentUserID},
+    } = this.props;
+    const userID = typeof userToView === 'string' && userToView !== '' ? userToView : currentUserID;
+    const {favoriteTrackID} = users.byID[userID];
+
+    if (!tracks.allIDs.includes(favoriteTrackID)) {
+      getFavoriteTrack(favoriteTrackID, userID);
+    }
   }
 
   openModal = selectedTrack => () => {
@@ -366,7 +384,7 @@ class UserProfileView extends React.Component {
             <View style={styles.profileTrack}>
               {user &&
                 <View>
-                  {session &&
+                  {sessions.allIDs.includes(user.currentSessionID) &&
                     <View style={styles.liveSession}>
                       {sessionFetching.includes('sessions') && <LoadingSession />}
                       {(!sessionFetching.includes('sessions') && sessionError) &&
@@ -377,7 +395,7 @@ class UserProfileView extends React.Component {
                       }
                     </View>
                   }
-                  {!session &&
+                  {!sessions.allIDs.includes(user.currentSessionID) &&
                     <View style={styles.favoriteTrack}>
                       <View style={styles.favoriteTrackHeader}>
                         <Foundation name='star' style={styles.favoriteTrackIcon} />
@@ -387,7 +405,7 @@ class UserProfileView extends React.Component {
                       {(!trackFetching.includes('favorite') && trackError) &&
                         <Text>Something went wrong.</Text>
                       }
-                      {(track && !trackError) &&
+                      {(tracks.allIDs.includes(user.favoriteTrackID) && !trackError) &&
                         <TrackCard
                           key={track}
                           albumName={track.album.name}
@@ -400,7 +418,7 @@ class UserProfileView extends React.Component {
                           }}
                           image={track.album.small}
                           name={track.name}
-                          openModal={this.openModal(favoriteTrack.id)}
+                          openModal={this.openModal(track.id)}
                           showOptions={true}
                           showSquareImage={true}
                           type='cover'
@@ -833,6 +851,7 @@ class UserProfileView extends React.Component {
 UserProfileView.propTypes = {
   entities: PropTypes.object.isRequired,
   createSession: PropTypes.func.isRequired,
+  getFavoriteTrack: PropTypes.func.isRequired,
   leaveSession: PropTypes.func.isRequired,
   player: PropTypes.object.isRequired,
   playlists: PropTypes.object.isRequired,
@@ -860,6 +879,7 @@ function mapStateToProps({entities, player, playlists, queue, sessions, tracks, 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     createSession,
+    getFavoriteTrack,
     leaveSession,
     playTrack,
     queueTrack,

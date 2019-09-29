@@ -52,7 +52,7 @@ export function getFavoriteTrack(
     try {
       const track: FullTrack = await Spotify.getTrack(favoriteTrackID, {});
       const music: Music = addMusicItems([track]);
-      dispatch(addEntities({...music, users: {[userID]: {id: userID, favoriteTrackID}}}));
+      dispatch(addEntities(music));
       dispatch(actions.success());
     } catch (err) {
       dispatch(actions.failure(err));

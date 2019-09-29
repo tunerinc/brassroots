@@ -70,6 +70,7 @@ interface Styles {
   following: ViewStyleProp,
   followingCount: TextStyleProp,
   followingText: TextStyleProp,
+  modal: ViewStyleProp,
 };
 
 const screenHeight: number = Dimensions.get('window').height;
@@ -95,13 +96,12 @@ const styles: Styles = StyleSheet.create({
   favoriteTrack: {
     borderColor: '#323232',
     borderTopWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
   },
   favoriteTrackHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    paddingHorizontal: 15,
+    marginTop: 10,
   },
   favoriteTrackIcon: {
     color: '#FDC52F',
@@ -111,10 +111,10 @@ const styles: Styles = StyleSheet.create({
   favoriteTrackHeaderText: {
     fontFamily: 'Muli',
     color: '#888',
-    fontSize: 20,
-    lineHeight: 24,
+    fontSize: 16,
+    lineHeight: 19.2, // x1.2
     fontWeight: '800',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   section: {
     marginBottom: 20,
@@ -425,6 +425,10 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 19.2,
     color: '#888',
     backgroundColor: 'transparent',
+  },
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
   },
 });
 
