@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import styles from './styles';
 import Modal from 'react-native-modal';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 
 // Components
@@ -44,7 +44,7 @@ import {getFavoriteTrack} from '../../actions/tracks/GetFavoriteTrack';
 const screenHeight = Dimensions.get('window').height;
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 const HEADER_MAX_HEIGHT = screenHeight * 0.6;
-const HEADER_MIN_HEIGHT = 85;
+const HEADER_MIN_HEIGHT = 65;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class UserProfileView extends React.Component {
@@ -269,6 +269,8 @@ class UserProfileView extends React.Component {
     );
   }
 
+  renderImage = () => <PlaceholderMedia isRound={true} style={styles.roundPhoto} />;
+
   render() {
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -351,23 +353,55 @@ class UserProfileView extends React.Component {
       extrapolate: 'clamp',
     });
 
-    const {scrollY, bioLines} = this.state;
+    const {scrollY, bioLines, isTrackMenuOpen} = this.state;
     const {
-      routeName,
       title,
       userToView,
       entities: {sessions, tracks, users},
+      navigation: {state: {routeName}},
       playlists: {fetching: playlistFetching, error: playlistError},
       sessions: {fetching: sessionFetching, error: sessionError},
       tracks: {fetching: trackFetching, error: trackError},
       users: {currentUserID, fetching: userFetching, error: userError},
     } = this.props;
-    const userID = userToView || currentUserID;
+    const userID = typeof userToView === 'string' && userToView !== '' ? userToView : currentUserID;
     const currentUser = users.byID[currentUserID];
     const user = users.byID[userID];
+    const isCurrentUser = user.id === currentUserID;
     const session = sessions.byID[user.currentSessionID];
     const track = tracks.byID[user.favoriteTrackID];
-    
+
+    let followerTotal = 0;
+    let followingTotal = 0;
+
+    if (user) {
+      if (user.totalFollowers < 1000) {
+        followerTotal = `${user.totalFollowers}`;
+      } else if (user.totalFollowers < 1000000) {
+        let modifiedCount = user.totalFollowers / 1000;
+        followerTotal = `${modifiedCount.toFixed(0)}K`;
+      } else if (user.totalFollowers < 1000000000) {
+        let modifiedCount = user.totalFollowers / 1000000;
+        followerTotal = `${modifiedCount.toFixed(0)}M`;
+      } else if (user.totalFollowers < 1000000000000) {
+        let modifiedCount = user.totalFollowers / 1000000000;
+        followerTotal = `${modifiedCount.toFixed(0)}B`;
+      }
+
+      if (user.totalFollowing < 1000) {
+        followingTotal = `${user.totalFollowing}`;
+      } else if (user.totalFollowing < 1000000) {
+        let modifiedCount = user.totalFollowing / 1000;
+        followingTotal = `${modifiedCount.toFixed(0)}K`;
+      } else if (user.totalFollowing < 1000000000) {
+        let modifiedCount = user.totalFollowing / 1000000;
+        followingTotal = `${modifiedCount.toFixed(0)}M`;
+      } else if (user.totalFollowing < 1000000000000) {
+        let modifiedCount = user.totalFollowing / 1000000000;
+        followingTotal = `${modifiedCount.toFixed(0)}B`;
+      }
+    }
+
     return (
       <View style={styles.container}>
         <AnimatedScrollView
@@ -378,7 +412,7 @@ class UserProfileView extends React.Component {
           <View
             style={[
               styles.scrollWrap,
-              {marginTop: HEADER_MAX_HEIGHT + ( bioLines * 10)},
+              {marginTop: HEADER_MAX_HEIGHT + (bioLines * 10)},
             ]}
           >
             <View style={styles.profileTrack}>
@@ -578,7 +612,8 @@ class UserProfileView extends React.Component {
           style={[
             styles.animatedHeader,
             {height: headerHeight, shadowOpacity: headerShadowOpacity}
-          ]}>
+          ]}
+        >
           {user.coverImage !== '' &&
             <View style={styles.coverImageWrap}>
               <Image style={styles.coverImage} source={{uri: user.coverImage}} resizeMode='cover' />
@@ -601,43 +636,32 @@ class UserProfileView extends React.Component {
             </View>
           }
           <View style={styles.nav}>
-            {(user.id === currentUserID && title === 'Profile' && routeName !== 'profileUser') &&
+            {(isCurrentUser && title === 'Profile' && routeName === 'proMain') &&
               <View style={styles.leftIcon}></View>
             }
-            {(user.id !== currentUserID || title !== 'Profile' || routeName !== 'profileUser') &&
+            {(!isCurrentUser || title !== 'Profile' || routeName !== 'proMain') &&
               <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             }
             <Animated.Text style={[styles.title, {opacity: titleOpacity, bottom: titleOffset}]}>
               {user.displayName}
             </Animated.Text>
-            {user.id === currentUserID &&
+            {!isCurrentUser && <SimpleLineIcons name='options' style={styles.rightIcon} />}
+            {isCurrentUser &&
               <Ionicons
                 name='md-settings'
                 style={styles.rightIcon}
                 onPress={this.navToSettings(title)}
               />
             }
-            {user.id !== currentUserID &&
-              <SimpleLineIcons name='options' style={styles.rightIcon} />
-            }
           </View>
           <Animated.View style={[styles.profileHeader, {height: profileHeaderHeight}]}>
             <Animated.View style={[styles.user, {opacity: userOpacity, bottom: userOffset}]}>
               <View style={styles.userPhoto}>
-                {!userFetching.includes('users') &&
-                  <View>
-                    {(!user.profileImage || user.profileImage === '') &&
-                      <Text>Nothing to show</Text>
-                    }
-                    {user.profileImage !== '' &&
-                      <Image style={styles.roundPhoto} source={{uri: user.profileImage}} />
-                    }
-                  </View>
+                {user.profileImage !== '' &&
+                  <Image style={styles.roundPhoto} source={{uri: user.profileImage}} />
                 }
-                {userFetching.includes('users') &&
-                  <View>
-                    <Placeholder.Media animate='fade' size={70} hasRadius={true} color='#888' />
-                  </View>
+                {(userFetching.includes('users') && (!user || user.profileImage === '')) &&
+                  <Placeholder Animate={Fade} Left={this.renderImage} />
                 }
               </View>
               <View style={styles.userName}>
@@ -645,7 +669,7 @@ class UserProfileView extends React.Component {
                   {user.displayName}
                 </Text>
               </View>
-              {user.id === currentUserID &&
+              {isCurrentUser &&
                 <TouchableOpacity
                   style={styles.userProfileAction}
                   onPress={this.navToEditProfile(title)}
@@ -653,13 +677,13 @@ class UserProfileView extends React.Component {
                   <Text style={styles.userProfileActionText}>edit profile</Text>
                 </TouchableOpacity>
               }
-              {(user.id !== currentUserID && currentUser.following.includes(user.id)) &&
+              {(!isCurrentUser && currentUser.following.includes(user.id)) &&
                 <TouchableOpacity style={styles.followingProfileAction} disabled>
                   <Ionicons name='md-person' color='#fefefe' style={styles.followPerson} />
                   <Ionicons name='md-checkmark' color='#fefefe' style={styles.followCheck} />
                 </TouchableOpacity>
               }
-              {(user.id !== currentUserID && currentUser.following.includes(user.id)) &&
+              {(!isCurrentUser && currentUser.following.includes(user.id)) &&
                 <TouchableOpacity style={styles.followProfileAction} disabled>
                   <Ionicons name='md-person' color='#fefefe' style={styles.followPerson} />
                   <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.followPlus} />
@@ -669,35 +693,36 @@ class UserProfileView extends React.Component {
             <Animated.View style={[styles.bio, {opacity: bioOpacity, bottom: bioOffset}]}>
               <FontAwesome name='newspaper-o' color='#888' style={styles.bioIcon} />
               <View>
-                {user.bio !== '' &&
-                  <Text
-                    style={styles.bioText}
-                    onLayout={e => {
-                      this.setState({
-                        bioLines: Math.ceil(e.nativeEvent.layout.height / 19.2).toFixed(0),
-                      });
-                    }}
-                  >
+                {(typeof user.bio === 'string' && user.bio !== '') &&
+                  <Text style={styles.bioText}>
                     {user.bio}
                   </Text>
                 }
-                {(user.id === currentUserID && (!user.bio || user.bio === '')) &&
+                {(isCurrentUser && (!user.bio || user.bio === '')) &&
                   <TouchableOpacity style={styles.profileInfoButton} disabled>
                     <Text style={[styles.bioText, {color: '#2b6dc0'}]}>Add a bio</Text>
                   </TouchableOpacity>
                 }
-                {(user.id !== currentUserID && !userFetching.includes('users') && !userError && user.bio === '') &&
+                {(
+                  !isCurrentUser
+                  && !userFetching.includes('users')
+                  && !userError
+                  && user.bio === ''
+                ) &&
                   <Text style={[styles.bioText, styles.disabledText]}>No bio</Text>
                 }
-                {(user.id !== currentUserID && userFetching.includes('users') && (!user.bio || user.bio === '')) &&
+                {(
+                  !isCurrentUser
+                  && userFetching.includes('users')
+                  && (
+                    !user.bio
+                    || user.bio === ''
+                  )
+                ) &&
                   <View style={styles.loadingInfo}>
-                    <Placeholder.Line
-                      animate='fade'
-                      textSize={16}
-                      lineSpacing={3.2}
-                      color='#888'
-                      width='100%'
-                    />
+                    <Placeholder Animate={Fade}>
+                      <PlaceholderLine width={100} style={styles.loadingText} />
+                    </Placeholder>
                   </View>
                 }
               </View>
@@ -710,20 +735,18 @@ class UserProfileView extends React.Component {
             >
               <Ionicons name='md-pin' color='#888' style={styles.locationIcon} />
               <View>
-                {user.location !== '' &&
-                  <Text numberOfLines={1} style={styles.locationText}>
+                {(typeof user.location === 'string' && user.location !== '') &&
+                  <Text style={styles.locationText}>
                     {user.location}
                   </Text>
                 }
-                {(user.id === currentUserID && (!user.location || user.location === '')) &&
+                {(isCurrentUser && (!user.location || user.location === '')) &&
                   <TouchableOpacity style={styles.profileInfoButton} disabled>
-                    <Text numberOfLines={1} style={[styles.locationText, {color: '#2b6dc0'}]}>
-                      Add a location
-                    </Text>
+                    <Text style={[styles.locationText, {color: '#2b6dc0'}]}>Add a location</Text>
                   </TouchableOpacity>
                 }
                 {(
-                  user.id !== currentUserID
+                  !isCurrentUser
                   && !userFetching.includes('users')
                   && !userError
                   && user.location === ''
@@ -731,18 +754,17 @@ class UserProfileView extends React.Component {
                   <Text style={[styles.locationText, styles.disabledText]}>No location</Text>
                 }
                 {(
-                  user.id !== currentUserID
+                  !isCurrentUser
                   && userFetching.includes('users')
-                  && (!user.location || user.location === '')
+                  && (
+                    !user.location
+                    || user.location === ''
+                  )
                 ) &&
                   <View style={styles.loadingInfo}>
-                    <Placeholder.Line
-                      animate='fade'
-                      textSize={16}
-                      lineSpacing={3.2}
-                      color='#888'
-                      width='100%'
-                    />
+                    <Placeholder Animate={Fade}>
+                      <PlaceholderLine width={100} style={styles.loadingText} />
+                    </Placeholder>
                   </View>
                 }
               </View>
@@ -755,18 +777,18 @@ class UserProfileView extends React.Component {
             >
               <Entypo name='link' color='#888' style={styles.websiteIcon} />
               <View>
-                {user.website !== '' &&
-                  <Text numberOfLines={1} style={styles.websiteText}>
+                {(typeof user.website === 'string' && user.website !== '') &&
+                  <Text style={styles.websiteText}>
                     {user.website}
                   </Text>
                 }
-                {(user.id === currentUserID && (!user.website || user.website === '')) &&
+                {(isCurrentUser && (!user.website || user.website === '')) &&
                   <TouchableOpacity style={styles.profileInfoButton} disabled>
                     <Text style={[styles.websiteText, {color: '#2b6dc0'}]}>Add a website</Text>
                   </TouchableOpacity>
                 }
                 {(
-                  user.id !== currentUserID
+                  !isCurrentUser
                   && !userFetching.includes('users')
                   && !userError
                   && user.website === ''
@@ -774,18 +796,17 @@ class UserProfileView extends React.Component {
                   <Text style={[styles.websiteText, styles.disabledText]}>No website</Text>
                 }
                 {(
-                  user.id !== currentUserID
+                  !isCurrentUser
                   && userFetching.includes('users')
-                  && (!user.website || user.website === '')
+                  && (
+                    !user.website
+                    || user.website === ''
+                  )
                 ) &&
                   <View style={styles.loadingInfo}>
-                    <Placeholder.Line
-                      animate='fade'
-                      textSize={16}
-                      lineSpacing={3.2}
-                      color='#888'
-                      width='100%'
-                    />
+                    <Placeholder Animate={Fade}>
+                      <PlaceholderLine width={100} style={styles.loadingText} />
+                    </Placeholder>
                   </View>
                 }
               </View>
@@ -797,48 +818,20 @@ class UserProfileView extends React.Component {
               ]}
             >
               <TouchableOpacity style={styles.followers} disabled>
-                {user.totalFollowers &&
+                <Text>
                   <Text style={styles.followersCount}>
-                    {user.totalFollowers}
+                    {followerTotal}
                   </Text>
-                }
-                {(!user.totalFollowers && !userFetching.includes('users') && userError) &&
-                  <Text style={styles.followersCount}>-</Text>
-                }
-                {(!user.totalFollowers && userFetching.includes('users') && !userError) &&
-                  <View style={styles.loadingFollow}>
-                    <Placeholder.Line
-                      animate='fade'
-                      textSize={16}
-                      lineSpacing={3.2}
-                      color='#888'
-                      width='100%'
-                    />
-                  </View>
-                }
-                <Text style={styles.followersText}>followers</Text>
+                  <Text style={styles.followersText}> followers</Text>
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.following} disabled>
-                {user.totalFollowing &&
+                <Text>
                   <Text style={styles.followingCount}>
-                    {user.totalFollowing}
+                    {followingTotal}
                   </Text>
-                }
-                {(!user.totalFollowing && !userFetching.includes('users') && userError) &&
-                  <Text style={styles.followingCount}>-</Text>
-                }
-                {(!user.totalFollowing && userFetching.includes('users') && !userError) &&
-                  <View style={styles.loadingFollowing}>
-                    <Placeholder.Line
-                      animate='fade'
-                      textSize={16}
-                      lineSpacing={3.2}
-                      color='#888'
-                      width='100%'
-                    />
-                  </View>
-                }
-                <Text style={styles.followingText}>following</Text>
+                  <Text style={styles.followingText}> following</Text>
+                </Text>
               </TouchableOpacity>
             </Animated.View>
           </Animated.View>
@@ -868,6 +861,7 @@ UserProfileView.propTypes = {
 function mapStateToProps({entities, player, playlists, queue, sessions, tracks, users}) {
   return {
     entities,
+    player,
     playlists,
     queue,
     sessions,

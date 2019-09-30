@@ -41,7 +41,7 @@ interface Styles {
   profileHeader: ViewStyleProp,
   user: ViewStyleProp,
   userPhoto: ViewStyleProp,
-  roundPhoto: ImageStyleProp,
+  roundPhoto: ImageStyleProp | ViewStyleProp,
   userName: ViewStyleProp,
   userNameText: TextStyleProp,
   userProfileAction: ViewStyleProp,
@@ -74,7 +74,7 @@ interface Styles {
 };
 
 const screenHeight: number = Dimensions.get('window').height;
-const HEADER_MIN_HEIGHT: number = 85;
+const HEADER_MIN_HEIGHT: number = 65;
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -117,30 +117,32 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   section: {
-    marginBottom: 20,
     marginTop: 20,
+    marginBottom: 20,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   sectionTitle: {
     fontFamily: 'Muli',
     color: '#888',
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 16,
+    lineHeight: 19.2, // x1.2
     fontWeight: '800',
-    marginBottom: 10,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
-  viewAllButton: {},
+  viewAllButton: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
   viewAllText: {
     textAlign: 'right',
     fontFamily: 'Muli',
     fontWeight: '600',
-    fontSize: 14,
-    lineHeight: 26,
+    fontSize: 12,
+    lineHeight: 19.2,
     backgroundColor: 'transparent',
   },
   enabledText: {
@@ -154,10 +156,10 @@ const styles: Styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     backgroundColor: '#1b1b1e',
     shadowColor: '#101010',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: {width: 0, height: 8},
     shadowRadius: 5
   },
   coverImageWrap: {
@@ -187,35 +189,37 @@ const styles: Styles = StyleSheet.create({
     paddingTop: 15,
     height: HEADER_MIN_HEIGHT,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor: 'transparent'
   },
   leftIcon: {
     flex: 1,
     height: 45,
-    fontSize: 45,
-    alignSelf: 'center',
-    backgroundColor: 'transparent',
+    fontSize: 30,
+    paddingTop: 7,
     color: '#fefefe',
+    backgroundColor: 'transparent',
+    alignSelf: 'center',
   },
   title: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 28,
+    fontSize: 20,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 28,
+    lineHeight: 24,
     textAlign: 'center',
     alignSelf: 'center',
     backgroundColor: 'transparent',
   },
   rightIcon: {
     flex: 1,
-    fontSize: 35,
-    alignSelf: 'center',
+    height: 45,
+    fontSize: 30,
+    paddingTop: 6,
+    color: '#fefefe',
     textAlign: 'right',
     backgroundColor: 'transparent',
-    color: '#fefefe',
   },
   profileHeader: {
     overflow: 'hidden',
@@ -227,13 +231,13 @@ const styles: Styles = StyleSheet.create({
     marginBottom: 40,
   },
   userPhoto: {
-    width: 70,
+    width: 55,
   },
   roundPhoto: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: 'transparent',
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
+    backgroundColor: '#888',
   },
   userName: {
     flex: 1,
@@ -324,10 +328,15 @@ const styles: Styles = StyleSheet.create({
   loadingInfo: {
     width: 150,
     height: 19.2,
-    justifyContent: 'center',
+  },
+  loadingText: {
+    backgroundColor: '#888',
+    height: 16,
   },
   profileInfoButton: {
     backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   location: {
     flexDirection: 'row',
@@ -341,6 +350,7 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignSelf: 'center',
     textAlign: 'center',
+    color: '#888',
   },
   locationText: {
     fontFamily: 'Muli',
@@ -349,6 +359,7 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 19.2,
     color: '#fefefe',
     backgroundColor: 'transparent',
+    paddingRight: 45,
   },
   website: {
     flexDirection: 'row',
@@ -370,6 +381,7 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 19.2,
     color: '#fefefe',
     backgroundColor: 'transparent',
+    paddingRight: 45,
   },
   loadingFollow: {
     justifyContent: 'center',
@@ -385,7 +397,6 @@ const styles: Styles = StyleSheet.create({
   followers: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    justifyContent: 'center',
   },
   followersCount: {
     fontFamily: 'Muli',
@@ -394,7 +405,6 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 19.2,
     color: '#fefefe',
     backgroundColor: 'transparent',
-    marginRight: 5,
   },
   followersText: {
     fontFamily: 'Muli',
@@ -407,7 +417,6 @@ const styles: Styles = StyleSheet.create({
   following: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    justifyContent: 'center',
   },
   followingCount: {
     fontFamily: 'Muli',
@@ -416,7 +425,6 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 19.2,
     color: '#fefefe',
     backgroundColor: 'transparent',
-    marginRight: 5,
   },
   followingText: {
     fontFamily: 'Muli',
