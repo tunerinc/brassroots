@@ -374,7 +374,7 @@ class UserProfileView extends React.Component {
     let followerTotal = 0;
     let followingTotal = 0;
 
-    if (user) {
+    if (typeof user.totalFollowers === 'number' && typeof user.totalFollowing === 'number') {
       if (user.totalFollowers < 1000) {
         followerTotal = `${user.totalFollowers}`;
       } else if (user.totalFollowers < 1000000) {
@@ -474,7 +474,7 @@ class UserProfileView extends React.Component {
                     <Text style={[styles.viewAllText, styles.enabledText]}>VIEW ALL</Text>
                   </TouchableOpacity>
                 }
-                {!user.mostPlayed.length || user.mostPlayed.length <= 3 &&
+                {(!user.mostPlayed.length || user.mostPlayed.length <= 3) &&
                   <TouchableOpacity style={styles.viewAllButton} disabled>
                     <Text style={[styles.viewAllText, styles.disabledText]}>VIEW ALL</Text>
                   </TouchableOpacity>
@@ -490,10 +490,10 @@ class UserProfileView extends React.Component {
                     <LoadingTrack type='cover' />
                   }
                   {(!trackFetching.includes('mostPlayed') && !trackError) &&
-                    <Text>Nothing to show</Text>
+                    <Text style={styles.nothing}>Nothing to show</Text>
                   }
                   {(!trackFetching.includes('mostPlayed') && trackError) &&
-                    <Text>Something went wrong.</Text>
+                    <Text styles={styles.nothing}>Something went wrong.</Text>
                   }
                 </View>
               }
@@ -528,8 +528,8 @@ class UserProfileView extends React.Component {
                 || playlistFetching.includes('topPlaylists')
               ) &&
                 <View>
-                  {(playlistFetching.includes('topPlaylists') && !playlistError)
-                    && <LoadingPlaylist />
+                  {(playlistFetching.includes('topPlaylists') && !playlistError) &&
+                    <LoadingPlaylist />
                   }
                   {(!playlistFetching.includes('topPlaylists') && !playlistError) &&
                     <Text style={styles.nothing}>Nothing to show</Text>
@@ -574,7 +574,10 @@ class UserProfileView extends React.Component {
                     <LoadingTrack type='cover' />
                   }
                   {(!trackFetching.includes('recent') && !trackError) &&
-                    <Text style={styles.nothing}>Nothing to show</Text>
+                    <View style={styles.empty}>
+                      <Text style={styles.emptyTitle}>No songs played</Text>
+                      <Text style={styles.emptySub}>Recently Played is your listening history</Text>
+                    </View>
                   }
                   {(!trackFetching.includes('recent') && trackError) &&
                     <Text style={styles.nothing}>Something went wrong.</Text>

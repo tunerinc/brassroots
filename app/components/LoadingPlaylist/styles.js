@@ -14,6 +14,7 @@ import {
 
 interface Styles {
   playlist: ViewStyleProp,
+  wrap: ViewStyleProp,
   placeholderWrap: ViewStyleProp,
   image: ViewStyleProp,
   text: ViewStyleProp,
@@ -26,8 +27,12 @@ const styles: Styles =  StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     paddingVertical: 10,
+    justifyContent: 'space-between',
     alignItems: 'center',
     height: 75,
+  },
+  wrap: {
+    flex: 7,
   },
   placeholderWrap: {
     height: 55,
