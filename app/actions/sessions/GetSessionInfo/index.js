@@ -58,6 +58,7 @@ export function getSessionInfo(
             totalPlayed: doc.data().totals.previouslyPlayed,
           };
 
+          // add entities here
           dispatch(updatePlayer({paused: doc.data().paused}));
           dispatch(actions.success(unsubscribe));
         },

@@ -11,6 +11,7 @@
 
 import {Actions, ActionConst} from 'react-native-router-flux';
 import {updateOnboarding} from '../../onboarding/UpdateOnboarding';
+import {addEntities} from '../../entities/AddEntities';
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/users';
 import {
@@ -57,6 +58,7 @@ export function saveProfile(
     try {
       await usersRef.doc(restOfUser.id).update({...restOfUser});
       dispatch(updateOnboarding({onboarding: false}));
+      dispatch(addEntities({users: {[user.id]: user}}));
       dispatch(actions.success());
 
       if (onboarding) Actions.root({type: ActionConst.RESET});
