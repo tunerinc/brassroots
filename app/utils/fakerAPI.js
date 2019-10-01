@@ -71,18 +71,18 @@ const FakerAPI = {
 
       let batch = firestore.batch();
 
-      for (let i = 0; i < 1; i++) {
+      for (let i = 0; i < 30; i++) {
         const newPlaylistDoc = playlistsRef.doc();
         const newSessionDoc = sessionsRef.doc();
         const newUserDoc = usersRef.doc();
         const currentTrackID = i < 30 ? songIDs[i] : songIDs[i - 30];
-        const nextTrackID = i < 30 ? songIDs[i + 1] : songIDs[i - 29];
+        const nextTrackID = i < 29 ? songIDs[i + 1] : songIDs[i - 29];
         const owner = {
           id: newUserDoc.id,
           name: internet.userName(),
           image: internet.avatar(),
         };
-  
+
         batch.set(
           newSessionDoc,
           {

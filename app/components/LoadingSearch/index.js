@@ -7,7 +7,7 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 type Props = {||};
@@ -17,13 +17,9 @@ export default class LoadingSearch extends React.PureComponent<Props, State> {
   render() {
     return (
       <View style={styles.container}>
-        <Placeholder.Line
-          animate='fade'
-          textSize={20}
-          lineSpacing={4}
-          width='65%'
-          color='#888'
-        />
+        <Placeholder Animate={Fade}>
+          <PlaceholderLine width={65} style={styles.text} />
+        </Placeholder>
       </View>
     );
   }

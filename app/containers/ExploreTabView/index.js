@@ -26,12 +26,8 @@ import SessionModal from '../../components/SessionModal';
 import styles from './styles';
 
 // Sessions Action Creators
-import {getFollowingSessions} from '../../actions/sessions/GetFollowingSessions';
-import {getNearbySessions} from '../../actions/sessions/GetNearbySessions';
 import {getTrendingSessions} from '../../actions/sessions/GetTrendingSessions';
 import {joinSession} from '../../actions/sessions/JoinSession';
-import {paginateFollowingSessions} from '../../actions/sessions/PaginateFollowingSessions';
-import {paginateNearbySessions} from '../../actions/sessions/PaginateNearbySessions';
 import {paginateTrendingSessions} from '../../actions/sessions/PaginateTrendingSessions';
 
 class ExploreTabView extends React.Component {
@@ -222,12 +218,13 @@ class ExploreTabView extends React.Component {
         paginating,
         explore: {trendingCanPaginate, trendingIDs},
       },
+      users: {currentUserID},
     } = this.props;
 
     if (trendingIDs.length !== 0 && trendingCanPaginate && !paginating) {
       const sessionID = trendingIDs[trendingIDs.length - 1];
       const {totalListeners: cursor} = sessions.byID[sessionID];
-      paginateTrendingSessions(cursor);
+      paginateTrendingSessions(currentUserID, cursor);
     }
   }
 
@@ -309,6 +306,10 @@ class ExploreTabView extends React.Component {
                   <LoadingSession />
                   <LoadingSession />
                   <LoadingSession />
+                  <LoadingSession />
+                  <LoadingSession />
+                  <LoadingSession />
+                  <LoadingSession />
                 </View>
               }
               {!fetching.includes('trending') &&
@@ -347,12 +348,8 @@ class ExploreTabView extends React.Component {
 
 ExploreTabView.propTypes = {
   entities: PropTypes.object.isRequired,
-  getFollowingSessions: PropTypes.func.isRequired,
-  getNearbySessions: PropTypes.func.isRequired,
   getTrendingSessions: PropTypes.func.isRequired,
   joinSession: PropTypes.func.isRequired,
-  paginateFollowingSessions: PropTypes.func.isRequired,
-  paginateNearbySessions: PropTypes.func.isRequired,
   paginateTrendingSessions: PropTypes.func.isRequired,
   player: PropTypes.object.isRequired,
   queue: PropTypes.object.isRequired,
@@ -374,12 +371,8 @@ function mapStateToProps({entities, player, queue, sessions, tracks, users}) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    getFollowingSessions,
-    getNearbySessions,
     getTrendingSessions,
     joinSession,
-    paginateFollowingSessions,
-    paginateNearbySessions,
     paginateTrendingSessions,
   }, dispatch);
 }

@@ -58,6 +58,7 @@ export function getSessionInfo(
             totalPlayed: doc.data().totals.previouslyPlayed,
           };
 
+          dispatch(addEntities({sessions: {[session.id]: session}}));
           dispatch(updatePlayer({paused: doc.data().paused}));
           dispatch(actions.success(unsubscribe));
         },

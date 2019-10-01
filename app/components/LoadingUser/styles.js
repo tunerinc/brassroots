@@ -25,12 +25,15 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
+    backgroundColor: '#888',
   },
   name: {
     width: 75,
+    height: 20,
+    backgroundColor: '#888'
   },
 });
 

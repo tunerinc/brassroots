@@ -7,33 +7,21 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 type Props = {||};
 type State = {||};
 
 export default class LoadingUser extends React.PureComponent<Props, State> {
+  renderImage = () => <PlaceholderMedia isRound={true} style={styles.image} />;
+
   render() {
     return (
       <View style={styles.owner}>
-        <View style={styles.image}>
-          <Placeholder.Media
-            animate='fade'
-            size={60}
-            hasRadius={true}
-            color='#888'
-          />
-        </View>
-        <View style={styles.name}>
-          <Placeholder.Line
-            animate='fade'
-            textSize={20}
-            lineSpacing={6}
-            color='#888'
-            width='100%'
-          />
-        </View>
+        <Placeholder Animate={Fade} Left={this.renderImage}>
+          <PlaceholderLine width={100} style={styles.name} />
+        </Placeholder>
       </View>
     );
   }

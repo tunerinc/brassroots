@@ -42,11 +42,11 @@ import {nextTrack} from '../../actions/player/NextTrack';
 import {playTrack} from '../../actions/player/PlayTrack';
 import {previousTrack} from '../../actions/player/PreviousTrack';
 import {seekPosition} from '../../actions/player/SeekPosition';
-import {setProgress} from '../../actions/player/SetProgress';
 import {toggleMute} from '../../actions/player/ToggleMute';
 import {togglePause} from '../../actions/player/TogglePause';
 import {toggleRepeat} from '../../actions/player/ToggleRepeat';
 import {toggleShuffle} from '../../actions/player/ToggleShuffle';
+import {updatePlayer} from '../../actions/player/UpdatePlayer';
 
 // Queue Action Creators
 import {deleteQueueTrack} from '../../actions/queue/DeleteQueueTrack';
@@ -357,7 +357,7 @@ class LiveSessionView extends React.Component {
 
     if (!currentSessionID || !tracks.allIDs.includes(item.trackID)) return <View></View>;
 
-    const {ownerID} = sessionsByID[currentSessionID];
+    const {ownerID} = sessions.byID[currentSessionID];
     const {liked, totalLikes, userID} = queueTracks.byID[item.id];
     const {name, artists} = tracks.byID[item.trackID];
     const {displayName} = users.byID[ownerID];
@@ -365,7 +365,7 @@ class LiveSessionView extends React.Component {
 
     return (
       <TrackCard
-        key={item}
+        key={item.id}
         artists={artists.map(a => a.name).join(', ')}
         context={{id: ownerID, type: 'userQueue', displayName, name: 'userQueue'}}
         deleting={deleting.includes(item.id)}
@@ -665,9 +665,11 @@ class LiveSessionView extends React.Component {
       users: {currentUserID},
     } = this.props;
     const user = users.byID[currentUserID];
-    const session = currentSessionID ? sessions.byID[currentSessionID] : null;
-    const track = currentTrackID ? tracks.byID[currentTrackID] : null;
-    const sessionOwner = currentSession ? users.byID[session.ownerID] : currentUser;
+    const session = sessions.allIDs.includes(currentSessionID) ? sessions.byID[currentSessionID] : null;
+    const track = tracks.allIDs.includes(currentTrackID) ? tracks.byID[currentTrackID] : null;
+    const sessionOwner = session && users.allIDs.includes(session.ownerID)
+      ? users.byID[session.ownerID]
+      : user;
 
     return (
       <View style={styles.container}>
@@ -717,7 +719,7 @@ class LiveSessionView extends React.Component {
           <VirtualizedList
             data={userQueue}
             renderItem={this.renderTrack}
-            keyExtractor={item => item}
+            keyExtractor={item => item.id}
             getItem={(data, index) => data[index]}
             getItemCount={data => data.length}
             ListHeaderComponent={this.renderHeader}
@@ -849,7 +851,6 @@ LiveSessionView.propTypes = {
   seekPosition: PropTypes.func.isRequired,
   sendChatMessage: PropTypes.func.isRequired,
   sessions: PropTypes.object.isRequired,
-  setProgress: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   stopSessionInfoListener: PropTypes.func.isRequired,
   stopQueueListener: PropTypes.func.isRequired,
@@ -860,6 +861,7 @@ LiveSessionView.propTypes = {
   toggleRepeat: PropTypes.func.isRequired,
   toggleShuffle: PropTypes.func.isRequired,
   toggleTrackLike: PropTypes.func.isRequired,
+  updatePlayer: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 };
 
@@ -893,7 +895,6 @@ function mapDispatchToProps(dispatch) {
     queueTrack,
     seekPosition,
     sendChatMessage,
-    setProgress,
     stopSessionInfoListener,
     stopQueueListener,
     toggleMute,
@@ -901,6 +902,7 @@ function mapDispatchToProps(dispatch) {
     toggleRepeat,
     toggleShuffle,
     toggleTrackLike,
+    updatePlayer,
   }, dispatch);
 }
 

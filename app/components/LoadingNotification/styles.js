@@ -11,48 +11,75 @@ import {type ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
   container: ViewStyleProp,
+  typeWrap: ViewStyleProp,
   type: ViewStyleProp,
   info: ViewStyleProp,
   top: ViewStyleProp,
   images: ViewStyleProp,
+  image: ViewStyleProp,
+  timestampWrap: ViewStyleProp,
   timestamp: ViewStyleProp,
   bottom: ViewStyleProp,
+  text: ViewStyleProp,
+  topText: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     alignItems: 'center',
     borderColor: '#323232',
     borderBottomWidth: 1,
     opacity: 0.3,
   },
+  typeWrap: {
+    marginRight: 20,
+  },
   type: {
-    flex: 1,
-    alignSelf: 'flex-start',
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    backgroundColor: '#888',
   },
   info: {
-    flex: 7,
+    flex: 1,
   },
   top: {
-    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginBottom: 10,
   },
   images: {
     flex: 3,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingRight: 20,
+    marginRight: 20,
+  },
+  image: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    backgroundColor: '#888',
+  },
+  timestampWrap: {
+    flex: 1,
   },
   timestamp: {
-    flex: 1,
+    height: 14,
+    backgroundColor: '#888',
   },
   bottom: {
-    flex: 1,
+    marginBottom: -10,
+  },
+  text: {
+    height: 16,
+    backgroundColor: '#888',
+  },
+  topText: {
+    marginTop: 10,
+    marginBottom: 6.2,
   },
 });
 

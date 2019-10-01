@@ -7,7 +7,7 @@
 
 import React from 'react';
 import {Text, View, Image, TouchableOpacity} from 'react-native';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
@@ -31,6 +31,8 @@ export default class RoundPerson extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
   }
+
+  renderImage = () => <PlaceholderMedia isRound={true} style={styles.image} />;
 
   render() {
     const {
@@ -74,12 +76,7 @@ export default class RoundPerson extends React.PureComponent<Props, State> {
           }
           {(loading && (!image || image === '')) &&
             <View style={styles.default}>
-              <Placeholder.Media
-                animate='fade'
-                size={60}
-                color='#888'
-                hasRadius={true}
-              />
+              <Placeholder Animate={Fade} Left={this.renderImage} />
             </View>
           }
           <Text numberOfLines={1} style={styles.buttonText}>

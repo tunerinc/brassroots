@@ -44,7 +44,7 @@ class NewMessageView extends React.Component {
   }
 
   goToNewGroup() {
-    Actions.socialNewGroup({creatingGroup: true});
+    Actions.socNewGroup({creatingGroup: true});
   }
 
   render() {

@@ -80,7 +80,6 @@ import UserGroupsView from './containers/UserGroupsView';
 
 // Settings
 import UserSettingsView from './containers/UserSettingsView';
-import UserNotificationsView from './containers/UserNotificationsView';
 import UserPreferencesView from './containers/UserPreferencesView';
 import DisplaySoundView from './containers/DisplaySoundView';
 import AboutAppView from './containers/AboutAppView';
@@ -117,6 +116,7 @@ export default class App extends React.Component<Props> {
           <Modal>
             <Scene key="welcome" hideNavBar>
               <Scene key="welcomeMain" type="jump" component={WelcomeView} title="Welcome" initial />
+              <Scene key="welTermsService" component={TermsServiceView} title="Terms of Service" />
               <Scene key="welPrivacyPolicy" component={PrivacyPolicyView} title="Privacy Policy" />
               <Scene key="createProfile" component={EditProfileView} title="Create Profile" />
             </Scene>
@@ -159,7 +159,6 @@ export default class App extends React.Component<Props> {
                   <Scene key='libProGroups' component={UserGroupsView} title='Library' />
                   <Scene key='libProEditProfile' component={EditProfileView} title='Library' />
                   <Scene key='libProSettings' component={UserSettingsView} title='Library' />
-                  <Scene key='libProNotif' component={UserNotificationsView} title='Library' />
                   <Scene key='libProPref' component={UserPreferencesView} title='Library' />
                   <Scene key='libProDisplaySound' component={DisplaySoundView} title='Library' />
                   <Scene key='libProLanguageRegion' component={LanguageRegionView} title='Library' />
@@ -213,7 +212,6 @@ export default class App extends React.Component<Props> {
                   <Scene key='proGroups' component={UserGroupsView} title='Profile' />
                   <Scene key='proEditProfile' component={EditProfileView} title='Profile' />
                   <Scene key='proSettings' component={UserSettingsView} title='Profile' />
-                  <Scene key='proNotifications' component={UserNotificationsView} title='Profile' />
                   <Scene key='proPreferences' component={UserPreferencesView} title='Profile' />
                   <Scene key='proDisplaySound' component={DisplaySoundView} title='Profile' />
                   <Scene key='proLanguageRegion' component={LanguageRegionView} title='Profile' />

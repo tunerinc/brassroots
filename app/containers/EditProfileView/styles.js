@@ -48,6 +48,7 @@ interface Styles {
   editIcon: TextStyleProp,
   editPhotoText: TextStyleProp,
   editCoverPhoto: ViewStyleProp,
+  loadingImage: ViewStyleProp,
 };
 
 const screenWidth: number = Dimensions.get('window').width;
@@ -175,12 +176,13 @@ const styles: Styles = StyleSheet.create({
     paddingTop: 10,
   },
   leftIcon: {
-    flex: 2,
+    flex: 1,
     height: 45,
-    fontSize: 45,
-    alignSelf: 'center',
-    backgroundColor: 'transparent',
+    fontSize: 30,
+    paddingTop: 7.5,
     color: '#fefefe',
+    backgroundColor: 'transparent',
+    alignSelf: 'center',
   },
   title: {
     flex: 6,
@@ -194,7 +196,7 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   rightIcon: {
-    flex: 2,
+    flex: 1,
     height: 45,
     alignSelf: 'center',
     justifyContent: 'center',
@@ -231,11 +233,12 @@ const styles: Styles = StyleSheet.create({
   editProfilePhoto: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'transparent',
   },
   photoButton: {
     borderRadius: 35,
-    overflow: 'hidden',
+    justifyContent: 'center',
   },
   roundPhotoWrap: {
     width: 70,
@@ -268,14 +271,24 @@ const styles: Styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 19.2, // x1.2
-    color: '#fefefe'
+    color: '#fefefe',
   },
   editCoverPhoto: {
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'transparent',
     color: '#fefefe'
-  }
+  },
+  placeholderWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#888',
+  },
 });
 
 export default styles;

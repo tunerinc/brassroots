@@ -16,27 +16,28 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {logOut} from '../../actions/settings/LogOut';
 
 class UserSettingsView extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
   navToSetting = setting => () => {
     const {title} = this.props;
 
     switch (setting) {
-      case 'notifications':
-        title === 'Library' ? Actions.libraryProfileNotifications() : Actions.profileNotifications();
-        return;
       case 'preferences':
-        title === 'Library' ? Actions.libraryProfilePreferences() : Actions.profilePreferences();
+        title === 'Library' ? Actions.libProPreferences() : Actions.proPreferences();
         return;
       case 'displaySound':
-        title === 'Library' ? Actions.libraryProfileDisplaySound() : Actions.profileDisplaySound();
+        title === 'Library' ? Actions.libProDisplaySound() : Actions.proDisplaySound();
         return;
       case 'langRegion':
-        title === 'Library' ? Actions.libraryProfileLanguageRegion() : Actions.profileLanguageRegion();
+        title === 'Library' ? Actions.libProLanguageRegion() : Actions.proLanguageRegion();
         return;
       case 'about':
-        title === 'Library' ? Actions.libraryProfileAboutApp() : Actions.profileAboutApp();
+        title === 'Library' ? Actions.libProAboutApp() : Actions.proAboutApp();
         return;
       case 'report':
-        title === 'Library' ? Actions.libraryProfileReportUser() : Actions.profileReportUser();
+        title === 'Library' ? Actions.libProReportProblem() : Actions.proReportProblem();
         return;
       default:
         return;
@@ -56,7 +57,6 @@ class UserSettingsView extends React.Component {
           </View>
         </View>
         <View style={styles.settings}>
-          <UserSettingOption action={this.navToSetting('notifications')} title='Notifications' />
           <UserSettingOption action={this.navToSetting('preferences')} title='Preferences' />
           <UserSettingOption action={this.navToSetting('displaySound')} title='Display & Sound' />
           <UserSettingOption action={this.navToSetting('langRegion')} title='Language & Region' />

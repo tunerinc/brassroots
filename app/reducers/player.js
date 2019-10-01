@@ -18,7 +18,6 @@ import * as types from '../actions/player/types';
 import * as nextTrack from '../actions/player/NextTrack/reducers';
 import * as playTrack from '../actions/player/PlayTrack/reducers';
 import * as previousTrack from '../actions/player/PreviousTrack/reducers';
-import {updatePlayer} from '../actions/player/UpdatePlayer/reducers';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -248,7 +247,7 @@ export default function reducer(
       case types.TOGGLE_SHUFFLE_FAILURE:
         return updateObject(state, {error: action.error, shuffling: false});
       case types.UPDATE_PLAYER:
-        return updatePlayer(state, action);
+        return updateObject(state, action.updates);
       default:
         return state;
     }

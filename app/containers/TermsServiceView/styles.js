@@ -22,6 +22,7 @@ interface Styles {
   rightIcon: ViewStyleProp,
   spinnerWrap: ViewStyleProp,
   termsWrap: ViewStyleProp,
+  loading: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -90,6 +91,11 @@ const styles: Styles = StyleSheet.create({
     paddingHorizontal: 15,
     zIndex: -1,
     backgroundColor: 'transparent',
+  },
+  loading: {
+    backgroundColor: '#888',
+    height: 14,
+    marginBottom: 8.4,
   },
 });
 

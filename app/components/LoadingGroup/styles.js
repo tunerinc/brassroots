@@ -15,8 +15,8 @@ import {
 interface Styles {
   container: ViewStyleProp,
   image: ViewStyleProp,
-  info: ViewStyleProp,
-  arrowForward: TextStyleProp,
+  text: ViewStyleProp,
+  arrow: TextStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -27,15 +27,20 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    flex: 2,
+    height: 55,
+    width: 55,
+    borderRadius: 27.5,
+    backgroundColor: '#888',
   },
-  info: {
-    flex: 6,
-    paddingRight: 10,
+  text: {
+    height: 20,
+    backgroundColor: '#888',
   },
-  arrowForward: {
+  arrow: {
     flex: 1,
     textAlign: 'right',
+    color: '#888',
+    fontSize: 35,
   },
 });
 

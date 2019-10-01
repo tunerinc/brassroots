@@ -6,7 +6,7 @@ import {Text, TextInput, View, Image, TouchableOpacity, Animated} from 'react-na
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, Fade, PlaceholderLine} from 'rn-placeholder';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import isURL from '../../utils/isURL';
 import styles from './styles';
@@ -47,7 +47,7 @@ class EditProfileView extends React.Component {
       tempBio: '',
       tempLocation: '',
       tempWebsite: '',
-      websiteValid: false,
+      websiteValid: true,
     };
 
     this.handleChangePhoto = this.handleChangePhoto.bind(this);
@@ -65,7 +65,7 @@ class EditProfileView extends React.Component {
       onboarding: {onboarding},
       users: {currentUserID},
     } = this.props;
-    const {favoriteTrackID, bio, location, website} = user.byID[currentUserID];
+    const {favoriteTrackID, bio, location, website} = users.byID[currentUserID];
 
     this.setState({
       tempBio: bio,
@@ -151,8 +151,8 @@ class EditProfileView extends React.Component {
     const {
       title,
       entities: {tracks, users},
-      tracks: {fetching},
-      users: {currentUserID, changingImage},
+      tracks: {fetching: trackFetch},
+      users: {currentUserID, fetching: userFetch},
     } = this.props;
     const user = users.byID[currentUserID];
     const {email, displayName, birthdate, coverImage, profileImage, favoriteTrackID} = user;
@@ -307,8 +307,8 @@ class EditProfileView extends React.Component {
             {height: headerHeight, shadowOpacity: headerShadowOpacity},
           ]}
         >
-          {(fetching.includes('favorite') || coverImage === '') && <View></View>}
-          {user && track && !fetching.includes('favorite') && coverImage !== '' &&
+          {(trackFetch.includes('favorite') || coverImage === '') && <View></View>}
+          {(user && coverImage !== '') &&
             <Animated.View style={[styles.headerBackground, {height: headerHeight}]}>
               <Animated.Image
                 blurRadius={80}
@@ -342,7 +342,10 @@ class EditProfileView extends React.Component {
                 (websiteValid && tempWebsite !== '')
                 || tempWebsite === ''
               )
-              && !changingImage
+              && !userFetch.includes('cover')
+              && !userFetch.includes('profile')
+              && coverImage
+              && profileImage
             ) ? (
               <TouchableOpacity style={styles.rightIcon} onPress={this.handleSaveProfile}>
                 <Text style={[styles.createText, styles.enabledText]}>
@@ -357,18 +360,9 @@ class EditProfileView extends React.Component {
               </TouchableOpacity>
             )}
           </View>
-          <Animated.View
-            style={[
-              styles.photos,
-              {opacity: photosOpacity, bottom: photosOffset},
-            ]}
-          >
+          <Animated.View style={[styles.photos, {opacity: photosOpacity, bottom: photosOffset}]}>
             <View style={styles.editProfilePhoto}>
-              {(
-                user
-                && profileImage !== ''
-                && (!changingImage || (changingImage === 'cover'))
-              ) &&
+              {(user && profileImage && profileImage !== '' && !userFetch.includes('profile')) &&
                 <TouchableOpacity
                   style={styles.photoButton}
                   onPress={this.handleChangePhoto('profile')}
@@ -381,26 +375,17 @@ class EditProfileView extends React.Component {
                   </View>
                 </TouchableOpacity>
               }
-              {(
-                !profileImage
-                || profileImage === ''
-                || (changingImage === 'profile')
-              ) &&
-                <Placeholder.Media
-                  hasRadius
-                  size={70}
-                  color='#888'
-                  animate='fade'
-                />
+              {(!profileImage || profileImage === '' || userFetch.includes('profile')) &&
+                <Placeholder Animate={Fade}>
+                  <View style={styles.placeholderWrap}>
+                    <PlaceholderMedia isRound={true} style={styles.loadingImage} />
+                  </View>
+                </Placeholder>
               }
               <Text style={styles.editPhotoText}>profile photo</Text>
             </View>
             <View style={styles.editCoverPhoto}>
-              {(
-                user
-                && coverImage !== ''
-                && (!changingImage || (changingImage === 'profile'))
-              ) &&
+              {(user && coverImage && coverImage !== '' && !userFetch.includes('cover')) &&
                 <TouchableOpacity
                   style={styles.photoButton}
                   onPress={this.handleChangePhoto('cover')}
@@ -413,13 +398,12 @@ class EditProfileView extends React.Component {
                   </View>
                 </TouchableOpacity>
               }
-              {(!coverImage || coverImage === '' || changingImage === 'cover') &&
-                <Placeholder.Media
-                  hasRadius
-                  size={70}
-                  color='#888'
-                  animate='fade'
-                />
+              {(!coverImage || coverImage === '' || userFetch.includes('cover')) &&
+                <Placeholder Animate={Fade}>
+                  <View style={styles.placeholderWrap}>
+                    <PlaceholderMedia isRound={true} style={styles.loadingImage} />
+                  </View>
+                </Placeholder>
               }
               <Text style={styles.editPhotoText}>cover photo</Text>
             </View>

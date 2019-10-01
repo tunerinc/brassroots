@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   Animated,
   Easing,
-  VirtualizedList
+  VirtualizedList,
+  Image,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -50,15 +51,12 @@ class LibraryPlaylistsView extends React.Component {
   }
 
   navToPlaylist = (dest, playlistID) => () => {
-    switch (dest) {
-      case 'library':
-        Actions.librarySinglePlaylist({playlistToView: playlistID});
-        return;
-      case 'profile':
-        Actions.profileSinglePlaylist({playlistToView: playlistID});
-        return;
-      default:
-        return;
+    if (dest === 'library') {
+      Actions.libSinglePlaylist({playlistToView: playlistID});
+    }
+
+    if (dest === 'profile') {
+      Actions.proSinglePlaylist({playlistToView: playlistID});
     }
   }
 
@@ -108,30 +106,24 @@ class LibraryPlaylistsView extends React.Component {
   }
 
   renderFooter() {
-    const {
-      playlists: {fetching, refreshing, userPlaylists, totalUserPlaylists},
-    } = this.props;
+    const {playlists: {fetching, refreshing, userPlaylists, totalUserPlaylists}} = this.props;
 
     if (
       !fetching.includes('playlists')
-      || refreshing
+      || refreshing.includes('playlists')
       || !userPlaylists.length
-    ) return null;
-
-    const total = totalUserPlaylists - userPlaylists.length < 50
-      ? totalUserPlaylists - userPlaylists.length
-      : 50;
+    ) return <View></View>;
 
     return (
-      <View>
-        {[...Array(total)].map(e => <LoadingPlaylist />)}
+      <View style={styles.footer}>
+        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }
 
   renderCreateButton() {
     return (
-      <TouchableOpacity style={styles.addButton} onPress={Actions.libraryNewPlaylist}>
+      <TouchableOpacity style={styles.addButton} onPress={Actions.libNewPlaylist}>
         <Text style={styles.addButtonText}>CREATE PLAYLIST</Text>
       </TouchableOpacity>
     );
@@ -160,7 +152,7 @@ class LibraryPlaylistsView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    if (!refreshing) getPlaylists(currentUserID, true, 0);
+    if (!refreshing.includes('playlists')) getPlaylists(currentUserID, true, 0);
   }
 
   render() {
@@ -169,7 +161,7 @@ class LibraryPlaylistsView extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Playlists</Text>
@@ -191,7 +183,7 @@ class LibraryPlaylistsView extends React.Component {
             ListHeaderComponent={this.renderCreateButton}
             ListFooterComponent={this.renderFooter}
             ListEmptyComponent={<Text>Nothing to show</Text>}
-            refreshing={refreshing}
+            refreshing={refreshing.includes('playlists')}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.5}
@@ -204,6 +196,11 @@ class LibraryPlaylistsView extends React.Component {
             {fetching.includes('playlists') &&
               <View>
                 {this.renderCreateButton()}
+                <LoadingPlaylist />
+                <LoadingPlaylist />
+                <LoadingPlaylist />
+                <LoadingPlaylist />
+                <LoadingPlaylist />
                 <LoadingPlaylist />
                 <LoadingPlaylist />
                 <LoadingPlaylist />

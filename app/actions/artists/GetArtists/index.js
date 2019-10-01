@@ -51,13 +51,13 @@ export function getArtists(): ThunkAction {
       const fetchAlbumsFromSpotify = async (limit, offset) => {
         const {items, next} = await getMySavedAlbums({limit, offset, market});
         albumsFromSpotify = [...albumsFromSpotify, ...items];
-        if (next) await fetchAlbumsFromSpotify(limit, offset + albumsFromSpotify.length);
+        if (next) await fetchAlbumsFromSpotify(limit, offset + limit);
       };
 
       const fetchTracksFromSpotify = async (limit, offset) => {
         const {items, next} = await getMySavedTracks({limit, offset, market});
         tracksFromSpotify = [...tracksFromSpotify, ...items];
-        if (next) await fetchTracksFromSpotify(limit, offset + tracksFromSpotify.length);
+        if (next) await fetchTracksFromSpotify(limit, offset + limit);
       };
 
       await fetchAlbumsFromSpotify(albumLimit, 0);
@@ -130,6 +130,7 @@ export function getArtists(): ThunkAction {
         });
 
       for (let i = 0; i < (Math.ceil(sortedArtists.length / 50)); i++) {
+        console.log('artist')
         const res = await Spotify.getArtists(sortedArtists.slice(i*50, i*50+50));
         const artistsToAdd = res.artists.forEach(({id, images}) => {
           const large: string = Array.isArray(images) && images.length ? images[0].url : '';

@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import Dimensions from 'Dimensions';
 import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
@@ -28,6 +29,7 @@ interface Styles {
   disabledText: TextStyleProp,
 };
 
+const screenHeight: number = Dimensions.get('window').height;
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -36,26 +38,27 @@ const styles: Styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shadow: {
-    height: 85,
+    height: 75,
     backgroundColor: '#1b1b1e',
     shadowColor: '#101010',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
-    paddingTop: 15,
-    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingHorizontal: 10,
     zIndex: 1,
     alignSelf: 'stretch',
     justifyContent: 'center'
   },
   cancelSearchButton: {
     alignItems: 'flex-end',
+    width: 50,
   },
   cancelSearchButtonText: {
-    fontWeight: '600',
     fontFamily: 'Muli',
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 19.2,
     textAlign: 'right',
-    fontSize: 18,
-    lineHeight: 21.6,
   },
   searchInput: {
     marginRight: 0,
@@ -72,34 +75,36 @@ const styles: Styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: '#888',
     zIndex: 2,
+    height: screenHeight - 85,
   },
   section: {
     marginBottom: 20,
-    marginTop: 20,
+    marginTop: 10,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontFamily: 'Muli',
     color: '#888',
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 16,
+    lineHeight: 19.2, // x1.2
     fontWeight: '800',
-    marginBottom: 10,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   viewAllButton: {
-
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   viewAllText: {
     textAlign: 'right',
     fontFamily: 'Muli',
     fontWeight: '600',
-    fontSize: 14,
-    lineHeight: 26,
+    fontSize: 12,
+    lineHeight: 19.2,
     backgroundColor: 'transparent',
   },
   enabledText: {

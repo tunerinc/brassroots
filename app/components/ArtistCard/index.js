@@ -7,7 +7,7 @@
 
 import React from 'react';
 import {Text, View, Image, TouchableHighlight} from 'react-native';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
@@ -28,6 +28,8 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
     super(props);
   }
 
+  renderImage = () => <PlaceholderMedia isRound={true} style={styles.image} />;
+
   render() {
     const {artistImage, artistName, navToArtist, userTrackLength, fetchingImage} = this.props;
 
@@ -41,18 +43,13 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
         <View style={styles.wrap}>
           {(fetchingImage && (typeof artistImage !== 'string' || artistImage === '')) &&
             <View style={styles.loading}>
-              <Placeholder.Media
-                animate='fade'
-                size={60}
-                hasRadius={true}
-                color='#888'
-              />
+              <Placeholder Animate={Fade} Left={this.renderImage} />
             </View>
           }
           {(typeof artistImage === 'string' && artistImage !== '') &&
             <Image style={styles.image} source={{uri: artistImage}} />
           }
-          {(typeof artistImage !== 'string' || artistImage === '') &&
+          {(!fetchingImage && (typeof artistImage !== 'string' || artistImage === '')) &&
             <View style={styles.default}>
               <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
             </View>

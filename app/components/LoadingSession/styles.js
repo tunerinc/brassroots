@@ -17,12 +17,15 @@ interface Styles {
   header: ViewStyleProp,
   owner: ViewStyleProp,
   live: ViewStyleProp,
+  headerText: ViewStyleProp,
   info: ViewStyleProp,
   image: ViewStyleProp,
-  track: ViewStyleProp,
+  text: ViewStyleProp,
+  topText: ViewStyleProp,
   footer: ViewStyleProp,
   action: ViewStyleProp,
-  text: ViewStyleProp,
+  icon: ViewStyleProp,
+  iconText: ViewStyleProp,
   options: TextStyleProp,
 };
 
@@ -36,11 +39,9 @@ const styles: Styles = StyleSheet.create({
     opacity: 0.3,
   },
   header: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 5,
   },
   owner: {
     flex: 4,
@@ -48,22 +49,32 @@ const styles: Styles = StyleSheet.create({
   live: {
     flex: 1,
   },
+  headerText: {
+    height: 16,
+    backgroundColor: '#888',
+  },
   info: {
-    flex: 2,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 5,
   },
   image: {
     width: 55,
     height: 55,
+    borderRadius: 27.5,
     marginRight: 10,
+    backgroundColor: '#888',
   },
-  track: {
-    flex: 1,
+  text: {
+    height: 16,
+    backgroundColor: '#888',
+  },
+  topText: {
+    marginBottom: 6.2,
+    marginTop: 10,
   },
   footer: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -75,10 +86,19 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 20,
     height: 45,
+    marginBottom: -10,
   },
-  text: {
-    flex: 1,
-    paddingLeft: 10,
+  icon: {
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    marginRight: 5,
+    backgroundColor: '#888',
+  },
+  iconText: {
+    height: 14,
+    marginTop: 3,
+    backgroundColor: '#888',
   },
   options: {
     flex: 1,

@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import Dimensions from 'Dimensions';
 import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
@@ -30,8 +29,6 @@ interface Styles {
   optionCheck: TextStyleProp,
 };
 
-const screenWidth: number = Dimensions.get('window').width;
-const screenHeight: number = Dimensions.get('window').height;
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -40,36 +37,42 @@ const styles: Styles = StyleSheet.create({
     justifyContent: 'center',
   },
   shadow: {
-    height: 85,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 65,
     backgroundColor: '#1b1b1e',
     shadowColor: '#101010',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
-    paddingTop: 15,
-    paddingHorizontal: 20,
-    zIndex: 1,
+    paddingTop: 10,
+    paddingHorizontal: 15,
+    zIndex: 2,
     alignSelf: 'stretch',
-    justifyContent: 'center'
   },
   nav: {
     flex: 1,
+    alignItems: 'center',
     flexDirection: 'row',
+    paddingTop: 15,
   },
   leftIcon: {
     flex: 1,
     height: 45,
-    fontSize: 45,
-    alignSelf: 'center',
-    backgroundColor: 'transparent',
+    fontSize: 30,
+    paddingTop: 7.5,
     color: '#fefefe',
+    backgroundColor: 'transparent',
+    alignSelf: 'center',
   },
   title: {
     flex: 6,
     color: '#fefefe',
-    fontSize: 28,
+    fontSize: 20,
     fontFamily: 'Muli',
     fontWeight: '800',
-    lineHeight: 33.6,
+    lineHeight: 24,
     textAlign: 'center',
     alignSelf: 'center',
     backgroundColor: 'transparent',
@@ -82,21 +85,23 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
     zIndex: -1,
     backgroundColor: 'transparent',
+    marginTop: 65,
     paddingTop: 10,
   },
   section: {
     marginBottom: 40,
   },
   sectionHeader: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     marginBottom: 5,
   },
   sectionHeaderText: {
     fontFamily: 'Muli',
-    fontSize: 16,
-    fontWeight: '600',
-    lineHeight: 19.2,
     color: '#888',
+    fontSize: 16,
+    lineHeight: 19.2, // x1.2
+    fontWeight: '800',
+    backgroundColor: 'transparent',
   },
   sectionOption: {
     borderColor: '#323232',
@@ -107,14 +112,14 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
   },
   sectionOptionText: {
     fontFamily: 'Muli',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 24,
+    lineHeight: 19.2, // x1.2
     color: '#fefefe',
   },
   optionCheck: {

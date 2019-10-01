@@ -9,11 +9,11 @@
  * @module ChangeCoverPhoto
  */
 
-import {Platform} from 'react-native';
-import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import ImagePicker from 'react-native-image-picker';
+import fetchRemoteURL from '../../../utils/fetchRemoteURL';
+import selectPhoto from '../../../utils/selectPhoto';
 import * as actions from './actions';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/users';
 import {type Blob} from '../../../utils/brassrootsTypes';
 import {
@@ -46,7 +46,7 @@ export function changeCoverPhoto(
     const storage: StorageRef = firebase.storage().ref();
 
     try {
-      const photoURI: string = await selectPhoto();
+      const photoURI: string = await selectPhoto('Change Cover Photo');
 
       if (photoURI !== 'cancelled') {
         const croppedImage = await ImageCropPicker.openCropper(
@@ -71,6 +71,7 @@ export function changeCoverPhoto(
         ];
 
         await Promise.all(promises);
+        dispatch(addEntities({users: {[userID]: {id: userID, coverImage}}}));
       }
 
       dispatch(actions.success());
@@ -78,27 +79,4 @@ export function changeCoverPhoto(
       dispatch(actions.failure(err));
     }
   };
-}
-
-function selectPhoto(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const options = {
-      title: 'Change Cover Photo',
-      mediaType: 'photo',
-      quality: 1,
-      skipBackup: true,
-      allowsEditing: false,
-    };
-
-    ImagePicker.showImagePicker(options, res => {
-      if (res.didCancel) {
-        resolve('cancelled');
-      } else if (res.error) {
-        reject(res.error);
-      } else {
-        const uri: string = Platform.OS === 'ios' ? res.uri.replace('file://', '') : res.uri;
-        resolve(uri);
-      }
-    });
-  });
 }

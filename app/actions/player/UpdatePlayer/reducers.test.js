@@ -12,11 +12,11 @@ import reducer, {
 import * as actions from '../UpdatePlayer';
 
 describe('update player reducer', () => {
-  it('should return intial state', () => {
+  it('returns intial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('should handle UPDATE_PLAYER', () => {
+  it('handles UPDATE_PLAYER', () => {
     const updates: Updates = {
       attemptingToPlay: true,
       prevTrackID: 'foo',

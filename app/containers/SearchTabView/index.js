@@ -218,7 +218,7 @@ class SearchTabView extends React.Component {
                   <View style={styles.section}>
                     <View style={styles.sectionHeader}>
                       <Text style={styles.sectionTitle}>Recent</Text>
-                      {recentSearches.length === 0 &&
+                      {recentSearches.length !== 0 &&
                         <TouchableOpacity
                           style={styles.viewAllButton}
                           onPress={this.goToResults('recent')}
@@ -226,7 +226,7 @@ class SearchTabView extends React.Component {
                           <Text style={[styles.viewAllText, styles.enabledText]}>VIEW ALL</Text>
                         </TouchableOpacity>
                       }
-                      {recentSearches.length !== 0 &&
+                      {recentSearches.length === 0 &&
                         <TouchableOpacity style={styles.viewAllButton} disabled={true}>
                           <Text style={[styles.viewAllText, styles.disabledText]}>VIEW ALL</Text>
                         </TouchableOpacity>

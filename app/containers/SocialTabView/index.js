@@ -16,24 +16,30 @@ class SocialTabView extends React.Component {
 
     this.state = {
       viewing: 'notifications',
+      shadowOpacity: new Animated.Value(0),
     };
 
     this.onScroll = this.onScroll.bind(this);
     this.toggleViewingScreen = this.toggleViewingScreen.bind(this);
-
-    this.shadowOpacity = new Animated.Value(0);
   };
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
-    if ((y > 0 && this.shadowOpacity === 0) || (y <= 0 && this.shadowOpacity === 0.9)) {
-      Animated.timing(
-        this.shadowOpacity,
-        {
-          toValue: y > 0 ? 0.9 : 0,
-          duration: 230,
+    const {shadowOpacity} = this.state;
+
+    if (y > 0) {
+      if (shadowOpacity !== 0.9) {
+        Animated.timing(shadowOpacity, {
+          toValue: 0.9,
+          duration: 75,
           easing: Easing.linear,
-        }
-      ).start();
+        }).start();
+      };
+    } else {
+      Animated.timing(shadowOpacity, {
+        toValue: 0,
+        duration: 75,
+        easing: Easing.linear,
+      }).start()
     }
   }
 
@@ -43,34 +49,28 @@ class SocialTabView extends React.Component {
   }
 
   render() {
-    const animatedHeaderStyle = { shadowOpacity: this.shadowOpacity };
-    const {viewing} = this.state;
-    const {
-      conversations: {fetchingConversations, totalConversations},
-      notifications: {fetchingNotifications},
-    } = this.props;
+    const {viewing, shadowOpacity} = this.state;
+    const {conversations: {fetching, totalUserConversations}} = this.props;
     const notifColor = viewing === 'notifications' ? '#fefefe' : '#888';
     const messageColor = viewing === 'messages' ? '#fefefe' : '#888';
 
     return (
       <View style={styles.container}>
-        <Animated.View style={[styles.shadow, animatedHeaderStyle]}>
+        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <TouchableOpacity style={styles.navButton} onPress={this.toggleViewingScreen}>
-              <Text
-                style={[
-                  styles.navButtonText,
-                  {color: notifColor},
-                ]}
-              >Notifications</Text>
+            <TouchableOpacity
+              style={styles.navButton}
+              onPress={this.toggleViewingScreen}
+              disabled={viewing === 'notifications'}
+            >
+              <Text style={[styles.navButtonText, {color: notifColor}]}>Notifications</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.navButton} onPress={this.toggleViewingScreen}>
-              <Text
-                style={[
-                  styles.navButtonText,
-                  {color: messageColor},
-                ]}
-              >Messages</Text>
+            <TouchableOpacity
+              style={styles.navButton}
+              onPress={this.toggleViewingScreen}
+              disabled={viewing === 'messages'}
+            >
+              <Text style={[styles.navButtonText, {color: messageColor}]}>Messages</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>
@@ -82,34 +82,32 @@ class SocialTabView extends React.Component {
                 {opacity: this.notificationsOpacity, zIndex: this.notificationsIndex},
               ]}
             >
-              {fetchingNotifications &&
-                <View>
-                  <Text>We might have stuff here</Text>
-                </View>
-              }
-              {!fetchingNotifications &&
-                <View>
-                  <LoadingNotification />
-                  <LoadingNotification />
-                  <LoadingNotification />
-                  <LoadingNotification />
-                </View>
-              }
+              <View>
+                <LoadingNotification />
+                <LoadingNotification />
+                <LoadingNotification />
+                <LoadingNotification />
+                <LoadingNotification />
+                <LoadingNotification />
+                <LoadingNotification />
+                <LoadingNotification />
+              </View>
             </Animated.View>
           }
           {viewing === 'messages' &&
             <Animated.View style={[styles.messagesWrap, {opacity: this.messagesOpacity}]}>
-              <TouchableOpacity style={styles.newMessageButton} onPress={Actions.socialNewMessage}>
-                <Text style={styles.newMessageButtonText}>NEW MESSAGE</Text>
-              </TouchableOpacity>
-              {fetchingConversations &&
+              {fetching.includes('conversations') &&
                 <View>
                   {totalConversations !== 0 && <Text>We have stuff</Text>}
                   {totalConversations === 0 && <Text>Nothing to show</Text>}
                 </View>
               }
-              {!fetchingConversations &&
+              {!fetching.includes('conversations') &&
                 <View>
+                  <LoadingConversation />
+                  <LoadingConversation />
+                  <LoadingConversation />
+                  <LoadingConversation />
                   <LoadingConversation />
                   <LoadingConversation />
                   <LoadingConversation />
@@ -126,14 +124,10 @@ class SocialTabView extends React.Component {
 
 SocialTabView.propTypes = {
   conversations: PropTypes.object.isRequired,
-  notifications: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({conversations, notifications}) {
-  return {
-    conversations,
-    notifications,
-  };
+function mapStateToProps({conversations}) {
+  return {conversations};
 }
 
 function mapDispatchToProps(dispatch) {

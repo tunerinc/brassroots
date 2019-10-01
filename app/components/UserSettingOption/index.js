@@ -34,12 +34,7 @@ export default class UserSettingOption extends React.PureComponent<Props, State>
             <Text style={styles.text}>
               {title}
             </Text>
-            <Ionicons
-              name='ios-arrow-forward'
-              size={45}
-              color='#fefefe'
-              style={styles.arrow}
-            />
+            <Ionicons name='ios-arrow-forward' style={styles.arrow} />
           </View>
         </TouchableOpacity>
       </View>

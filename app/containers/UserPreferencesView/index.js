@@ -51,7 +51,7 @@ class UserPreferencesView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Preferences</Text>
             <View style={styles.rightIcon}></View>
           </View>

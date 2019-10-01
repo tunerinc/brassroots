@@ -2,7 +2,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import {Text, View, ActivityIndicator, Animated, Easing, VirtualizedList} from "react-native";
+import {Text, View, ActivityIndicator, Animated, Easing, VirtualizedList, Image} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
@@ -40,13 +40,15 @@ class LibraryAlbumsView extends React.Component {
 
   componentDidMount() {
     const {getAlbums, albums: {userAlbums}} = this.props;
-    if (!userAlbums.length) getAlbums(true, 0);
+    if (!userAlbums.length) getAlbums(false, 0);
   }
 
   onEndReached() {
     const {getAlbums, albums: {fetching, userAlbums, totalUserAlbums}} = this.props;
-    if (fetching.includes('albums') || !userAlbums.length || userAlbums.length === totalUserAlbums) return;
-    getAlbums(false, userAlbums.length);
+
+    if (!fetching.includes('albums') && userAlbums.length && userAlbums.length !== totalUserAlbums) {
+      getAlbums(false, userAlbums.length);
+    }
   }
 
   handleRefresh() {
@@ -75,7 +77,7 @@ class LibraryAlbumsView extends React.Component {
     }
   }
 
-  navToAlbum = albumID => () => Actions.librarySingleAlbum({albumToView: albumID});
+  navToAlbum = albumID => () => Actions.libSingleAlbum({albumToView: albumID});
 
   renderAlbum({item}) {
     const {entities: {albums}} = this.props;
@@ -102,11 +104,9 @@ class LibraryAlbumsView extends React.Component {
       || userAlbums.length === totalUserAlbums
     ) return <View></View>;
 
-    const total = totalUserAlbums - userAlbums.length < 50 ? totalUserAlbums - userAlbums.length : 50;
-
     return (
-      <View>
-        {[...Array(total)].map(e => <LoadingAlbum />)}
+      <View style={styles.footer}>
+        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }
@@ -149,19 +149,23 @@ class LibraryAlbumsView extends React.Component {
         {(userAlbums.length === 0 || !userAlbums.length) &&
           <View style={styles.scrollContainer}>
             <View style={styles.scrollWrap}>
-              {fetching.includes('albums') &&
-                <View>
-                  <LoadingAlbum />
-                  <LoadingAlbum />
-                  <LoadingAlbum />
-                  <LoadingAlbum />
-                  <LoadingAlbum />
-                  <LoadingAlbum />
-                  <LoadingAlbum />
-                </View>
-              }
               {(!fetching.includes('albums') && !albumError) && <Text>Nothing to show</Text>}
               {(!fetching.includes('albums') && albumError) && <Text>There was an error.</Text>}
+              {fetching.includes('albums') &&
+                <View>
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                <LoadingAlbum />
+                </View>
+              }
             </View>
           </View>
         }

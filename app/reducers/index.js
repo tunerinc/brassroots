@@ -12,6 +12,7 @@ import albums from './albums';
 import artists from './artists';
 import chat from './chat';
 import conversations from './conversations';
+import entities from './entities';
 import events from './events';
 import feedback from './feedback';
 import groups from './groups';
@@ -33,6 +34,7 @@ const reducers = {
   artists,
   chat,
   conversations,
+  entities,
   events,
   feedback,
   firebase,

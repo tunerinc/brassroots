@@ -18,7 +18,7 @@ class LanguageRegionView extends React.Component {
   
   render() {
     const {settings: {language, region}} = this.props;
-    const opacity = (setting, option) => setting === option ? 1 : 0;
+    const getOpacity = (setting, option) => setting === option ? 1 : 0;
 
     return (
       <View style={styles.container}>
@@ -29,17 +29,17 @@ class LanguageRegionView extends React.Component {
             <View style={styles.rightIcon}></View>
           </View>
         </View>
-        <View style={styles.languageRegionWrap}>
+        <View style={styles.wrap}>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionHeaderText}>LANGUAGE</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
+              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>english</Text>
                 <Ionicons
                   name='md-checkmark'
-                  style={[styles.optionCheck, {opacity: opacity(language, 'english')}]}
+                  style={[styles.optionCheck, {opacity: getOpacity(language, 'english')}]}
                 />
               </TouchableOpacity>
             </View>
@@ -49,11 +49,11 @@ class LanguageRegionView extends React.Component {
               <Text style={styles.sectionHeaderText}>REGION</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
+              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
                 <Text style={styles.sectionOptionText}>united states</Text>
                 <Ionicons
                   name='md-checkmark'
-                  style={[styles.optionCheck, {opacity: opacity(region, 'us')}]}
+                  style={[styles.optionCheck, {opacity: getOpacity(region, 'US')}]}
                 />
               </TouchableOpacity>
             </View>

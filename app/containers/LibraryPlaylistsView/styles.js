@@ -10,6 +10,7 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
+  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -23,6 +24,8 @@ interface Styles {
   playlistsWrap: ViewStyleProp,
   addButton: ViewStyleProp,
   addButtonText: TextStyleProp,
+  footer: ViewStyleProp,
+  loadingGif: ImageStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -74,7 +77,7 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   rightIcon: {
-    flex: 2,
+    flex: 1,
     alignSelf: 'center',
   },
   scrollContainer: {
@@ -110,6 +113,20 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 23.4,
     color: '#fefefe',
     backgroundColor: 'transparent',
+  },
+  footer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  loadingGif: {
+    width: 60,
+    height: 72.6,
+    backgroundColor: '#1b1b1e',
+    shadowColor: '#101010',
+    shadowOffset: {width: 0, height: 4},
+    shadowRadius: 5,
+    shadowOpacity: 0.7,
   },
 });
 

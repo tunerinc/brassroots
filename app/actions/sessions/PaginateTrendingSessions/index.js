@@ -101,6 +101,7 @@ export function paginateTrendingSessions(
         .get();
 
       if (trendingSessions.empty) {
+        dispatch(updateSessions({explore: {trendingCanPaginate: false}}));
         dispatch(actions.success());
       } else {
         const trendingIDs: Array<string> = trendingSessions.docs.map(doc => doc.data().id);

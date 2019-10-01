@@ -14,12 +14,17 @@ import {
 
 interface Styles {
   track: ViewStyleProp,
+  imageWrap: ViewStyleProp,
   image: ViewStyleProp,
+  positionWrap: ViewStyleProp,
   position: ViewStyleProp,
   info: ViewStyleProp,
+  text: ViewStyleProp,
+  topText: ViewStyleProp,
+  playsWrap: ViewStyleProp,
   plays: ViewStyleProp,
   options: TextStyleProp,
-  favoriteTrackIcon: TextStyleProp,
+  favoriteIcon: TextStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -31,19 +36,42 @@ const styles: Styles = StyleSheet.create({
     alignItems: 'center',
     height: 75,
   },
-  image: {
+  imageWrap: {
     marginRight: 10,
   },
-  position: {
+  image: {
+    width: 55,
+    height: 55,
+    backgroundColor: '#888',
+  },
+  positionWrap: {
     flex: 1,
+  },
+  position: {
+    width: 14,
+    height: 14,
+    backgroundColor: '#888',
   },
   info: {
     flex: 6,
     marginRight: 10,
   },
-  plays: {
+  text: {
+    height: 16,
+    backgroundColor: '#888',
+  },
+  topText: {
+    marginBottom: 6.2,
+    marginTop: 10,
+  },
+  playsWrap: {
     flex: 1,
     paddingRight: 10,
+  },
+  plays: {
+    height: 14,
+    marginBottom: 5.6,
+    backgroundColor: '#888',
   },
   options: {
     flex: 1,
@@ -52,7 +80,7 @@ const styles: Styles = StyleSheet.create({
     fontSize: 30,
     color: '#888',
   },
-  favoriteTrackIcon: {
+  favoriteIcon: {
     flex: 1,
     textAlign: 'right',
     color: '#FDC52F',

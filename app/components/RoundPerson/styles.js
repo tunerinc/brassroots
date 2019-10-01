@@ -41,9 +41,7 @@ const styles: Styles = StyleSheet.create({
     width: 80,
     height: 90,
   },
-  filterWrap: {
-
-  },
+  filterWrap: {},
   plus: {
     textAlign: 'center',
     paddingTop: 4,
@@ -59,25 +57,25 @@ const styles: Styles = StyleSheet.create({
     marginTop: 17,
   },
   filter: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
     backgroundColor: '#888',
     opacity: 0.5,
     position: 'absolute',
     zIndex: -1,
   },
   image: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
+    backgroundColor: '#888',
   },
   default: {
-    height: 60,
-    width: 60,
-    borderRadius: 30,
+    height: 55,
+    width: 55,
+    borderRadius: 27.5,
     backgroundColor: '#323232',
-    marginRight: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -88,10 +86,10 @@ const styles: Styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fefefe',
-    fontSize: 20,
-    fontFamily: 'Muli',
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 26,
+    fontFamily: 'Muli',
+    lineHeight: 16,
   },
 });
 

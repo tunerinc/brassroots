@@ -36,7 +36,7 @@ class LibraryArtistsView extends React.Component {
     if (!userArtists.length && !fetching.includes('artists')) getArtists();
   }
 
-  navToArtist = artistID => () => Actions.librarySingleArtist({artistToView: artistID});
+  navToArtist = artistID => () => Actions.libSingleArtist({artistToView: artistID});
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
     const {shadowOpacity} = this.state;

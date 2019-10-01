@@ -6,6 +6,7 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
+  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -20,6 +21,8 @@ interface Styles {
   shuffleButton: ViewStyleProp,
   shuffleButtonText: TextStyleProp,
   modal: ViewStyleProp,
+  footer: ViewStyleProp,
+  loadingGif: ImageStyleProp,
 };
 
 const screenHeight = Dimensions.get('window').height;
@@ -111,6 +114,20 @@ const styles: Styles = StyleSheet.create({
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
+  },
+  footer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  loadingGif: {
+    width: 60,
+    height: 72.6,
+    backgroundColor: '#1b1b1e',
+    shadowColor: '#101010',
+    shadowOffset: {width: 0, height: 4},
+    shadowRadius: 5,
+    shadowOpacity: 0.7,
   },
 });
 

@@ -64,7 +64,7 @@ class LibrarySingleAlbumView extends React.Component {
     this.closeModal();
   }
 
-  navToDetails = albumToView => () => Actions.libraryAlbumDetails({albumToView});
+  navToDetails = albumToView => () => Actions.libAlbumDetails({albumToView});
 
   openModal = (selectedTrack, type) => () => {
     this.setState({

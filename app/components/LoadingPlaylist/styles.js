@@ -14,8 +14,11 @@ import {
 
 interface Styles {
   playlist: ViewStyleProp,
+  wrap: ViewStyleProp,
+  placeholderWrap: ViewStyleProp,
   image: ViewStyleProp,
-  info: ViewStyleProp,
+  text: ViewStyleProp,
+  topText: ViewStyleProp,
   arrow: TextStyleProp,
 };
 
@@ -24,16 +27,31 @@ const styles: Styles =  StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     paddingVertical: 10,
+    justifyContent: 'space-between',
     alignItems: 'center',
     height: 75,
+  },
+  wrap: {
+    flex: 7,
+  },
+  placeholderWrap: {
+    height: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     height: 55,
     width: 55,
     marginRight: 10,
+    backgroundColor: '#888',
   },
-  info: {
-    flex: 6,
+  text: {
+    height: 16,
+    backgroundColor: '#888',
+  },
+  topText: {
+    marginTop: 10,
+    marginBottom: 6.2,
   },
   arrow: {
     flex: 1,

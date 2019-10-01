@@ -78,6 +78,7 @@ describe('add entities reducer', () => {
       mode: 'foo',
       public: true,
       total: 1,
+      tracks: ['foo'],
     };
 
     const playlistTrack = {
@@ -220,7 +221,6 @@ describe('add entities reducer', () => {
               'foo': {
                 ...playlist,
                 members: [],
-                tracks: [],
                 topTracks: [],
                 totalPlays: 0,
                 userPlays: 0,
