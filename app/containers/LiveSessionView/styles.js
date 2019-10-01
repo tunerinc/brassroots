@@ -26,6 +26,7 @@ interface Styles {
   nav: ViewStyleProp,
   leftIcon: TextStyleProp,
   modal: ViewStyleProp,
+  playerWrap: ViewStyleProp,
   chatWrap: ViewStyleProp,
   chatList: ViewStyleProp,
   chatMessageBar: ViewStyleProp,
@@ -128,6 +129,10 @@ const styles: Styles = StyleSheet.create({
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
+  },
+  playerWrap: {
+    flex: 1,
+    backgroundColor: 'transparent',
   },
   chatWrap: {
     flex: 1,

@@ -17,13 +17,14 @@ type Props = {||};
 type State = {||};
 
 export default class LoadingDJ extends React.PureComponent<Props, State> {
-  renderImage = () => <PlaceholderMedia isRound={true} style={styles.image} />;
-
   render() {
     return (
       <View style={styles.container}>
-        <Placeholder Animate={Fade} Left={this.renderImage}>
-          <PlaceholderLine width={50} style={styles.text} />
+        <Placeholder Animate={Fade}>
+          <View style={styles.wrap}>
+            <PlaceholderMedia isRound={true} style={styles.image} />
+            <PlaceholderLine width={50} style={styles.text} />
+          </View>
         </Placeholder>
         <Ionicons name='ios-arrow-down' style={styles.icon} />
       </View>

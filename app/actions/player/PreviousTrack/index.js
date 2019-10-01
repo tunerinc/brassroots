@@ -227,7 +227,7 @@ export function previousTrack(
         actions.success(
           queueID,
           prevDoc.data().track.id,
-          prevDoc.data().track.duration_ms,
+          prevDoc.data().track.durationMS,
           prevDoc.data().prevQueueID,
           prevDoc.data().prevTrackID,
         ),
