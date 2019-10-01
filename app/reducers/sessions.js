@@ -286,7 +286,11 @@ function update(
       lastUpdated,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: add && type === 'trending' && explore.trendingIDs.length !== 0 ? true : false,
-      currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS' ? null : currentSessionID,
+      currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS'
+        ? null
+        : action.updates && typeof action.updates.currentSessionID === 'string'
+        ? action.updates.currentSessionID
+        : currentSessionID,
       infoUnsubscribe: action.type === 'STOP_SESSION_INFO_LISTENER_SUCCESS'
         ? null
         : typeof action.unsubscribe === 'function'
@@ -367,6 +371,7 @@ export default function reducer(
       case types.STOP_SESSION_INFO_LISTENER_SUCCESS:
       case types.STOP_SESSION_INFO_LISTENER_FAILURE:
         return update(state, action, 'info');
+
       default:
         return state;
     }

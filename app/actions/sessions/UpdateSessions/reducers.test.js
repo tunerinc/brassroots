@@ -17,9 +17,10 @@ describe('update sessions reducer', () => {
   });
 
   it('handles UPDATE_SESSIONS', () => {
-    const updates: State = {explore: {trendingIDs: ['foo']}};
+    const currentSessionID: string = 'foo';
+    const updates: State = {currentSessionID, explore: {trendingIDs: ['foo']}};
     const explore = {...initialState.explore, trendingIDs: ['foo']};
-    const expectedState: State = {...initialState, explore};
+    const expectedState: State = {...initialState, currentSessionID, explore};
     expect(reducer(initialState, actions.updateSessions(updates))).toStrictEqual(expectedState);
   });
 });

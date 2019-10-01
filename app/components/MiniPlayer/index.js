@@ -61,7 +61,7 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
 
     return (
       <Animated.View style={styles.player}>
-        {(typeof progress === 'number' && typeof durationMS === 'number') &&
+        {(typeof progress === 'number' && typeof durationMS === 'number' && durationMS !== 0) &&
           <Animated.View style={[styles.playerProgress, {width}]}></Animated.View>
         }
         <TouchableOpacity style={styles.playerButton} onPress={openPlayer}>

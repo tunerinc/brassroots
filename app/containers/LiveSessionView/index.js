@@ -357,7 +357,7 @@ class LiveSessionView extends React.Component {
 
     if (!currentSessionID || !tracks.allIDs.includes(item.trackID)) return <View></View>;
 
-    const {ownerID} = sessionsByID[currentSessionID];
+    const {ownerID} = sessions.byID[currentSessionID];
     const {liked, totalLikes, userID} = queueTracks.byID[item.id];
     const {name, artists} = tracks.byID[item.trackID];
     const {displayName} = users.byID[ownerID];
@@ -365,7 +365,7 @@ class LiveSessionView extends React.Component {
 
     return (
       <TrackCard
-        key={item}
+        key={item.id}
         artists={artists.map(a => a.name).join(', ')}
         context={{id: ownerID, type: 'userQueue', displayName, name: 'userQueue'}}
         deleting={deleting.includes(item.id)}
@@ -665,9 +665,11 @@ class LiveSessionView extends React.Component {
       users: {currentUserID},
     } = this.props;
     const user = users.byID[currentUserID];
-    const session = currentSessionID ? sessions.byID[currentSessionID] : null;
-    const track = currentTrackID ? tracks.byID[currentTrackID] : null;
-    const sessionOwner = currentSession ? users.byID[session.ownerID] : currentUser;
+    const session = sessions.allIDs.includes(currentSessionID) ? sessions.byID[currentSessionID] : null;
+    const track = tracks.allIDs.includes(currentTrackID) ? tracks.byID[currentTrackID] : null;
+    const sessionOwner = session && users.allIDs.includes(session.ownerID)
+      ? users.byID[session.ownerID]
+      : user;
 
     return (
       <View style={styles.container}>
@@ -717,7 +719,7 @@ class LiveSessionView extends React.Component {
           <VirtualizedList
             data={userQueue}
             renderItem={this.renderTrack}
-            keyExtractor={item => item}
+            keyExtractor={item => item.id}
             getItem={(data, index) => data[index]}
             getItemCount={data => data.length}
             ListHeaderComponent={this.renderHeader}

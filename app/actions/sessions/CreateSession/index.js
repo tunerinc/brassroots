@@ -17,6 +17,7 @@ import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {playTrack} from '../../player/PlayTrack';
 import {addEntities} from '../../entities/AddEntities';
+import {updatePlayer} from '../../player/UpdatePlayer';
 import {updateQueue} from '../../queue/UpdateQueue';
 import {updateSessions} from '../UpdateSessions';
 import {type TrackArtist} from '../../../reducers/tracks';
@@ -273,9 +274,27 @@ export function createSession(
 
       await batch.commit();
       dispatch(actions.success());
-      dispatch(addEntities({users: {[user.id]: {...user, currentSessionID: session.id}}}));
       dispatch(updateSessions({currentSessionID: session.id}));
       dispatch(updateQueue({context}));
+      dispatch(
+        updatePlayer(
+          {
+            currentQueueID: session.currentQueueID,
+            currentTrackID: session.currentTrackID,
+          },
+        ),
+      );
+
+
+      dispatch(
+        addEntities(
+          {
+            sessions: {[session.id]: session},
+            users: {[user.id]: {...user, currentSessionID: session.id}},
+          },
+        ),
+      );
+
       dispatch(
         // $FlowFixMe
         playTrack(

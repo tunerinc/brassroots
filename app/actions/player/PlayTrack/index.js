@@ -107,6 +107,7 @@ type Context = ?{
  * @param    {string}   user.id                                  The id of the current user
  * @param    {string}   user.displayName                         The display name of the current user
  * @param    {string}   user.profileImage                        The profile image of the current user
+ * 
  * @param    {object}   track                                    The track object the current user is wanting to play
  * @param    {string}   [track.id]                               The queue id of the track to play
  * @param    {string}   track.trackID                            The Spotify id of the track to play
@@ -121,6 +122,7 @@ type Context = ?{
  * @param    {object[]} track.artists                            The track artists
  * @param    {string}   track.artists.id                         The Spotify id of the track artist
  * @param    {string}   track.artists.name                       The name of the track artist
+ * 
  * @param    {object}   session                                  The session object the current user is currently in
  * @param    {string}   session.id                               The id of the session the current user is in
  * @param    {number}   session.totalPlayed                      The total amoun of played tracks in the session
@@ -151,6 +153,7 @@ type Context = ?{
  * @param    {object}   [session.coords]                         The coordinates of the session the current user is in
  * @param    {number}   session.lat                              The latitude of the gps coordinates
  * @param    {number}   session.lon                              The longitude of the gps coordinates
+ * 
  * @param    {object}   [context]                                The context of the tracks the current user wants to play, explicitly playing only
  * @param    {string}   context.id                               The id of the context of tracks
  * @param    {string}   context.name                             The name of the context, applicable with playlist, album, artist

@@ -40,7 +40,7 @@ function addMusicItems(tracksToAdd, music = defaultMusic) {
   let musicArtists = {};
 
   tracks.forEach(item => {
-    const {album, ...track} = item && item.track ? {...item.track} : {...item};
+    const {album, ...track} = item && item.track ? item.track : item;
     const {images, small, medium, large} = album;
 
     if (music.sortedTracks) {
