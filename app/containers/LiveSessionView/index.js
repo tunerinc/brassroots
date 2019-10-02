@@ -243,7 +243,7 @@ class LiveSessionView extends React.Component {
   leave() {
     const {
       leaveSession,
-      entiites: {sessions, tracks, users},
+      entities: {sessions, tracks, users},
       player: {currentTrackID},
       queue: {unsubscribe: queueUnsubscribe},
       sessions: {currentSessionID, infoUnsubscribe},
@@ -654,6 +654,10 @@ class LiveSessionView extends React.Component {
       isMenuOpen,
       message,
       shadowOpacity,
+      animatedOpacity,
+      animatedHeight,
+      animatedDJOptionOpacity,
+      animatedIndex,
     } = this.state;
     const animatedBottomMargin = {marginBottom: inputHeight > 24 ? inputHeight + 44 : 68};
     const {
@@ -822,11 +826,11 @@ class LiveSessionView extends React.Component {
           <SessionTrackModal closeModal={this.closeModal} />
         </Modal>
         <DJModal
-          backdropOpacity={this.animatedOpacity}
-          height={this.animatedHeight}
+          backdropOpacity={animatedOpacity}
+          height={animatedHeight}
           isCurrentUser={sessionOwner.id === currentUserID}
-          optionsOpacity={this.animatedDJOptionOpacity}
-          zIndex={this.animatedIndex}
+          optionsOpacity={animatedDJOptionOpacity}
+          zIndex={animatedIndex}
           leave={this.leave}
           navToSettings={this.navToSettings}
           toggleMenu={this.toggleMenu}

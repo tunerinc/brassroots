@@ -100,7 +100,7 @@ const styles: Styles = StyleSheet.create({
     color: '#c0392b'
   },
   disabled: {
-    color: '#888',
+    color: 'rgba(136,136,136,0.5)',
   },
   cancel: {
     backgroundColor: '#fefefe',

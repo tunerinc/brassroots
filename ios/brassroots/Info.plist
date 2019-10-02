@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>location</string>
+		<string>audio</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -34,7 +39,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -52,12 +57,16 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>We never ask to use the user's Apple Music data.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>We never ask for this permission.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We ask to change music playback from the phone to a bluetooth connected device.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>We never ask to use the user's calendar data.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>The user is able to take a photo and upload it as their profile or cover image.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>We never ask for this permission.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>The user is able to find nearby users who are listening live on the app.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -93,8 +102,10 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
+		<string>bluetooth-central</string>
 		<string>fetch</string>
 		<string>location</string>
+		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>

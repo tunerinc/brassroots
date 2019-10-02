@@ -42,14 +42,14 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 15,
     paddingHorizontal: 10,
   },
   control: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: screenWidth/3-15,
+    width: screenWidth / 3 - 15,
     borderColor: '#1b1b1e',
     borderWidth: 2,
     borderRadius: 30,
@@ -106,20 +106,24 @@ const styles: Styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   button: {
-    paddingVertical: 15,
+    backgroundColor: '#fefefe',
+    justifyContent: 'center',
+    paddingVertical: 12.5,
   },
   optionText: {
     color: '#1b1b1e',
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'Muli',
     fontWeight: '600',
-    lineHeight: 26,
+    lineHeight: 21.6, // x1.2
     textAlign: 'center',
   },
   cancel: {
+    backgroundColor: '#fefefe',
     paddingVertical: 20,
     borderColor: '#888',
     borderTopWidth: 1,
+    justifyContent: 'center',
   },
   cancelButton: {
 

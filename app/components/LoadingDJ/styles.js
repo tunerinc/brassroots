@@ -14,6 +14,7 @@ import {
 
 interface Styles {
   container: ViewStyleProp,
+  wrap: ViewStyleProp,
   image: ViewStyleProp,
   text: ViewStyleProp,
   icon: TextStyleProp,
@@ -22,8 +23,14 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   container: {
     flex: 6,
+    maxWidth: 200,
     backgroundColor: 'transparent',
     justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  wrap: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   image: {
@@ -36,11 +43,12 @@ const styles: Styles = StyleSheet.create({
   text: {
     height: 16,
     backgroundColor: '#888',
+    marginTop: 11,
   },
   icon: {
     fontSize: 15,
     color: '#888',
-    marginTop: -3,
+    marginTop: -7,
   },
 });
 

@@ -139,8 +139,6 @@ export function joinSession(
         queueUnsubscribe,
       } = session;
 
-      console.log(session)
-
       if (
         owner
         && current

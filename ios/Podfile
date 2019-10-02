@@ -47,6 +47,9 @@ target 'brassroots' do
   # Background Timer
   pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
 
+  # Async Storage
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   # Vector Icons
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 

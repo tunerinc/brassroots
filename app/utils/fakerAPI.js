@@ -71,7 +71,7 @@ const FakerAPI = {
 
       let batch = firestore.batch();
 
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 1; i++) {
         const newPlaylistDoc = playlistsRef.doc();
         const newSessionDoc = sessionsRef.doc();
         const newUserDoc = usersRef.doc();

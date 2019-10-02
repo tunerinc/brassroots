@@ -7,6 +7,7 @@
 
 import moment from 'moment';
 import updateObject from '../utils/updateObject';
+import getUnique from '../utils/getUnique';
 import * as types from '../actions/queue/types';
 import * as entitiesTypes from '../actions/entities/types';
 import {type Firebase} from '../utils/firebaseTypes';
@@ -208,26 +209,25 @@ function update(
   const {userQueue, totalUserQueue, context, unsubscribe, liking, deleting, failed, fetching} = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const uniqueQueue = action.queue && userQueue ? getUnique([...userQueue, ...action.queue], 'id') : [];
   const newQueue = action.queue && userQueue
-    ? [...userQueue, ...action.queue]
-      .filter((el, i, arr) => i === arr.indexOf(el))
-      .sort((a, b) => {
-        if (
-          typeof a.seconds === 'number'
-          && typeof a.nanoseconds === 'number'
-          && typeof b.seconds === 'number'
-          && typeof b.nanoseconds === 'number'
-        ) {
-          const {seconds: secA, nanoseconds: nanA} = a;
-          const {seconds: secB, nanoseconds: nanB} = b;
-          return secA < secB ? -1 : secA > secB ? 1 : nanA < nanB ? -1 : nanA > nanB ? 1 : 0;
-        } else {
-          return 0;
-        }
-      })
-    : userQueue
-    ? [...userQueue]
-    : [];
+    ? uniqueQueue.sort((a, b) => {
+      if (
+        typeof a.seconds === 'number'
+        && typeof a.nanoseconds === 'number'
+        && typeof b.seconds === 'number'
+        && typeof b.nanoseconds === 'number'
+      ) {
+        const {seconds: secA, nanoseconds: nanA} = a;
+        const {seconds: secB, nanoseconds: nanB} = b;
+        return secA < secB ? -1 : secA > secB ? 1 : nanA < nanB ? -1 : nanA > nanB ? 1 : 0;
+      } else {
+        return 0;
+      }
+    })
+  : userQueue
+  ? [...userQueue]
+  : [];
 
   const updates: State = (
     context
