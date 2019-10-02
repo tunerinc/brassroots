@@ -185,7 +185,7 @@ const styles: Styles = StyleSheet.create({
     alignSelf: 'center',
   },
   title: {
-    flex: 6,
+    flex: 4,
     color: '#fefefe',
     fontSize: 20,
     fontFamily: 'Muli',

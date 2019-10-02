@@ -251,7 +251,7 @@ class LibraryTracksView extends React.Component {
       const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
       const {displayName, profileImage} = users.byID[currentUserID];
 
-      if (isListenerOwner && !songInQueue) {
+      if (!songInQueue) {
         const track = tracks.byID[selectedTrack];
         const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
         const prevTrackID = queueTracks.byID[prevQueueID];

@@ -55,7 +55,7 @@ export default class TrackModal extends React.PureComponent<Props, State> {
           </View>
         </View>
         <View style={styles.option}>
-          {(typeof isListenerOwner === 'boolean' && isListenerOwner) &&
+          {(typeof isListenerOwner === 'boolean') &&
             <View>
               {!trackInQueue &&
                 <TouchableHighlight

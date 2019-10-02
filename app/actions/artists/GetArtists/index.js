@@ -130,7 +130,6 @@ export function getArtists(): ThunkAction {
         });
 
       for (let i = 0; i < (Math.ceil(sortedArtists.length / 50)); i++) {
-        console.log('artist')
         const res = await Spotify.getArtists(sortedArtists.slice(i*50, i*50+50));
         const artistsToAdd = res.artists.forEach(({id, images}) => {
           const large: string = Array.isArray(images) && images.length ? images[0].url : '';
