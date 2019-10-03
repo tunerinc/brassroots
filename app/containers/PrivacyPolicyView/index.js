@@ -1,9 +1,8 @@
 'use strict';
 
 import React from 'react';
-import Dimensions from 'Dimensions';
 import PropTypes from 'prop-types';
-import {Text, View, ScrollView, Animated, Easing, RefreshControl} from 'react-native';
+import {Text, View, ScrollView, Animated, Easing, RefreshControl, Dimensions} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';

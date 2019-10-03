@@ -6,8 +6,7 @@
  */
 
 import React from 'react';
-import Dimensions from 'Dimensions';
-import {Text, View, Image, TouchableOpacity, Animated, Easing} from 'react-native';
+import {Text, View, Image, TouchableOpacity, Animated, Easing, Dimensions} from 'react-native';
 import TextTicker from 'react-native-text-ticker';
 import styles from './styles';
 

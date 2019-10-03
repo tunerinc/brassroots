@@ -107,7 +107,7 @@ export function createProfile(
         settingsRef.doc(user.id),
         {
           id: user.id,
-          version: '0.1.0',
+          version: '0.1.1',
           soundEffects: true,
           theme: 'dark',
           language: 'english',
