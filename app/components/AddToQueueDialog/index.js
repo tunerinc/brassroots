@@ -44,35 +44,41 @@ export default class AddToQueueDialog extends React.Component<Props, State> {
         toValue: 10,
         duration: 1,
         easing: Easing.linear,
+        useNativeDriver: true,
       }),
       Animated.timing(this.containerOpacity, {
         toValue: 0.9,
         duration: 230,
         delay: 1,
         easing: Easing.linear,
+        useNativeDriver: true,
       }),
       Animated.timing(this.contentOpacity, {
         toValue: 1,
         duration: 230,
         delay: 1,
         easing: Easing.linear,
+        useNativeDriver: true,
       }),
       Animated.timing(this.contentOpacity, {
         toValue: 0,
         duration: 230,
         delay: 1001,
         easing: Easing.linear,
+        useNativeDriver: true,
       }),
       Animated.timing(this.containerOpacity, {
         toValue: 0,
         duration: 230,
         easing: Easing.linear,
+        useNativeDriver: true,
       }),
       Animated.timing(this.containerIndex, {
         toValue: -10,
         duration: 1,
         delay: 1,
         easing: Easing.linear,
+        useNativeDriver: true,
       })
     ]).start();
 

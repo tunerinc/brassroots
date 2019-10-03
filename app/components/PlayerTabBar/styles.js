@@ -5,8 +5,7 @@
  * @flow
  */
 
-import Dimensions from 'Dimensions';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,

@@ -6,8 +6,7 @@
  */
 
 import React from 'react';
-import Dimensions from 'Dimensions';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 import {screenWidth} from '../MiniPlayer';
 import {
   type ViewStyleProp,
