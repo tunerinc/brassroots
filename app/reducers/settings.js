@@ -94,8 +94,8 @@ type State = {
   +loggingIn?: boolean,
   +loggedIn?: boolean,
   +loggingOut?: boolean,
-  +saving?: Array<mixed>,
-  +failed?: Array<mixed>,
+  +saving?: boolean,
+  +failed?: boolean,
   +fetchingSettings?: boolean,
   +error?: ?Error | SpotifyError,
 };
@@ -122,8 +122,8 @@ export type {
  * @property {boolean}  loggingIn=false               Whether the current user is logging in
  * @property {boolean}  loggedIn=false                Whether the current user is logged in
  * @property {boolean}  loggingOUt=false              Whether the current user is logging out
- * @property {string[]} saving                        The settings which are being saved
- * @property {string[]} failed                        The settings which failed to change
+ * @property {boolean}  saving                        Whether the current user saving the settings
+ * @property {boolean}  failed                        Whether the settings failed to save
  * @property {boolean}  fetchingSettings=false        Whether the current user is fetching settings
  * @property {Error}    error=null                    The error related to settings actions
  * @property {string}   version                       The current version of the Brassroots app
@@ -154,8 +154,8 @@ export const initialState: State = {
   loggingIn: false,
   loggedIn: false,
   loggingOut: false,
-  saving: [],
-  failed: [],
+  saving: false,
+  failed: false,
   fetchingSettings: false,
   error: null,
   soundEffects: true,
@@ -201,10 +201,8 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {saving, failed, notify: oldNotify, preference: oldPref} = state;
+  const {notify: oldNotify, preference: oldPref} = state;
   const {error} = action;
-  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
-  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
   const notify = oldNotify && action.updates && action.updates.notify
     ? updateObject(oldNotify, action.updates.notify)
     : oldNotify;
@@ -213,16 +211,12 @@ function update(
     ? updateObject(oldPref, action.updates.preference)
     : oldPref;
 
-  const updates: State = Array.isArray(saving) && Array.isArray(failed)
-    ? {
-      ...(action.updates ? action.updates : {}),
-      notify,
-      preference,
-      error: error ? error : null,
-      saving: type && add ? saving.concat(type) : saving.filter(t => t !== type),
-      failed: type && haveError ? failed.concat(type) : failed.filter(t => t !== type),
-    }
-    : {};
+  const updates: State = {
+    ...(action.updates ? action.updates : {}),
+    notify,
+    preference,
+    error: error ? error : null,
+  };
 
   return updateObject(state, updates);
 }
@@ -315,6 +309,12 @@ export default function reducer(
         return updateObject(state, {error: action.error, loggingOut: false});
       case types.RESET_SETTINGS:
         return initialState;
+      case types.SAVE_SETTINGS_REQUEST:
+        return updateObject(state, {saving: true, error: null});
+      case types.SAVE_SETTINGS_SUCCESS:
+        return updateObject(state, {saving: false, error: null});
+      case types.SAVE_SETTINGS_FAILURE:
+        return updateObject(state, {error: action.error, saving: false});
       case types.UPDATE_SETTINGS:
         return update(state, action);
       default:
