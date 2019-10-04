@@ -9,7 +9,13 @@ development and testing purposes.
 
 ### Prerequisites
 
-> This assumes you already have NPM and the React Native CLI
+> This assumes you already have Node, NPM, and the React Native CLI
+
+Ensure the newest version of Node is installed
+
+```zsh
+brew install node
+```
 
 Ensure the newest version of NPM is installed
 
@@ -61,13 +67,18 @@ packages
 cd brassroots && npm i
 ```
 
-With all the npm packages downloaded, let's automatically link the packages we aren't going to be
-using Cocoapods to manage
-
-```zsh
-react-native link rn-spotify-sdk
-react-native link react-native-events
-```
+> You may encounter an error at this point with the message
+>
+> ```zsh
+> Error: Cannot find module '../lib/utils/unsupported.js'
+> ```
+> 
+> To fix this, run the following commands:
+> 
+> ```zsh
+> sudo rm -rf /usr/local/lib/node_modules/npm
+> brew reinstall node
+> ```
 
 The next thing we need to do is install `third-party`, then configure `glog` from `react-native`
 
@@ -80,6 +91,26 @@ cd node_modules/react-native/third-party/glog-0.3.5/ && ../../scripts/ios-config
 > One thing to note is the step above is unnecessary if you will be building in Xcode exclusively.
 > If you think you'll run the project ever using the RN cli, then run this before doing so.
 
+In order to get the pod *Interactable* to work properly, we need to create a `.podspec` file for it.
+Navigate within the project to `node_modules/react-native-interactable/lib/ios` and create the file `Interactable.podspec` with the following code inside:
+
+```ruby
+Pod::Spec.new do |s|
+  s.name = "Interactable"
+  s.version = "1.0.0"
+  s.summary = "Interactable"
+  s.description = "Interactable"
+  s.homepage = "https://github.com/wix/react-native-interactable"
+  s.license = "MIT"
+  s.author = { "author" => "author@domain.com" }
+  s.platform = :ios, "7.0"
+  s.source = { :git => "https://github.com/wix/react-native-interactable.git", :tag => "master" }
+  s.source_files = "Interactable/**/*.{h,m}"
+  s.requires_arc = true
+  s.dependency "React"
+end
+```
+
 Now we are ready to install our pods by running
 
 ```zsh
@@ -88,7 +119,16 @@ cd ios && pod install
 
 > Cocoapods could not find compatible versions for pod "insert PodName"
 >
-> `pod update [insert PodName] && pod install`
+> ```zsh
+> pod update [insert PodName] && pod install`
+> ```
+>
+> If the above step doesn't work, you can run the following to delete the pod lock file:
+>
+> ```zsh
+> rm Podfile.lock
+> pod install
+> ```
 
 With our pods installed, we can now install the certificates we need in order to get the app to run
 underneath the team's Apple Developer account. For this, we are using fastlane to automatically
@@ -99,7 +139,7 @@ fastlane match appstore
 fastlane match development
 ```
 
-> The first prompt will be the URL <https://github.com/therealaldo/brassroots-profiles> to the git
+> The first prompt will be the URL `https://github.com/therealaldo/brassroots-profiles` to the git
 > repo containing all of the certificates.
 >
 > The next prompts will be for the email and password for the Apple Developer account tied to the
