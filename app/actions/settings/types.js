@@ -60,4 +60,7 @@ export const LOG_OUT_REQUEST: string = 'LOG_OUT_REQUEST';
 export const LOG_OUT_SUCCESS: string = 'LOG_OUT_SUCCESS';
 export const LOG_OUT_FAILURE: string = 'LOG_OUT_FAILURE';
 export const RESET_SETTINGS: string = 'RESET_SETTINGS';
+export const SAVE_SETTINGS_REQUEST: string = 'SAVE_SETTINGS_REQUEST';
+export const SAVE_SETTINGS_SUCCESS: string = 'SAVE_SETTINGS_SUCCESS';
+export const SAVE_SETTINGS_FAILURE: string = 'SAVE_SETTINGS_FAILURE';
 export const UPDATE_SETTINGS: string = 'UPDATE_SETTINGS';
