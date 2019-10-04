@@ -49,7 +49,7 @@ target 'brassroots' do
   pod 'ReactNativePermissions', :path=> '../node_modules/react-native-permissions'
 
   # React Native Interactable
-  # pod 'Interactable', :path => '../node_modules/react-native-interactable'
+  pod 'Interactable', :path => '../node_modules/react-native-interactable/lib/ios'
 
   # Background Timer
   pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
@@ -66,6 +66,10 @@ target 'brassroots' do
 
   # Gradient
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
+  # Spotify
+  pod 'RNSpotify', :path => '../node_modules/rn-spotify-sdk'
+  pod 'RNEventEmitter', :path => '../node_modules/react-native-events'
 
   target 'brassrootsTests' do
     inherit! :search_paths
