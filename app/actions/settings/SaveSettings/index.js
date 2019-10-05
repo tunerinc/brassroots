@@ -68,7 +68,6 @@ export function saveSettings(
       await settingsRef.doc(settings.id).update({...settings});
       dispatch(updateSettings(settings));
       dispatch(actions.success());
-      Actions.pop();
     } catch (err) {
       dispatch(actions.failure(err));
     }

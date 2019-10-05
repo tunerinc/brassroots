@@ -11,15 +11,67 @@ import styles from './styles';
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+// Settings Action Creators
+import {saveSettings} from '../../actions/settings/SaveSettings';
+
 class UserPreferencesView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       shadowOpacity: new Animated.Value(0),
+      tempPlaylist: '',
+      tempSession: '',
+      tempMessage: '',
     };
 
+    this.setPlaylist = this.setPlaylist.bind(this);
+    this.setSession = this.setSession.bind(this);
+    this.setMessage = this.setMessage.bind(this);
+    this.handleSaveSettings = this.handleSaveSettings.bind(this);
     this.onScroll = this.onScroll.bind(this);
+  }
+
+  componentDidMount() {
+    const {settings: {preference}} = this.props;
+
+    this.setState({
+      tempPlaylist: preference.playlist,
+      tempSession: preference.session,
+      tempMessage: preference.message,
+    });
+  }
+
+  componentWillUnmount() {
+    this.handleSaveSettings();
+  }
+
+  setPlaylist = tempPlaylist => () => {
+    this.setState({tempPlaylist});
+  }
+
+  setSession = tempSession => () => {
+    this.setState({tempSession});
+  }
+
+  setMessage = tempMessage => () => {
+    this.setState({tempMessage});
+  }
+
+  handleSaveSettings() {
+    const {tempPlaylist, tempSession, tempMessage} = this.state;
+    const {saveSettings, users: {currentUserID}} = this.props;
+
+    saveSettings(
+      {
+        id: currentUserID,
+        preference: {
+          playlist: tempPlaylist,
+          session: tempSession,
+          message: tempMessage,
+        },
+      },
+    );
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -43,8 +95,7 @@ class UserPreferencesView extends React.Component {
   }
 
   render() {
-    const {shadowOpacity} = this.state;
-    const {settings: {preference}} = this.props;
+    const {shadowOpacity, tempPlaylist, tempSession, tempMessage} = this.state;
     const opacity = (setting, option) => setting === option ? 1 : 0;
 
     return (
@@ -62,37 +113,43 @@ class UserPreferencesView extends React.Component {
               <Text style={styles.sectionHeaderText}>PLAYLISTS I CREATE ARE AUTOMATICALLY</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity
+                style={styles.sectionOptionWrap}
+                onPress={this.setPlaylist('hidden')}
+              >
                 <Text style={styles.sectionOptionText}>Hidden</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: opacity(preference.playlist, 'hidden')},
+                    {opacity: opacity(tempPlaylist, 'hidden')},
                   ]}
                 />
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setPlaylist('vip')}>
                 <Text style={styles.sectionOptionText}>VIP</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: opacity(preference.playlist, 'vip')},
+                    {opacity: opacity(tempPlaylist, 'vip')},
                   ]}
                 />
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity
+                style={styles.sectionOptionWrap}
+                onPress={this.setPlaylist('limitless')}
+              >
                 <Text style={styles.sectionOptionText}>Limitless</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: opacity(preference.playlist, 'limitless')},
+                    {opacity: opacity(tempPlaylist, 'limitless')},
                   ]}
                 />
               </TouchableOpacity>
@@ -103,29 +160,29 @@ class UserPreferencesView extends React.Component {
               <Text style={styles.sectionHeaderText}>MY LIVE SESSIONS ARE AUTOMATICALLY</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setSession('dj')}>
                 <Text style={styles.sectionOptionText}>DJ mode</Text>
                 <Ionicons
                   name='md-checkmark'                  
-                  style={[styles.optionCheck, {opacity: opacity(preference.session, 'dj')}]}
+                  style={[styles.optionCheck, {opacity: opacity(tempSession, 'dj')}]}
                 />
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setSession('radio')}>
                 <Text style={styles.sectionOptionText}>Radio mode</Text>
                 <Ionicons
                   name='md-checkmark'                  
-                  style={[styles.optionCheck, {opacity: opacity(preference.session,  'radio')}]}
+                  style={[styles.optionCheck, {opacity: opacity(tempSession,  'radio')}]}
                 />
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setSession('party')}>
                 <Text style={styles.sectionOptionText}>Party mode</Text>
                 <Ionicons
                   name='md-checkmark'                  
-                  style={[styles.optionCheck, {opacity: opacity(preference.session, 'party')}]}
+                  style={[styles.optionCheck, {opacity: opacity(tempSession, 'party')}]}
                 />
               </TouchableOpacity>
             </View>
@@ -135,25 +192,28 @@ class UserPreferencesView extends React.Component {
               <Text style={styles.sectionHeaderText}>RECEIVE MESSAGES FROM</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity
+                style={styles.sectionOptionWrap}
+                onPress={this.setMessage('following')}
+              >
                 <Text style={styles.sectionOptionText}>following</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: opacity(preference.message, 'following')},
+                    {opacity: opacity(tempMessage, 'following')},
                   ]}
                 />
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setMessage('anyone')}>
                 <Text style={styles.sectionOptionText}>anyone</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[
                     styles.optionCheck,
-                    {opacity: opacity(preference.message, 'anyone')},
+                    {opacity: opacity(tempMessage, 'anyone')},
                   ]}
                 />
               </TouchableOpacity>
@@ -166,15 +226,20 @@ class UserPreferencesView extends React.Component {
 }
 
 UserPreferencesView.propTypes = {
+  saveSettings: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({settings}) {
-  return {settings};
+function mapStateToProps({settings, users}) {
+  return {
+    settings,
+    users,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({saveSettings}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserPreferencesView);
