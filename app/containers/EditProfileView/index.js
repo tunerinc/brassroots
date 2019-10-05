@@ -157,6 +157,8 @@ class EditProfileView extends React.Component {
     const user = users.byID[currentUserID];
     const {email, displayName, birthdate, coverImage, profileImage, favoriteTrackID} = user;
     const track = tracks.allIDs.includes(favoriteTrackID) ? tracks.byID[favoriteTrackID] : null;
+    const coverImageExists = typeof coverImage === 'string' && coverImage !== '';
+    const profileImageExists = typeof profileImage === 'string' && profileImage !== '';
 
     return (
       <View style={styles.container}>
@@ -167,7 +169,7 @@ class EditProfileView extends React.Component {
           onScroll={Animated.event([{nativeEvent: {contentOffset: {y}}}])}
         >
           <View style={styles.scrollWrap}>
-            {(user && track) &&
+            {track &&
               <View style={styles.favoriteWrapper}>
                 <TrackCard
                   albumName={track.album.name}
@@ -182,7 +184,7 @@ class EditProfileView extends React.Component {
                 />
               </View>
             }
-            {(user && !track) &&
+            {!track &&
               <View style={styles.favoriteWrapper}>
                 <LoadingTrack type='favorite' />
               </View>
@@ -308,7 +310,7 @@ class EditProfileView extends React.Component {
           ]}
         >
           {(trackFetch.includes('favorite') || coverImage === '') && <View></View>}
-          {(user && coverImage !== '') &&
+          {coverImageExists &&
             <Animated.View style={[styles.headerBackground, {height: headerHeight}]}>
               <Animated.Image
                 blurRadius={80}
@@ -344,8 +346,8 @@ class EditProfileView extends React.Component {
               )
               && !userFetch.includes('cover')
               && !userFetch.includes('profile')
-              && coverImage
-              && profileImage
+              && coverImageExists
+              && profileImageExists
             ) ? (
               <TouchableOpacity style={styles.rightIcon} onPress={this.handleSaveProfile}>
                 <Text style={[styles.createText, styles.enabledText]}>
@@ -362,7 +364,7 @@ class EditProfileView extends React.Component {
           </View>
           <Animated.View style={[styles.photos, {opacity: photosOpacity, bottom: photosOffset}]}>
             <View style={styles.editProfilePhoto}>
-              {(user && profileImage && profileImage !== '' && !userFetch.includes('profile')) &&
+              {(profileImageExists && !userFetch.includes('profile')) &&
                 <TouchableOpacity
                   style={styles.photoButton}
                   onPress={this.handleChangePhoto('profile')}
@@ -375,7 +377,7 @@ class EditProfileView extends React.Component {
                   </View>
                 </TouchableOpacity>
               }
-              {(!profileImage || profileImage === '' || userFetch.includes('profile')) &&
+              {(!profileImageExists || userFetch.includes('profile')) &&
                 <Placeholder Animate={Fade}>
                   <View style={styles.placeholderWrap}>
                     <PlaceholderMedia isRound={true} style={styles.loadingImage} />
@@ -385,7 +387,7 @@ class EditProfileView extends React.Component {
               <Text style={styles.editPhotoText}>profile photo</Text>
             </View>
             <View style={styles.editCoverPhoto}>
-              {(user && coverImage && coverImage !== '' && !userFetch.includes('cover')) &&
+              {(coverImageExists && !userFetch.includes('cover')) &&
                 <TouchableOpacity
                   style={styles.photoButton}
                   onPress={this.handleChangePhoto('cover')}
@@ -398,7 +400,7 @@ class EditProfileView extends React.Component {
                   </View>
                 </TouchableOpacity>
               }
-              {(!coverImage || coverImage === '' || userFetch.includes('cover')) &&
+              {(!coverImageExists || userFetch.includes('cover')) &&
                 <Placeholder Animate={Fade}>
                   <View style={styles.placeholderWrap}>
                     <PlaceholderMedia isRound={true} style={styles.loadingImage} />
