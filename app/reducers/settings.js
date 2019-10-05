@@ -149,7 +149,7 @@ export type {
  */
 export const initialState: State = {
   lastUpdated,
-  version: '0.1.0',
+  version: '0.1.2',
   initializing: false,
   loggingIn: false,
   loggedIn: false,
@@ -233,62 +233,6 @@ export default function reducer(
         return updateObject(state, {lastUpdated, loggingIn: false, loggedIn: true, error: null});
       case types.AUTHORIZE_USER_FAILURE:
         return updateObject(state, {error: action.error, loggingIn: false});
-      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST:
-      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS:
-      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
-        return update(state, action, 'direct message');
-      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST:
-      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS:
-      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
-        return update(state, action, 'group message');
-      case types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST:
-      case types.CHANGE_LIKE_TRACK_NOTIFICATION_SUCCESS:
-      case types.CHANGE_LIKE_TRACK_NOTIFICATION_FAILURE:
-        return update(state, action, 'liked track');
-      case types.CHANGE_MESSAGE_PREFERENCE_REQUEST:
-      case types.CHANGE_MESSAGE_PREFERENCE_SUCCESS:
-      case types.CHANGE_MESSAGE_PREFERENCE_FAILURE:
-        return update(state, action, 'message pref');
-      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_REQUEST:
-      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_SUCCESS:
-      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_FAILURE:
-        return update(state, action, 'nearby session');
-      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST:
-      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS:
-      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_FAILURE:
-        return update(state, action, 'new follower');
-      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_REQUEST:
-      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_SUCCESS:
-      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_FAILURE:
-        return update(state, action, 'playlist change');
-      case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_REQUEST:
-      case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_SUCCESS:
-      case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_FAILURE:
-        return update(state, action, 'playlist join');
-      case types.CHANGE_PLAYLIST_PREFERENCE_REQUEST:
-      case types.CHANGE_PLAYLIST_PREFERENCE_SUCCESS:
-      case types.CHANGE_PLAYLIST_PREFERENCE_FAILURE:
-        return update(state, action, 'playlist pref');
-      case types.CHANGE_SESSION_CHAT_NOTIFICATION_REQUEST:
-      case types.CHANGE_SESSION_CHAT_NOTIFICATION_SUCCESS:
-      case types.CHANGE_SESSION_CHAT_NOTIFICATION_FAILURE:
-        return update(state, action, 'session chat');
-      case types.CHANGE_SESSION_PREFERENCE_REQUEST:
-      case types.CHANGE_SESSION_PREFERENCE_SUCCESS:
-      case types.CHANGE_SESSION_PREFERENCE_FAILURE:
-        return update(state, action, 'session pref');
-      case types.CHANGE_SESSIONS_NOTIFICATION_REQUEST:
-      case types.CHANGE_SESSIONS_NOTIFICATION_SUCCESS:
-      case types.CHANGE_SESSIONS_NOTIFICATION_FAILURE:
-        return update(state, action, 'sessions');
-      case types.CHANGE_SOUND_EFFECTS_REQUEST:
-      case types.CHANGE_SOUND_EFFECTS_SUCCESS:
-      case types.CHANGE_SOUND_EFFECTS_FAILURE:
-        return update(state, action, 'sound effects');
-      case types.CHANGE_THEME_COLOR_REQUEST:
-      case types.CHANGE_THEME_COLOR_SUCCESS:
-      case types.CHANGE_THEME_COLOR_FAILURE:
-        return update(state, action, 'theme');
       case types.GET_USER_SETTINGS_REQUEST:
         return updateObject(state, {fetchingSettings: true, error: null});
       case types.GET_USER_SETTINGS_SUCCESS:

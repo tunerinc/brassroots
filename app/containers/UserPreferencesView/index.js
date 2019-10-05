@@ -43,7 +43,12 @@ class UserPreferencesView extends React.Component {
   }
 
   componentWillUnmount() {
-    this.handleSaveSettings();
+    const {tempPlaylist, tempSession, tempMessage} = this.state;
+    const {settings: {preference: {playlist, session, message}}} = this.props;
+
+    if (tempPlaylist !== playlist || tempSession !== session || tempMessage !== message) {
+      this.handleSaveSettings();
+    }
   }
 
   setPlaylist = tempPlaylist => () => {

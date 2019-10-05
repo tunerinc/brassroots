@@ -11,15 +11,59 @@ import styles from './styles';
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+// Settings Action Creators
+import {saveSettings} from '../../actions/settings/SaveSettings';
+
 class DisplaySoundView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       shadowOpacity: new Animated.Value(0),
+      tempSound: false,
+      tempTheme: '',
     };
 
+    this.setSound == this.setSound.bind(this);
+    this.setTheme = this.setTheme.bind(this);
+    this.handleSaveSettings = this.handleSaveSettings.bind(this);
     this.onScroll = this.onScroll.bind(this);
+  }
+
+  componentDidMount() {
+    const {settings: {soundEffects, theme}} = this.props;
+
+    this.setState({
+      tempSound: soundEffects,
+      tempTheme: theme,
+    });
+  }
+
+  componentWillUnmount() {
+    const {tempSound, tempTheme} = this.state;
+    const {settings: {theme, soundEffects}} = this.props;
+    if (tempSound !== soundEffects || tempTheme !== theme) this.handleSaveSettings();
+  }
+
+  setSound = tempSound => () => {
+    this.setState({tempSound});
+  }
+
+  setTheme = tempTheme => () => {
+    this.setState({tempTheme});
+  }
+
+  handleSaveSettings() {
+    const {tempSound, tempTheme} = this.state;
+    const {saveSettings, users: {currentUserID}} = this.props;
+
+    saveSettings(
+      {
+        id: currentUserID,
+        soundEffects: tempSound,
+        theme: tempTheme,
+      },
+    );
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -43,8 +87,7 @@ class DisplaySoundView extends React.Component {
   }
 
   render() {
-    const {shadowOpacity} = this.state;
-    const {settings: {theme, soundEffects}} = this.props;
+    const {shadowOpacity, tempSound, tempTheme} = this.state;
 
     return (
       <View style={styles.container}>
@@ -61,20 +104,20 @@ class DisplaySoundView extends React.Component {
               <Text style={styles.sectionHeaderText}>SOUND EFFECTS</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setSound(false)}>
                 <Text style={styles.sectionOptionText}>off</Text>
                 <Ionicons
                   name='md-checkmark'
-                  style={[styles.optionCheck, {opacity: soundEffects ? 0 : 1}]}
+                  style={[styles.optionCheck, {opacity: tempSound ? 0 : 1}]}
                 />
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setSound(true)}>
                 <Text style={styles.sectionOptionText}>on</Text>
                 <Ionicons
                   name='md-checkmark'
-                  style={[styles.optionCheck, {opacity: soundEffects ? 1 : 0}]}
+                  style={[styles.optionCheck, {opacity: tempSound ? 1 : 0}]}
                 />
               </TouchableOpacity>
             </View>
@@ -84,20 +127,20 @@ class DisplaySoundView extends React.Component {
               <Text style={styles.sectionHeaderText}>THEME</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setTheme('light')}>
                 <Text style={styles.sectionOptionText}>light</Text>
                 <Ionicons
                   name='md-checkmark'
-                  style={[styles.optionCheck, {opacity: theme === 'light' ? 1 : 0}]}
+                  style={[styles.optionCheck, {opacity: tempTheme === 'light' ? 1 : 0}]}
                 />
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} disabled={true}>
+              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setTheme('dark')}>
                 <Text style={styles.sectionOptionText}>dark</Text>
                 <Ionicons
                   name='md-checkmark'
-                  style={[styles.optionCheck, {opacity: theme === 'dark' ? 1 : 0}]}
+                  style={[styles.optionCheck, {opacity: tempTheme === 'dark' ? 1 : 0}]}
                 />
               </TouchableOpacity>
             </View>
@@ -109,15 +152,20 @@ class DisplaySoundView extends React.Component {
 }
 
 DisplaySoundView.propTypes = {
+  saveSettings: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({settings}) {
-  return {settings};
+function mapStateToProps({settings, users}) {
+  return {
+    settings,
+    users,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({saveSettings}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplaySoundView);
