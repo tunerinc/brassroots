@@ -94,8 +94,8 @@ type State = {
   +loggingIn?: boolean,
   +loggedIn?: boolean,
   +loggingOut?: boolean,
-  +saving?: Array<mixed>,
-  +failed?: Array<mixed>,
+  +saving?: boolean,
+  +failed?: boolean,
   +fetchingSettings?: boolean,
   +error?: ?Error | SpotifyError,
 };
@@ -122,8 +122,8 @@ export type {
  * @property {boolean}  loggingIn=false               Whether the current user is logging in
  * @property {boolean}  loggedIn=false                Whether the current user is logged in
  * @property {boolean}  loggingOUt=false              Whether the current user is logging out
- * @property {string[]} saving                        The settings which are being saved
- * @property {string[]} failed                        The settings which failed to change
+ * @property {boolean}  saving                        Whether the current user saving the settings
+ * @property {boolean}  failed                        Whether the settings failed to save
  * @property {boolean}  fetchingSettings=false        Whether the current user is fetching settings
  * @property {Error}    error=null                    The error related to settings actions
  * @property {string}   version                       The current version of the Brassroots app
@@ -149,13 +149,13 @@ export type {
  */
 export const initialState: State = {
   lastUpdated,
-  version: '0.1.1',
+  version: '0.1.2',
   initializing: false,
   loggingIn: false,
   loggedIn: false,
   loggingOut: false,
-  saving: [],
-  failed: [],
+  saving: false,
+  failed: false,
   fetchingSettings: false,
   error: null,
   soundEffects: true,
@@ -201,10 +201,8 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {saving, failed, notify: oldNotify, preference: oldPref} = state;
+  const {notify: oldNotify, preference: oldPref} = state;
   const {error} = action;
-  const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
-  const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
   const notify = oldNotify && action.updates && action.updates.notify
     ? updateObject(oldNotify, action.updates.notify)
     : oldNotify;
@@ -213,16 +211,12 @@ function update(
     ? updateObject(oldPref, action.updates.preference)
     : oldPref;
 
-  const updates: State = Array.isArray(saving) && Array.isArray(failed)
-    ? {
-      ...(action.updates ? action.updates : {}),
-      notify,
-      preference,
-      error: error ? error : null,
-      saving: type && add ? saving.concat(type) : saving.filter(t => t !== type),
-      failed: type && haveError ? failed.concat(type) : failed.filter(t => t !== type),
-    }
-    : {};
+  const updates: State = {
+    ...(action.updates ? action.updates : {}),
+    notify,
+    preference,
+    error: error ? error : null,
+  };
 
   return updateObject(state, updates);
 }
@@ -239,62 +233,6 @@ export default function reducer(
         return updateObject(state, {lastUpdated, loggingIn: false, loggedIn: true, error: null});
       case types.AUTHORIZE_USER_FAILURE:
         return updateObject(state, {error: action.error, loggingIn: false});
-      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_REQUEST:
-      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_SUCCESS:
-      case types.CHANGE_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
-        return update(state, action, 'direct message');
-      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST:
-      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS:
-      case types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE:
-        return update(state, action, 'group message');
-      case types.CHANGE_LIKE_TRACK_NOTIFICATION_REQUEST:
-      case types.CHANGE_LIKE_TRACK_NOTIFICATION_SUCCESS:
-      case types.CHANGE_LIKE_TRACK_NOTIFICATION_FAILURE:
-        return update(state, action, 'liked track');
-      case types.CHANGE_MESSAGE_PREFERENCE_REQUEST:
-      case types.CHANGE_MESSAGE_PREFERENCE_SUCCESS:
-      case types.CHANGE_MESSAGE_PREFERENCE_FAILURE:
-        return update(state, action, 'message pref');
-      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_REQUEST:
-      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_SUCCESS:
-      case types.CHANGE_NEARBY_SESSION_NOTIFICATION_FAILURE:
-        return update(state, action, 'nearby session');
-      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_REQUEST:
-      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_SUCCESS:
-      case types.CHANGE_NEW_FOLLOWER_NOTIFICATION_FAILURE:
-        return update(state, action, 'new follower');
-      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_REQUEST:
-      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_SUCCESS:
-      case types.CHANGE_PLAYLIST_CHANGE_NOTIFICATION_FAILURE:
-        return update(state, action, 'playlist change');
-      case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_REQUEST:
-      case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_SUCCESS:
-      case types.CHANGE_PLAYLIST_JOIN_NOTIFICATION_FAILURE:
-        return update(state, action, 'playlist join');
-      case types.CHANGE_PLAYLIST_PREFERENCE_REQUEST:
-      case types.CHANGE_PLAYLIST_PREFERENCE_SUCCESS:
-      case types.CHANGE_PLAYLIST_PREFERENCE_FAILURE:
-        return update(state, action, 'playlist pref');
-      case types.CHANGE_SESSION_CHAT_NOTIFICATION_REQUEST:
-      case types.CHANGE_SESSION_CHAT_NOTIFICATION_SUCCESS:
-      case types.CHANGE_SESSION_CHAT_NOTIFICATION_FAILURE:
-        return update(state, action, 'session chat');
-      case types.CHANGE_SESSION_PREFERENCE_REQUEST:
-      case types.CHANGE_SESSION_PREFERENCE_SUCCESS:
-      case types.CHANGE_SESSION_PREFERENCE_FAILURE:
-        return update(state, action, 'session pref');
-      case types.CHANGE_SESSIONS_NOTIFICATION_REQUEST:
-      case types.CHANGE_SESSIONS_NOTIFICATION_SUCCESS:
-      case types.CHANGE_SESSIONS_NOTIFICATION_FAILURE:
-        return update(state, action, 'sessions');
-      case types.CHANGE_SOUND_EFFECTS_REQUEST:
-      case types.CHANGE_SOUND_EFFECTS_SUCCESS:
-      case types.CHANGE_SOUND_EFFECTS_FAILURE:
-        return update(state, action, 'sound effects');
-      case types.CHANGE_THEME_COLOR_REQUEST:
-      case types.CHANGE_THEME_COLOR_SUCCESS:
-      case types.CHANGE_THEME_COLOR_FAILURE:
-        return update(state, action, 'theme');
       case types.GET_USER_SETTINGS_REQUEST:
         return updateObject(state, {fetchingSettings: true, error: null});
       case types.GET_USER_SETTINGS_SUCCESS:
@@ -315,6 +253,12 @@ export default function reducer(
         return updateObject(state, {error: action.error, loggingOut: false});
       case types.RESET_SETTINGS:
         return initialState;
+      case types.SAVE_SETTINGS_REQUEST:
+        return updateObject(state, {saving: true, error: null});
+      case types.SAVE_SETTINGS_SUCCESS:
+        return updateObject(state, {saving: false, error: null});
+      case types.SAVE_SETTINGS_FAILURE:
+        return updateObject(state, {error: action.error, saving: false});
       case types.UPDATE_SETTINGS:
         return update(state, action);
       default:

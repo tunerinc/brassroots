@@ -9,26 +9,21 @@ import * as actions from './actions';
 import * as types from '../types';
 import {type Action} from '../../../reducers/settings';
 
-describe('change group direct message notification synchronous action creators', () => {
+describe('save settings synchronous action creators', () => {
   it('creates request action', () => {
-    const expectedAction: Action = {type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_REQUEST};
+    const expectedAction: Action = {type: types.SAVE_SETTINGS_REQUEST};
     expect(actions.request()).toStrictEqual(expectedAction);
   });
 
   it('creates success action', () => {
-    const groupMessage: string = 'foo';
-    const expectedAction: Action = {
-      type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_SUCCESS,
-      updates: {notify: {groupMessage}},
-    };
-
-    expect(actions.success(groupMessage)).toStrictEqual(expectedAction);
+    const expectedAction: Action = {type: types.SAVE_SETTINGS_SUCCESS};
+    expect(actions.success()).toStrictEqual(expectedAction);
   });
 
   it('creates failure action', () => {
     const error: Error = new Error('error');
     const expectedAction: Action = {
-      type: types.CHANGE_GROUP_DIRECT_MESSAGE_NOTIFICATION_FAILURE,
+      type: types.SAVE_SETTINGS_FAILURE,
       error,
     };
 

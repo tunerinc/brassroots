@@ -8,27 +8,27 @@
 import reducer, {
   initialState,
   type State,
-} from '../../../reducers/users';
+} from '../../../reducers/settings';
 import * as actions from './actions';
 
-describe('save profile reducer', () => {
+describe('save settings reducer', () => {
   it('returns initial state', () => {
     expect(reducer(undefined, {})).toStrictEqual(initialState);
   });
 
-  it('handles SAVE_PROFILE_REQUEST', () => {
+  it('handles SAVE_SETTINGS_REQUEST', () => {
     const state: State = {...initialState, error: new Error('error')};
     const expectedState: State = {...initialState, saving: true};
     expect(reducer(initialState, actions.request())).toStrictEqual(expectedState);
     expect(reducer(state, actions.request())).toStrictEqual(expectedState);
   });
 
-  it('handles SAVE_PROFILE_SUCCESS', () => {
+  it('handles SAVE_SETTINGS_SUCCESS', () => {
     const state: State = {...initialState, saving: true};
     expect(reducer(state, actions.success())).toStrictEqual(initialState);
   });
 
-  it('handles SAVE_PROFILE_FAILURE', () => {
+  it('handles SAVE_SETTINGS_FAILURE', () => {
     const state: State = {...initialState, saving: true};
     const error: Error = new Error('error');
     const expectedState: State = {...initialState, error};

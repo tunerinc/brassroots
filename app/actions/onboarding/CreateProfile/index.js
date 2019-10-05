@@ -16,6 +16,7 @@ import {Actions} from 'react-native-router-flux';
 import {addEntities} from '../../entities/AddEntities';
 import {updateUsers} from '../../users/UpdateUsers';
 import * as actions from './actions';
+import {initialState} from '../../../reducers/settings';
 import {type ThunkAction} from '../../../reducers/onboarding';
 import {type PrivateUser} from '../../../utils/spotifyAPI/types';
 import {
@@ -107,7 +108,7 @@ export function createProfile(
         settingsRef.doc(user.id),
         {
           id: user.id,
-          version: '0.1.1',
+          version: initialState.version,
           soundEffects: true,
           theme: 'dark',
           language: 'english',
