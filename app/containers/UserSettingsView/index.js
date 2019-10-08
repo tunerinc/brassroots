@@ -24,6 +24,9 @@ class UserSettingsView extends React.Component {
     const {title} = this.props;
 
     switch (setting) {
+      case 'notifications':
+        title === 'Library' ? Actions.libProNotif() : Actions.proNotifications();
+        return;
       case 'preferences':
         title === 'Library' ? Actions.libProPreferences() : Actions.proPreferences();
         return;
@@ -57,6 +60,7 @@ class UserSettingsView extends React.Component {
           </View>
         </View>
         <View style={styles.settings}>
+          <UserSettingOption action={this.navToSetting('notifications')} title='Notifications' />
           <UserSettingOption action={this.navToSetting('preferences')} title='Preferences' />
           <UserSettingOption action={this.navToSetting('displaySound')} title='Display & Sound' />
           <UserSettingOption action={this.navToSetting('langRegion')} title='Language & Region' />

@@ -25,9 +25,7 @@ class UserPreferencesView extends React.Component {
       tempMessage: '',
     };
 
-    this.setPlaylist = this.setPlaylist.bind(this);
-    this.setSession = this.setSession.bind(this);
-    this.setMessage = this.setMessage.bind(this);
+    this.setSetting = this.setSetting.bind(this);
     this.handleSaveSettings = this.handleSaveSettings.bind(this);
     this.onScroll = this.onScroll.bind(this);
   }
@@ -51,17 +49,7 @@ class UserPreferencesView extends React.Component {
     }
   }
 
-  setPlaylist = tempPlaylist => () => {
-    this.setState({tempPlaylist});
-  }
-
-  setSession = tempSession => () => {
-    this.setState({tempSession});
-  }
-
-  setMessage = tempMessage => () => {
-    this.setState({tempMessage});
-  }
+  setSetting = updates => () => this.setState({...updates});
 
   handleSaveSettings() {
     const {tempPlaylist, tempSession, tempMessage} = this.state;
@@ -120,9 +108,9 @@ class UserPreferencesView extends React.Component {
             <View style={styles.sectionOption}>
               <TouchableOpacity
                 style={styles.sectionOptionWrap}
-                onPress={this.setPlaylist('hidden')}
+                onPress={this.setSetting({tempPlaylist: 'hidden'})}
               >
-                <Text style={styles.sectionOptionText}>Hidden</Text>
+                <Text style={styles.sectionOptionText}>hidden</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[
@@ -133,8 +121,11 @@ class UserPreferencesView extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setPlaylist('vip')}>
-                <Text style={styles.sectionOptionText}>VIP</Text>
+              <TouchableOpacity
+                style={styles.sectionOptionWrap}
+                onPress={this.setSetting({tempPlaylist: 'vip'})}
+              >
+                <Text style={styles.sectionOptionText}>vip</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[
@@ -147,9 +138,9 @@ class UserPreferencesView extends React.Component {
             <View style={styles.sectionOption}>
               <TouchableOpacity
                 style={styles.sectionOptionWrap}
-                onPress={this.setPlaylist('limitless')}
+                onPress={this.setSetting({tempPlaylist: 'limitless'})}
               >
-                <Text style={styles.sectionOptionText}>Limitless</Text>
+                <Text style={styles.sectionOptionText}>limitless</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[
@@ -165,8 +156,11 @@ class UserPreferencesView extends React.Component {
               <Text style={styles.sectionHeaderText}>MY LIVE SESSIONS ARE AUTOMATICALLY</Text>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setSession('dj')}>
-                <Text style={styles.sectionOptionText}>DJ mode</Text>
+              <TouchableOpacity
+                style={styles.sectionOptionWrap}
+                onPress={this.setSetting({tempSession: 'dj'})}
+              >
+                <Text style={styles.sectionOptionText}>dj mode</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[styles.optionCheck, {opacity: opacity(tempSession, 'dj')}]}
@@ -174,8 +168,11 @@ class UserPreferencesView extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setSession('radio')}>
-                <Text style={styles.sectionOptionText}>Radio mode</Text>
+              <TouchableOpacity
+                style={styles.sectionOptionWrap}
+                onPress={this.setSetting({tempSession: 'radio'})}
+              >
+                <Text style={styles.sectionOptionText}>radio mode</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[styles.optionCheck, {opacity: opacity(tempSession,  'radio')}]}
@@ -183,8 +180,11 @@ class UserPreferencesView extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setSession('party')}>
-                <Text style={styles.sectionOptionText}>Party mode</Text>
+              <TouchableOpacity
+                style={styles.sectionOptionWrap}
+                onPress={this.setSetting({tempSession: 'party'})}
+              >
+                <Text style={styles.sectionOptionText}>party mode</Text>
                 <Ionicons
                   name='md-checkmark'                  
                   style={[styles.optionCheck, {opacity: opacity(tempSession, 'party')}]}
@@ -199,7 +199,7 @@ class UserPreferencesView extends React.Component {
             <View style={styles.sectionOption}>
               <TouchableOpacity
                 style={styles.sectionOptionWrap}
-                onPress={this.setMessage('following')}
+                onPress={this.setSetting({tempMessage: 'following'})}
               >
                 <Text style={styles.sectionOptionText}>following</Text>
                 <Ionicons
@@ -212,7 +212,10 @@ class UserPreferencesView extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={styles.sectionOption}>
-              <TouchableOpacity style={styles.sectionOptionWrap} onPress={this.setMessage('anyone')}>
+              <TouchableOpacity
+                style={styles.sectionOptionWrap}
+                onPress={this.setSetting({tempMessage: 'anyone'})}
+              >
                 <Text style={styles.sectionOptionText}>anyone</Text>
                 <Ionicons
                   name='md-checkmark'                  
