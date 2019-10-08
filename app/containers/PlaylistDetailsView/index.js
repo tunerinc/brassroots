@@ -1,7 +1,8 @@
 'use strict';
 
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -204,7 +205,7 @@ class PlaylistDetailsView extends React.Component {
               {ownerID !== 'spotify' &&
                 <TouchableOpacity style={styles.playlistCreator} onPress={() => console.log(owner)}>
                   {(typeof owner.profileImage === 'string' && owner.profileImage !== '') &&
-                    <Image style={styles.playlistCreatorImage} source={{uri: owner.profileImage}} />
+                    <FastImage style={styles.playlistCreatorImage} source={{uri: owner.profileImage}} />
                   }
                   {(
                     !userFetching.includes('images')
@@ -214,7 +215,7 @@ class PlaylistDetailsView extends React.Component {
                     )
                   ) &&
                     <View style={styles.default}>
-                      <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
+                      <FastImage style={styles.defaultImage} source={require('../../images/logo.png')} />
                     </View>
                   }
                   {(

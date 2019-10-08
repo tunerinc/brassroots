@@ -2,7 +2,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, Image, TouchableOpacity, Animated, VirtualizedList} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {Text, View, TouchableOpacity, Animated, VirtualizedList} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -444,7 +445,11 @@ class LibrarySingleAlbumView extends React.Component {
             />
           </Animated.View>
           <View style={styles.headerFilter} />
-          <Image style={styles.headerBackground} source={{uri: large}} resizeMode='cover' />
+          <FastImage
+            style={styles.headerBackground}
+            source={{uri: large}}
+            resizeMode={FastImage.resizeMode.cover}
+          />
           <Animated.Image
             source={{uri: large}}
             blurRadius={80}

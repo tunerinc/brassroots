@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import FastImage from 'react-native-fast-image';
 import {Text, View, Image, TouchableOpacity, Animated, Easing, Dimensions} from 'react-native';
 import TextTicker from 'react-native-text-ticker';
 import styles from './styles';
@@ -65,7 +66,7 @@ export default class MiniPlayer extends React.PureComponent<Props, State> {
         }
         <TouchableOpacity style={styles.playerButton} onPress={openPlayer}>
           <TouchableOpacity style={styles.playerImageButton} onPress={navToProfile}>
-            <Image style={styles.playerImage} source={{uri: profileImage}} />
+            <FastImage style={styles.playerImage} source={{uri: profileImage}} />
           </TouchableOpacity>
           <View style={styles.playerInfo}>
             <TextTicker

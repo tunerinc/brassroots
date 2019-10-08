@@ -10,7 +10,6 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
-  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -18,7 +17,7 @@ interface Styles {
   left: ViewStyleProp,
   leftIcon: TextStyleProp,
   center: ViewStyleProp,
-  image: ImageStyleProp,
+  image: ViewStyleProp,
   playPause: ViewStyleProp,
   centerIcon: TextStyleProp,
   right: ViewStyleProp,

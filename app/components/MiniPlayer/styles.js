@@ -11,7 +11,6 @@ import {screenWidth} from '../MiniPlayer';
 import {
   type ViewStyleProp,
   type TextStyleProp,
-  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -19,7 +18,7 @@ interface Styles {
   playerProgress: ViewStyleProp,
   playerButton: ViewStyleProp,
   playerImageButton: ViewStyleProp,
-  playerImage: ImageStyleProp,
+  playerImage: ViewStyleProp,
   playerInfo: ViewStyleProp,
   playerTrack: TextStyleProp,
   playerTrackName: TextStyleProp,

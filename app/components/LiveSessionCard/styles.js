@@ -10,7 +10,6 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
-  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -19,7 +18,7 @@ interface Styles {
   displayName: TextStyleProp,
   live: TextStyleProp,
   info: ViewStyleProp,
-  image: ImageStyleProp,
+  image: ViewStyleProp,
   track: ViewStyleProp,
   name: TextStyleProp,
   artistAlbum: TextStyleProp,

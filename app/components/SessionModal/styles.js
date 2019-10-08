@@ -10,7 +10,6 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
-  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -18,7 +17,7 @@ interface Styles {
   wrap: ViewStyleProp,
   user: ViewStyleProp,
   shadow: ViewStyleProp,
-  image: ImageStyleProp,
+  image: ViewStyleProp,
   displayName: TextStyleProp,
   live: TextStyleProp,
   option: ViewStyleProp,

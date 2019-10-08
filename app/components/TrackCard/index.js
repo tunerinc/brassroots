@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {View, Text, Image, TouchableHighlight, TouchableOpacity,} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {View, Text, TouchableHighlight, TouchableOpacity,} from 'react-native';
 import styles from './styles';
 import {type Context} from '../../reducers/queue';
 
@@ -97,9 +98,9 @@ export default class TrackCard extends React.PureComponent<Props, State> {
         ]}
       >
         <View style={styles.wrap}>
-          {(showSquareImage && image) &&
+          {(showSquareImage && typeof image === 'string') &&
             <View>
-              <Image style={styles.image} source={{uri: image}} />
+              <FastImage style={styles.image} source={{uri: image}} />
               {editingFavorite &&
                 <TouchableOpacity style={styles.imageFilter} disabled>
                   <MaterialIcons name='edit' style={styles.editIcon} />
@@ -107,17 +108,17 @@ export default class TrackCard extends React.PureComponent<Props, State> {
               }
             </View>
           }
-          {(showRoundImage && image) &&
-            <Image style={[styles.image, styles.round]} source={{uri: image}} />
+          {(showRoundImage && typeof image === 'string') &&
+            <FastImage style={[styles.image, styles.round]} source={{uri: image}} />
           }
-          {trackIndex &&
+          {typeof trackIndex === 'number' &&
             <View style={styles.position}>
               <Text style={styles.positionText}>
                 {trackIndex + 1}
               </Text>
             </View>
           }
-          {trackNumber &&
+          {typeof trackNumber === 'number' &&
             <View style={styles.position}>
               <Text style={styles.positionText}>
                 {trackNumber}
@@ -174,7 +175,7 @@ export default class TrackCard extends React.PureComponent<Props, State> {
               totalLikes={totalLikes || 0}
             />
           }
-          {trackCount &&
+          {typeof trackCount === 'string' &&
             <View style={styles.count}>
               <Foundation name='play' color='#fefefe' style={styles.play} />
               <Text numberOfLines={1} style={styles.number}>

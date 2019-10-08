@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {View, Text, Image, TouchableHighlight} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {View, Text, TouchableHighlight} from 'react-native';
 import styles from './styles';
 
 type Props = {|
@@ -32,10 +33,7 @@ export default class SessionModal extends React.PureComponent<Props, State> {
           <View style={styles.wrap}>
             <View style={styles.user}>
               <View style={styles.shadow}>
-                <Image
-                  style={styles.image}
-                  source={{uri: profileImage}}
-                />
+                <FastImage style={styles.image} source={{uri: profileImage}} />
               </View>
               <Text style={styles.displayName}>
                 {displayName}

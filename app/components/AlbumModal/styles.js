@@ -10,14 +10,13 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
-  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
   modal: ViewStyleProp,
   album: ViewStyleProp,
   shadow: ViewStyleProp,
-  image: ImageStyleProp,
+  image: ViewStyleProp,
   info: ViewStyleProp,
   name: TextStyleProp,
   artists: TextStyleProp,

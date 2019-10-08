@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {Text, View, Image, TouchableOpacity} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {Text, View, TouchableOpacity} from 'react-native';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import styles from './styles';
 
@@ -68,10 +69,16 @@ export default class RoundPerson extends React.PureComponent<Props, State> {
               <View style={styles.filter}></View>
             </View>
           }
-          {(!loading && image !== '') && <Image style={styles.image} source={{uri: image}} />}
+          {(
+            !loading
+            && typeof image === 'string'
+            && image !== ''
+          ) &&
+            <FastImage style={styles.image} source={{uri: image}} />
+          }
           {(!loading && (!image || image === '')) &&
             <View style={styles.default}>
-              <Image style={styles.logo} source={require('../../images/logo.png')} />
+              <FastImage style={styles.logo} source={require('../../images/logo.png')} />
             </View>
           }
           {(loading && (!image || image === '')) &&

@@ -2,10 +2,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import {
   Text,
   View,
-  Image,
   TouchableOpacity,
   TouchableHighlight,
   Animated,
@@ -137,7 +137,7 @@ class PlaylistView extends React.Component {
 
     return (
       <View style={styles.footer}>
-        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
+        <FastImage style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }
@@ -594,7 +594,11 @@ class PlaylistView extends React.Component {
             </View>
           </Animated.View>
           <View style={styles.headerFilter} />
-          <Image style={styles.headerBackground} source={{uri: large}} resizeMode='cover' />
+          <FastImage
+            style={styles.headerBackground}
+            source={{uri: large}}
+            resizeMode={FastImage.resizeMode.cover}
+          />
           <Animated.Image
             source={{uri: large}}
             blurRadius={80}

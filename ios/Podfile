@@ -71,6 +71,9 @@ target 'brassroots' do
   pod 'RNSpotify', :path => '../node_modules/rn-spotify-sdk'
   pod 'RNEventEmitter', :path => '../node_modules/react-native-events'
 
+  # Fast Image
+  pod 'RNFastImage', :path => '../node_modules/react-native-fast-image'
+
   target 'brassrootsTests' do
     inherit! :search_paths
     # Pods for testing

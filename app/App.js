@@ -34,7 +34,6 @@ import UserProfileView from './containers/UserProfileView';
 // Library
 import LibraryPlaylistsView from './containers/LibraryPlaylistsView';
 import PlaylistView from './containers/PlaylistView';
-import LibraryArtistsView from './containers/LibraryArtistsView';
 import LibraryAlbumsView from './containers/LibraryAlbumsView';
 import LibrarySingleAlbumView from './containers/LibrarySingleAlbumView';
 import LibraryTracksView from './containers/LibraryTracksView';
@@ -136,7 +135,6 @@ export default class App extends React.Component<Props> {
                   <Scene key='libPlaylists' component={LibraryPlaylistsView} title='Library' />
                   <Scene key='libSinglePlaylist' component={PlaylistView} title='Library' />
                   <Scene key='libPlaylistDetails' component={PlaylistDetailsView} title='Library' />
-                  <Scene key='libArtists' component={LibraryArtistsView} title='Library' />
                   <Scene key='libArtistDetails' component={ArtistDetailsView} title='Library' />
                   <Scene key='libAlbums' component={LibraryAlbumsView} title='Library' />
                   <Scene key='libSingleAlbum' component={LibrarySingleAlbumView} title='Library' />

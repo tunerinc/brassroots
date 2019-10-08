@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {View, Image, TouchableOpacity} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {View, TouchableOpacity} from 'react-native';
 import styles from './styles';
 
 // Icons
@@ -56,10 +57,9 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
           <Entypo name='controller-jump-to-start' style={styles.leftIcon} color={prevColor} />
         </TouchableOpacity>
         <View style={styles.center}>
-          <Image
+          <FastImage
             style={styles.image}
-            resizeMode='cover'
-            resizeMethod='scale'
+            resizeMode={FastImage.resizeMode.cover}
             source={{uri: image}}
           />
           <TouchableOpacity style={styles.playPause} onPress={togglePause} disabled={!isOwner}>

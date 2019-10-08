@@ -219,7 +219,7 @@ export function joinSession(
       const diff = moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').diff(timeLastPlayed, 'seconds');
       const progress = newSession.progress + (diff * 1000);
 
-      batch.update(userRef, {live: true, currentSessionID: session.id});
+      batch.update(userRef, {live: true, currentSession: session.id});
       batch.set(userRef.collection('sessions').doc(session.id), {timeJoined, id: session.id});
       batch.set(
         sessionRef.collection('users').doc(user.id),

@@ -10,13 +10,12 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
-  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
   track: ViewStyleProp,
   wrap: ViewStyleProp,
-  image: ImageStyleProp,
+  image: ViewStyleProp,
   editIcon: TextStyleProp,
   imageFilter: ViewStyleProp,
   round: ViewStyleProp,

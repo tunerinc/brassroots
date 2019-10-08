@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {View, Text, Image, TouchableHighlight} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {View, Text, TouchableHighlight} from 'react-native';
 import styles from './styles';
 
 type Props = {|
@@ -43,7 +44,7 @@ export default class TrackModal extends React.PureComponent<Props, State> {
       <View style={styles.modal}>
         <View style={styles.track}>
           <View style={styles.shadow}>
-            <Image style={styles.image} source={{uri: albumImage}} />
+            <FastImage style={styles.image} source={{uri: albumImage}} />
           </View>
           <View style={styles.info}>
             <Text numberOfLines={1} style={styles.name}>

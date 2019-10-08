@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {Text, View, Image, TouchableHighlight} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {Text, View, TouchableHighlight} from 'react-native';
 import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import styles from './styles';
 
@@ -47,11 +48,11 @@ export default class ArtistCard extends React.PureComponent<Props, State> {
             </View>
           }
           {(typeof artistImage === 'string' && artistImage !== '') &&
-            <Image style={styles.image} source={{uri: artistImage}} />
+            <FastImage style={styles.image} source={{uri: artistImage}} />
           }
           {(!fetchingImage && (typeof artistImage !== 'string' || artistImage === '')) &&
             <View style={styles.default}>
-              <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
+              <FastImage style={styles.defaultImage} source={require('../../images/logo.png')} />
             </View>
           }
           <View style={styles.info}>

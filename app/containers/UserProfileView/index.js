@@ -2,10 +2,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import {
   Text,
   View,
-  Image,
   TouchableOpacity,
   ScrollView,
   Animated,
@@ -627,7 +627,11 @@ class UserProfileView extends React.Component {
         >
           {user.coverImage !== '' &&
             <View style={styles.coverImageWrap}>
-              <Image style={styles.coverImage} source={{uri: user.coverImage}} resizeMode='cover' />
+              <FastImage
+                style={styles.coverImage}
+                source={{uri: user.coverImage}}
+                resizeMode={FastImage.resizeMode.cover}
+              />
               <Animated.Image
                 style={[styles.coverImage, {opacity: coverImageOpacity}]}
                 source={{uri: user.coverImage}}
@@ -669,7 +673,7 @@ class UserProfileView extends React.Component {
             <Animated.View style={[styles.user, {opacity: userOpacity, bottom: userOffset}]}>
               <View style={styles.userPhoto}>
                 {user.profileImage !== '' &&
-                  <Image style={styles.roundPhoto} source={{uri: user.profileImage}} />
+                  <FastImage style={styles.roundPhoto} source={{uri: user.profileImage}} />
                 }
                 {(userFetching.includes('users') && (!user || user.profileImage === '')) &&
                   <Placeholder Animate={Fade} Left={this.renderImage} />

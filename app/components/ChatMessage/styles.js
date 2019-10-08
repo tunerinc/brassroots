@@ -10,7 +10,6 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
-  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -21,8 +20,8 @@ interface Styles {
   userInfo: ViewStyleProp,
   messageInfo: ViewStyleProp,
   messageTime: TextStyleProp,
-  messageUser: ImageStyleProp,
-  userImage: ImageStyleProp,
+  messageUser: ViewStyleProp,
+  userImage: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({

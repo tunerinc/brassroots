@@ -2,7 +2,8 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import {Text, View, Animated, Easing, VirtualizedList, ActivityIndicator, Image} from "react-native";
+import FastImage from 'react-native-fast-image';
+import {Text, View, Animated, Easing, VirtualizedList, ActivityIndicator} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
@@ -138,7 +139,7 @@ class LibraryTracksView extends React.Component {
 
     return (
       <View style={styles.footer}>
-        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
+        <FastImage style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }

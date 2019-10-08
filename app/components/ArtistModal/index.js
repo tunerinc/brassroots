@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {Text, View, Image, TouchableHighlight} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {Text, View, TouchableHighlight} from 'react-native';
 import styles from './styles';
 
 type Props = {|
@@ -29,7 +30,7 @@ export default class ArtistModal extends React.PureComponent<Props, State> {
       <View style={styles.modal}>
         <View style={styles.artist}>
           <View style={styles.shadow}>
-            <Image style={styles.image} source={{uri: artistImage}} />
+            <FastImage style={styles.image} source={{uri: artistImage}} />
           </View>
           <Text numberOfLines={1} style={styles.name}>
             {artistName}

@@ -9,7 +9,6 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
-  type ImageStyleProp,
   type TextStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
@@ -20,9 +19,9 @@ interface Styles {
   filterWrap: ViewStyleProp,
   filterText: TextStyleProp,
   filter: ViewStyleProp,
-  image: ImageStyleProp,
+  image: ViewStyleProp,
   default: ViewStyleProp,
-  logo: ImageStyleProp,
+  logo: ViewStyleProp,
   buttonText: TextStyleProp,
 };
 
