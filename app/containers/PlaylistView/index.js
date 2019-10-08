@@ -344,7 +344,7 @@ class PlaylistView extends React.Component {
       case 'playlist': {
         const {displayName} = users.byID[entity.ownerID];
         const {displayName: currentName} = users.byID[currentUserID];
-        const isOwnerMember = entity.ownerID === currentUserID || members.includes(currentUserID);
+        const isOwnerMember = entity.ownerID === currentUserID || entity.members.includes(currentUserID);
         const ownerName = displayName && displayName !== currentName
           ? displayName
           : entity.ownerID === 'spotify'
@@ -579,7 +579,7 @@ class PlaylistView extends React.Component {
                   <MaterialIcons name='all-inclusive' style={styles.modeIcon} />
                 }
               </TouchableOpacity>
-              {members.includes(currentUserID) &&
+              {Array.isArray(members) && members.includes(currentUserID) &&
                 <TouchableOpacity style={styles.memberButton} disabled>
                   <Ionicons name='md-person' color='#fefefe' style={styles.memberIcon} />
                 </TouchableOpacity>

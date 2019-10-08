@@ -7,7 +7,7 @@ import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-n
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
-import Placeholder from 'rn-placeholder';
+import {Placeholder, PlaceholderMedia, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Components
@@ -57,8 +57,10 @@ class PlaylistDetailsView extends React.Component {
         playlistToView
         && playlists.allIDs.includes(playlistToView)
         && !fetching.includes('images')
+        && playlists.byID[playlistToView].ownerID !== 'spotify'
         && (
-          !users.byID[playlists.byID[playlistToView].ownerID]
+          !users.allIDs.includes(playlists.byID[playlistToView].ownerID)
+          || typeof users.byID[playlists.byID[playlistToView].ownerID].profileImage !== 'string'
           || users.byID[playlists.byID[playlistToView].ownerID].profileImage === ''
         )
       ) {
@@ -170,6 +172,8 @@ class PlaylistDetailsView extends React.Component {
     );
   }
 
+  renderImage = () => <PlaceholderMedia isRound={true} style={styles.playlistCreatorImage} />;
+
   render() {
     const {
       playlistToView,
@@ -210,7 +214,7 @@ class PlaylistDetailsView extends React.Component {
                   {(
                     !userFetching.includes('images')
                     && (
-                      !owner.profileImage
+                      typeof owner.profileImage !== 'string'
                       || owner.profileImage === ''
                     )
                   ) &&
@@ -221,17 +225,12 @@ class PlaylistDetailsView extends React.Component {
                   {(
                     userFetching.includes('images')
                     && (
-                      !owner.profileImage
+                      typeof owner.profileImage !== 'string'
                       || owner.profileImage === ''
                     )
                   ) &&
                     <View style={styles.playlistCreatorImage}>
-                      <Placeholder.Media
-                        animate='fade'
-                        size={60}
-                        hasRadius={true}
-                        color='#888'
-                      />
+                      <Placeholder Animate={Fade} Left={this.renderImage} />
                     </View>
                   }
                   <Text style={styles.playlistCreatorName}>

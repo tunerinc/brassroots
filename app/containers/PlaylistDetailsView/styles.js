@@ -102,13 +102,14 @@ export default StyleSheet.create({
     fontSize: 55,
     marginRight: 10,
     borderRadius: 27.5,
-    color: '#fefefe',
+    color: '#888',
   },
   playlistCreatorImage: {
     width: 55,
     height: 55,
     marginRight: 10,
     borderRadius: 27.5,
+    backgroundColor: '#888',
   },
   default: {
     height: 55,

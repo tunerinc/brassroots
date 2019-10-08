@@ -116,7 +116,7 @@ export function addEntities(state, action) {
   const typesToCopy = Object.keys(state).filter(key => !entityTypes.includes(key));
 
   entityTypes.forEach(entityType => {
-    const newAction = {...action, entityType, items: Object.values(entities[entityType])}
+    const newAction = {...action, entityType, items: Object.values(entities[entityType])};
     newState = updateObject(newState, {
       [entityType]: singleEntityType(state[entityType], newAction),
     });
