@@ -12,7 +12,7 @@
 import getUserProfile from '../../../utils/spotifyAPI/getUserProfile';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addEntities} from '../../entities/AddEntities/reducers';
+import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/users';
 
 /**
