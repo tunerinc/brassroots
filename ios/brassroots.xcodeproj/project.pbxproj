@@ -12,6 +12,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		18277F826CEE388EFB8F6FDB /* libPods-brassrootsTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D078BB30F9F6455E8121C81 /* libPods-brassrootsTests.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -23,6 +24,9 @@
 		601FC177232C60F800CEF104 /* Muli-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 601FC173232C60F800CEF104 /* Muli-SemiBold.ttf */; };
 		60AE31DA232C62B7004DED3B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 60AE31D9232C62B7004DED3B /* GoogleService-Info.plist */; };
 		60AE31DC232C6326004DED3B /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
+		6FDF17E730BC07B5B3DB6570 /* libPods-brassroots-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CCC9EBF98557AA85E1B748B /* libPods-brassroots-tvOS.a */; };
+		CB29122B1C387FF70BBFD763 /* libPods-brassroots.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A026FD5537F88A005CC84D /* libPods-brassroots.a */; };
+		FC95D19B0AB74B24F119C211 /* libPods-brassroots-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5125221D179D3990D8E0C057 /* libPods-brassroots-tvOSTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +61,9 @@
 		2D02E47B1E0B4A5D006451C7 /* brassroots-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "brassroots-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* brassroots-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "brassroots-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		39773858AB055AF9EBB2D33F /* Pods-brassroots-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassroots-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-brassroots-tvOS/Pods-brassroots-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		5125221D179D3990D8E0C057 /* libPods-brassroots-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-brassroots-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A5ED7CF0C9C831EE974E0AF /* Pods-brassroots.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassroots.release.xcconfig"; path = "Target Support Files/Pods-brassroots/Pods-brassroots.release.xcconfig"; sourceTree = "<group>"; };
+		5CCC9EBF98557AA85E1B748B /* libPods-brassroots-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-brassroots-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6016D76A234BDFA500AF3CD8 /* fontello.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fontello.ttf; sourceTree = "<group>"; };
 		601FC15D232C60B900CEF104 /* SpotifyAudioPlayback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyAudioPlayback.framework; path = "../node_modules/rn-spotify-sdk/ios/external/SpotifySDK/SpotifyAudioPlayback.framework"; sourceTree = "<group>"; };
 		601FC15E232C60B900CEF104 /* SpotifyAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpotifyAuthentication.framework; path = "../node_modules/rn-spotify-sdk/ios/external/SpotifySDK/SpotifyAuthentication.framework"; sourceTree = "<group>"; };
@@ -70,9 +76,11 @@
 		609D72BC2330800100957C99 /* QBImagePicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QBImagePicker.framework; path = "../node_modules/react-native-image-crop-picker/ios/ImageCropPickerSDK/QBImagePicker.framework"; sourceTree = "<group>"; };
 		60AE31D9232C62B7004DED3B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "brassroots/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		60E3A23C23444132000373E9 /* brassroots.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = brassroots.entitlements; sourceTree = "<group>"; };
+		6D078BB30F9F6455E8121C81 /* libPods-brassrootsTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-brassrootsTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B9390DCBE72D3BF5B293B2E /* Pods-brassrootsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassrootsTests.debug.xcconfig"; path = "Target Support Files/Pods-brassrootsTests/Pods-brassrootsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A7294D4883BC5262052F8A48 /* Pods-brassroots-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassroots-tvOS.release.xcconfig"; path = "Target Support Files/Pods-brassroots-tvOS/Pods-brassroots-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		C0AD65164CD16AEB36C23EAF /* Pods-brassroots.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassroots.debug.xcconfig"; path = "Target Support Files/Pods-brassroots/Pods-brassroots.debug.xcconfig"; sourceTree = "<group>"; };
+		C4A026FD5537F88A005CC84D /* libPods-brassroots.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-brassroots.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA4CCAF76E1E08DFFB1DD569 /* Pods-brassrootsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassrootsTests.release.xcconfig"; path = "Target Support Files/Pods-brassrootsTests/Pods-brassrootsTests.release.xcconfig"; sourceTree = "<group>"; };
 		DFF1FF84F989F29177509175 /* Pods-brassroots-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-brassroots-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-brassroots-tvOSTests/Pods-brassroots-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -84,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18277F826CEE388EFB8F6FDB /* libPods-brassrootsTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +101,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				60AE31DC232C6326004DED3B /* JavaScriptCore.framework in Frameworks */,
+				CB29122B1C387FF70BBFD763 /* libPods-brassroots.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FDF17E730BC07B5B3DB6570 /* libPods-brassroots-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +117,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC95D19B0AB74B24F119C211 /* libPods-brassroots-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +181,10 @@
 				601FC15E232C60B900CEF104 /* SpotifyAuthentication.framework */,
 				601FC15F232C60B900CEF104 /* SpotifyMetadata.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				C4A026FD5537F88A005CC84D /* libPods-brassroots.a */,
+				5CCC9EBF98557AA85E1B748B /* libPods-brassroots-tvOS.a */,
+				5125221D179D3990D8E0C057 /* libPods-brassroots-tvOSTests.a */,
+				6D078BB30F9F6455E8121C81 /* libPods-brassrootsTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

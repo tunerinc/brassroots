@@ -7,7 +7,8 @@
 
 import React from 'react';
 import {Actions} from 'react-native-router-flux';
-import {Text, View, TouchableOpacity, Image, TouchableHighlight} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {Text, View, TouchableOpacity, TouchableHighlight} from 'react-native';
 import styles from './styles';
 
 // Icons
@@ -70,7 +71,7 @@ export default class LiveSessionCard extends React.Component<Props, State> {
             <Text style={styles.live}>LIVE</Text>
           </View>
           <View style={styles.info}>
-            <Image style={styles.image} source={{uri: profileImage}} />
+            <FastImage style={styles.image} source={{uri: profileImage}} />
             <View style={styles.track}>
               <Text numberOfLines={1} style={styles.name}>
                 {name}

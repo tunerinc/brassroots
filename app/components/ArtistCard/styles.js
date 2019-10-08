@@ -9,7 +9,6 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
-  type ImageStyleProp,
   type TextStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
@@ -17,10 +16,10 @@ interface Styles {
   artist: ViewStyleProp,
   wrap: ViewStyleProp,
   loading: ViewStyleProp,
-  image: ImageStyleProp,
+  image: ViewStyleProp,
   placeholder: ViewStyleProp,
   default: ViewStyleProp,
-  defaultImage: ImageStyleProp,
+  defaultImage: ViewStyleProp,
   artistIcon: TextStyleProp,
   info: ViewStyleProp,
   name: TextStyleProp,

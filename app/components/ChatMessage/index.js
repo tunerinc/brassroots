@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {View, Text, Image} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {View, Text} from 'react-native';
 import styles from './styles';
 
 type Props = {|
@@ -41,7 +42,7 @@ export default class ChatMessage extends React.PureComponent<Props, State> {
             <Text style={styles.messageTime}>
               {timestamp}
             </Text>
-            <Image source={{uri: image}} style={imageStyles} />
+            <FastImage source={{uri: image}} style={imageStyles} />
           </View>
         </View>
       </View>

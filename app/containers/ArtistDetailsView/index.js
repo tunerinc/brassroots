@@ -2,6 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -74,7 +75,7 @@ class ArtistDetailsView extends React.Component {
 
       return (
         <TouchableOpacity onPress={this.goToProfile(item)} style={styles}>
-          <Image style={styles.topListenerImage} source={{uri: profileImage}} />
+          <FastImage style={styles.topListenerImage} source={{uri: profileImage}} />
           <Text numberOfLines={1} style={styles.topListenerName}>
             {displayName}
           </Text>
@@ -165,7 +166,7 @@ class ArtistDetailsView extends React.Component {
               <Text style={styles.sectionTitle}>PROFILE</Text>
               {userProfile &&
                 <TouchableOpacity style={styles.artistUserProfile}>
-                  <Image style={styles.artistUserProfileImage} source={{uri: large}} />
+                  <FastImage style={styles.artistUserProfileImage} source={{uri: large}} />
                   <Text style={styles.artistUserProfileName}>
                     {name}
                   </Text>
@@ -175,7 +176,7 @@ class ArtistDetailsView extends React.Component {
               {!userProfile &&
                 <View style={styles.artistUserProfilePlaceholder}>
                   <View style={styles.default}>
-                    <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
+                    <FastImage style={styles.defaultImage} source={require('../../images/logo.png')} />
                   </View>
                   <Text style={styles.artistUserProfileNamePlaceholder}>No user profile</Text>
                   <Ionicons name='ios-arrow-forward' color='#888' style={styles.arrowForward} />

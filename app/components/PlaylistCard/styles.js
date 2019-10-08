@@ -10,15 +10,14 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
-  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
   playlist: ViewStyleProp,
   wrap: ViewStyleProp,
-  image: ImageStyleProp,
+  image: ViewStyleProp,
   default: ViewStyleProp,
-  defaultImage: ImageStyleProp,
+  defaultImage: ViewStyleProp,
   info: ViewStyleProp,
   name: TextStyleProp,
   owner: TextStyleProp,

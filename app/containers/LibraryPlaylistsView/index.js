@@ -2,6 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import {
   Text,
   View,
@@ -10,7 +11,6 @@ import {
   Animated,
   Easing,
   VirtualizedList,
-  Image,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -116,7 +116,7 @@ class LibraryPlaylistsView extends React.Component {
 
     return (
       <View style={styles.footer}>
-        <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
+        <FastImage style={styles.loadingGif} source={require('../../images/loading.gif')} />
       </View>
     );
   }

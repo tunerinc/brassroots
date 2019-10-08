@@ -2,10 +2,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import {
   Text,
   View,
-  Image,
   TouchableOpacity,
   Animated,
   Easing,
@@ -236,7 +236,7 @@ class ExploreTabView extends React.Component {
     return (
       <View style={styles.footer}>
         {(paginating && trendingCanPaginate) &&
-          <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
+          <FastImage style={styles.loadingGif} source={require('../../images/loading.gif')} />
         }
       </View>
     );

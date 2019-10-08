@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {TouchableHighlight, Text, View, Image} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {TouchableHighlight, Text, View} from 'react-native';
 import styles from './styles';
 
 // Icons
@@ -40,7 +41,9 @@ export default class AlbumCard extends React.PureComponent<Props, State> {
         onPress={navToAlbum}
       >
         <View style={styles.wrap}>
-          {typeof index !== 'number' && <Image style={styles.image} source={{uri: albumImage}} />}
+          {typeof index !== 'number' && typeof albumImage === 'string' &&
+            <FastImage style={styles.image} source={{uri: albumImage}} />
+          }
           {typeof index === 'number' &&
             <View style={styles.position}>
               <Text style={styles.positionText}>

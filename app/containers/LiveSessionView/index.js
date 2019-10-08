@@ -2,6 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import {
   Text,
   View,
@@ -759,7 +760,7 @@ class LiveSessionView extends React.Component {
                   style={styles.chatMessageArtButton}
                   onPress={this.changeActiveView}
                 >
-                  <Image style={styles.chatMessageArt} source={{uri: track.album.small}} />
+                  <FastImage style={styles.chatMessageArt} source={{uri: track.album.small}} />
                 </TouchableOpacity>
               }
               {!track &&

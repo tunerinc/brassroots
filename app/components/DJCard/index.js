@@ -6,8 +6,8 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import {View, Image, Text, TouchableOpacity} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './styles';
 
 // Icons
@@ -40,7 +40,7 @@ export default class DJCard extends React.Component<Props, State> {
     return (
       <TouchableOpacity style={styles.button} onPress={toggleMenu}>
         <View style={styles.info}>
-          <Image style={styles.image} source={{uri: profileImage}} />
+          <FastImage style={styles.image} source={{uri: profileImage}} />
           <Text numberOfLines={1} style={styles.name}>
             {displayName}
           </Text>

@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import {Text, View, Image, TouchableHighlight} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {Text, View, TouchableHighlight} from 'react-native';
 import styles from './styles';
 
 // Icons
@@ -42,10 +43,10 @@ export default class PlaylistCard extends React.PureComponent<Props, State> {
         onPress={navToPlaylist}
       >
         <View style={styles.wrap}>
-          {image !== '' && <Image style={styles.image} source={{uri: image}} />}
+          {image !== '' && <FastImage style={styles.image} source={{uri: image}} />}
           {image === '' &&
             <View style={styles.default}>
-              <Image style={styles.defaultImage} source={require('../../images/logo.png')} />
+              <FastImage style={styles.defaultImage} source={require('../../images/logo.png')} />
             </View>
           }
           <View style={styles.info}>

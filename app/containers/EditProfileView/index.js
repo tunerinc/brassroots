@@ -2,7 +2,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, TextInput, View, Image, TouchableOpacity, Animated} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {Text, TextInput, View, TouchableOpacity, Animated} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -370,7 +371,7 @@ class EditProfileView extends React.Component {
                   onPress={this.handleChangePhoto('profile')}
                 >
                   <View style={styles.roundPhotoWrap}>
-                    <Image style={styles.roundPhoto} source={{uri: profileImage}} />
+                    <FastImage style={styles.roundPhoto} source={{uri: profileImage}} />
                     <View style={styles.roundPhotoFilter}>
                       <MaterialIcons name='edit' style={styles.editIcon} />
                     </View>
@@ -393,7 +394,7 @@ class EditProfileView extends React.Component {
                   onPress={this.handleChangePhoto('cover')}
                 >
                   <View style={styles.roundPhotoWrap}>
-                    <Image style={styles.roundPhoto} source={{uri: coverImage}} />
+                    <FastImage style={styles.roundPhoto} source={{uri: coverImage}} />
                     <View style={styles.roundPhotoFilter}>
                       <MaterialIcons name='edit' style={styles.editIcon} />
                     </View>
