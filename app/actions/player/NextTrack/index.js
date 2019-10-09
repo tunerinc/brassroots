@@ -16,6 +16,7 @@ import Spotify from 'rn-spotify-sdk';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {removeQueueTrack} from '../../queue/RemoveQueueTrack';
+import {updatePlayer} from '../UpdatePlayer';
 import {type TrackArtist} from '../../../reducers/tracks';
 import {type ThunkAction} from '../../../reducers/player';
 import {
@@ -104,7 +105,7 @@ export function nextTrack(
         throw new Error('Unable to retrieve tracks from Firestore');
       }
 
-      batch.update(sessionQueueRef.doc(current), {isCurrent: true});
+      batch.update(sessionQueueRef.doc(nextQueueID), {isCurrent: true});
       batch.update(sessionUserRef, {progress: 0, paused: false});
       batch.set(
         sessionPrevRef.doc(current),

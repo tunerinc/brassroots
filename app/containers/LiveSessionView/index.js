@@ -127,13 +127,15 @@ class LiveSessionView extends React.Component {
       getSessionInfo,
       getUserQueue,
       chat: {fetching: chatFetching, chatUnsubscribe},
-      player: {currentQueueID},
+      entities: {sessions},
       queue: {fetching: queueFetching, unsubscribe: queueUnsubscribe},
       sessions: {currentSessionID, fetching: sessionFetching, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     
     if (currentSessionID) {
+      const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
+
       // if (!fetchedChat && !fetchingChat) {
       //   this.setState({fetchedChat: true});
       //   getChat(currentSessionID);
@@ -146,7 +148,7 @@ class LiveSessionView extends React.Component {
 
       if (!fetchedQueue && !queueFetching.includes('queue') && !queueUnsubscribe) {
         this.setState({fetchedQueue: true});
-        getUserQueue(currentUserID, currentSessionID, currentQueueID);
+        getUserQueue(currentUserID, currentSessionID, isOwner);
       }
     }
   }
@@ -158,14 +160,17 @@ class LiveSessionView extends React.Component {
       getSessionInfo,
       getUserQueue,
       chat: {fetching: chatFetching, chatUnsubscribe},
-      player: {progress, currentQueueID},
+      entities: {sessions},
+      player: {progress},
       queue: {userQueue, fetching: queueFetching, unsubscribe: queueUnsubscribe},
       sessions: {currentSessionID, fetching: sessionFetching, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     const {player: {progress: newProgress}} = nextProps;
 
-    if (currentSessionID) {
+    if (currentSessionID && sessions.allIDs.includes(currentSessionID)) {
+      const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
+
       // if (!fetchedChat && !fetchingChat) {
       //   this.setState({fetchedChat: true});
       //   getChat(currentSessionID);
@@ -178,7 +183,7 @@ class LiveSessionView extends React.Component {
 
       if (!fetchedQueue && !queueFetching.includes('queue') && !queueUnsubscribe) {
         this.setState({fetchedQueue: true});
-        getUserQueue(currentUserID, currentSessionID, currentQueueID);
+        getUserQueue(currentUserID, currentSessionID, isOwner);
       }
     }
 
@@ -254,6 +259,12 @@ class LiveSessionView extends React.Component {
     const owner = users.byID[sessions.byID[currentSessionID].ownerID];
 
     setTimeout(Actions.pop, 200);
+
+    this.setState({
+      fetchedChat: false,
+      fetchedInfo: false,
+      fetchedQueue: false,
+    });
 
     leaveSession(
       currentUserID,
