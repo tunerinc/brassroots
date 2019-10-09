@@ -310,7 +310,7 @@ class EditProfileView extends React.Component {
             {height: headerHeight, shadowOpacity: headerShadowOpacity},
           ]}
         >
-          {(trackFetch.includes('favorite') || coverImage === '') && <View></View>}
+          {(typeof coverImage !== 'string' || coverImage === '') && <View></View>}
           {coverImageExists &&
             <Animated.View style={[styles.headerBackground, {height: headerHeight}]}>
               <Animated.Image

@@ -107,8 +107,8 @@ class LibrarySingleAlbumView extends React.Component {
     const {selectedTrack} = this.state;
     const {
       queueTrack,
-      entities: {queueTracks, sessions, tracks, users},
-      player: {currentQueueID},
+      entities: {sessions, tracks, users},
+      player: {currentQueueID, currentTrackID},
       queue: {userQueue, totalUserQueue: totalQueue},
       sessions: {currentSessionID},
       users: {currentUserID},
@@ -123,7 +123,7 @@ class LibrarySingleAlbumView extends React.Component {
       if (!songInQueue) {
         const track = tracks.byID[selectedTrack];
         const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
-        const prevTrackID = queueTracks.byID[prevQueueID];
+        const prevTrackID = userQueue.length ? userQueue[userQueue.length - 1].trackID : currentTrackID;
         const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
         const user = {displayName, profileImage, id: currentUserID};
 

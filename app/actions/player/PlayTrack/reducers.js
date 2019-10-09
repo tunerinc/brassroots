@@ -46,7 +46,6 @@ export function success(
     durationMS,
     prevQueueID: currentQueueID === prevQueueID ? null : prevQueueID,
     prevTrackID: currentTrackID === prevTrackID ? null : prevTrackID,
-    progress: 0,
     attemptingToPlay: false,
     paused: false,
     error: null,

@@ -77,10 +77,10 @@ export function togglePause(
       const timeLastPlayed: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
       if (typeof playbackState.position === 'number') {
-        batch.update(sessionUserRef, {paused, progress: session.progress + 1000});
+        batch.update(sessionUserRef, {paused, progress: session.progress});
 
         if (ownerID === userID) {
-          batch.update(sessionRef, {timeLastPlayed, paused, progress: session.progress + 1000});
+          batch.update(sessionRef, {timeLastPlayed, paused, progress: session.progress});
         }
       } else {
         batch.update(sessionUserRef, {paused});

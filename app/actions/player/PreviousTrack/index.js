@@ -130,6 +130,8 @@ export function previousTrack(
     // const geoFirestore = new GeoFirestore(geoRef);
     const {coords, current, totalPlayed} = session;
 
+    let batch: FirestoreBatch = firestore.batch();
+
     try {
       // dispatch(addRecentTrack(user.id, current.track));
 
@@ -141,8 +143,6 @@ export function previousTrack(
           sessionQueueRef.doc(current.id).get(),
         ],
       );
-
-      let batch: FirestoreBatch = firestore.batch();
 
       if (!prevDoc.exists || !currentDoc.exists) {
         throw new Error('Unable to retrieve tracks from Firestore.');

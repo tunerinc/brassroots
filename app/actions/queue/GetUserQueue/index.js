@@ -35,6 +35,7 @@ import {
  *
  * @param    {string}  userID    The user id of the current user
  * @param    {string}  sessionID The session id to get the queue from
+ * @param    {boolean} isOwner   Whether the current user is the owner of the session
  *
  * @return   {Promise}
  * @resolves {object}            The queue from the now playing session
@@ -43,7 +44,7 @@ import {
 export function getUserQueue(
   userID: string,
   sessionID: string,
-  current: ?string,
+  isOwner: boolean,
 ): ThunkAction {
   return async (dispatch, getState, {getFirestore}) => {
     dispatch(actions.request());
@@ -113,15 +114,18 @@ export function getUserQueue(
 
                   if (queueTrack.isCurrent) {
                     dispatch(removeQueueTrack(queueTrack.id));
-                    dispatch(
-                      updatePlayer(
-                        {
-                          currentTrackID: track.id,
-                          currentQueueID: queueTrack.id,
-                          durationMS: track.durationMS,
-                        },
-                      ),
-                    );
+
+                    if (!isOwner) {
+                      dispatch(
+                        updatePlayer(
+                          {
+                            currentTrackID: track.id,
+                            currentQueueID: queueTrack.id,
+                            durationMS: track.durationMS,
+                          },
+                        ),
+                      );
+                    }
                   } else {
                     dispatch(
                       actions.success(
@@ -162,15 +166,20 @@ export function getUserQueue(
 
                 if (queueTrack.isCurrent) {
                   dispatch(removeQueueTrack(queueTrack.id));
-                  dispatch(
-                    updatePlayer(
-                      {
-                        currentTrackID: track.id,
-                        currentQueueID: queueTrack.id,
-                        durationMS: track.durationMS,
-                      },
-                    ),
-                  );
+
+                  if (!isOwner) {
+                    dispatch(
+                      updatePlayer(
+                        {
+                          currentTrackID: track.id,
+                          currentQueueID: queueTrack.id,
+                          durationMS: track.durationMS,
+                          nextTrackID: queueTrack.nextTrackID,
+                          nextQueueID: queueTrack.nextQueueID,
+                        },
+                      ),
+                    );
+                  }
                 } else {
                   dispatch(
                     actions.success(

@@ -78,11 +78,12 @@ class PlayerTabBar extends React.Component {
         progress,
         durationMS,
         currentQueueID,
+        nextQueueID,
         skippingPrev,
         skippingNext,
         error: playerError,
       },
-      queue: {context},
+      queue: {context, userQueue},
       sessions: {currentSessionID},
       tracks: {fetching, error: tracksError},
       users: {currentUserID},
@@ -91,7 +92,7 @@ class PlayerTabBar extends React.Component {
       entities: {sessions: oldSessions},
       sessions: {currentSessionID: oldSessionID},
       tracks: {fetching: oldFetching},
-      queue: {context: oldContext},
+      queue: {context: oldContext, userQueue: oldQueue},
       player: {
         paused: oldPaused,
         seeking: oldSeeking,
@@ -111,6 +112,14 @@ class PlayerTabBar extends React.Component {
 
     if (!currentSessionID && this.tabBarBGColor !== '#28282b') {
       this.tabBarBGColor = '#28282b';
+    }
+
+    if (userQueue.length === 0 && oldQueue.length > 0) {
+      updatePlayer({nextTrackID: null, nextQueueID: null});
+    }
+
+    if (userQueue.length === 1 && userQueue[0].id !== nextQueueID) {
+      updatePlayer({nextTrackID: userQueue[0].trackID, nextQueueID: userQueue[0].id});
     }
 
     if (
