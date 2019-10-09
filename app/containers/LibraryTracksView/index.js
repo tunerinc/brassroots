@@ -192,19 +192,17 @@ class LibraryTracksView extends React.Component {
         } else {
           playTrack(
             user,
-            {...trackToPlay, id: null, trackID: track.id},
+            {...trackToPlay, id: null, trackID: trackToPlay.id},
             {
               id: session.id,
               totalPlayed: session.totalPlayed,
               current: {
-                prevQueueID,
-                prevTrackID,
                 nextQueueID,
                 nextTrackID,
                 track,
                 id: currentQueueID,
-                totalLikes: currentQueue.totalLikes,
-                userID: currentQueue.userID,
+                totalLikes: queueTrack.totalLikes,
+                userID: queueTrack.userID,
               },
             },
             {
