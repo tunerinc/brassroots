@@ -269,23 +269,25 @@ class LibraryTracksView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    if (sessions.allIDs.includes(currentSessionID)) {
-      const {listeners, ownerID} = sessions.byID[currentSessionID];
-      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
-      const {displayName, profileImage} = users.byID[currentUserID];
-
-      if (!songInQueue) {
-        const track = tracks.byID[selectedTrack];
-        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
-        const prevTrackID = userQueue.length ? userQueue[userQueue.length - 1].trackID : currentTrackID;
-        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
-        const user = {displayName, profileImage, id: currentUserID};
-
-        this.closeModal();
-        queueTrack(session, track, user);
+    InteractionManager.runAfterInteractions(() => {
+      if (sessions.allIDs.includes(currentSessionID)) {
+        const {listeners, ownerID} = sessions.byID[currentSessionID];
+        const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+        const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+        const {displayName, profileImage} = users.byID[currentUserID];
+  
+        if (!songInQueue) {
+          const track = tracks.byID[selectedTrack];
+          const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+          const prevTrackID = userQueue.length ? userQueue[userQueue.length - 1].trackID : currentTrackID;
+          const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+          const user = {displayName, profileImage, id: currentUserID};
+  
+          queueTrack(session, track, user);
+          this.closeModal();
+        }
       }
-    }
+    });
   }
 
   renderModalContent() {
