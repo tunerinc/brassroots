@@ -3,7 +3,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import FastImage from 'react-native-fast-image';
-import {Text, View, Animated, Easing, VirtualizedList, ActivityIndicator} from "react-native";
+import {
+  Text,
+  View,
+  Animated,
+  Easing,
+  VirtualizedList,
+  ActivityIndicator,
+  InteractionManager,
+} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
@@ -59,8 +67,17 @@ class LibraryTracksView extends React.Component {
 
   componentDidMount() {
     const {getTracks, tracks: {userTracks}} = this.props;
-    this.closeModal();
-    if (!userTracks.length) getTracks(true, 0);
+
+    InteractionManager.runAfterInteractions(() => {
+      this.closeModal();
+      if (!userTracks.length) getTracks(true, 0);
+    });
+  }
+
+  navBack() {
+    InteractionManager.runAfterInteractions(() => {
+      Actions.pop();
+    });
   }
 
   openModal = selectedTrack => () => {
@@ -320,7 +337,7 @@ class LibraryTracksView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={Actions.pop} />
+            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>Songs</Text>
             <View style={styles.rightIcon} />
           </View>
