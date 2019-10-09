@@ -123,6 +123,15 @@ class PlayerTabBar extends React.Component {
     }
 
     if (
+      typeof currentSessionID === 'string'
+      && typeof oldSessionID === 'string'
+      && currentSessionID === oldSessionID
+      && currentQueueID !== oldCurrentID
+    ) {
+      updatePlayer({progress: 0});
+    }
+
+    if (
       !playerError
       && !paused
       && (
