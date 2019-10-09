@@ -11,6 +11,7 @@ import {
   VirtualizedList,
   ActivityIndicator,
   InteractionManager,
+  TouchableOpacity,
 } from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
@@ -74,11 +75,7 @@ class LibraryTracksView extends React.Component {
     });
   }
 
-  navBack() {
-    InteractionManager.runAfterInteractions(() => {
-      Actions.pop();
-    });
-  }
+  navBack = () => InteractionManager.runAfterInteractions(() => setTimeout(Actions.pop, 1));
 
   openModal = selectedTrack => () => {
     InteractionManager.runAfterInteractions(() => {
@@ -347,7 +344,13 @@ class LibraryTracksView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={this.navBack} />
+            <TouchableOpacity
+              style={styles.leftIconButton}
+              onPress={this.navBack}
+              activeOpacity={0.5}
+            >
+              <Ionicons name="ios-arrow-back" style={styles.leftIcon} />
+            </TouchableOpacity>
             <Text style={styles.title}>Songs</Text>
             <View style={styles.rightIcon} />
           </View>

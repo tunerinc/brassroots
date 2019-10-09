@@ -123,9 +123,11 @@ class PlayerTabBar extends React.Component {
     }
 
     if (
-      typeof currentSessionID === 'string'
-      && typeof oldSessionID === 'string'
+      currentSession
+      && oldSession
       && currentSessionID === oldSessionID
+      && typeof currentQueueID === 'string'
+      && typeof oldCurrentID === 'string'
       && currentQueueID !== oldCurrentID
     ) {
       updatePlayer({progress: 0});
@@ -289,7 +291,10 @@ class PlayerTabBar extends React.Component {
 
   nav = routeName => () => {
     const {navigation: {navigate}} = this.props;
-    InteractionManager.runAfterInteractions(() => navigate(routeName));
+
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => navigate(routeName), 1);
+    });
   }
 
   handleTogglePause() {

@@ -12,6 +12,7 @@ import {
   VirtualizedList,
   ScrollView,
   RefreshControl,
+  InteractionManager,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -65,7 +66,7 @@ class ExploreTabView extends React.Component {
     const timeDiff = moment().diff(lastUpdated, 'minutes', true);
 
     if (timeDiff >= 1 || trendingIDs.length === 0) {
-      getTrendingSessions();
+      InteractionManager.runAfterInteractions(getTrendingSessions);
     }
   }
   
@@ -90,11 +91,15 @@ class ExploreTabView extends React.Component {
   }
 
   openModal = selectedSession => () => {
-    this.setState({selectedSession, sessionModalOpen: true});
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => this.setState({selectedSession, sessionModalOpen: true}), 1);
+    });
   }
 
   closeModal() {
-    this.setState({sessionModalOpen: false});
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => this.setState({sessionModalOpen: false}), 1);
+    });
   }
 
   renderSessionModal() {
@@ -143,15 +148,19 @@ class ExploreTabView extends React.Component {
       total: inSession ? sessionsByID[currentSessionID].totalListeners : null,
     };
 
-    if (currentSessionID === sessionID) {
-      Actions.liveSession();
-    } else {
-      joinSession(
-        session,
-        {id: user.id, displayName: user.displayName, profileImage: user.profileImage},
-        inSession,
-      );
-    }
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        if (currentSessionID === sessionID) {
+          Actions.liveSession();
+        } else {
+          joinSession(
+            session,
+            {id: user.id, displayName: user.displayName, profileImage: user.profileImage},
+            inSession,
+          );
+        }
+      }, 1);
+    });
   }
 
   renderSession({item}) {
@@ -329,11 +338,11 @@ class ExploreTabView extends React.Component {
           backdropColor={'#1b1b1e'}
           backdropOpacity={0.7}
           animationIn='slideInUp'
-          animationInTiming={230}
-          backdropTransitionInTiming={230}
+          animationInTiming={200}
+          backdropTransitionInTiming={200}
           animationOut='slideOutDown'
-          animationOutTiming={230}
-          backdropTransitionOutTiming={230}
+          animationOutTiming={200}
+          backdropTransitionOutTiming={200}
           hideModalContentWhileAnimating
           useNativeDriver={true}
           style={styles.modal}

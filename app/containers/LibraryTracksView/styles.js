@@ -12,6 +12,7 @@ interface Styles {
   container: ViewStyleProp,
   shadow: ViewStyleProp,
   nav: ViewStyleProp,
+  leftIconButton: ViewStyleProp,
   leftIcon: TextStyleProp,
   title: TextStyleProp,
   rightIcon: ViewStyleProp,
@@ -43,7 +44,7 @@ const styles: Styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
     paddingTop: 10,
-    paddingHorizontal: 15,
+    paddingRight: 15,
     zIndex: 2,
     alignSelf: 'stretch',
   },
@@ -53,14 +54,16 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 15,
   },
-  leftIcon: {
+  leftIconButton: {
     flex: 2,
+    backgroundColor: 'transparent',
     height: 45,
+    paddingLeft: 15,
+  },
+  leftIcon: {
     fontSize: 30,
     paddingTop: 7.5,
     color: '#fefefe',
-    backgroundColor: 'transparent',
-    alignSelf: 'center',
   },
   title: {
     flex: 6,

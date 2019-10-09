@@ -24,7 +24,7 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   addTrackButton: {
-    paddingHorizontal: 15,
+    paddingLeft: 15,
     paddingVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',

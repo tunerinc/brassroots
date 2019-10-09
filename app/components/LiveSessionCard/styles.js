@@ -30,6 +30,7 @@ interface Styles {
   actionIcon: TextStyleProp,
   actionText: TextStyleProp,
   disabled: TextStyleProp,
+  optionsButton: ViewStyleProp,
   options: TextStyleProp,
 };
 
@@ -137,12 +138,14 @@ const styles: Styles = StyleSheet.create({
   disabled: {
     color: '#888',
   },
-  options: {
+  optionsButton: {
     flex: 1,
-    textAlign: 'right',
     height: 45,
     backgroundColor: '#1b1b1e',
     paddingTop: 7.5,
+  },
+  options: {
+    textAlign: 'right',
     fontSize: 30,
     color: '#fefefe',
   },

@@ -37,7 +37,7 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   track: {
-    paddingHorizontal: 15,
+    paddingLeft: 15,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -119,8 +119,9 @@ const styles: Styles = StyleSheet.create({
   optionsButton: {
     flex: 1,
     height: 45,
-    backgroundColor: '#1b1b1e',
+    backgroundColor: 'transparent',
     paddingTop: 7.5,
+    paddingRight: 15,
   },
   options: {
     textAlign: 'right',
