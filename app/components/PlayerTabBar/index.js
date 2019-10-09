@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, Image, TouchableOpacity, Animated, Easing} from 'react-native';
+import {View, Image, TouchableOpacity, Animated, Easing, InteractionManager} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -195,6 +195,10 @@ class PlayerTabBar extends React.Component {
     BackgroundTimer.stop();
   }
 
+  openPlayer = () => InteractionManager.runAfterInteractions(() => {
+    setTimeout(Actions.liveSession, 1)
+  });
+
   setProgress() {
     const {updatePlayer, player: {progress, seeking, durationMS}} = this.props;
     if (typeof progress === 'number' && !seeking) updatePlayer({progress: progress + 1000});
@@ -285,7 +289,7 @@ class PlayerTabBar extends React.Component {
 
   nav = routeName => () => {
     const {navigation: {navigate}} = this.props;
-    navigate(routeName);
+    InteractionManager.runAfterInteractions(() => navigate(routeName));
   }
 
   handleTogglePause() {
@@ -297,16 +301,20 @@ class PlayerTabBar extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    if (sessions.allIDs.includes(currentSessionID)) {
-      const {ownerID} = sessions.byID[currentSessionID];
-
-      togglePause(
-        currentUserID,
-        ownerID,
-        {progress, id: currentSessionID, current: currentTrackID},
-        !paused,
-      );
-    }
+    InteractionManager.runAfterInteractions(() => {
+      if (sessions.allIDs.includes(currentSessionID)) {
+        const {ownerID} = sessions.byID[currentSessionID];
+  
+        setTimeout(() => {
+          togglePause(
+            currentUserID,
+            ownerID,
+            {progress, id: currentSessionID, current: currentTrackID},
+            !paused,
+          );
+        }, 1);
+      }
+    });
   }
 
   render() {
@@ -336,7 +344,7 @@ class PlayerTabBar extends React.Component {
               />
             </View>
             <MiniPlayer
-              openPlayer={Actions.liveSession}
+              openPlayer={this.openPlayer}
               navToProfile={this.navToProfile}
               togglePause={this.handleTogglePause}
               progress={progress}
