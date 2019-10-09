@@ -99,13 +99,15 @@ const styles: Styles = StyleSheet.create({
     color: '#c0392b',
   },
   cancel: {
-    paddingVertical: 20,
+    backgroundColor: '#fefefe',
     borderColor: '#888',
     borderTopWidth: 1,
-    backgroundColor: '#fefefe',
     justifyContent: 'center',
   },
-  cancelButton: {},
+  cancelButton: {
+    paddingVertical: 20,
+    backgroundColor: '#fefefe',
+  },
 });
 
 export default styles;

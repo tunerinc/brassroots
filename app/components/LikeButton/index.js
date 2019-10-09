@@ -35,7 +35,6 @@ export default class LikeButton extends React.PureComponent<Props, State> {
         {liked &&
           <Ionicons
             name='md-heart'
-            size={25}
             color='#c0392b'
             style={styles.like}
           />
@@ -43,7 +42,6 @@ export default class LikeButton extends React.PureComponent<Props, State> {
         {!liked &&
           <Ionicons
             name='md-heart'
-            size={25}
             color='#888'
             style={styles.like}
           />

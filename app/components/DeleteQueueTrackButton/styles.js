@@ -24,6 +24,7 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingRight: 15,
   },
   loading: {
     flex: 1,

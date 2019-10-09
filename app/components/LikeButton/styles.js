@@ -23,18 +23,22 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   button: {
     flex: 1,
+    height: 45,
+    backgroundColor: 'transparent',
+    paddingRight: 15,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
   like: {
-    textAlign: 'center',
+    textAlign: 'right',
+    fontSize: 25,
   },
   count: {
     fontSize: 12,
     lineHeight: 15.6,
     position: 'absolute',
-    bottom: -5,
-    left: 26,
+    bottom: 0,
+    left: 35,
     textAlign: 'left',
   },
   red: {
