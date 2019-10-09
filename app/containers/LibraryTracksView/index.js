@@ -81,11 +81,15 @@ class LibraryTracksView extends React.Component {
   }
 
   openModal = selectedTrack => () => {
-    this.setState({selectedTrack, isTrackMenuOpen: true});
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({selectedTrack, isTrackMenuOpen: true});
+    });
   }
 
   closeModal() {
-    this.setState({isTrackMenuOpen: false});
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({isTrackMenuOpen: false});
+    });
   }
 
   onEndReached() {
@@ -392,11 +396,11 @@ class LibraryTracksView extends React.Component {
           backdropColor={"#1b1b1e"}
           backdropOpacity={0.7}
           animationIn="slideInUp"
-          animationInTiming={230}
-          backdropTransitionInTiming={230}
+          animationInTiming={200}
+          backdropTransitionInTiming={200}
           animationOut="slideOutDown"
-          animationOutTiming={230}
-          backdropTransitionOutTiming={230}
+          animationOutTiming={200}
+          backdropTransitionOutTiming={200}
           hideModalContentWhileAnimating
           useNativeDriver={true}
           style={styles.modal}
