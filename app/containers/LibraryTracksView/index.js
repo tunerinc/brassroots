@@ -185,27 +185,64 @@ class LibraryTracksView extends React.Component {
     const trackToPlay = tracks.byID[trackID];
     const user = {displayName, profileImage, id: currentUserID};
 
-    if (session && session.ownerID === currentUserID) {
-      if (session.currentTrackID === trackID) {
-        Actions.liveSession();
-      } else {
-        playTrack(
-          user,
-          {...trackToPlay, id: null, trackID: track.id},
-          {
-            id: session.id,
-            totalPlayed: session.totalPlayed,
-            current: {
-              prevQueueID,
-              prevTrackID,
-              nextQueueID,
-              nextTrackID,
-              track,
-              id: currentQueueID,
-              totalLikes: currentQueue.totalLikes,
-              userID: currentQueue.userID,
+    InteractionManager.runAfterInteractions(() => {
+      if (session && session.ownerID === currentUserID) {
+        if (session.currentTrackID === trackID) {
+          Actions.liveSession();
+        } else {
+          playTrack(
+            user,
+            {...trackToPlay, id: null, trackID: track.id},
+            {
+              id: session.id,
+              totalPlayed: session.totalPlayed,
+              current: {
+                prevQueueID,
+                prevTrackID,
+                nextQueueID,
+                nextTrackID,
+                track,
+                id: currentQueueID,
+                totalLikes: currentQueue.totalLikes,
+                userID: currentQueue.userID,
+              },
             },
-          },
+            {
+              displayName,
+              id: currentUserID,
+              name: displayName,
+              type: 'user-tracks',
+              total: totalUserTracks,
+              position: trackIndex,
+              tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
+            },
+          );
+        }
+      } else {
+        if (session) {
+          leaveSession(
+            currentUserID,
+            {
+              infoUnsubscribe,
+              queueUnsubscribe,
+              track,
+              id: currentSessionID,
+              total: session.totalListeners,
+              chatUnsubscribe: () => console.log('chat'),
+            },
+            {
+              id: session.ownerID,
+              name: users.byID[session.ownerID].displayName,
+              image: users.byID[session.ownerID].profileImage,
+            },
+          );
+        }
+  
+        setTimeout(Actions.liveSession, 200);
+  
+        createSession(
+          {...user, totalFollowers},
+          trackToPlay,
           {
             displayName,
             id: currentUserID,
@@ -215,45 +252,10 @@ class LibraryTracksView extends React.Component {
             position: trackIndex,
             tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
           },
+          mode,
         );
       }
-    } else {
-      if (session) {
-        leaveSession(
-          currentUserID,
-          {
-            infoUnsubscribe,
-            queueUnsubscribe,
-            track,
-            id: currentSessionID,
-            total: session.totalListeners,
-            chatUnsubscribe: () => console.log('chat'),
-          },
-          {
-            id: session.ownerID,
-            name: users.byID[session.ownerID].displayName,
-            image: users.byID[session.ownerID].profileImage,
-          },
-        );
-      }
-
-      setTimeout(Actions.liveSession, 200);
-
-      createSession(
-        {...user, totalFollowers},
-        trackToPlay,
-        {
-          displayName,
-          id: currentUserID,
-          name: displayName,
-          type: 'user-tracks',
-          total: totalUserTracks,
-          position: trackIndex,
-          tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
-        },
-        mode,
-      );
-    }
+    });
   }
 
   handleAddTrack() {
