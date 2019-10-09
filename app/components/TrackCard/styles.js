@@ -27,6 +27,7 @@ interface Styles {
   bottomText: TextStyleProp,
   gray: TextStyleProp,
   user: TextStyleProp,
+  optionsButton: ViewStyleProp,
   options: TextStyleProp,
   count: ViewStyleProp,
   play: TextStyleProp,
@@ -115,13 +116,16 @@ const styles: Styles = StyleSheet.create({
     paddingTop: 6,
     fontFamily: 'Muli',
   },
-  options: {
+  optionsButton: {
     flex: 1,
-    textAlign: 'right',
     height: 45,
     backgroundColor: '#1b1b1e',
     paddingTop: 7.5,
+  },
+  options: {
+    textAlign: 'right',
     fontSize: 30,
+    color: '#fefefe',
   },
   count: {
     flex: 2,

@@ -3,7 +3,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import FastImage from 'react-native-fast-image';
-import {Text, View, Animated, Easing, VirtualizedList, ActivityIndicator} from "react-native";
+import {
+  Text,
+  View,
+  Animated,
+  Easing,
+  VirtualizedList,
+  ActivityIndicator,
+  InteractionManager,
+} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
@@ -59,16 +67,29 @@ class LibraryTracksView extends React.Component {
 
   componentDidMount() {
     const {getTracks, tracks: {userTracks}} = this.props;
-    this.closeModal();
-    if (!userTracks.length) getTracks(true, 0);
+
+    InteractionManager.runAfterInteractions(() => {
+      this.closeModal();
+      if (!userTracks.length) getTracks(true, 0);
+    });
+  }
+
+  navBack() {
+    InteractionManager.runAfterInteractions(() => {
+      Actions.pop();
+    });
   }
 
   openModal = selectedTrack => () => {
-    this.setState({selectedTrack, isTrackMenuOpen: true});
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({selectedTrack, isTrackMenuOpen: true});
+    });
   }
 
   closeModal() {
-    this.setState({isTrackMenuOpen: false});
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({isTrackMenuOpen: false});
+    });
   }
 
   onEndReached() {
@@ -164,27 +185,64 @@ class LibraryTracksView extends React.Component {
     const trackToPlay = tracks.byID[trackID];
     const user = {displayName, profileImage, id: currentUserID};
 
-    if (session && session.ownerID === currentUserID) {
-      if (session.currentTrackID === trackID) {
-        Actions.liveSession();
-      } else {
-        playTrack(
-          user,
-          {...trackToPlay, id: null, trackID: track.id},
-          {
-            id: session.id,
-            totalPlayed: session.totalPlayed,
-            current: {
-              prevQueueID,
-              prevTrackID,
-              nextQueueID,
-              nextTrackID,
-              track,
-              id: currentQueueID,
-              totalLikes: currentQueue.totalLikes,
-              userID: currentQueue.userID,
+    InteractionManager.runAfterInteractions(() => {
+      if (session && session.ownerID === currentUserID) {
+        if (session.currentTrackID === trackID) {
+          Actions.liveSession();
+        } else {
+          playTrack(
+            user,
+            {...trackToPlay, id: null, trackID: track.id},
+            {
+              id: session.id,
+              totalPlayed: session.totalPlayed,
+              current: {
+                prevQueueID,
+                prevTrackID,
+                nextQueueID,
+                nextTrackID,
+                track,
+                id: currentQueueID,
+                totalLikes: currentQueue.totalLikes,
+                userID: currentQueue.userID,
+              },
             },
-          },
+            {
+              displayName,
+              id: currentUserID,
+              name: displayName,
+              type: 'user-tracks',
+              total: totalUserTracks,
+              position: trackIndex,
+              tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
+            },
+          );
+        }
+      } else {
+        if (session) {
+          leaveSession(
+            currentUserID,
+            {
+              infoUnsubscribe,
+              queueUnsubscribe,
+              track,
+              id: currentSessionID,
+              total: session.totalListeners,
+              chatUnsubscribe: () => console.log('chat'),
+            },
+            {
+              id: session.ownerID,
+              name: users.byID[session.ownerID].displayName,
+              image: users.byID[session.ownerID].profileImage,
+            },
+          );
+        }
+  
+        setTimeout(Actions.liveSession, 200);
+  
+        createSession(
+          {...user, totalFollowers},
+          trackToPlay,
           {
             displayName,
             id: currentUserID,
@@ -194,45 +252,10 @@ class LibraryTracksView extends React.Component {
             position: trackIndex,
             tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
           },
+          mode,
         );
       }
-    } else {
-      if (session) {
-        leaveSession(
-          currentUserID,
-          {
-            infoUnsubscribe,
-            queueUnsubscribe,
-            track,
-            id: currentSessionID,
-            total: session.totalListeners,
-            chatUnsubscribe: () => console.log('chat'),
-          },
-          {
-            id: session.ownerID,
-            name: users.byID[session.ownerID].displayName,
-            image: users.byID[session.ownerID].profileImage,
-          },
-        );
-      }
-
-      setTimeout(Actions.liveSession, 200);
-
-      createSession(
-        {...user, totalFollowers},
-        trackToPlay,
-        {
-          displayName,
-          id: currentUserID,
-          name: displayName,
-          type: 'user-tracks',
-          total: totalUserTracks,
-          position: trackIndex,
-          tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
-        },
-        mode,
-      );
-    }
+    });
   }
 
   handleAddTrack() {
@@ -246,23 +269,25 @@ class LibraryTracksView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    if (sessions.allIDs.includes(currentSessionID)) {
-      const {listeners, ownerID} = sessions.byID[currentSessionID];
-      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
-      const {displayName, profileImage} = users.byID[currentUserID];
-
-      if (!songInQueue) {
-        const track = tracks.byID[selectedTrack];
-        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
-        const prevTrackID = userQueue.length ? userQueue[userQueue.length - 1].trackID : currentTrackID;
-        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
-        const user = {displayName, profileImage, id: currentUserID};
-
-        this.closeModal();
-        queueTrack(session, track, user);
+    InteractionManager.runAfterInteractions(() => {
+      if (sessions.allIDs.includes(currentSessionID)) {
+        const {listeners, ownerID} = sessions.byID[currentSessionID];
+        const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+        const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+        const {displayName, profileImage} = users.byID[currentUserID];
+  
+        if (!songInQueue) {
+          const track = tracks.byID[selectedTrack];
+          const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+          const prevTrackID = userQueue.length ? userQueue[userQueue.length - 1].trackID : currentTrackID;
+          const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+          const user = {displayName, profileImage, id: currentUserID};
+  
+          queueTrack(session, track, user);
+          this.closeModal();
+        }
       }
-    }
+    });
   }
 
   renderModalContent() {
@@ -320,7 +345,7 @@ class LibraryTracksView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={Actions.pop} />
+            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>Songs</Text>
             <View style={styles.rightIcon} />
           </View>
@@ -375,11 +400,11 @@ class LibraryTracksView extends React.Component {
           backdropColor={"#1b1b1e"}
           backdropOpacity={0.7}
           animationIn="slideInUp"
-          animationInTiming={230}
-          backdropTransitionInTiming={230}
+          animationInTiming={200}
+          backdropTransitionInTiming={200}
           animationOut="slideOutDown"
-          animationOutTiming={230}
-          backdropTransitionOutTiming={230}
+          animationOutTiming={200}
+          backdropTransitionOutTiming={200}
           hideModalContentWhileAnimating
           useNativeDriver={true}
           style={styles.modal}

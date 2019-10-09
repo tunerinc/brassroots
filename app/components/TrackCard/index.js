@@ -7,7 +7,7 @@
 
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-import {View, Text, TouchableHighlight, TouchableOpacity,} from 'react-native';
+import {View, Text, TouchableHighlight, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import {type Context} from '../../reducers/queue';
 
@@ -185,12 +185,9 @@ export default class TrackCard extends React.PureComponent<Props, State> {
           }
           {showFavoriteIcon && <Foundation name='star' size={25} style={styles.favoriteTrackIcon} />}
           {(showOptions && openModal) &&
-            <SimpleLineIcons
-              name='options'
-              style={styles.options}
-              color='#fefefe'
-              onPress={openModal}
-            />
+            <TouchableOpacity style={styles.optionsButton} onPress={openModal} activeOpacity={0.5}>
+              <SimpleLineIcons name='options' style={styles.options} />
+            </TouchableOpacity>
           }
         </View>
       </TouchableHighlight>
