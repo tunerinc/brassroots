@@ -95,7 +95,10 @@ type State = {
   +newPlaylist?: {
     +members?: Array<string>,
     +name?: ?string,
-    +image?: ?string,
+    +image?: {
+      path: ?string,
+      base64: ?string,
+    },
     +mode?: string,
   },
 };
@@ -206,7 +209,10 @@ export const initialState: State = {
   newPlaylist: {
     members: [],
     name: null,
-    image: null,
+    image: {
+      path: null,
+      base64: null,
+    },
     mode: 'limitless',
   },
 };

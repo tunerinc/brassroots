@@ -46,21 +46,12 @@ export function changeCoverPhoto(
     const storage: StorageRef = firebase.storage().ref();
 
     try {
-      const photoURI: string = await selectPhoto('Change Cover Photo');
+      const photoURI = await selectPhoto('Change Cover Photo');
 
-      if (photoURI !== 'cancelled') {
-        const croppedImage = await ImageCropPicker.openCropper(
-          {
-            path: photoURI,
-            width: 640,
-            height: 640,
-            cropperToolbarTitle: 'Crop Image',
-          },
-        );
-
+      if (typeof photoURI === 'string' && photoURI !== 'cancelled') {
         dispatch(actions.request());
 
-        const blob: Blob = await fetchRemoteURL(croppedImage.path, 'blob');
+        const blob: Blob = await fetchRemoteURL(photoURI, 'blob');
         await storage.child(`coverImages/${userID}`).delete();
         const uploadTask: StorageUploadTask = storage.child(`coverImages/${userID}`).put(blob);
         await uploadTask;
