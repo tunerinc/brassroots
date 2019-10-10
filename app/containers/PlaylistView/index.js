@@ -238,7 +238,7 @@ class PlaylistView extends React.Component {
       } else {
         playTrack(
           user,
-          {...trackToPlay, id: null, trackID: track.id},
+          {...trackToPlay, id: null, trackID: trackToPlay.id},
           {
             id: session.id,
             totalPlayed: session.totalPlayed,
