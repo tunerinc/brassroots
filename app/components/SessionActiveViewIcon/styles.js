@@ -19,7 +19,7 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   button: {
-    flex: 1,
+    flex: 2,
     paddingTop: 5,
     justifyContent: 'center',
     alignItems: 'flex-end',

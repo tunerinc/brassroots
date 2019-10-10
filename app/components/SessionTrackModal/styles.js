@@ -119,13 +119,13 @@ const styles: Styles = StyleSheet.create({
   },
   cancel: {
     backgroundColor: '#fefefe',
-    paddingVertical: 20,
     borderColor: '#888',
     borderTopWidth: 1,
     justifyContent: 'center',
   },
   cancelButton: {
-
+    paddingVertical: 20,
+    backgroundColor: '#fefefe',
   },
   disabled: {
     color: 'rgba(136,136,136,0.5)',

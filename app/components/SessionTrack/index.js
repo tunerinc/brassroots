@@ -70,13 +70,9 @@ export default class SessionTrack extends React.Component<Props, State> {
             {displayName}
           </Text>
         </TouchableOpacity>
-        <SimpleLineIcons
-          name='options'
-          size={35}
-          color='#fefefe'
-          style={styles.options}
-          onPress={openModal}
-        />
+        <TouchableOpacity style={styles.optionsButton} onPress={openModal} activeOpacity={0.5}>
+          <SimpleLineIcons name='options' style={styles.options} />
+        </TouchableOpacity>
       </View>
     );
   }
