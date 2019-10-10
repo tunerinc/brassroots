@@ -10,6 +10,7 @@ import {StyleSheet} from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
+  type ImageStyleProp,
 } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
@@ -24,7 +25,10 @@ interface Styles {
   disabledText: TextStyleProp,
   wrap: ViewStyleProp,
   imageName: ViewStyleProp,
-  image: ViewStyleProp,
+  roundPhoto: ImageStyleProp,
+  photoButton: ViewStyleProp,
+  roundPhotoWrap: ViewStyleProp,
+  roundPhotoFilter: ViewStyleProp,
   imageIcon: TextStyleProp,
   name: ViewStyleProp,
   input: TextStyleProp,
@@ -111,20 +115,44 @@ const styles: Styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 15,
     paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#323232',
     zIndex: -2,
   },
-  image: {
-    backgroundColor: '#888',
-    alignItems: 'center',
+  roundPhoto: {
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
+    backgroundColor: 'transparent',
+  },
+  photoButton: {
+    borderRadius: 35,
     justifyContent: 'center',
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+  },
+  roundPhotoWrap: {
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
+    overflow: 'hidden',
+    backgroundColor: '#888',
+  },
+  roundPhotoFilter: {
+    width: 55,
+    height: 55,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(136,136,136,0.5)'
   },
   imageIcon: {
     fontSize: 28,
     color: '#fefefe',
+    backgroundColor: 'transparent',
   },
   name: {
     flex: 6,
