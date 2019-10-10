@@ -23,6 +23,7 @@ interface Styles {
   headerBackground: ViewStyleProp,
   headerBackgroundImage: ImageStyleProp,
   nav: ViewStyleProp,
+  leftIconButton: ViewStyleProp,
   leftIcon: TextStyleProp,
   modal: ViewStyleProp,
   playerWrap: ViewStyleProp,
@@ -50,7 +51,7 @@ const styles: Styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
     paddingTop: 10,
-    paddingHorizontal: 15,
+    paddingRight: 15,
     zIndex: 1,
     alignSelf: 'stretch',
   },
@@ -116,13 +117,15 @@ const styles: Styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'transparent',
   },
-  leftIcon: {
-    flex: 1,
+  leftIconButton: {
+    flex: 2,
+    backgroundColor: 'transparent',
     height: 45,
+    paddingLeft: 15,
+  },
+  leftIcon: {
     fontSize: 30,
     paddingTop: 10,
-    backgroundColor: 'transparent',
-    alignSelf: 'center',
     color: '#fefefe',
   },
   modal: {
