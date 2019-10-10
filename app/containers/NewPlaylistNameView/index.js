@@ -2,6 +2,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import selectPhoto from '../../utils/selectPhoto';
+import FastImage from 'react-native-fast-image';
 import {Text, View, TouchableOpacity, TextInput} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -24,8 +26,9 @@ class NewPlaylistNameView extends React.Component {
     super(props);
 
     this.navBack = this.navBack.bind(this);
-    this.handleSetPlaylistMode = this.handleSetPlaylistMode.bind(this);
-    this.handleSetPlaylistName = this.handleSetPlaylistName.bind(this);
+    this.setPlaylistMode = this.setPlaylistMode.bind(this);
+    this.setPlaylistName = this.setPlaylistName.bind(this);
+    this.selectNewPhoto = this.selectNewPhoto.bind(this);
   }
 
   navBack() {
@@ -34,22 +37,36 @@ class NewPlaylistNameView extends React.Component {
     Actions.pop();
   }
 
-  handleSetPlaylistMode = mode => () => {
+  setPlaylistMode = mode => () => {
     const {updatePlaylists} = this.props;
     updatePlaylists({newPlaylist: {mode}});
   }
 
-  handleSetPlaylistName(name) {
+  setPlaylistName(name) {
     const {updatePlaylists} = this.props;
     updatePlaylists({newPlaylist: {name}});
   }
 
-  goToSelectPhoto() {
-    Actions.libSelectPlaylistPhoto({direction: 'vertical', isSelectingPlaylistPhoto: true});
+  async selectNewPhoto() {
+    const {updatePlaylists} = this.props;
+    const image = await selectPhoto('Select Playlist Photo', true);
+
+    if (image !== 'cancelled') {
+      updatePlaylists(
+        {
+          newPlaylist: {
+            image: {
+              path: image.path,
+              base64: image.data,
+            },
+          },
+        },
+      );
+    }
   }
 
   render() {
-    const {playlists: {newPlaylist: {name, mode}}} = this.props;
+    const {playlists: {newPlaylist: {name, mode, image}}} = this.props;
 
     return (
       <View style={styles.container}>
@@ -71,13 +88,24 @@ class NewPlaylistNameView extends React.Component {
         </View>
         <View style={styles.wrap}>
           <View style={styles.imageName}>
-            <TouchableOpacity style={styles.image} onPress={this.goToSelectPhoto}>
-              <FontAwesome name='camera' style={styles.imageIcon} />
+            <TouchableOpacity style={styles.photoButton} onPress={this.selectNewPhoto}>
+              <View style={styles.roundPhotoWrap}>
+                {image && image.path && image.path !== 'cancelled' &&
+                  <FastImage
+                    style={styles.roundPhoto}
+                    source={{uri: `data:image/png;base64,${image.base64}`}}
+                  />
+                }
+                <View style={styles.roundPhotoFilter}>
+                  {image && image.path && <MaterialIcons name='edit' style={styles.imageIcon} />}
+                  {image && !image.path && <FontAwesome name='camera' style={styles.imageIcon} />}
+                </View>
+              </View>
             </TouchableOpacity>
             <View style={styles.name}>
               <TextInput
                 style={styles.input}
-                onChangeText={this.handleSetPlaylistName}
+                onChangeText={this.setPlaylistName}
                 autoCapitalize='none'
                 autoCorrect={false}
                 returnKeyType='done'
@@ -102,7 +130,7 @@ class NewPlaylistNameView extends React.Component {
           >
             <TouchableOpacity
               style={styles.modeWrap}
-              onPress={this.handleSetPlaylistMode('hidden')}
+              onPress={this.setPlaylistMode('hidden')}
             >
               <Octicons
                 name='telescope'
@@ -147,7 +175,7 @@ class NewPlaylistNameView extends React.Component {
           <View style={styles.mode}>
             <TouchableOpacity
               style={styles.modeWrap}
-              onPress={this.handleSetPlaylistMode('vip')}
+              onPress={this.setPlaylistMode('vip')}
             >
               <Foundation
                 name='ticket'
@@ -184,7 +212,7 @@ class NewPlaylistNameView extends React.Component {
           <View style={styles.mode}>
             <TouchableOpacity
               style={styles.modeWrap}
-              onPress={this.handleSetPlaylistMode('limitless')}
+              onPress={this.setPlaylistMode('limitless')}
             >
               <MaterialIcons
                 name='all-inclusive'

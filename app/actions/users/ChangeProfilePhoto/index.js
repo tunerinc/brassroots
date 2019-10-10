@@ -10,7 +10,6 @@
  */
 
 import ImageCropPicker from 'react-native-image-crop-picker';
-import ImagePicker from 'react-native-image-picker';
 import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import selectPhoto from '../../../utils/selectPhoto';
 import * as actions from './actions';
@@ -47,21 +46,12 @@ export function changeProfilePhoto(
     const storage: StorageRef = firebase.storage().ref();
 
     try {
-      const photoURI: string = await selectPhoto('Change Profile Photo');
+      const photoURI = await selectPhoto('Change Profile Photo');
 
-      if (photoURI !== 'cancelled') {
-        const croppedImage = await ImageCropPicker.openCropper(
-          {
-            path: photoURI,
-            width: 640,
-            height: 640,
-            cropperToolbarTitle: 'Crop Image',
-          },
-        );
-
+      if (typeof photoURI === 'string' && photoURI !== 'cancelled') {
         dispatch(actions.request());
 
-        const blob: Blob = await fetchRemoteURL(croppedImage.path, 'blob');
+        const blob: Blob = await fetchRemoteURL(photoURI, 'blob');
         await storage.child(`profileImages/${userID}`).delete();
         const uploadTask: StorageUploadTask = storage.child(`profileImages/${userID}`).put(blob);
         await uploadTask;
