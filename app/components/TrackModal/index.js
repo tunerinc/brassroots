@@ -13,6 +13,7 @@ import styles from './styles';
 type Props = {|
   closeModal: () => void,
   queueTrack: () => void,
+  setFavoriteTrack: () => void,
   name: string,
   artists: string,
   albumName: string,
@@ -20,6 +21,7 @@ type Props = {|
   trackID?: string,
   trackInQueue?: boolean,
   isListenerOwner?: ?boolean,
+  isFavorite?: boolean,
 |};
 
 type State = {||};
@@ -36,6 +38,8 @@ export default class TrackModal extends React.PureComponent<Props, State> {
       trackID,
       trackInQueue,
       isListenerOwner,
+      isFavorite,
+      setFavoriteTrack,
     } = this.props;
 
     if (!trackID) return <View></View>;
@@ -76,6 +80,18 @@ export default class TrackModal extends React.PureComponent<Props, State> {
             </View>
           }
         </View>
+        {!isFavorite &&
+          <View style={styles.option}>
+            <TouchableHighlight
+              style={styles.button}
+              activeOpacity={0.5}
+              underlayColor='#fefefe'
+              onPress={setFavoriteTrack}
+            >
+              <Text style={styles.text}>set as favorite</Text>
+            </TouchableHighlight>
+          </View>
+        }
         <View style={styles.option}>
           <TouchableHighlight
             style={styles.button}

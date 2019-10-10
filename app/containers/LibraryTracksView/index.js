@@ -40,6 +40,7 @@ import {createSession} from "../../actions/sessions/CreateSession";
 import {leaveSession} from "../../actions/sessions/LeaveSession";
 
 // Tracks Action Creators
+import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
 import {getTracks} from "../../actions/tracks/GetTracks";
 
 class LibraryTracksView extends React.Component {
@@ -62,6 +63,7 @@ class LibraryTracksView extends React.Component {
     this.handlePlay = this.handlePlay.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
     this.renderModalContent = this.renderModalContent.bind(this);
+    this.handleChangeFavoriteTrack = this.handleChangeFavoriteTrack.bind(this);
 
     this._onEndReached = debounce(this.onEndReached, 0);
   }
@@ -292,7 +294,7 @@ class LibraryTracksView extends React.Component {
   renderModalContent() {
     const {selectedTrack} = this.state;
     const {
-      entities: {queueTracks, sessions, tracks},
+      entities: {queueTracks, sessions, tracks, users},
       queue: {userQueue},
       sessions: {currentSessionID},
       users: {currentUserID},
@@ -300,6 +302,7 @@ class LibraryTracksView extends React.Component {
 
     if (!selectedTrack || !tracks.allIDs.includes(selectedTrack)) return <View></View>;
 
+    const {favoriteTrackID} = users.byID[currentUserID];
     const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
     const songQueued = userQueue.map(o => o.trackID).includes(selectedTrack);
     const isListenerOwner = sessionExists
@@ -319,8 +322,21 @@ class LibraryTracksView extends React.Component {
         albumImage={tracks.byID[selectedTrack].album.small}
         trackInQueue={songQueued}
         isListenerOwner={sessionExists ? isListenerOwner : null}
+        isFavorite={favoriteTrackID === selectedTrack}
+        setFavoriteTrack={this.handleChangeFavoriteTrack(selectedTrack)}
       />
     );
+  }
+
+  handleChangeFavoriteTrack = trackID => () => {
+    const {changeFavoriteTrack, users: {currentUserID}} = this.props;
+
+    InteractionManager.runAfterInteractions(() => {
+      setTimeout(() => {
+        changeFavoriteTrack(currentUserID, trackID);
+        this.closeModal();
+      }, 1);
+    });
   }
 
   render() {
@@ -432,6 +448,7 @@ class LibraryTracksView extends React.Component {
 }
 
 LibraryTracksView.propTypes = {
+  changeFavoriteTrack: PropTypes.func.isRequired,
   createSession: PropTypes.func.isRequired,
   entities: PropTypes.object.isRequired,
   getTracks: PropTypes.func.isRequired,
@@ -459,6 +476,7 @@ function mapStateToProps({entities, player, playlists, queue, sessions, settings
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    changeFavoriteTrack,
     createSession,
     getTracks,
     leaveSession,
