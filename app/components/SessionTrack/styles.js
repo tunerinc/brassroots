@@ -23,6 +23,7 @@ interface Styles {
   separator: TextStyleProp,
   artists: TextStyleProp,
   user: TextStyleProp,
+  optionsButton: ViewStyleProp,
   options: TextStyleProp,
 };
 
@@ -94,15 +95,17 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 16,
     color: '#888',
   },
-  options: {
+  optionsButton: {
     flex: 1,
-    marginLeft: 10,
-    paddingRight: 10,
-    textAlign: 'right',
     height: 45,
     backgroundColor: 'transparent',
     paddingTop: 7.5,
+    paddingRight: 15,
+  },
+  options: {
+    textAlign: 'right',
     fontSize: 30,
+    color: '#fefefe',
   },
 });
 

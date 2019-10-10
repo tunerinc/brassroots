@@ -25,7 +25,7 @@ const styles: Styles = StyleSheet.create({
     flex: 1,
     height: 45,
     backgroundColor: 'transparent',
-    paddingRight: 15,
+    paddingRight: 20,
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
@@ -38,7 +38,7 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 15.6,
     position: 'absolute',
     bottom: 0,
-    left: 35,
+    left: 33,
     textAlign: 'left',
   },
   red: {

@@ -70,14 +70,14 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#1b1b1e',
   },
   close: {
+    backgroundColor: '#fefefe',
     borderColor: '#888',
     borderTopWidth: 1,
-    backgroundColor: 'transparent',
+    justifyContent: 'center',
   },
   closeButton: {
-    backgroundColor: '#fefefe',
-    justifyContent: 'center',
     paddingVertical: 20,
+    backgroundColor: '#fefefe',
   },
 });
 
