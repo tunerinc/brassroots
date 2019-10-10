@@ -5,7 +5,7 @@ import {Text, View, TouchableOpacity, ScrollView, Animated, Easing} from 'react-
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
-import LoadingUser from '../../components/LoadingUser';
+import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
@@ -42,6 +42,19 @@ class AddMembersView extends React.Component {
     }
   }
 
+  renderLoadingUser() {
+    return (
+      <View style={styles.user}>
+        <Placeholder Animate={Fade}>
+          <View style={styles.userWrap}>
+            <PlaceholderMedia isRound={true} style={styles.userImage} />
+            <PlaceholderLine width={81} style={styles.userText} />
+          </View>
+        </Placeholder>
+      </View>
+    );
+  }
+
   render() {
     const {shadowOpacity} = this.state;
 
@@ -56,13 +69,16 @@ class AddMembersView extends React.Component {
             </TouchableOpacity>
           </View>
         </Animated.View>
-        <ScrollView style={styles.membersWrap} onScroll={this.onScroll} scrollEventThrottle={16}>
-          <View>
-            <LoadingUser />
-            <LoadingUser />
-            <LoadingUser />
-            <LoadingUser />
-            <LoadingUser />
+        <ScrollView style={styles.scrollContainer} onScroll={this.onScroll} scrollEventThrottle={16}>
+          <View style={styles.scrollWrap}>
+            {this.renderLoadingUser()}
+            {this.renderLoadingUser()}
+            {this.renderLoadingUser()}
+            {this.renderLoadingUser()}
+            {this.renderLoadingUser()}
+            {this.renderLoadingUser()}
+            {this.renderLoadingUser()}
+            {this.renderLoadingUser()}
           </View>
         </ScrollView>
       </View>

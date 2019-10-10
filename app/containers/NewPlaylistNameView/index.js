@@ -74,12 +74,16 @@ class NewPlaylistNameView extends React.Component {
           <View style={styles.nav}>
             <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>New Playlist</Text>
-            {(name !== '' && mode !== '') &&
+            {(
+              (typeof name === 'string' && name !== '')
+              && (typeof mode === 'string' && mode !== '')
+              && (image && typeof image.base64 === 'string')
+            ) &&
               <TouchableOpacity style={styles.rightIcon} onPress={Actions.libAddMembers}>
                 <Text style={[styles.rightIconText, styles.enabledText]}>next</Text>
               </TouchableOpacity>
             }
-            {(name === '' || mode === '') &&
+            {(!name || name === '' || !mode || mode === '' || !image.base64) &&
               <TouchableOpacity style={styles.rightIcon} disabled={true}>
                 <Text style={[styles.rightIconText, styles.disabledText]}>next</Text>
               </TouchableOpacity>
