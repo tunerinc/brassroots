@@ -31,6 +31,9 @@ import {queueTrack} from '../../actions/queue/QueueTrack';
 import {createSession} from '../../actions/sessions/CreateSession';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 
+// Tracks Action Creators
+import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
+
 const HEADER_MAX_HEIGHT = 261;
 const HEADER_MIN_HEIGHT = 65;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -57,6 +60,7 @@ class LibrarySingleAlbumView extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.onPanelDrag = this.onPanelDrag.bind(this);
+    this.handleChangeFavoriteTrack = this.handleChangeFavoriteTrack.bind(this);
 
     this._deltaY = new Animated.Value(0);
   }
@@ -225,7 +229,7 @@ class LibrarySingleAlbumView extends React.Component {
 
   renderModalContent(type, item) {
     const {
-      entities: {albums, queueTracks, sessions, tracks},
+      entities: {albums, queueTracks, sessions, tracks, users},
       queue: {userQueue},
       sessions: {currentSessionID},
       users: {currentUserID},
@@ -237,6 +241,7 @@ class LibrarySingleAlbumView extends React.Component {
       || (type === 'album' && !albums.allIDs.includes(item))
     ) return <View></View>;
 
+    const {favoriteTrackID} = users.byID[currentUserID];
     const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
     const songQueued = userQueue.map(t => t.trackID).includes(item);
     const entity = type === 'track' ? tracks.byID[item] : albums.byID[item];
@@ -259,6 +264,8 @@ class LibrarySingleAlbumView extends React.Component {
             albumImage={entity.album.small}
             trackInQueue={songQueued}
             isListenerOwner={sessionExists ? isListenerOwner : null}
+            isFavorite={favoriteTrackID === entity.id}
+            setFavoriteTrack={this.handleChangeFavoriteTrack(entity.id)}
           />
         );
       case 'album':
@@ -294,6 +301,12 @@ class LibrarySingleAlbumView extends React.Component {
       this.setState({scrollEnabled: false, isOpen: true});
       this.refs['TrackList'].getScrollResponder().scrollTo({x: 0, y: 0});
     }
+  }
+
+  handleChangeFavoriteTrack = trackID => () => {
+    const {changeFavoriteTrack, users: {currentUserID}} = this.props;
+    changeFavoriteTrack(currentUserID, trackID);
+    this.closeModal();
   }
 
   render() {
@@ -508,6 +521,7 @@ class LibrarySingleAlbumView extends React.Component {
 LibrarySingleAlbumView.propTypes = {
   albums: PropTypes.object.isRequired,
   albumToView: PropTypes.string,
+  changeFavoriteTrack: PropTypes.func.isRequired,
   createSession: PropTypes.func.isRequired,
   entities: PropTypes.object.isRequired,
   leaveSession: PropTypes.func.isRequired,
@@ -534,6 +548,7 @@ function mapStateToProps({albums, entities, player, queue, sessions, settings, t
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    changeFavoriteTrack,
     createSession,
     leaveSession,
     playTrack,

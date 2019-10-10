@@ -48,6 +48,9 @@ import {queueTrack} from '../../actions/queue/QueueTrack';
 import {createSession} from '../../actions/sessions/CreateSession';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 
+// Tracks Action Creators
+import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
+
 const HEADER_MAX_HEIGHT = 261;
 const HEADER_MIN_HEIGHT = 65;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -77,6 +80,7 @@ class PlaylistView extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.onPanelDrag = this.onPanelDrag.bind(this);
+    this.handleChangeFavoriteTrack = this.handleChangeFavoriteTrack.bind(this);
 
     this._deltaY = new Animated.Value(0);
     this._onEndReached = debounce(this.onEndReached, 0);
@@ -316,6 +320,7 @@ class PlaylistView extends React.Component {
     ) return <View></View>;
 
     const entity = type === 'track' ? tracks.byID[item] : playlists.byID[item];
+    const {favoriteTrackID} = users.byID[currentUserID];
 
     switch (type) {
       case 'track': {
@@ -338,6 +343,8 @@ class PlaylistView extends React.Component {
             albumImage={entity.album.medium}
             trackInQueue={songQueued}
             isListenerOwner={isListenerOwner}
+            isFavorite={favoriteTrackID === entity.id}
+            setFavoriteTrack={this.handleChangeFavoriteTrack(entity.id)}
           />
         );
       }
@@ -397,6 +404,12 @@ class PlaylistView extends React.Component {
       this.setState({scrollEnabled: false, isOpen: true});
       this.refs['TrackList'].getScrollResponder().scrollTo({x: 0, y: 0});
     }
+  }
+
+  handleChangeFavoriteTrack = trackID => () => {
+    const {changeFavoriteTrack, users: {currentUserID}} = this.props;
+    changeFavoriteTrack(currentUserID, trackID);
+    this.closeModal();
   }
 
   render() {
@@ -655,6 +668,7 @@ class PlaylistView extends React.Component {
 }
 
 PlaylistView.propTypes = {
+  changeFavoriteTrack: PropTypes.func.isRequired,
   createSession: PropTypes.func.isRequired,
   entities: PropTypes.object.isRequired,
   getPlaylistTracks: PropTypes.func.isRequired,
@@ -687,6 +701,7 @@ function mapStateToProps({entities, player, playlists, queue, sessions, settings
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    changeFavoriteTrack,
     createSession,
     getPlaylistTracks,
     leaveSession,
