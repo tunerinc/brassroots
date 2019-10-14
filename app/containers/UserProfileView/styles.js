@@ -91,15 +91,10 @@ const styles: Styles = StyleSheet.create({
     minHeight: screenHeight,
   },
   profileTrack: {
-    borderColor: '#323232',
-    borderBottomWidth: 1,
     backgroundColor: '#1b1b1e',
     zIndex: 5,
   },
-  favoriteTrack: {
-    borderColor: '#323232',
-    borderTopWidth: 1,
-  },
+  favoriteTrack: {},
   favoriteTrackHeader: {
     flexDirection: 'row',
     alignItems: 'center',
