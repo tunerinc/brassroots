@@ -1,0 +1,92 @@
+'use strict';
+
+/**
+ * @format
+ * @flow
+ */
+
+import React from 'react';
+import {StyleSheet} from 'react-native';
+import {
+  type ViewStyleProp,
+  type TextStyleProp,
+} from 'react-native/Libraries/StyleSheet/StyleSheet';
+
+interface Styles {
+  container: ViewStyleProp,
+  header: ViewStyleProp,
+  title: TextStyleProp,
+  button: ViewStyleProp,
+  text: TextStyleProp,
+  disabled: TextStyleProp,
+  nothing: TextStyleProp,
+  empty: ViewStyleProp,
+  emptyTitle: TextStyleProp,
+  emptyText: TextStyleProp,
+};
+
+const styles: Styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+  },
+  title: {
+    fontFamily: 'Muli',
+    color: '#888',
+    fontSize: 16,
+    lineHeight: 19.2, // x1.2
+    fontWeight: '800',
+    backgroundColor: 'transparent',
+  },
+  button: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  text: {
+    textAlign: 'right',
+    fontFamily: 'Muli',
+    fontWeight: '600',
+    fontSize: 12,
+    lineHeight: 19.2,
+    backgroundColor: 'transparent',
+    color: '#fefefe',
+  },
+  disabled: {
+    color: '#888',
+  },
+  nothing: {
+    fontFamily: 'Muli',
+    fontSize: 16,
+    lineHeight: 82,
+    fontWeight: '600',
+    color: '#fefefe',
+    textAlign: 'center',
+  },
+  empty: {
+    height: 75,
+    justifyContent: 'center',
+    paddingHorizontal: 15,
+  },
+  emptyTitle: {
+    color: '#fefefe',
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Muli',
+    lineHeight: 16,
+    marginBottom: 5,
+  },
+  emptyText: {
+    fontSize: 14,
+    fontWeight: '600',
+    fontFamily: 'Muli',
+    lineHeight: 14,
+    color: '#888',
+  },
+});
+
+export default styles;
