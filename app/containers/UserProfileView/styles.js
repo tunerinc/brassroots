@@ -83,7 +83,9 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#1b1b1e',
     zIndex: 5,
   },
-  favoriteTrack: {},
+  favoriteTrack: {
+    marginBottom: 20,
+  },
   favoriteTrackHeader: {
     flexDirection: 'row',
     alignItems: 'center',

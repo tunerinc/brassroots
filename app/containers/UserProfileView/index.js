@@ -283,8 +283,8 @@ class UserProfileView extends React.Component {
       extrapolate: 'clamp',
     });
     const headerShadowOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 0, 0.9],
+      inputRange: [HEADER_SCROLL_DISTANCE - 1, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, 0.9],
       extrapolate: 'clamp',
     });
     const profileHeaderHeight = this.state.scrollY.interpolate({
