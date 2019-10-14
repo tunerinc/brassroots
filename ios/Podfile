@@ -74,6 +74,9 @@ target 'brassroots' do
   # Fast Image
   pod 'RNFastImage', :path => '../node_modules/react-native-fast-image'
 
+  # Animations
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
   target 'brassrootsTests' do
     inherit! :search_paths
     # Pods for testing

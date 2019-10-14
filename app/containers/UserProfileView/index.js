@@ -89,13 +89,9 @@ class UserProfileView extends React.Component {
     }
   }
 
-  openModal = selectedTrack => () => {
-    this.setState({selectedTrack, isTrackMenuOpen: true});
-  }
+  openModal = selectedTrack => () => this.setState({selectedTrack, isTrackMenuOpen: true});
 
-  closeModal() {
-    this.setState({isTrackMenuOpen: false});
-  }
+  closeModal = () => this.setState({isTrackMenuOpen: false});
 
   navToMostPlayed = (selectedUser, title) => () => {
     switch (title) {
