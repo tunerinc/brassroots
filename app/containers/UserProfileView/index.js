@@ -11,6 +11,7 @@ import {
   Animated,
   FlatList,
   Dimensions,
+  StyleSheet,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -62,7 +63,6 @@ class UserProfileView extends React.Component {
 
     this.state = {
       scrollY: new Animated.Value(0),
-      bioLines: 1,
       isTrackMenuOpen: false,
       selectedTrack: null,
     };
@@ -279,11 +279,11 @@ class UserProfileView extends React.Component {
   render() {
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [HEADER_MAX_HEIGHT + (this.state.bioLines * 10), HEADER_MIN_HEIGHT],
+      outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
       extrapolate: 'clamp',
     });
     const headerShadowOpacity = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE - 1, HEADER_SCROLL_DISTANCE],
+      inputRange: [HEADER_SCROLL_DISTANCE - 1, HEADER_SCROLL_DISTANCE + 10],
       outputRange: [0, 0.9],
       extrapolate: 'clamp',
     });
@@ -307,58 +307,8 @@ class UserProfileView extends React.Component {
       outputRange: [-50, -50, 0],
       extrapolate: 'clamp',
     });
-    const userOpacity = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.65, HEADER_SCROLL_DISTANCE * 0.8],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-    const userOffset = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.8, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 600],
-      extrapolate: 'clamp',
-    });
-    const bioOpacity = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.3, HEADER_SCROLL_DISTANCE * 0.45],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-    const bioOffset = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.45, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 600],
-      extrapolate: 'clamp',
-    });
-    const locationOpacity = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.2, HEADER_SCROLL_DISTANCE * 0.35],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-    const locationOffset = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.35, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 600],
-      extrapolate: 'clamp',
-    });
-    const websiteOpacity = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.15, HEADER_SCROLL_DISTANCE * 0.25],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-    const websiteOffset = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.25, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 600],
-      extrapolate: 'clamp',
-    });
-    const followOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE * 0.05],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-    const followOffset = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE * 0.05, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 600],
-      extrapolate: 'clamp',
-    });
 
-    const {scrollY, bioLines, isTrackMenuOpen} = this.state;
+    const {scrollY, isTrackMenuOpen} = this.state;
     const {
       title,
       userToView,
@@ -409,6 +359,52 @@ class UserProfileView extends React.Component {
 
     return (
       <View style={styles.container}>
+        {user.coverImage !== '' &&
+          <View style={styles.coverImageWrap}>
+            <FastImage
+              style={StyleSheet.absoluteFill}
+              source={{uri: user.coverImage}}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+            <Animated.Image
+              style={[StyleSheet.absoluteFill, {opacity: coverImageOpacity}]}
+              source={{uri: user.coverImage}}
+              resizeMode='cover'
+              blurRadius={80}
+            />
+            <LinearGradient
+              style={styles.linearGradient}
+              locations={[0, 0.4, 0.65, 1.0]}
+              colors={[
+                'rgba(27,27,30,0.4)',
+                'rgba(27,27,30,0.75)',
+                'rgba(27,27,30,0.9)',
+                'rgba(27,27,30,1)',
+              ]}
+            />
+          </View>
+        }
+        <Animated.View style={[styles.animatedHeader, {shadowOpacity: headerShadowOpacity}]}>
+          <View style={styles.nav}>
+            {(isCurrentUser && title === 'Profile' && routeName === 'proMain') &&
+              <View style={styles.leftIcon}></View>
+            }
+            {(!isCurrentUser || title !== 'Profile' || routeName !== 'proMain') &&
+              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+            }
+            <Animated.Text style={[styles.title, {opacity: titleOpacity, bottom: titleOffset}]}>
+              {user.displayName}
+            </Animated.Text>
+            {!isCurrentUser && <SimpleLineIcons name='options' style={styles.rightIcon} />}
+            {isCurrentUser &&
+              <Ionicons
+                name='md-settings'
+                style={styles.rightIcon}
+                onPress={this.navToSettings(title)}
+              />
+            }
+          </View>
+        </Animated.View>
         <AnimatedScrollView
           style={styles.scrollContainer}
           scrollEventThrottle={16}
@@ -417,9 +413,175 @@ class UserProfileView extends React.Component {
           <View
             style={[
               styles.scrollWrap,
-              {marginTop: HEADER_MAX_HEIGHT + (bioLines * 10)},
+              {marginTop: HEADER_MIN_HEIGHT},
             ]}
           >
+            <View style={styles.profileHeader}>
+              <View style={styles.user}>
+                <View style={styles.userPhoto}>
+                  {user.profileImage !== '' &&
+                    <FastImage style={styles.roundPhoto} source={{uri: user.profileImage}} />
+                  }
+                  {(userFetching.includes('users') && (!user || user.profileImage === '')) &&
+                    <Placeholder Animate={Fade} Left={this.renderImage} />
+                  }
+                </View>
+                <View style={styles.userName}>
+                  <Text numberOfLines={1} style={styles.userNameText}>
+                    {user.displayName}
+                  </Text>
+                </View>
+                {isCurrentUser &&
+                  <TouchableOpacity
+                    style={styles.userProfileAction}
+                    onPress={this.navToEditProfile(title)}
+                  >
+                    <Text style={styles.userProfileActionText}>edit profile</Text>
+                  </TouchableOpacity>
+                }
+                {(!isCurrentUser && currentUser.following.includes(user.id)) &&
+                  <TouchableOpacity style={styles.followingProfileAction} disabled>
+                    <Ionicons name='md-person' color='#fefefe' style={styles.followPerson} />
+                    <Ionicons name='md-checkmark' color='#fefefe' style={styles.followCheck} />
+                  </TouchableOpacity>
+                }
+                {(!isCurrentUser && currentUser.following.includes(user.id)) &&
+                  <TouchableOpacity style={styles.followProfileAction} disabled>
+                    <Ionicons name='md-person' color='#fefefe' style={styles.followPerson} />
+                    <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.followPlus} />
+                  </TouchableOpacity>
+                }
+              </View>
+              <View style={styles.bio}>
+                <FontAwesome name='newspaper-o' color='#888' style={styles.bioIcon} />
+                <View>
+                  {(typeof user.bio === 'string' && user.bio !== '') &&
+                    <Text style={styles.bioText}>
+                      {user.bio}
+                    </Text>
+                  }
+                  {(isCurrentUser && (!user.bio || user.bio === '')) &&
+                    <TouchableOpacity style={styles.profileInfoButton} disabled>
+                      <Text style={[styles.bioText, {color: '#2b6dc0'}]}>Add a bio</Text>
+                    </TouchableOpacity>
+                  }
+                  {(
+                    !isCurrentUser
+                    && !userFetching.includes('users')
+                    && !userError
+                    && user.bio === ''
+                  ) &&
+                    <Text style={[styles.bioText, styles.disabledText]}>No bio</Text>
+                  }
+                  {(
+                    !isCurrentUser
+                    && userFetching.includes('users')
+                    && (
+                      !user.bio
+                      || user.bio === ''
+                    )
+                  ) &&
+                    <View style={styles.loadingInfo}>
+                      <Placeholder Animate={Fade}>
+                        <PlaceholderLine width={100} style={styles.loadingText} />
+                      </Placeholder>
+                    </View>
+                  }
+                </View>
+              </View>
+              <View style={styles.location}>
+                <Ionicons name='md-pin' color='#888' style={styles.locationIcon} />
+                <View>
+                  {(typeof user.location === 'string' && user.location !== '') &&
+                    <Text style={styles.locationText}>
+                      {user.location}
+                    </Text>
+                  }
+                  {(isCurrentUser && (!user.location || user.location === '')) &&
+                    <TouchableOpacity style={styles.profileInfoButton} disabled>
+                      <Text style={[styles.locationText, {color: '#2b6dc0'}]}>Add a location</Text>
+                    </TouchableOpacity>
+                  }
+                  {(
+                    !isCurrentUser
+                    && !userFetching.includes('users')
+                    && !userError
+                    && user.location === ''
+                  ) &&
+                    <Text style={[styles.locationText, styles.disabledText]}>No location</Text>
+                  }
+                  {(
+                    !isCurrentUser
+                    && userFetching.includes('users')
+                    && (
+                      !user.location
+                      || user.location === ''
+                    )
+                  ) &&
+                    <View style={styles.loadingInfo}>
+                      <Placeholder Animate={Fade}>
+                        <PlaceholderLine width={100} style={styles.loadingText} />
+                      </Placeholder>
+                    </View>
+                  }
+                </View>
+              </View>
+              <View style={styles.website}>
+                <Entypo name='link' color='#888' style={styles.websiteIcon} />
+                <View>
+                  {(typeof user.website === 'string' && user.website !== '') &&
+                    <Text style={styles.websiteText}>
+                      {user.website}
+                    </Text>
+                  }
+                  {(isCurrentUser && (!user.website || user.website === '')) &&
+                    <TouchableOpacity style={styles.profileInfoButton} disabled>
+                      <Text style={[styles.websiteText, {color: '#2b6dc0'}]}>Add a website</Text>
+                    </TouchableOpacity>
+                  }
+                  {(
+                    !isCurrentUser
+                    && !userFetching.includes('users')
+                    && !userError
+                    && user.website === ''
+                  ) &&
+                    <Text style={[styles.websiteText, styles.disabledText]}>No website</Text>
+                  }
+                  {(
+                    !isCurrentUser
+                    && userFetching.includes('users')
+                    && (
+                      !user.website
+                      || user.website === ''
+                    )
+                  ) &&
+                    <View style={styles.loadingInfo}>
+                      <Placeholder Animate={Fade}>
+                        <PlaceholderLine width={100} style={styles.loadingText} />
+                      </Placeholder>
+                    </View>
+                  }
+                </View>
+              </View>
+              <View style={styles.followCount}>
+                <TouchableOpacity style={styles.followers} disabled>
+                  <Text>
+                    <Text style={styles.followersCount}>
+                      {followerTotal}
+                    </Text>
+                    <Text style={styles.followersText}> followers</Text>
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.following} disabled>
+                  <Text>
+                    <Text style={styles.followingCount}>
+                      {followingTotal}
+                    </Text>
+                    <Text style={styles.followingText}> following</Text>
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
             <View style={styles.profileTrack}>
               {user &&
                 <View>
@@ -514,238 +676,6 @@ class UserProfileView extends React.Component {
             {this.renderModalContent()}
           </Modal>
         </AnimatedScrollView>
-        <Animated.View
-          style={[
-            styles.animatedHeader,
-            {height: headerHeight, shadowOpacity: headerShadowOpacity}
-          ]}
-        >
-          {user.coverImage !== '' &&
-            <View style={styles.coverImageWrap}>
-              <FastImage
-                style={styles.coverImage}
-                source={{uri: user.coverImage}}
-                resizeMode={FastImage.resizeMode.cover}
-              />
-              <Animated.Image
-                style={[styles.coverImage, {opacity: coverImageOpacity}]}
-                source={{uri: user.coverImage}}
-                resizeMode='cover'
-                blurRadius={80}
-              />
-              <LinearGradient
-                style={styles.linearGradient}
-                locations={[0, 0.4, 0.65, 1.0]}
-                colors={[
-                  'rgba(27,27,30,0.4)',
-                  'rgba(27,27,30,0.75)',
-                  'rgba(27,27,30,0.9)',
-                  'rgba(27,27,30,1)',
-                ]}
-              />
-            </View>
-          }
-          <View style={styles.nav}>
-            {(isCurrentUser && title === 'Profile' && routeName === 'proMain') &&
-              <View style={styles.leftIcon}></View>
-            }
-            {(!isCurrentUser || title !== 'Profile' || routeName !== 'proMain') &&
-              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
-            }
-            <Animated.Text style={[styles.title, {opacity: titleOpacity, bottom: titleOffset}]}>
-              {user.displayName}
-            </Animated.Text>
-            {!isCurrentUser && <SimpleLineIcons name='options' style={styles.rightIcon} />}
-            {isCurrentUser &&
-              <Ionicons
-                name='md-settings'
-                style={styles.rightIcon}
-                onPress={this.navToSettings(title)}
-              />
-            }
-          </View>
-          <Animated.View style={[styles.profileHeader, {height: profileHeaderHeight}]}>
-            <Animated.View style={[styles.user, {opacity: userOpacity, bottom: userOffset}]}>
-              <View style={styles.userPhoto}>
-                {user.profileImage !== '' &&
-                  <FastImage style={styles.roundPhoto} source={{uri: user.profileImage}} />
-                }
-                {(userFetching.includes('users') && (!user || user.profileImage === '')) &&
-                  <Placeholder Animate={Fade} Left={this.renderImage} />
-                }
-              </View>
-              <View style={styles.userName}>
-                <Text numberOfLines={1} style={styles.userNameText}>
-                  {user.displayName}
-                </Text>
-              </View>
-              {isCurrentUser &&
-                <TouchableOpacity
-                  style={styles.userProfileAction}
-                  onPress={this.navToEditProfile(title)}
-                >
-                  <Text style={styles.userProfileActionText}>edit profile</Text>
-                </TouchableOpacity>
-              }
-              {(!isCurrentUser && currentUser.following.includes(user.id)) &&
-                <TouchableOpacity style={styles.followingProfileAction} disabled>
-                  <Ionicons name='md-person' color='#fefefe' style={styles.followPerson} />
-                  <Ionicons name='md-checkmark' color='#fefefe' style={styles.followCheck} />
-                </TouchableOpacity>
-              }
-              {(!isCurrentUser && currentUser.following.includes(user.id)) &&
-                <TouchableOpacity style={styles.followProfileAction} disabled>
-                  <Ionicons name='md-person' color='#fefefe' style={styles.followPerson} />
-                  <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.followPlus} />
-                </TouchableOpacity>
-              }
-            </Animated.View>
-            <Animated.View style={[styles.bio, {opacity: bioOpacity, bottom: bioOffset}]}>
-              <FontAwesome name='newspaper-o' color='#888' style={styles.bioIcon} />
-              <View>
-                {(typeof user.bio === 'string' && user.bio !== '') &&
-                  <Text style={styles.bioText}>
-                    {user.bio}
-                  </Text>
-                }
-                {(isCurrentUser && (!user.bio || user.bio === '')) &&
-                  <TouchableOpacity style={styles.profileInfoButton} disabled>
-                    <Text style={[styles.bioText, {color: '#2b6dc0'}]}>Add a bio</Text>
-                  </TouchableOpacity>
-                }
-                {(
-                  !isCurrentUser
-                  && !userFetching.includes('users')
-                  && !userError
-                  && user.bio === ''
-                ) &&
-                  <Text style={[styles.bioText, styles.disabledText]}>No bio</Text>
-                }
-                {(
-                  !isCurrentUser
-                  && userFetching.includes('users')
-                  && (
-                    !user.bio
-                    || user.bio === ''
-                  )
-                ) &&
-                  <View style={styles.loadingInfo}>
-                    <Placeholder Animate={Fade}>
-                      <PlaceholderLine width={100} style={styles.loadingText} />
-                    </Placeholder>
-                  </View>
-                }
-              </View>
-            </Animated.View>
-            <Animated.View
-              style={[
-                styles.location,
-                {opacity: locationOpacity, bottom: locationOffset},
-              ]}
-            >
-              <Ionicons name='md-pin' color='#888' style={styles.locationIcon} />
-              <View>
-                {(typeof user.location === 'string' && user.location !== '') &&
-                  <Text style={styles.locationText}>
-                    {user.location}
-                  </Text>
-                }
-                {(isCurrentUser && (!user.location || user.location === '')) &&
-                  <TouchableOpacity style={styles.profileInfoButton} disabled>
-                    <Text style={[styles.locationText, {color: '#2b6dc0'}]}>Add a location</Text>
-                  </TouchableOpacity>
-                }
-                {(
-                  !isCurrentUser
-                  && !userFetching.includes('users')
-                  && !userError
-                  && user.location === ''
-                ) &&
-                  <Text style={[styles.locationText, styles.disabledText]}>No location</Text>
-                }
-                {(
-                  !isCurrentUser
-                  && userFetching.includes('users')
-                  && (
-                    !user.location
-                    || user.location === ''
-                  )
-                ) &&
-                  <View style={styles.loadingInfo}>
-                    <Placeholder Animate={Fade}>
-                      <PlaceholderLine width={100} style={styles.loadingText} />
-                    </Placeholder>
-                  </View>
-                }
-              </View>
-            </Animated.View>
-            <Animated.View
-              style={[
-                styles.website,
-                {opacity: websiteOpacity, bottom: websiteOffset},
-              ]}
-            >
-              <Entypo name='link' color='#888' style={styles.websiteIcon} />
-              <View>
-                {(typeof user.website === 'string' && user.website !== '') &&
-                  <Text style={styles.websiteText}>
-                    {user.website}
-                  </Text>
-                }
-                {(isCurrentUser && (!user.website || user.website === '')) &&
-                  <TouchableOpacity style={styles.profileInfoButton} disabled>
-                    <Text style={[styles.websiteText, {color: '#2b6dc0'}]}>Add a website</Text>
-                  </TouchableOpacity>
-                }
-                {(
-                  !isCurrentUser
-                  && !userFetching.includes('users')
-                  && !userError
-                  && user.website === ''
-                ) &&
-                  <Text style={[styles.websiteText, styles.disabledText]}>No website</Text>
-                }
-                {(
-                  !isCurrentUser
-                  && userFetching.includes('users')
-                  && (
-                    !user.website
-                    || user.website === ''
-                  )
-                ) &&
-                  <View style={styles.loadingInfo}>
-                    <Placeholder Animate={Fade}>
-                      <PlaceholderLine width={100} style={styles.loadingText} />
-                    </Placeholder>
-                  </View>
-                }
-              </View>
-            </Animated.View>
-            <Animated.View
-              style={[
-                styles.followCount,
-                {opacity: followOpacity, bottom: followOffset},
-              ]}
-            >
-              <TouchableOpacity style={styles.followers} disabled>
-                <Text>
-                  <Text style={styles.followersCount}>
-                    {followerTotal}
-                  </Text>
-                  <Text style={styles.followersText}> followers</Text>
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.following} disabled>
-                <Text>
-                  <Text style={styles.followingCount}>
-                    {followingTotal}
-                  </Text>
-                  <Text style={styles.followingText}> following</Text>
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </Animated.View>
-        </Animated.View>
       </View>
     );
   }

@@ -27,8 +27,8 @@ interface Styles {
 
 const styles: Styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    marginBottom: 20,
+    paddingVertical: 20,
+    backgroundColor: '#1b1b1e',
   },
   header: {
     flexDirection: 'row',
