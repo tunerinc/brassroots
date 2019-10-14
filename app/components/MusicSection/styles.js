@@ -55,6 +55,7 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 19.2,
     backgroundColor: 'transparent',
     color: '#fefefe',
+    textTransform: 'uppercase',
   },
   disabled: {
     color: '#888',

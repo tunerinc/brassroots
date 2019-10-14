@@ -25,18 +25,7 @@ interface Styles {
   libraryOptionIcon: TextStyleProp,
   libraryOptionText: TextStyleProp,
   libraryOptionArrow: TextStyleProp,
-  section: ViewStyleProp,
-  sectionHeader: ViewStyleProp,
-  sectionTitle: TextStyleProp,
-  viewAllButton: ViewStyleProp,
-  viewAllText: TextStyleProp,
-  enabledText: TextStyleProp,
-  disabledText: TextStyleProp,
   modal: ViewStyleProp,
-  nothing: TextStyleProp,
-  empty: ViewStyleProp,
-  emptyTitle: TextStyleProp,
-  emptySub: TextStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -131,72 +120,9 @@ const styles: Styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#fefefe',
   },
-  section: {
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-  },
-  sectionTitle: {
-    fontFamily: 'Muli',
-    color: '#888',
-    fontSize: 16,
-    lineHeight: 19.2, // x1.2
-    fontWeight: '800',
-    backgroundColor: 'transparent',
-  },
-  viewAllButton: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  viewAllText: {
-    textAlign: 'right',
-    fontFamily: 'Muli',
-    fontWeight: '600',
-    fontSize: 12,
-    lineHeight: 19.2,
-    backgroundColor: 'transparent',
-  },
-  enabledText: {
-    color: '#fefefe',
-  },
-  disabledText: {
-    color: '#888',
-  },
   modal: {
     justifyContent: 'flex-end',
     margin: 0,
-  },
-  nothing: {
-    fontFamily: 'Muli',
-    fontSize: 16,
-    lineHeight: 82,
-    fontWeight: '600',
-    color: '#fefefe',
-    textAlign: 'center',
-  },
-  empty: {
-    height: 75,
-    justifyContent: 'center',
-    paddingHorizontal: 15,
-  },
-  emptyTitle: {
-    color: '#fefefe',
-    fontSize: 16,
-    fontWeight: '600',
-    fontFamily: 'Muli',
-    lineHeight: 16,
-    marginBottom: 5,
-  },
-  emptySub: {
-    fontSize: 14,
-    fontWeight: '600',
-    fontFamily: 'Muli',
-    lineHeight: 14,
-    color: '#888',
   },
 });
 

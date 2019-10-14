@@ -21,6 +21,7 @@ import LoadingPlaylist from "../../components/LoadingPlaylist";
 import TrackCard from "../../components/TrackCard";
 import LoadingTrack from "../../components/LoadingTrack";
 import TrackModal from "../../components/TrackModal";
+import MusicSection from '../../components/MusicSection';
 import styles from "./styles";
 
 // Icons
@@ -328,111 +329,33 @@ class LibraryTabView extends React.Component {
             <Text style={styles.libraryOptionText}>Songs</Text>
             <Ionicons name="ios-arrow-forward" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Recently Played</Text>
-              {recentlyPlayed.length > 3 &&
-                <TouchableOpacity
-                  style={styles.viewAllButton}
-                  onPress={this.navToLibrary("recent")}
-                >
-                  <Text style={[styles.viewAllText, styles.enabledText]}>VIEW ALL</Text>
-                </TouchableOpacity>
-              }
-              {recentlyPlayed.length <= 3 &&
-                <TouchableOpacity style={styles.viewAllButton} disabled={true}>
-                  <Text style={[styles.viewAllText, styles.disabledText]}>VIEW ALL</Text>
-                </TouchableOpacity>
-              }
-            </View>
-            {recentlyPlayed.length !== 0 &&
-              <FlatList
-                data={recentlyPlayed.slice(0, 3)}
-                renderItem={this.renderTrack("user-recently")}
-                keyExtractor={item => item}
-              />
-            }
-            {(recentlyPlayed.length === 0 || !recentlyPlayed.length) &&
-              <View>
-                {trackFetching.includes('recent') && <LoadingTrack type="cover" />}
-                {(!trackFetching.includes('recent') && trackError) &&
-                  <Text style={styles.nothing}>Error loading tracks</Text>
-                }
-                {(!trackFetching.includes('recent') && !trackError) &&
-                  <View style={styles.empty}>
-                    <Text style={styles.emptyTitle}>No songs played</Text>
-                    <Text style={styles.emptySub}>Recently Played is your listening history</Text>
-                  </View>
-                }
-              </View>
-            }
-          </View>
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Top Playlists</Text>
-              {topPlaylists.length > 3 &&
-                <TouchableOpacity style={styles.viewAllButton} onPress={this.navToLibrary("top")}>
-                  <Text style={[styles.viewAllText, styles.enabledText]}>VIEW ALL</Text>
-                </TouchableOpacity>
-              }
-              {topPlaylists.length <= 3 &&
-                <TouchableOpacity style={styles.viewAllButton} disabled={true}>
-                  <Text style={[styles.viewAllText, styles.disabledText]}>VIEW ALL</Text>
-                </TouchableOpacity>
-              }
-            </View>
-            {topPlaylists.length !== 0 &&
-              <FlatList
-                data={topPlaylists.slice(0, 3)}
-                renderItem={this.renderPlaylist}
-                keyExtractor={item => item}
-              />
-            }
-            {(topPlaylists.length === 0 || !topPlaylists.length) &&
-              <View>
-                {playlistFetching.includes('topPlaylists') && <LoadingPlaylist />}
-                {(!playlistFetching.includes('recent') && playlistError) &&
-                  <Text style={styles.nothing}>Error loading tracks</Text>
-                }
-                {!playlistFetching.includes('topPlaylists') && !playlistError &&
-                  <Text style={styles.nothing}>Nothing to show</Text>
-                }
-              </View>
-            }
-          </View>
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Most Played</Text>
-              {mostPlayed.length > 3 &&
-                <TouchableOpacity style={styles.viewAllButton} onPress={this.navToLibrary("most")}>
-                  <Text style={[styles.viewAllText, styles.enabledText]}>VIEW ALL</Text>
-                </TouchableOpacity>
-              }
-              {mostPlayed.length <= 3 &&
-                <TouchableOpacity style={styles.viewAllButton} disabled={true}>
-                  <Text style={[styles.viewAllText, styles.disabledText]}>VIEW ALL</Text>
-                </TouchableOpacity>
-              }
-            </View>
-            {mostPlayed.length !== 0 &&
-              <FlatList
-                data={mostPlayed.slice(0, 3)}
-                renderItem={this.renderTrack("user-most")}
-                keyExtractor={item => item}
-              />
-            }
-            {(mostPlayed.length === 0 || !mostPlayed.length) &&
-              <View>
-                {trackFetching.includes('mostPlayed') && <LoadingTrack type="cover" />}
-                {(!trackFetching.includes('mostPlayed') && trackError) &&
-                  <Text style={styles.nothing}>Error loading tracks</Text>
-                }
-                {!trackFetching.includes('mostPlayed') && !trackError &&
-                  <Text style={styles.nothing}>Nothing to show</Text>
-                }
-              </View>
-            }
-          </View>
+          <MusicSection
+            renderItem={this.renderTrack('user-recently')}
+            viewMore={this.navToLibrary('recent')}
+            type='recent'
+            title='Recently Played'
+            items={recentlyPlayed}
+            showError={typeof trackError === Error}
+            fetching={trackFetching.includes('recent')}
+          />
+          <MusicSection
+            renderItem={this.renderPlaylist}
+            viewMore={this.navToLibrary('top')}
+            type='top'
+            title='Top Playlists'
+            items={topPlaylists}
+            showError={typeof playlistError === Error}
+            fetching={playlistFetching.includes('topPlaylists')}
+          />
+          <MusicSection
+            renderItem={this.renderTrack('user-most')}
+            viewMore={this.navToLibrary('most')}
+            type='most'
+            title='Most Played'
+            items={mostPlayed}
+            showError={typeof trackError === Error}
+            fetching={trackFetching.includes('mostPlayed')}
+          />
         </ScrollView>
         <Modal
           isVisible={isTrackMenuOpen}
