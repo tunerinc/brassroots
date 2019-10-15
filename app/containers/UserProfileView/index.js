@@ -8,7 +8,6 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Animated,
   FlatList,
   Dimensions,
   StyleSheet,
@@ -19,6 +18,7 @@ import {Actions} from 'react-native-router-flux';
 import styles from './styles';
 import Modal from 'react-native-modal';
 import {Placeholder, PlaceholderMedia, PlaceholderLine, Fade} from 'rn-placeholder';
+import Animated from 'react-native-reanimated';
 import LinearGradient from 'react-native-linear-gradient';
 
 // Components
@@ -28,6 +28,7 @@ import TrackCard from '../../components/TrackCard';
 import LoadingTrack from '../../components/LoadingTrack';
 import TrackModal from '../../components/TrackModal';
 import MusicSection from '../../components/MusicSection';
+import ImageCover from '../../components/ImageCover';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -51,18 +52,17 @@ import {leaveSession} from '../../actions/sessions/LeaveSession';
 // Tracks Action Creators
 import {getFavoriteTrack} from '../../actions/tracks/GetFavoriteTrack';
 
-const screenHeight = Dimensions.get('window').height;
-const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
-const HEADER_MAX_HEIGHT = screenHeight * 0.6;
-const HEADER_MIN_HEIGHT = 65;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+const {Value} = Animated;
+const {height} = Dimensions.get('window');
+export const HEADER_MAX_HEIGHT = height * 0.6;
+export const HEADER_MIN_HEIGHT = 65;
+export const HEADER_DELTA = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class UserProfileView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      scrollY: new Animated.Value(0),
       isTrackMenuOpen: false,
       selectedTrack: null,
     };
@@ -277,38 +277,39 @@ class UserProfileView extends React.Component {
   renderImage = () => <PlaceholderMedia isRound={true} style={styles.roundPhoto} />;
 
   render() {
-    const headerHeight = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-      extrapolate: 'clamp',
-    });
-    const headerShadowOpacity = this.state.scrollY.interpolate({
-      inputRange: [HEADER_SCROLL_DISTANCE - 1, HEADER_SCROLL_DISTANCE + 10],
-      outputRange: [0, 0.9],
-      extrapolate: 'clamp',
-    });
-    const profileHeaderHeight = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [HEADER_MAX_HEIGHT - 85, HEADER_MIN_HEIGHT - 85],
-      extrapolate: 'clamp',
-    });
-    const coverImageOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 1],
-      extrapolate: 'clamp',
-    });
-    const titleOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE * 0.65, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 0, 1],
-      extrapolate: 'clamp',
-    });
-    const titleOffset = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE * 0.65, HEADER_SCROLL_DISTANCE],
-      outputRange: [-50, -50, 0],
-      extrapolate: 'clamp',
-    });
+    // const headerHeight = this.state.scrollY.interpolate({
+    //   inputRange: [0, HEADER_SCROLL_DISTANCE],
+    //   outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+    //   extrapolate: 'clamp',
+    // });
+    // const headerShadowOpacity = this.state.scrollY.interpolate({
+    //   inputRange: [HEADER_SCROLL_DISTANCE - 1, HEADER_SCROLL_DISTANCE + 10],
+    //   outputRange: [0, 0.9],
+    //   extrapolate: 'clamp',
+    // });
+    // const profileHeaderHeight = this.state.scrollY.interpolate({
+    //   inputRange: [0, HEADER_SCROLL_DISTANCE],
+    //   outputRange: [HEADER_MAX_HEIGHT - 85, HEADER_MIN_HEIGHT - 85],
+    //   extrapolate: 'clamp',
+    // });
+    // const coverImageOpacity = this.state.scrollY.interpolate({
+    //   inputRange: [0, HEADER_SCROLL_DISTANCE],
+    //   outputRange: [0, 1],
+    //   extrapolate: 'clamp',
+    // });
+    // const titleOpacity = this.state.scrollY.interpolate({
+    //   inputRange: [0, HEADER_SCROLL_DISTANCE * 0.65, HEADER_SCROLL_DISTANCE],
+    //   outputRange: [0, 0, 1],
+    //   extrapolate: 'clamp',
+    // });
+    // const titleOffset = this.state.scrollY.interpolate({
+    //   inputRange: [0, HEADER_SCROLL_DISTANCE * 0.65, HEADER_SCROLL_DISTANCE],
+    //   outputRange: [-50, -50, 0],
+    //   extrapolate: 'clamp',
+    // });
 
-    const {scrollY, isTrackMenuOpen} = this.state;
+    const y = new Value(0);
+    const {isTrackMenuOpen} = this.state;
     const {
       title,
       userToView,
@@ -359,7 +360,8 @@ class UserProfileView extends React.Component {
 
     return (
       <View style={styles.container}>
-        {user.coverImage !== '' &&
+        <ImageCover {...{y, image: user.coverImage}} />
+        {/* {user.coverImage !== '' &&
           <View style={styles.coverImageWrap}>
             <FastImage
               style={StyleSheet.absoluteFill}
@@ -675,7 +677,7 @@ class UserProfileView extends React.Component {
           >
             {this.renderModalContent()}
           </Modal>
-        </AnimatedScrollView>
+        </AnimatedScrollView> */}
       </View>
     );
   }
