@@ -6,6 +6,7 @@ import FastImage from 'react-native-fast-image';
 import {
   Text,
   View,
+  Image,
   TouchableOpacity,
   ScrollView,
   FlatList,
@@ -29,6 +30,7 @@ import LoadingTrack from '../../components/LoadingTrack';
 import TrackModal from '../../components/TrackModal';
 import MusicSection from '../../components/MusicSection';
 import ImageCover from '../../components/ImageCover';
+import ProfileContent from '../../components/ProfileContent';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -52,7 +54,7 @@ import {leaveSession} from '../../actions/sessions/LeaveSession';
 // Tracks Action Creators
 import {getFavoriteTrack} from '../../actions/tracks/GetFavoriteTrack';
 
-const {Value} = Animated;
+const {Value, interpolate, Extrapolate} = Animated;
 const {height} = Dimensions.get('window');
 export const HEADER_MAX_HEIGHT = height * 0.6;
 export const HEADER_MIN_HEIGHT = 65;
@@ -65,6 +67,7 @@ class UserProfileView extends React.Component {
     this.state = {
       isTrackMenuOpen: false,
       selectedTrack: null,
+      y: new Value(0)
     };
 
     this.openModal = this.openModal.bind(this);
@@ -277,39 +280,38 @@ class UserProfileView extends React.Component {
   renderImage = () => <PlaceholderMedia isRound={true} style={styles.roundPhoto} />;
 
   render() {
-    // const headerHeight = this.state.scrollY.interpolate({
-    //   inputRange: [0, HEADER_SCROLL_DISTANCE],
-    //   outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-    //   extrapolate: 'clamp',
-    // });
-    // const headerShadowOpacity = this.state.scrollY.interpolate({
-    //   inputRange: [HEADER_SCROLL_DISTANCE - 1, HEADER_SCROLL_DISTANCE + 10],
-    //   outputRange: [0, 0.9],
-    //   extrapolate: 'clamp',
-    // });
-    // const profileHeaderHeight = this.state.scrollY.interpolate({
-    //   inputRange: [0, HEADER_SCROLL_DISTANCE],
-    //   outputRange: [HEADER_MAX_HEIGHT - 85, HEADER_MIN_HEIGHT - 85],
-    //   extrapolate: 'clamp',
-    // });
-    // const coverImageOpacity = this.state.scrollY.interpolate({
-    //   inputRange: [0, HEADER_SCROLL_DISTANCE],
-    //   outputRange: [0, 1],
-    //   extrapolate: 'clamp',
-    // });
-    // const titleOpacity = this.state.scrollY.interpolate({
-    //   inputRange: [0, HEADER_SCROLL_DISTANCE * 0.65, HEADER_SCROLL_DISTANCE],
-    //   outputRange: [0, 0, 1],
-    //   extrapolate: 'clamp',
-    // });
-    // const titleOffset = this.state.scrollY.interpolate({
-    //   inputRange: [0, HEADER_SCROLL_DISTANCE * 0.65, HEADER_SCROLL_DISTANCE],
-    //   outputRange: [-50, -50, 0],
-    //   extrapolate: 'clamp',
-    // });
+    const {isTrackMenuOpen, y} = this.state;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA - 1, HEADER_DELTA + 10],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const gradientHeight = interpolate(y, {
+      inputRange: [-HEADER_MAX_HEIGHT, 0],
+      outputRange: [0, HEADER_MAX_HEIGHT],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const imageOpacity = interpolate(y, {
+      inputRange: [0, HEADER_DELTA],
+      outputRange: [0, 0.9],
+      extrapolate: 'clamp',
+    });
+    const filterOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA * 0.3, HEADER_DELTA * 0.8],
+      outputRange: [0, 1],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const titleOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA * 0.65, HEADER_DELTA],
+      outputRange: [0, 1],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const titleOffset = interpolate(y, {
+      inputRange: [HEADER_DELTA * 0.65, HEADER_DELTA],
+      outputRange: [-20, 0],
+      extrapolate: Extrapolate.CLAMP,
+    });
 
-    const y = new Value(0);
-    const {isTrackMenuOpen} = this.state;
     const {
       title,
       userToView,
@@ -360,33 +362,33 @@ class UserProfileView extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ImageCover {...{y, image: user.coverImage}} />
-        {/* {user.coverImage !== '' &&
-          <View style={styles.coverImageWrap}>
-            <FastImage
-              style={StyleSheet.absoluteFill}
-              source={{uri: user.coverImage}}
-              resizeMode={FastImage.resizeMode.cover}
-            />
-            <Animated.Image
-              style={[StyleSheet.absoluteFill, {opacity: coverImageOpacity}]}
-              source={{uri: user.coverImage}}
-              resizeMode='cover'
-              blurRadius={80}
-            />
-            <LinearGradient
-              style={styles.linearGradient}
-              locations={[0, 0.4, 0.65, 1.0]}
-              colors={[
-                'rgba(27,27,30,0.4)',
-                'rgba(27,27,30,0.75)',
-                'rgba(27,27,30,0.9)',
-                'rgba(27,27,30,1)',
-              ]}
-            />
+        <ImageCover {...{y, image: user.coverImage, height: HEADER_MAX_HEIGHT}} />
+        <ProfileContent {...{y, height: HEADER_MAX_HEIGHT}} />
+        <Animated.View style={[styles.header, {shadowOpacity}]}>
+          <View style={styles.background}>
+            <View style={styles.wrap}>
+              {typeof user.coverImage === 'string' &&
+                <FastImage style={styles.image} source={{uri: user.coverImage}} />
+              }
+              {typeof user.coverImage === 'string' &&
+                <Animated.Image
+                  style={[styles.image, {opacity: imageOpacity}]}
+                  blurRadius={60}
+                  source={{uri: user.coverImage}}
+                />
+              }
+              <Animated.View style={[styles.gradient, {opacity: filterOpacity}]}>
+                <LinearGradient
+                  style={StyleSheet.absoluteFill}
+                  locations={[0, 1]}
+                  colors={[
+                    'rgba(27,27,30,0)',
+                    'rgba(27,27,30,0.8)',
+                  ]}
+                />
+              </Animated.View>
+            </View>
           </View>
-        }
-        <Animated.View style={[styles.animatedHeader, {shadowOpacity: headerShadowOpacity}]}>
           <View style={styles.nav}>
             {(isCurrentUser && title === 'Profile' && routeName === 'proMain') &&
               <View style={styles.leftIcon}></View>
@@ -407,277 +409,6 @@ class UserProfileView extends React.Component {
             }
           </View>
         </Animated.View>
-        <AnimatedScrollView
-          style={styles.scrollContainer}
-          scrollEventThrottle={16}
-          onScroll={Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}])}
-        >
-          <View
-            style={[
-              styles.scrollWrap,
-              {marginTop: HEADER_MIN_HEIGHT},
-            ]}
-          >
-            <View style={styles.profileHeader}>
-              <View style={styles.user}>
-                <View style={styles.userPhoto}>
-                  {user.profileImage !== '' &&
-                    <FastImage style={styles.roundPhoto} source={{uri: user.profileImage}} />
-                  }
-                  {(userFetching.includes('users') && (!user || user.profileImage === '')) &&
-                    <Placeholder Animate={Fade} Left={this.renderImage} />
-                  }
-                </View>
-                <View style={styles.userName}>
-                  <Text numberOfLines={1} style={styles.userNameText}>
-                    {user.displayName}
-                  </Text>
-                </View>
-                {isCurrentUser &&
-                  <TouchableOpacity
-                    style={styles.userProfileAction}
-                    onPress={this.navToEditProfile(title)}
-                  >
-                    <Text style={styles.userProfileActionText}>edit profile</Text>
-                  </TouchableOpacity>
-                }
-                {(!isCurrentUser && currentUser.following.includes(user.id)) &&
-                  <TouchableOpacity style={styles.followingProfileAction} disabled>
-                    <Ionicons name='md-person' color='#fefefe' style={styles.followPerson} />
-                    <Ionicons name='md-checkmark' color='#fefefe' style={styles.followCheck} />
-                  </TouchableOpacity>
-                }
-                {(!isCurrentUser && currentUser.following.includes(user.id)) &&
-                  <TouchableOpacity style={styles.followProfileAction} disabled>
-                    <Ionicons name='md-person' color='#fefefe' style={styles.followPerson} />
-                    <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.followPlus} />
-                  </TouchableOpacity>
-                }
-              </View>
-              <View style={styles.bio}>
-                <FontAwesome name='newspaper-o' color='#888' style={styles.bioIcon} />
-                <View>
-                  {(typeof user.bio === 'string' && user.bio !== '') &&
-                    <Text style={styles.bioText}>
-                      {user.bio}
-                    </Text>
-                  }
-                  {(isCurrentUser && (!user.bio || user.bio === '')) &&
-                    <TouchableOpacity style={styles.profileInfoButton} disabled>
-                      <Text style={[styles.bioText, {color: '#2b6dc0'}]}>Add a bio</Text>
-                    </TouchableOpacity>
-                  }
-                  {(
-                    !isCurrentUser
-                    && !userFetching.includes('users')
-                    && !userError
-                    && user.bio === ''
-                  ) &&
-                    <Text style={[styles.bioText, styles.disabledText]}>No bio</Text>
-                  }
-                  {(
-                    !isCurrentUser
-                    && userFetching.includes('users')
-                    && (
-                      !user.bio
-                      || user.bio === ''
-                    )
-                  ) &&
-                    <View style={styles.loadingInfo}>
-                      <Placeholder Animate={Fade}>
-                        <PlaceholderLine width={100} style={styles.loadingText} />
-                      </Placeholder>
-                    </View>
-                  }
-                </View>
-              </View>
-              <View style={styles.location}>
-                <Ionicons name='md-pin' color='#888' style={styles.locationIcon} />
-                <View>
-                  {(typeof user.location === 'string' && user.location !== '') &&
-                    <Text style={styles.locationText}>
-                      {user.location}
-                    </Text>
-                  }
-                  {(isCurrentUser && (!user.location || user.location === '')) &&
-                    <TouchableOpacity style={styles.profileInfoButton} disabled>
-                      <Text style={[styles.locationText, {color: '#2b6dc0'}]}>Add a location</Text>
-                    </TouchableOpacity>
-                  }
-                  {(
-                    !isCurrentUser
-                    && !userFetching.includes('users')
-                    && !userError
-                    && user.location === ''
-                  ) &&
-                    <Text style={[styles.locationText, styles.disabledText]}>No location</Text>
-                  }
-                  {(
-                    !isCurrentUser
-                    && userFetching.includes('users')
-                    && (
-                      !user.location
-                      || user.location === ''
-                    )
-                  ) &&
-                    <View style={styles.loadingInfo}>
-                      <Placeholder Animate={Fade}>
-                        <PlaceholderLine width={100} style={styles.loadingText} />
-                      </Placeholder>
-                    </View>
-                  }
-                </View>
-              </View>
-              <View style={styles.website}>
-                <Entypo name='link' color='#888' style={styles.websiteIcon} />
-                <View>
-                  {(typeof user.website === 'string' && user.website !== '') &&
-                    <Text style={styles.websiteText}>
-                      {user.website}
-                    </Text>
-                  }
-                  {(isCurrentUser && (!user.website || user.website === '')) &&
-                    <TouchableOpacity style={styles.profileInfoButton} disabled>
-                      <Text style={[styles.websiteText, {color: '#2b6dc0'}]}>Add a website</Text>
-                    </TouchableOpacity>
-                  }
-                  {(
-                    !isCurrentUser
-                    && !userFetching.includes('users')
-                    && !userError
-                    && user.website === ''
-                  ) &&
-                    <Text style={[styles.websiteText, styles.disabledText]}>No website</Text>
-                  }
-                  {(
-                    !isCurrentUser
-                    && userFetching.includes('users')
-                    && (
-                      !user.website
-                      || user.website === ''
-                    )
-                  ) &&
-                    <View style={styles.loadingInfo}>
-                      <Placeholder Animate={Fade}>
-                        <PlaceholderLine width={100} style={styles.loadingText} />
-                      </Placeholder>
-                    </View>
-                  }
-                </View>
-              </View>
-              <View style={styles.followCount}>
-                <TouchableOpacity style={styles.followers} disabled>
-                  <Text>
-                    <Text style={styles.followersCount}>
-                      {followerTotal}
-                    </Text>
-                    <Text style={styles.followersText}> followers</Text>
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.following} disabled>
-                  <Text>
-                    <Text style={styles.followingCount}>
-                      {followingTotal}
-                    </Text>
-                    <Text style={styles.followingText}> following</Text>
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.profileTrack}>
-              {user &&
-                <View>
-                  {sessions.allIDs.includes(user.currentSessionID) &&
-                    <View style={styles.liveSession}>
-                      {sessionFetching.includes('sessions') && <LoadingSession />}
-                      {(!sessionFetching.includes('sessions') && sessionError) &&
-                        <Text>Something went wrong</Text>
-                      }
-                      {(!sessionFetching.includes('sessions') && !sessionError) &&
-                        <Text>We have stuff</Text>
-                      }
-                    </View>
-                  }
-                  {!sessions.allIDs.includes(user.currentSessionID) &&
-                    <View style={styles.favoriteTrack}>
-                      <View style={styles.favoriteTrackHeader}>
-                        <Foundation name='star' style={styles.favoriteTrackIcon} />
-                        <Text style={styles.favoriteTrackHeaderText}>Favorite Track</Text>
-                      </View>
-                      {trackFetching.includes('favorite') && <LoadingTrack type='cover' />}
-                      {(!trackFetching.includes('favorite') && trackError) &&
-                        <Text>Something went wrong.</Text>
-                      }
-                      {(tracks.allIDs.includes(user.favoriteTrackID) && !trackError) &&
-                        <TrackCard
-                          key={track}
-                          albumName={track.album.name}
-                          artists={track.artists.map(a => a.name).join(', ')}
-                          context={{
-                            id: currentUserID,
-                            type: 'user-favorite',
-                            username: user.displayName,
-                            name: user.displayName,
-                          }}
-                          image={track.album.small}
-                          name={track.name}
-                          openModal={this.openModal(track.id)}
-                          showOptions={true}
-                          showSquareImage={true}
-                          type='cover'
-                        />
-                      }
-                    </View>
-                  }
-                </View>
-              }
-            </View>
-            <MusicSection
-              renderItem={this.renderTrack('user-most')}
-              viewMore={this.navToMostPlayed(user.id, title)}
-              type='most'
-              title='Most Played'
-              items={user.mostPlayed}
-              showError={typeof trackError === Error}
-              fetching={trackFetching.includes('mostPlayed')}
-            />
-            <MusicSection
-              renderItem={this.renderPlaylist}
-              viewMore={this.navToTopPlaylists(user.id, title)}
-              type='top'
-              title='Top Playlists'
-              items={user.topPlaylists}
-              showError={typeof playlistError === Error}
-              fetching={playlistFetching.includes('topPlaylists')}
-            />
-            <MusicSection
-              renderItem={this.renderTrack('user-recently')}
-              viewMore={this.navToRecentlyPlayed(user.id, title)}
-              type='recent'
-              title='Recently Played'
-              items={user.recentlyPlayed}
-              showError={typeof trackError === Error}
-              fetching={trackFetching.includes('recent')}
-            />
-          </View>
-          <Modal
-            isVisible={isTrackMenuOpen}
-            backdropColor={"#1b1b1e"}
-            backdropOpacity={0.7}
-            animationIn="slideInUp"
-            animationInTiming={230}
-            backdropTransitionInTiming={230}
-            animationOut="slideOutDown"
-            animationOutTiming={230}
-            backdropTransitionOutTiming={230}
-            hideModalContentWhileAnimating
-            useNativeDriver={true}
-            style={styles.modal}
-            onBackdropPress={this.closeModal}
-          >
-            {this.renderModalContent()}
-          </Modal>
-        </AnimatedScrollView> */}
       </View>
     );
   }

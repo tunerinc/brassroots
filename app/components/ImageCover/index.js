@@ -9,12 +9,14 @@ import React from 'react';
 import {Image, StyleSheet} from 'react-native';
 import Animated from 'react-native-reanimated';
 import FastImage from 'react-native-fast-image';
+import LinearGradient from 'react-native-linear-gradient';
 import styles from './styles';
 import {HEADER_MAX_HEIGHT, HEADER_DELTA} from '../../containers/UserProfileView';
 
 type Props = {|
   image: ?string,
   y: Animated.Value<number>,
+  height: number,
 |};
 
 type State = {||};
@@ -27,30 +29,27 @@ export default class ImageCover extends React.Component<Props, State> {
   }
 
   render() {
-    const {image, y} = this.props;
-    const scale = interpolate(y, {
-      inputRange: [-HEADER_MAX_HEIGHT, 0],
-      outputRange: [4, 1],
-      extrapolateRight: Extrapolate.CLAMP,
-    });
+    const {image, y, height} = this.props;
     const opacity = interpolate(y, {
       inputRange: [0, HEADER_DELTA],
-      outputRange: [0, 1],
+      outputRange: [0, 0.9],
       extrapolate: 'clamp',
-    });
-    const coverOpacity = interpolate(y, {
-      inputRange: [-65, 0, HEADER_DELTA],
-      outputRange: [0, 0.2, 1],
-      extrapolate: Extrapolate.CLAMP,
     });
 
     return (
-      <Animated.View style={[styles.container, {transform: [{scale}]}]}>
+      <Animated.View style={[styles.container, {height}]}>
         {typeof image === 'string' && <FastImage style={styles.image} source={{uri: image}} />}
         {typeof image === 'string' &&
-          <Animated.Image style={[styles.image, {opacity}]} source={{uri: image}} blurRadius={80} />
+          <Animated.Image style={[styles.image, {opacity}]} source={{uri: image}} blurRadius={60} />
         }
-        <Animated.View style={[styles.cover, {opacity: coverOpacity}]} />
+        <LinearGradient
+          style={StyleSheet.absoluteFill}
+          locations={[0.8, 1.0]}
+          colors={[
+            'rgba(27,27,30,0)',
+            'rgba(27,27,30,1)',
+          ]}
+        />
       </Animated.View>
     );
   }

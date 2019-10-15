@@ -7,24 +7,25 @@
 
 import React from 'react';
 import {StyleSheet} from 'react-native';
+import {HEADER_DELTA, HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT} from '../../containers/UserProfileView';
 import {type ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
-import {HEADER_MAX_HEIGHT} from '../../containers/UserProfileView';
 
 interface Styles {
   container: ViewStyleProp,
-  image: ViewStyleProp,
-  cover: ViewStyleProp,
+  gradient: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
-    maxHeight: HEADER_MAX_HEIGHT,
+    flex: 1,
+    paddingTop: HEADER_MIN_HEIGHT,
   },
-  image: {...StyleSheet.absoluteFillObject},
-  cover: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#1b1b1e',
+  gradient: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    right: 0,
+    alignItems: "center",
   },
 });
 
