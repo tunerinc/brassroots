@@ -277,8 +277,6 @@ class UserProfileView extends React.Component {
     );
   }
 
-  renderImage = () => <PlaceholderMedia isRound={true} style={styles.roundPhoto} />;
-
   render() {
     const {isTrackMenuOpen, y} = this.state;
     const shadowOpacity = interpolate(y, {
@@ -363,7 +361,34 @@ class UserProfileView extends React.Component {
     return (
       <View style={styles.container}>
         <ImageCover {...{y, image: user.coverImage, height: HEADER_MAX_HEIGHT}} />
-        <ProfileContent {...{y, height: HEADER_MAX_HEIGHT}} />
+        <ProfileContent
+          navToEditProfile={this.navToEditProfile(title)}
+          openModal={track ? this.openModal(track.id) : console.log('open')}
+          renderMostTrack={this.renderTrack('user-most')}
+          renderRecentTrack={this.renderTrack('user-recently')}
+          renderTopPlaylist={this.renderPlaylist}
+          viewMost={this.navToMostPlayed(user.id, title)}
+          viewRecent={this.navToRecentlyPlayed(user.id, title)}
+          viewPlaylists={this.navToTopPlaylists(user.id, title)}
+          y={y}
+          height={HEADER_MAX_HEIGHT}
+          track={track ? track : null}
+          user={user}
+          currentUser={currentUser}
+          isCurrentUser={isCurrentUser}
+          userFetching={userFetching}
+          sessionFetching={sessionFetching}
+          trackFetching={trackFetching}
+          playlistFetching={playlistFetching}
+          userError={userError}
+          sessionError={sessionError}
+          trackError={trackError}
+          playlistError={playlistError}
+          followerTotal={followerTotal}
+          followingTotal={followingTotal}
+          sessionIDs={sessions.allIDs}
+          trackIDs={tracks.allIDs}
+        />
         <Animated.View style={[styles.header, {shadowOpacity}]}>
           <View style={styles.background}>
             <View style={styles.wrap}>
