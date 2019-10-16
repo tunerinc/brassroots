@@ -2,24 +2,28 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import FastImage from 'react-native-fast-image';
 import {
   Text,
   View,
   TouchableOpacity,
   TouchableHighlight,
-  Animated,
   VirtualizedList,
+  Dimensions,
+  StyleSheet,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import debounce from "lodash.debounce";
-import Interactable from 'react-native-interactable';
+import FastImage from 'react-native-fast-image';
+import Animated from 'react-native-reanimated';
+import {onScroll} from 'react-native-redash';
+import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import styles from './styles';
 
 // Components
+import ImageCover from '../../components/ImageCover';
 import AddToQueueDialog from '../../components/AddToQueueDialog';
 import PlaylistModal from '../../components/PlaylistModal';
 import TrackCard from '../../components/TrackCard';
@@ -51,21 +55,22 @@ import {leaveSession} from '../../actions/sessions/LeaveSession';
 // Tracks Action Creators
 import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
 
-const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 65;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
+const {Value, interpolate, Extrapolate} = Animated;
+const {height} = Dimensions.get('window');
+export const HEADER_MAX_HEIGHT = height * 0.6;
+export const HEADER_MIN_HEIGHT = 65;
+export const HEADER_DELTA = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class PlaylistView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      scrollY: new Animated.Value(0),
-      scrollEnabled: false,
-      isOpen: true,
       isPlaylistMenuOpen: false,
       isTrackMenuOpen: false,
       selectedTrack: '',
+      y: new Value(0),
     };
 
     this.onEndReached = this.onEndReached.bind(this);
@@ -78,11 +83,8 @@ class PlaylistView extends React.Component {
     this.renderModalContent = this.renderModalContent.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    this.onPanelDrag = this.onPanelDrag.bind(this);
     this.handleChangeFavoriteTrack = this.handleChangeFavoriteTrack.bind(this);
 
-    this._deltaY = new Animated.Value(0);
     this._onEndReached = debounce(this.onEndReached, 0);
   }
 
@@ -164,24 +166,33 @@ class PlaylistView extends React.Component {
       entities: {playlists, tracks},
       users: {currentUserID},
     } = this.props;
+
+    if (item.includes('empty')) {
+      return (
+        <View style={{backgroundColor: '#1b1b1e', height: height * 0.11}}></View>
+      );
+    }
+
     const {name, artists, album} = tracks.byID[item];
     const {ownerID, name: playlistName} = playlists.byID[playlistToView];
     const displayName = ownerID === 'spotify' ? 'Spotify' : ownerID;
 
     return (
-      <TrackCard
-        key={`${item}-${index}`}
-        albumName={album.name}
-        type='cover'
-        context={{displayName, name: playlistName, id: playlistToView, type: 'playlist'}}
-        name={name}
-        onPress={this.handlePlay(item, index)}
-        openModal={this.openModal(item, 'track')}
-        showOptions={true}
-        showSquareImage={true}
-        image={album.medium}
-        artists={artists.map(a => a.name).join(', ')}
-      />
+      <View style={{backgroundColor: '#1b1b1e'}}>
+        <TrackCard
+          key={`${item}-${index}`}
+          albumName={album.name}
+          type='cover'
+          context={{displayName, name: playlistName, id: playlistToView, type: 'playlist'}}
+          name={name}
+          onPress={this.handlePlay(item, index)}
+          openModal={this.openModal(item, 'track')}
+          showOptions={true}
+          showSquareImage={true}
+          image={album.medium}
+          artists={artists.map(a => a.name).join(', ')}
+        />
+      </View>
     );
   }
 
@@ -385,199 +396,31 @@ class PlaylistView extends React.Component {
     this.setState({isTrackMenuOpen: false, isPlaylistMenuOpen: false});
   }
 
-  onPanelDrag({nativeEvent: {y}}) {
-    const {isOpen, scrollEnabled} = this.state;
-
-    if (y <= -(HEADER_SCROLL_DISTANCE / 2) && isOpen && !scrollEnabled) {
-      this.setState({scrollEnabled: true, isOpen: false});
-    }
-
-    if (y >= -(HEADER_SCROLL_DISTANCE / 2) && !isOpen) {
-      this.setState({scrollEnabled: false, isOpen: true});
-    }
-  }
-
-  onScroll({nativeEvent: {contentOffset}}) {
-    const {isOpen, scrollEnabled} = this.state;
-
-    if ((isOpen || contentOffset.y <= 0) && scrollEnabled) {
-      this.setState({scrollEnabled: false, isOpen: true});
-      this.refs['TrackList'].getScrollResponder().scrollTo({x: 0, y: 0});
-    }
-  }
-
   handleChangeFavoriteTrack = trackID => () => {
     const {changeFavoriteTrack, users: {currentUserID}} = this.props;
     changeFavoriteTrack(currentUserID, trackID);
     this.closeModal();
   }
 
-  render() {
-    const headerHeight = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE, 0, 0],
-      outputRange: [HEADER_MIN_HEIGHT, HEADER_MIN_HEIGHT, HEADER_MAX_HEIGHT, HEADER_MAX_HEIGHT],
-      extrapolate: 'clamp',
-    });
-    const headerShadowOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, 40],
-      outputRange: [0, 0.9],
-      extrapolate: 'clamp',
-    });
-    const filterOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE, 0, 0],
-      outputRange: [1, 1, 0, 0],
-      extrapolate: 'clamp',
-    });
-    const headerOptionsOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.1, 0],
-      outputRange: [0, 1],
-      extrapolate: 'clamp',
-    });
-    const headerOptionsOffset = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.15, -HEADER_SCROLL_DISTANCE * 0.1],
-      outputRange: [600, 0],
-      extrapolate: 'clamp',
-    });
-    const playButtonOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.4, -HEADER_SCROLL_DISTANCE * 0.2],
-      outputRange: [0, 1],
-      extrapolate: 'clamp',
-    });
-    const playButtonOffset = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.45, -HEADER_SCROLL_DISTANCE * 0.4],
-      outputRange: [600, 0],
-      extrapolate: 'clamp',
-    });
-    const {
-      isTrackMenuOpen,
-      isPlaylistMenuOpen,
-      scrollEnabled,
-      selectedTrack,
-      scrollY: y,
-    } = this.state;
-    const {
-      playlistToView,
-      title,
-      entities: {albums, playlists, sessions, tracks: trackEntities},
-      playlists: {fetching, refreshing, error: playlistError},
-      queue: {userQueue, queueing, error: queueError},
-      sessions: {currentSessionID},
-      users: {currentUserID},
-    } = this.props;
-    const {tracks, name, mode, members, large} = playlists.byID[playlistToView];
-    const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
-    const queueHasTracks = sessionExists && userQueue.length > 0;
-    const inSession = sessionExists
-      && (
-        sessions.byID[currentSessionID].listeners.includes(currentUserID)
-        || sessions.byID[currentSessionID].ownerID === currentUserID
-      );
-
+  renderHeader = ({mode, members, currentUserID, tracks}) => () => {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Animated.View style={[styles.animatedHeader, {height: headerHeight}]}>
-          </Animated.View>
-        </View>
-        <Interactable.View
-          verticalOnly={true}
-          snapPoints={[{y: 0}, {y: -(HEADER_SCROLL_DISTANCE)}]}
-          boundaries={{top: -(HEADER_SCROLL_DISTANCE), bottom: 0}}
-          animatedValueY={this._deltaY}
-          onDrag={this.onPanelDrag}
-        >
-          {tracks.length !== 0 &&
-            <VirtualizedList
-              ref='TrackList'
-              data={tracks}
-              extraData={this.props}
-              style={styles.list}
-              renderItem={this.renderTrack(playlistToView)}
-              keyExtractor={(item, index) => `${item}-${index}`}
-              getItem={(data, index) => data[index]}
-              getItemCount={data => data.length}
-              removeClippedSubviews={false}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator={false}
-              ListHeaderComponent={<View />}
-              ListFooterComponent={this.renderFooter}
-              ListEmptyComponent={<Text>Nothing to show</Text>}
-              canCancelContentTouches={scrollEnabled}
-              scrollEnabled={scrollEnabled}
-              bounces={true}
-              refreshing={refreshing.includes('tracks')}
-              onRefresh={this.handleRefresh}
-              onEndReached={this._onEndReached}
-              onEndReachedThreshold={0.5}
-              onScroll={Animated.event(
-                [{nativeEvent: {contentOffset: {y}}}],
-                {listener: this.onScroll},
-              )}
-            />
-          }
-          {(tracks.length === 0 || !tracks.length) &&
-            <View style={styles.scrollWrap}>
-              {(fetching.includes('tracks') && !playlistError) && (
-                <View>
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                </View>
-              )}
-              {(!fetching.includes('tracks') && !playlistError) &&
-                <TouchableHighlight style={styles.addPlaylistTrack}>
-                  <View style={styles.addPlaylistTrackWrap}>
-                    <View style={styles.addPlaylistTrackImage}>
-                      <MaterialCommunityIcons name='plus' style={styles.plus} />
-                    </View>
-                    <Text style={styles.addPlaylistTrackText}>Add tracks...</Text>
-                    <SimpleLineIcons name='options' color='#888' style={styles.options} />
-                  </View>
-                </TouchableHighlight>
-              }
-              {(!fetching.includes('tracks') && playlistError) &&
-                <View style={styles.playlistTrackError}>
-                  <Text style={styles.playlistTrackErrorText}>Unable to load playlist tracks</Text>
-                </View>
-              }
-            </View>
-          }
-        </Interactable.View>
-        <Animated.View
-          style={[
-            styles.animatedShadow,
-            {height: headerHeight, shadowOpacity: headerShadowOpacity},
-          ]}
-        >
-          <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
-            <Text numberOfLines={1} style={styles.title}>
-              {name}
-            </Text>
-            <Ionicons
-              name='md-information-circle'
-              style={styles.rightIcon}
-              onPress={this.navToDetails(playlistToView, title)}
-            />
-          </View>
-          <Animated.View
-            style={[
-              styles.playButtonWrap,
-              {opacity: playButtonOpacity, bottom: playButtonOffset}
+      <View style={{height: HEADER_MAX_HEIGHT}}>
+        <Animated.View style={[styles.gradient, {height: HEADER_MAX_HEIGHT}]}>
+          <LinearGradient
+            style={{...StyleSheet.absoluteFill, zIndex: -1}}
+            locations={[0, 0.4, 0.7, 0.90, 1]}
+            colors={[
+              'rgba(27,27,30,0)',
+              'rgba(27,27,30,0.3)',
+              'rgba(27,27,30,0.5)',
+              'rgba(27,27,30,0.9)',
+              'rgba(27,27,30,1.0)',
             ]}
-          >
+          />
+          <View style={styles.playButtonWrap}>
             <PlayButton play={this.handlePlay(tracks[0], 0)} />
-          </Animated.View>
-          <Animated.View
-            style={[
-              styles.headerBottomOptions,
-              {opacity: headerOptionsOpacity, bottom: headerOptionsOffset},
-            ]}
-          >
+          </View>
+          <View style={styles.headerBottomOptions}>
             <View style={styles.shareButtonWrap}>
               <TouchableOpacity style={styles.shareButton} disabled={true}>
                 <Ionicons name='md-share-alt' style={styles.shareIcon} />
@@ -605,19 +448,113 @@ class PlaylistView extends React.Component {
                 onPress={this.openModal('', 'playlist')}
               />
             </View>
-          </Animated.View>
-          <View style={styles.headerFilter} />
-          <FastImage
-            style={styles.headerBackground}
-            source={{uri: large}}
-            resizeMode={FastImage.resizeMode.cover}
-          />
-          <Animated.Image
-            source={{uri: large}}
-            blurRadius={80}
-            resizeMode='cover'
-            style={[styles.headerBackground, styles.blurred, {opacity: filterOpacity}]}
-          />
+          </View>
+        </Animated.View>
+      </View>
+    );
+  }
+
+  render() {
+    const {isTrackMenuOpen, isPlaylistMenuOpen, selectedTrack, y} = this.state;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA - 1, HEADER_DELTA + 10],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const imageOpacity = interpolate(y, {
+      inputRange: [0, HEADER_DELTA],
+      outputRange: [0, 0.9],
+      extrapolate: 'clamp',
+    });
+    const filterOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA * 0.3, HEADER_DELTA * 0.8],
+      outputRange: [0, 1],
+      extrapolate: Extrapolate.CLAMP,
+    });
+
+    const {
+      playlistToView,
+      title,
+      entities: {albums, playlists, sessions, tracks: trackEntities},
+      playlists: {fetching, refreshing, error: playlistError},
+      queue: {userQueue, queueing, error: queueError},
+      sessions: {currentSessionID},
+      users: {currentUserID},
+    } = this.props;
+    const {tracks, name, mode, members, large} = playlists.byID[playlistToView];
+    const sessionExists = currentSessionID && sessions.allIDs.includes(currentSessionID);
+    const queueHasTracks = sessionExists && userQueue.length > 0;
+    const inSession = sessionExists
+      && (
+        sessions.byID[currentSessionID].listeners.includes(currentUserID)
+        || sessions.byID[currentSessionID].ownerID === currentUserID
+      );
+
+    const newTracks = tracks.length === 1
+      ? [...tracks, 'empty', 'empty-1']
+      : tracks.length === 2
+      ? [...tracks, 'empty']
+      : [...tracks];
+
+    return (
+      <View style={styles.container}>
+        <ImageCover {...{y, image: large, height: HEADER_MAX_HEIGHT}} />
+        <AnimatedVirtualizedList
+          data={newTracks}
+          extraData={this.props}
+          style={styles.list}
+          renderItem={this.renderTrack(playlistToView)}
+          keyExtractor={(item, index) => `${item}-${index}`}
+          getItem={(data, index) => data[index]}
+          getItemCount={data => data.length}
+          removeClippedSubviews={false}
+          scrollEventThrottle={1}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={this.renderHeader({mode, members, currentUserID, tracks})}
+          ListFooterComponent={this.renderFooter}
+          bounces={true}
+          refreshing={refreshing.includes('tracks')}
+          onRefresh={this.handleRefresh}
+          onEndReached={this._onEndReached}
+          onEndReachedThreshold={0.5}
+          onScroll={onScroll({y})}
+        />
+        <Animated.View style={[styles.header, {shadowOpacity}]}>
+          <View style={styles.background}>
+            <View style={styles.wrap}>
+              {typeof large === 'string' &&
+                <FastImage style={styles.image} source={{uri: large}} />
+              }
+              {typeof large === 'string' &&
+                <Animated.Image
+                  style={[styles.image, {opacity: imageOpacity}]}
+                  blurRadius={60}
+                  source={{uri: large}}
+                />
+              }
+              <Animated.View style={[styles.gradient, {opacity: filterOpacity}]}>
+                <LinearGradient
+                  style={StyleSheet.absoluteFill}
+                  locations={[0, 1]}
+                  colors={[
+                    'rgba(27,27,30,0)',
+                    'rgba(27,27,30,0.8)',
+                  ]}
+                />
+              </Animated.View>
+            </View>
+          </View>
+          <View style={styles.nav}>
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+            <Text numberOfLines={1} style={styles.title}>
+              {name}
+            </Text>
+            <Ionicons
+              name='md-information-circle'
+              style={styles.rightIcon}
+              onPress={this.navToDetails(playlistToView, title)}
+            />
+          </View>
         </Animated.View>
         <Modal
           isVisible={isTrackMenuOpen}

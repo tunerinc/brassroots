@@ -54,8 +54,8 @@ function selectPhoto(
             cropperToolbarTitle: 'Crop Image',
           },
         );
-        
-        
+
+
         if (includeBase64) {
           await ImageCropPicker.clean();
           resolve(croppedImage);

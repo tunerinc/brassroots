@@ -2,20 +2,32 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import FastImage from 'react-native-fast-image';
-import {Text, View, TouchableOpacity, Animated, VirtualizedList} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  VirtualizedList,
+  Dimensions,
+  StyleSheet,
+} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
-import Interactable from 'react-native-interactable';
+import FastImage from 'react-native-fast-image';
+import Animated from 'react-native-reanimated';
+import {onScroll} from 'react-native-redash';
+import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
+import styles from './styles';
+
+// Components
+import ImageCover from '../../components/ImageCover';
 import AddToQueueDialog from '../../components/AddToQueueDialog';
 import PlayButton from '../../components/PlayButton';
 import TrackCard from '../../components/TrackCard';
 import TrackModal from '../../components/TrackModal';
 import LoadingTrack from '../../components/LoadingTrack';
 import AlbumModal from '../../components/AlbumModal';
-import styles from './styles';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -34,21 +46,22 @@ import {leaveSession} from '../../actions/sessions/LeaveSession';
 // Tracks Action Creators
 import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
 
-const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 65;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
+const {Value, interpolate, Extrapolate} = Animated;
+const {height} = Dimensions.get('window');
+export const HEADER_MAX_HEIGHT = height * 0.6;
+export const HEADER_MIN_HEIGHT = 65;
+export const HEADER_DELTA = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class LibrarySingleAlbumView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      scrollY: new Animated.Value(0),
-      scrollEnabled: false,
-      isOpen: true,
       isAlbumMenuOpen: false,
       isTrackMenuOpen: false,
       selectedTrack: '',
+      y: new Value(0),
     };
 
     this.navToDetails = this.navToDetails.bind(this);
@@ -58,11 +71,7 @@ class LibrarySingleAlbumView extends React.Component {
     this.renderModalContent = this.renderModalContent.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    this.onPanelDrag = this.onPanelDrag.bind(this);
     this.handleChangeFavoriteTrack = this.handleChangeFavoriteTrack.bind(this);
-
-    this._deltaY = new Animated.Value(0);
   }
 
   componentDidMount() {
@@ -88,22 +97,31 @@ class LibrarySingleAlbumView extends React.Component {
       entities: {tracks, users},
       users: {currentUserID},
     } = this.props;
+
+    if (item.includes('empty')) {
+      return (
+        <View style={{backgroundColor: '#1b1b1e', height: height * 0.11}}></View>
+      );
+    }
+
     const {displayName} = users.byID[currentUserID];
     const {artists, name, album, trackNumber} = tracks.byID[item];
 
     return (
-      <TrackCard
-        key={item}
-        albumName={album.name}
-        type='album'
-        context={{displayName, id: albumToView, name: album.name, type: 'user-album'}}
-        name={name}
-        onPress={this.handlePlay(item, index)}
-        openModal={this.openModal(item, 'track')}
-        showOptions={true}
-        artists={artists.map(a => a.name).join(', ')}
-        trackNumber={trackNumber}
-      />
+      <View style={{backgroundColor: '#1b1b1e'}}>
+        <TrackCard
+          key={item}
+          albumName={album.name}
+          type='album'
+          context={{displayName, id: albumToView, name: album.name, type: 'user-album'}}
+          name={name}
+          onPress={this.handlePlay(item, index)}
+          openModal={this.openModal(item, 'track')}
+          showOptions={true}
+          artists={artists.map(a => a.name).join(', ')}
+          trackNumber={trackNumber}
+        />
+      </View>
     );
   }
 
@@ -282,70 +300,64 @@ class LibrarySingleAlbumView extends React.Component {
     }
   }
 
-  onPanelDrag({nativeEvent: {y}}) {
-    const {isOpen, scrollEnabled} = this.state;
-
-    if (y <= -(HEADER_SCROLL_DISTANCE / 2) && isOpen && !scrollEnabled) {
-      this.setState({scrollEnabled: true, isOpen: false});
-    }
-
-    if (y >= -(HEADER_SCROLL_DISTANCE / 2) && !isOpen) {
-      this.setState({scrollEnabled: false, isOpen: true});
-    }
-  }
-
-  onScroll({nativeEvent: {contentOffset}}) {
-    const {isOpen, scrollEnabled} = this.state;
-
-    if ((isOpen || contentOffset.y <= 0) && scrollEnabled) {
-      this.setState({scrollEnabled: false, isOpen: true});
-      this.refs['TrackList'].getScrollResponder().scrollTo({x: 0, y: 0});
-    }
-  }
-
   handleChangeFavoriteTrack = trackID => () => {
     const {changeFavoriteTrack, users: {currentUserID}} = this.props;
     changeFavoriteTrack(currentUserID, trackID);
     this.closeModal();
   }
 
+  renderHeader = ({userTracks, }) => () => {
+    return (
+      <View style={{height: HEADER_MAX_HEIGHT}}>
+        <Animated.View style={[styles.gradient, {height: HEADER_MAX_HEIGHT}]}>
+          <LinearGradient
+            style={{...StyleSheet.absoluteFill, zIndex: -1}}
+            locations={[0, 0.4, 0.7, 0.90, 1]}
+            colors={[
+              'rgba(27,27,30,0)',
+              'rgba(27,27,30,0.3)',
+              'rgba(27,27,30,0.5)',
+              'rgba(27,27,30,0.9)',
+              'rgba(27,27,30,1.0)',
+            ]}
+          />
+          <View style={styles.playButtonWrap}>
+            <PlayButton play={this.handlePlay(userTracks[0], 0)} />
+          </View>
+          <View style={styles.headerBottomOptions}>
+            <TouchableOpacity style={styles.shareButton} disabled={true}>
+              <Ionicons name='md-share-alt' style={styles.shareIcon} />
+              <Text style={styles.shareText}>Share</Text>
+            </TouchableOpacity>
+            <SimpleLineIcons
+              name='options'
+              style={styles.options}
+              onPress={this.openModal('', 'album')}
+            />
+          </View>
+        </Animated.View>
+      </View>
+    );
+  }
+
   render() {
-    const headerHeight = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE, 0, 0],
-      outputRange: [HEADER_MIN_HEIGHT, HEADER_MIN_HEIGHT, HEADER_MAX_HEIGHT, HEADER_MAX_HEIGHT],
-      extrapolate: 'clamp',
+    const {isAlbumMenuOpen, isTrackMenuOpen, selectedTrack, y} = this.state;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA - 1, HEADER_DELTA + 10],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
     });
-    const headerShadowOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, 40],
+    const imageOpacity = interpolate(y, {
+      inputRange: [0, HEADER_DELTA],
       outputRange: [0, 0.9],
       extrapolate: 'clamp',
     });
-    const filterOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE, 0, 0],
-      outputRange: [1, 1, 0, 0],
-      extrapolate: 'clamp',
-    });
-    const headerOptionsOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.1, 0],
+    const filterOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA * 0.3, HEADER_DELTA * 0.8],
       outputRange: [0, 1],
-      extrapolate: 'clamp',
+      extrapolate: Extrapolate.CLAMP,
     });
-    const headerOptionsOffset = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.15, -HEADER_SCROLL_DISTANCE * 0.1],
-      outputRange: [600, 0],
-      extrapolate: 'clamp',
-    });
-    const playButtonOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.4, -HEADER_SCROLL_DISTANCE * 0.2],
-      outputRange: [0, 1],
-      extrapolate: 'clamp',
-    });
-    const playButtonOffset = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.45, -HEADER_SCROLL_DISTANCE * 0.4],
-      outputRange: [600, 0],
-      extrapolate: 'clamp',
-    });
-    const {isAlbumMenuOpen, isTrackMenuOpen, scrollEnabled, selectedTrack, scrollY: y} = this.state;
+
     const {
       albumToView,
       entities: {albums, sessions, tracks},
@@ -362,66 +374,55 @@ class LibrarySingleAlbumView extends React.Component {
         sessions.byID[currentSessionID].listeners.includes(currentUserID)
         || sessions.byID[currentSessionID].ownerID === currentUserID
       );
+    
+    const newTracks = userTracks.length === 1
+      ? [...userTracks, 'empty', 'empty-1']
+      : userTracks.length === 2
+      ? [...userTracks, 'empty']
+      : [...userTracks];
 
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Animated.View
-            style={[
-              styles.animatedHeader,
-              {height: headerHeight, backgroundColor: large === '' ? '#888' : '#1b1b1e'},
-            ]}
-          />
-        </View>
-        <Interactable.View
-          verticalOnly={true}
-          snapPoints={[{y: 0}, {y: -HEADER_SCROLL_DISTANCE}]}
-          boundaries={{top: -HEADER_SCROLL_DISTANCE, bottom: 0}}
-          animatedValueY={this._deltaY}
-          onDrag={this.onPanelDrag}
-        >
-          {userTracks.length !== 0 &&
-            <VirtualizedList
-              ref='TrackList'
-              data={userTracks}
-              renderItem={this.renderTrack(albumToView)}
-              keyExtractor={item => item}
-              getItem={(data, index) => data[index]}
-              getItemCount={data => data.length}
-              removeClippedSubviews={false}
-              scrollEventThrottle={16}
-              bounces={true}
-              canCancelContentTouches={scrollEnabled}
-              scrollEnabled={scrollEnabled}
-              style={styles.list}
-              showsVerticalScrollIndicator={false}
-              onScroll={Animated.event(
-                [{nativeEvent: {contentOffset: {y}}}],
-                {listener: this.onScroll},
-              )}
-            />
-          }
-          {(userTracks.length === 0 || !userTracks.length) &&
-            <View style={styles.scrollWrap}>
-              <LoadingTrack type='album' />
-              <LoadingTrack type='album' />
-              <LoadingTrack type='album' />
-              <LoadingTrack type='album' />
-              <LoadingTrack type='album' />
-              <LoadingTrack type='album' />
+        <ImageCover {...{y, image: large, height: HEADER_MAX_HEIGHT}} />
+        <AnimatedVirtualizedList
+          data={newTracks}
+          renderItem={this.renderTrack(albumToView)}
+          keyExtractor={item => item}
+          getItem={(data, index) => data[index]}
+          getItemCount={data => data.length}
+          removeClippedSubviews={false}
+          scrollEventThrottle={1}
+          ListHeaderComponent={this.renderHeader({userTracks})}
+          bounces={true}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+          onScroll={onScroll({y})}
+        />
+        <Animated.View style={[styles.header, {shadowOpacity}]}>
+          <View style={styles.background}>
+            <View style={styles.wrap}>
+              {typeof large === 'string' &&
+                <FastImage style={styles.image} source={{uri: large}} />
+              }
+              {typeof large === 'string' &&
+                <Animated.Image
+                  style={[styles.image, {opacity: imageOpacity}]}
+                  blurRadius={60}
+                  source={{uri: large}}
+                />
+              }
+              <Animated.View style={[styles.gradient, {opacity: filterOpacity}]}>
+                <LinearGradient
+                  style={StyleSheet.absoluteFill}
+                  locations={[0, 1]}
+                  colors={[
+                    'rgba(27,27,30,0)',
+                    'rgba(27,27,30,0.8)',
+                  ]}
+                />
+              </Animated.View>
             </View>
-          }
-        </Interactable.View>
-        <Animated.View
-          style={[
-            styles.animatedShadow,
-            {
-              height: headerHeight,
-              shadowOpacity: headerShadowOpacity,
-              backgroundColor: large === '' ? '#888' : '#1b1b1e',
-            }
-          ]}
-        >
+          </View>
           <View style={styles.nav}>
             <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
@@ -433,42 +434,6 @@ class LibrarySingleAlbumView extends React.Component {
               onPress={this.navToDetails(albumToView)}
             />
           </View>
-          <Animated.View
-            style={[
-              styles.playButtonWrap,
-              {opacity: playButtonOpacity, bottom: playButtonOffset},
-            ]}
-          >
-            <PlayButton play={this.handlePlay(userTracks[0], 0)} />
-          </Animated.View>
-          <Animated.View
-            style={[
-              styles.headerBottomOptions,
-              {opacity: headerOptionsOpacity, bottom: headerOptionsOffset},
-            ]}
-          >
-            <TouchableOpacity style={styles.shareButton} disabled={true}>
-              <Ionicons name='md-share-alt' style={styles.shareIcon} />
-              <Text style={styles.shareText}>Share</Text>
-            </TouchableOpacity>
-            <SimpleLineIcons
-              name='options'
-              style={styles.options}
-              onPress={this.openModal('', 'album')}
-            />
-          </Animated.View>
-          <View style={styles.headerFilter} />
-          <FastImage
-            style={styles.headerBackground}
-            source={{uri: large}}
-            resizeMode={FastImage.resizeMode.cover}
-          />
-          <Animated.Image
-            source={{uri: large}}
-            blurRadius={80}
-            resizeMode='cover'
-            style={[styles.headerBackground, styles.blurred, {opacity: filterOpacity}]}
-          />
         </Animated.View>
         <Modal
           isVisible={isTrackMenuOpen}
