@@ -9,15 +9,19 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   VirtualizedList,
+  Dimensions,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import debounce from "lodash.debounce";
+import Animated from 'react-native-reanimated';
+import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import styles from './styles';
 
 // Components
+import ImageCover from '../../components/ImageCover';
 import AddToQueueDialog from '../../components/AddToQueueDialog';
 import PlaylistModal from '../../components/PlaylistModal';
 import TrackCard from '../../components/TrackCard';
@@ -49,9 +53,11 @@ import {leaveSession} from '../../actions/sessions/LeaveSession';
 // Tracks Action Creators
 import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
 
-const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 65;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+const {Value, interpolate, Extrapolate} = Animated;
+const {height} = Dimensions.get('window');
+export const HEADER_MAX_HEIGHT = height * 0.6;
+export const HEADER_MIN_HEIGHT = 65;
+export const HEADER_DELTA = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class PlaylistView extends React.Component {
   constructor(props) {
@@ -61,6 +67,7 @@ class PlaylistView extends React.Component {
       isPlaylistMenuOpen: false,
       isTrackMenuOpen: false,
       selectedTrack: '',
+      y: new Value(0),
     };
 
     this.onEndReached = this.onEndReached.bind(this);
@@ -384,11 +391,7 @@ class PlaylistView extends React.Component {
   }
 
   render() {
-    const {
-      isTrackMenuOpen,
-      isPlaylistMenuOpen,
-      selectedTrack,
-    } = this.state;
+    const {isTrackMenuOpen, isPlaylistMenuOpen, selectedTrack, y} = this.state;
     const {
       playlistToView,
       title,
@@ -409,6 +412,7 @@ class PlaylistView extends React.Component {
 
     return (
       <View style={styles.container}>
+        <ImageCover {...{y, image: large, height: HEADER_MAX_HEIGHT}} />
         <Modal
           isVisible={isTrackMenuOpen}
           backdropColor={'#1b1b1e'}

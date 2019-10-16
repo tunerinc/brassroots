@@ -3,18 +3,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {Text, View, TouchableOpacity, VirtualizedList} from 'react-native';
+import {Text, View, TouchableOpacity, VirtualizedList, Dimensions} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import Animated from 'react-native-reanimated';
+import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
+import styles from './styles';
+
+// Components
+import ImageCover from '../../components/ImageCover';
 import AddToQueueDialog from '../../components/AddToQueueDialog';
 import PlayButton from '../../components/PlayButton';
 import TrackCard from '../../components/TrackCard';
 import TrackModal from '../../components/TrackModal';
 import LoadingTrack from '../../components/LoadingTrack';
 import AlbumModal from '../../components/AlbumModal';
-import styles from './styles';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -33,9 +38,11 @@ import {leaveSession} from '../../actions/sessions/LeaveSession';
 // Tracks Action Creators
 import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
 
-const HEADER_MAX_HEIGHT = 261;
-const HEADER_MIN_HEIGHT = 65;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+const {Value, interpolate, Extrapolate} = Animated;
+const {height} = Dimensions.get('window');
+export const HEADER_MAX_HEIGHT = height * 0.6;
+export const HEADER_MIN_HEIGHT = 65;
+export const HEADER_DELTA = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 class LibrarySingleAlbumView extends React.Component {
   constructor(props) {
@@ -45,6 +52,7 @@ class LibrarySingleAlbumView extends React.Component {
       isAlbumMenuOpen: false,
       isTrackMenuOpen: false,
       selectedTrack: '',
+      y: new Value(0),
     };
 
     this.navToDetails = this.navToDetails.bind(this);
@@ -281,7 +289,7 @@ class LibrarySingleAlbumView extends React.Component {
   }
 
   render() {
-    const {isAlbumMenuOpen, isTrackMenuOpen, selectedTrack} = this.state;
+    const {isAlbumMenuOpen, isTrackMenuOpen, selectedTrack, y} = this.state;
     const {
       albumToView,
       entities: {albums, sessions, tracks},
@@ -301,6 +309,7 @@ class LibrarySingleAlbumView extends React.Component {
 
     return (
       <View style={styles.container}>
+        <ImageCover {...{y, image: large, height: HEADER_MAX_HEIGHT}} />
         <Modal
           isVisible={isTrackMenuOpen}
           backdropColor={'#1b1b1e'}

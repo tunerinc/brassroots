@@ -51,6 +51,7 @@ interface Styles {
   followingText: TextStyleProp,
   scrollWrap: ViewStyleProp,
   profileTrack: ViewStyleProp,
+  liveSession: ViewStyleProp,
   favoriteTrack: ViewStyleProp,
   favoriteTrackHeader: ViewStyleProp,
   favoriteTrackIcon: TextStyleProp,
@@ -290,6 +291,7 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#1b1b1e',
     zIndex: 5,
   },
+  liveSession: {},
   favoriteTrack: {
     paddingBottom: 20,
   },

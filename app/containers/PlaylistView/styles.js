@@ -52,7 +52,7 @@ interface Styles {
   loadingGif: ImageStyleProp,
 };
 
-const screenHeight: number = Dimensions.get('window').height;
+const {height} = Dimensions.get('window');
 const HEADER_MAX_HEIGHT: number = 261;
 const HEADER_MIN_HEIGHT: number = 65;
 const styles: Styles = StyleSheet.create({
@@ -63,7 +63,7 @@ const styles: Styles = StyleSheet.create({
   list: {
     marginBottom: HEADER_MIN_HEIGHT,
     backgroundColor: '#1b1b1e',
-    minHeight: screenHeight - (HEADER_MAX_HEIGHT + 65),
+    minHeight: height - (HEADER_MAX_HEIGHT + 65),
   },
   scrollWrap: {
     backgroundColor: '#1b1b1e',

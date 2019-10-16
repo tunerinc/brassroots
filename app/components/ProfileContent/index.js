@@ -49,6 +49,7 @@ type Props = {|
     },
   },
   user: {
+    id: ?string,
     profileImage: ?string,
     coverImage: ?string,
     displayName: string,
