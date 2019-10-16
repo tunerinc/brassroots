@@ -15,6 +15,7 @@ import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import FastImage from 'react-native-fast-image';
 import Animated from 'react-native-reanimated';
+import {onScroll} from 'react-native-redash';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import styles from './styles';
@@ -45,6 +46,7 @@ import {leaveSession} from '../../actions/sessions/LeaveSession';
 // Tracks Action Creators
 import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
 
+const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
 const {Value, interpolate, Extrapolate} = Animated;
 const {height} = Dimensions.get('window');
 export const HEADER_MAX_HEIGHT = height * 0.6;
@@ -99,18 +101,20 @@ class LibrarySingleAlbumView extends React.Component {
     const {artists, name, album, trackNumber} = tracks.byID[item];
 
     return (
-      <TrackCard
-        key={item}
-        albumName={album.name}
-        type='album'
-        context={{displayName, id: albumToView, name: album.name, type: 'user-album'}}
-        name={name}
-        onPress={this.handlePlay(item, index)}
-        openModal={this.openModal(item, 'track')}
-        showOptions={true}
-        artists={artists.map(a => a.name).join(', ')}
-        trackNumber={trackNumber}
-      />
+      <View style={{backgroundColor: '#1b1b1e'}}>
+        <TrackCard
+          key={item}
+          albumName={album.name}
+          type='album'
+          context={{displayName, id: albumToView, name: album.name, type: 'user-album'}}
+          name={name}
+          onPress={this.handlePlay(item, index)}
+          openModal={this.openModal(item, 'track')}
+          showOptions={true}
+          artists={artists.map(a => a.name).join(', ')}
+          trackNumber={trackNumber}
+        />
+      </View>
     );
   }
 
@@ -295,6 +299,26 @@ class LibrarySingleAlbumView extends React.Component {
     this.closeModal();
   }
 
+  renderHeader() {
+    return (
+      <View style={{height: HEADER_MAX_HEIGHT}}>
+        <Animated.View style={[styles.gradient, {height: HEADER_MAX_HEIGHT}]}>
+          <LinearGradient
+            style={{...StyleSheet.absoluteFill, zIndex: -1}}
+            locations={[0, 0.4, 0.7, 0.90, 1]}
+            colors={[
+              'rgba(27,27,30,0)',
+              'rgba(27,27,30,0.3)',
+              'rgba(27,27,30,0.5)',
+              'rgba(27,27,30,0.9)',
+              'rgba(27,27,30,1.0)',
+            ]}
+          />
+        </Animated.View>
+      </View>
+    );
+  }
+
   render() {
     const {isAlbumMenuOpen, isTrackMenuOpen, selectedTrack, y} = this.state;
     const shadowOpacity = interpolate(y, {
@@ -333,6 +357,20 @@ class LibrarySingleAlbumView extends React.Component {
     return (
       <View style={styles.container}>
         <ImageCover {...{y, image: large, height: HEADER_MAX_HEIGHT}} />
+        <AnimatedVirtualizedList
+          data={userTracks}
+          renderItem={this.renderTrack(albumToView)}
+          keyExtractor={item => item}
+          getItem={(data, index) => data[index]}
+          getItemCount={data => data.length}
+          removeClippedSubviews={false}
+          scrollEventThrottle={1}
+          ListHeaderComponent={this.renderHeader}
+          bounces={true}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+          onScroll={onScroll({y})}
+        />
         <Animated.View style={[styles.header, {shadowOpacity}]}>
           <View style={styles.background}>
             <View style={styles.wrap}>

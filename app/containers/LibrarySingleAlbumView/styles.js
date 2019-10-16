@@ -15,6 +15,8 @@ import {
 
 interface Styles {
   container: ViewStyleProp,
+  list: ViewStyleProp,
+  gradient: ViewStyleProp,
   header: ViewStyleProp,
   background: ViewStyleProp,
   wrap: ViewStyleProp,
@@ -34,6 +36,16 @@ const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1b1b1e',
+  },
+  list: {
+    flex: 1,
+  },
+  gradient: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    right: 0,
+    paddingHorizontal: 15,
   },
   header: {
     position: 'absolute',

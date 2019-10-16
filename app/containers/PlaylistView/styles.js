@@ -15,6 +15,8 @@ import {
 
 interface Styles {
   container: ViewStyleProp,
+  list: ViewStyleProp,
+  gradient: ViewStyleProp,
   header: ViewStyleProp,
   background: ViewStyleProp,
   wrap: ViewStyleProp,
@@ -24,6 +26,8 @@ interface Styles {
   leftIcon: TextStyleProp,
   title: TextStyleProp,
   rightIcon: TextStyleProp,
+  footer: ViewStyleProp,
+  loadingGif: ImageStyleProp,
 };
 
 const {height} = Dimensions.get('window');
@@ -34,6 +38,16 @@ const styles: Styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1b1b1e',
+  },
+  list: {
+    flex: 1,
+  },
+  gradient: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    right: 0,
+    paddingHorizontal: 15,
   },
   header: {
     position: 'absolute',
@@ -109,6 +123,20 @@ const styles: Styles = StyleSheet.create({
     textAlign: 'right',
     backgroundColor: 'transparent',
     alignSelf: 'center',
+  },
+  footer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  loadingGif: {
+    width: 60,
+    height: 72.6,
+    backgroundColor: '#1b1b1e',
+    shadowColor: '#101010',
+    shadowOffset: {width: 0, height: 4},
+    shadowRadius: 5,
+    shadowOpacity: 0.7,
   },
 });
 
