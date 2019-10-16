@@ -8,14 +8,12 @@ import {
   View,
   TouchableOpacity,
   TouchableHighlight,
-  Animated,
   VirtualizedList,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import debounce from "lodash.debounce";
-import Interactable from 'react-native-interactable';
 import Modal from 'react-native-modal';
 import styles from './styles';
 
@@ -60,9 +58,6 @@ class PlaylistView extends React.Component {
     super(props);
 
     this.state = {
-      scrollY: new Animated.Value(0),
-      scrollEnabled: false,
-      isOpen: true,
       isPlaylistMenuOpen: false,
       isTrackMenuOpen: false,
       selectedTrack: '',
@@ -78,11 +73,8 @@ class PlaylistView extends React.Component {
     this.renderModalContent = this.renderModalContent.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    this.onPanelDrag = this.onPanelDrag.bind(this);
     this.handleChangeFavoriteTrack = this.handleChangeFavoriteTrack.bind(this);
 
-    this._deltaY = new Animated.Value(0);
     this._onEndReached = debounce(this.onEndReached, 0);
   }
 
@@ -385,27 +377,6 @@ class PlaylistView extends React.Component {
     this.setState({isTrackMenuOpen: false, isPlaylistMenuOpen: false});
   }
 
-  onPanelDrag({nativeEvent: {y}}) {
-    const {isOpen, scrollEnabled} = this.state;
-
-    if (y <= -(HEADER_SCROLL_DISTANCE / 2) && isOpen && !scrollEnabled) {
-      this.setState({scrollEnabled: true, isOpen: false});
-    }
-
-    if (y >= -(HEADER_SCROLL_DISTANCE / 2) && !isOpen) {
-      this.setState({scrollEnabled: false, isOpen: true});
-    }
-  }
-
-  onScroll({nativeEvent: {contentOffset}}) {
-    const {isOpen, scrollEnabled} = this.state;
-
-    if ((isOpen || contentOffset.y <= 0) && scrollEnabled) {
-      this.setState({scrollEnabled: false, isOpen: true});
-      this.refs['TrackList'].getScrollResponder().scrollTo({x: 0, y: 0});
-    }
-  }
-
   handleChangeFavoriteTrack = trackID => () => {
     const {changeFavoriteTrack, users: {currentUserID}} = this.props;
     changeFavoriteTrack(currentUserID, trackID);
@@ -413,47 +384,10 @@ class PlaylistView extends React.Component {
   }
 
   render() {
-    const headerHeight = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE, 0, 0],
-      outputRange: [HEADER_MIN_HEIGHT, HEADER_MIN_HEIGHT, HEADER_MAX_HEIGHT, HEADER_MAX_HEIGHT],
-      extrapolate: 'clamp',
-    });
-    const headerShadowOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, 40],
-      outputRange: [0, 0.9],
-      extrapolate: 'clamp',
-    });
-    const filterOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE, -HEADER_SCROLL_DISTANCE, 0, 0],
-      outputRange: [1, 1, 0, 0],
-      extrapolate: 'clamp',
-    });
-    const headerOptionsOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.1, 0],
-      outputRange: [0, 1],
-      extrapolate: 'clamp',
-    });
-    const headerOptionsOffset = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.15, -HEADER_SCROLL_DISTANCE * 0.1],
-      outputRange: [600, 0],
-      extrapolate: 'clamp',
-    });
-    const playButtonOpacity = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.4, -HEADER_SCROLL_DISTANCE * 0.2],
-      outputRange: [0, 1],
-      extrapolate: 'clamp',
-    });
-    const playButtonOffset = this._deltaY.interpolate({
-      inputRange: [-HEADER_SCROLL_DISTANCE * 0.45, -HEADER_SCROLL_DISTANCE * 0.4],
-      outputRange: [600, 0],
-      extrapolate: 'clamp',
-    });
     const {
       isTrackMenuOpen,
       isPlaylistMenuOpen,
-      scrollEnabled,
       selectedTrack,
-      scrollY: y,
     } = this.state;
     const {
       playlistToView,
@@ -475,150 +409,6 @@ class PlaylistView extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Animated.View style={[styles.animatedHeader, {height: headerHeight}]}>
-          </Animated.View>
-        </View>
-        <Interactable.View
-          verticalOnly={true}
-          snapPoints={[{y: 0}, {y: -(HEADER_SCROLL_DISTANCE)}]}
-          boundaries={{top: -(HEADER_SCROLL_DISTANCE), bottom: 0}}
-          animatedValueY={this._deltaY}
-          onDrag={this.onPanelDrag}
-        >
-          {tracks.length !== 0 &&
-            <VirtualizedList
-              ref='TrackList'
-              data={tracks}
-              extraData={this.props}
-              style={styles.list}
-              renderItem={this.renderTrack(playlistToView)}
-              keyExtractor={(item, index) => `${item}-${index}`}
-              getItem={(data, index) => data[index]}
-              getItemCount={data => data.length}
-              removeClippedSubviews={false}
-              scrollEventThrottle={16}
-              showsVerticalScrollIndicator={false}
-              ListHeaderComponent={<View />}
-              ListFooterComponent={this.renderFooter}
-              ListEmptyComponent={<Text>Nothing to show</Text>}
-              canCancelContentTouches={scrollEnabled}
-              scrollEnabled={scrollEnabled}
-              bounces={true}
-              refreshing={refreshing.includes('tracks')}
-              onRefresh={this.handleRefresh}
-              onEndReached={this._onEndReached}
-              onEndReachedThreshold={0.5}
-              onScroll={Animated.event(
-                [{nativeEvent: {contentOffset: {y}}}],
-                {listener: this.onScroll},
-              )}
-            />
-          }
-          {(tracks.length === 0 || !tracks.length) &&
-            <View style={styles.scrollWrap}>
-              {(fetching.includes('tracks') && !playlistError) && (
-                <View>
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                  <LoadingTrack type='cover' />
-                </View>
-              )}
-              {(!fetching.includes('tracks') && !playlistError) &&
-                <TouchableHighlight style={styles.addPlaylistTrack}>
-                  <View style={styles.addPlaylistTrackWrap}>
-                    <View style={styles.addPlaylistTrackImage}>
-                      <MaterialCommunityIcons name='plus' style={styles.plus} />
-                    </View>
-                    <Text style={styles.addPlaylistTrackText}>Add tracks...</Text>
-                    <SimpleLineIcons name='options' color='#888' style={styles.options} />
-                  </View>
-                </TouchableHighlight>
-              }
-              {(!fetching.includes('tracks') && playlistError) &&
-                <View style={styles.playlistTrackError}>
-                  <Text style={styles.playlistTrackErrorText}>Unable to load playlist tracks</Text>
-                </View>
-              }
-            </View>
-          }
-        </Interactable.View>
-        <Animated.View
-          style={[
-            styles.animatedShadow,
-            {height: headerHeight, shadowOpacity: headerShadowOpacity},
-          ]}
-        >
-          <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
-            <Text numberOfLines={1} style={styles.title}>
-              {name}
-            </Text>
-            <Ionicons
-              name='md-information-circle'
-              style={styles.rightIcon}
-              onPress={this.navToDetails(playlistToView, title)}
-            />
-          </View>
-          <Animated.View
-            style={[
-              styles.playButtonWrap,
-              {opacity: playButtonOpacity, bottom: playButtonOffset}
-            ]}
-          >
-            <PlayButton play={this.handlePlay(tracks[0], 0)} />
-          </Animated.View>
-          <Animated.View
-            style={[
-              styles.headerBottomOptions,
-              {opacity: headerOptionsOpacity, bottom: headerOptionsOffset},
-            ]}
-          >
-            <View style={styles.shareButtonWrap}>
-              <TouchableOpacity style={styles.shareButton} disabled={true}>
-                <Ionicons name='md-share-alt' style={styles.shareIcon} />
-                <Text style={styles.shareText}>Share</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.detailsWrap}>
-              <TouchableOpacity style={styles.modeButton} disabled={true}>
-                {mode === 'hidden' && <Octicons name='telescope' style={styles.modeIcon} />}
-                {mode === 'vip' && <Foundation name='ticket' style={styles.modeIcon} />}
-                {mode === 'limitless' &&
-                  <MaterialIcons name='all-inclusive' style={styles.modeIcon} />
-                }
-              </TouchableOpacity>
-              {Array.isArray(members) && members.includes(currentUserID) &&
-                <TouchableOpacity style={styles.memberButton} disabled>
-                  <Ionicons name='md-person' color='#fefefe' style={styles.memberIcon} />
-                </TouchableOpacity>
-              }
-            </View>
-            <View style={styles.optionsWrap}>
-              <SimpleLineIcons
-                name='options'
-                style={styles.options}
-                onPress={this.openModal('', 'playlist')}
-              />
-            </View>
-          </Animated.View>
-          <View style={styles.headerFilter} />
-          <FastImage
-            style={styles.headerBackground}
-            source={{uri: large}}
-            resizeMode={FastImage.resizeMode.cover}
-          />
-          <Animated.Image
-            source={{uri: large}}
-            blurRadius={80}
-            resizeMode='cover'
-            style={[styles.headerBackground, styles.blurred, {opacity: filterOpacity}]}
-          />
-        </Animated.View>
         <Modal
           isVisible={isTrackMenuOpen}
           backdropColor={'#1b1b1e'}

@@ -8,7 +8,10 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {HEADER_DELTA, HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT} from '../../containers/UserProfileView';
-import {type ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
+import {
+  type ViewStyleProp,
+  type TextStyleProp,
+} from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 interface Styles {
   container: ViewStyleProp,
@@ -17,6 +20,42 @@ interface Styles {
   user: ViewStyleProp,
   userPhoto: ViewStyleProp,
   roundPhoto: ViewStyleProp,
+  userName: ViewStyleProp,
+  userNameText: TextStyleProp,
+  userProfileAction: ViewStyleProp,
+  userProfileActionText: TextStyleProp,
+  followingProfileAction: ViewStyleProp,
+  followProfileAction: ViewStyleProp,
+  followPerson: TextStyleProp,
+  followCheck: TextStyleProp,
+  followPlus: TextStyleProp,
+  bio: ViewStyleProp,
+  bioIcon: TextStyleProp,
+  bioText: TextStyleProp,
+  loadingInfo: ViewStyleProp,
+  loadingText: ViewStyleProp,
+  profileInfoButton: ViewStyleProp,
+  location: ViewStyleProp,
+  locationIcon: TextStyleProp,
+  locationText: TextStyleProp,
+  website: ViewStyleProp,
+  websiteIcon: TextStyleProp,
+  websiteText: TextStyleProp,
+  loadingFollow: ViewStyleProp,
+  followCount: ViewStyleProp,
+  followers: ViewStyleProp,
+  followersCount: TextStyleProp,
+  followersText: TextStyleProp,
+  following: ViewStyleProp,
+  followingCount: TextStyleProp,
+  followingText: TextStyleProp,
+  scrollWrap: ViewStyleProp,
+  profileTrack: ViewStyleProp,
+  favoriteTrack: ViewStyleProp,
+  favoriteTrackHeader: ViewStyleProp,
+  favoriteTrackIcon: TextStyleProp,
+  favoriteTrackHeaderText: TextStyleProp,
+  disabledText: TextStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -261,7 +300,7 @@ const styles: Styles = StyleSheet.create({
     marginTop: 10,
   },
   favoriteTrackIcon: {
-    color: '#FDC52F',
+    color: '#fdc52f',
     marginRight: 10,
     fontSize: 25,
   },
@@ -272,6 +311,9 @@ const styles: Styles = StyleSheet.create({
     lineHeight: 19.2, // x1.2
     fontWeight: '800',
     backgroundColor: 'transparent',
+  },
+  disabledText: {
+    color: '#888',
   },
 });
 

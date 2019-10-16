@@ -284,11 +284,6 @@ class UserProfileView extends React.Component {
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });
-    const gradientHeight = interpolate(y, {
-      inputRange: [-HEADER_MAX_HEIGHT, 0],
-      outputRange: [0, HEADER_MAX_HEIGHT],
-      extrapolate: Extrapolate.CLAMP,
-    });
     const imageOpacity = interpolate(y, {
       inputRange: [0, HEADER_DELTA],
       outputRange: [0, 0.9],
@@ -434,6 +429,23 @@ class UserProfileView extends React.Component {
             }
           </View>
         </Animated.View>
+        <Modal
+          isVisible={isTrackMenuOpen}
+          backdropColor={"#1b1b1e"}
+          backdropOpacity={0.7}
+          animationIn="slideInUp"
+          animationInTiming={230}
+          backdropTransitionInTiming={230}
+          animationOut="slideOutDown"
+          animationOutTiming={230}
+          backdropTransitionOutTiming={230}
+          hideModalContentWhileAnimating
+          useNativeDriver={true}
+          style={styles.modal}
+          onBackdropPress={this.closeModal}
+        >
+          {this.renderModalContent()}
+        </Modal>
       </View>
     );
   }
