@@ -97,6 +97,13 @@ class LibrarySingleAlbumView extends React.Component {
       entities: {tracks, users},
       users: {currentUserID},
     } = this.props;
+
+    if (item.includes('empty')) {
+      return (
+        <View style={{backgroundColor: '#1b1b1e', height: height * 0.11}}></View>
+      );
+    }
+
     const {displayName} = users.byID[currentUserID];
     const {artists, name, album, trackNumber} = tracks.byID[item];
 
@@ -299,7 +306,7 @@ class LibrarySingleAlbumView extends React.Component {
     this.closeModal();
   }
 
-  renderHeader() {
+  renderHeader = ({userTracks, }) => () => {
     return (
       <View style={{height: HEADER_MAX_HEIGHT}}>
         <Animated.View style={[styles.gradient, {height: HEADER_MAX_HEIGHT}]}>
@@ -314,6 +321,20 @@ class LibrarySingleAlbumView extends React.Component {
               'rgba(27,27,30,1.0)',
             ]}
           />
+          <View style={styles.playButtonWrap}>
+            <PlayButton play={this.handlePlay(userTracks[0], 0)} />
+          </View>
+          <View style={styles.headerBottomOptions}>
+            <TouchableOpacity style={styles.shareButton} disabled={true}>
+              <Ionicons name='md-share-alt' style={styles.shareIcon} />
+              <Text style={styles.shareText}>Share</Text>
+            </TouchableOpacity>
+            <SimpleLineIcons
+              name='options'
+              style={styles.options}
+              onPress={this.openModal('', 'album')}
+            />
+          </View>
         </Animated.View>
       </View>
     );
@@ -353,19 +374,25 @@ class LibrarySingleAlbumView extends React.Component {
         sessions.byID[currentSessionID].listeners.includes(currentUserID)
         || sessions.byID[currentSessionID].ownerID === currentUserID
       );
+    
+    const newTracks = userTracks.length === 1
+      ? [...userTracks, 'empty', 'empty-1']
+      : userTracks.length === 2
+      ? [...userTracks, 'empty']
+      : [...userTracks];
 
     return (
       <View style={styles.container}>
         <ImageCover {...{y, image: large, height: HEADER_MAX_HEIGHT}} />
         <AnimatedVirtualizedList
-          data={userTracks}
+          data={newTracks}
           renderItem={this.renderTrack(albumToView)}
           keyExtractor={item => item}
           getItem={(data, index) => data[index]}
           getItemCount={data => data.length}
           removeClippedSubviews={false}
           scrollEventThrottle={1}
-          ListHeaderComponent={this.renderHeader}
+          ListHeaderComponent={this.renderHeader({userTracks})}
           bounces={true}
           style={styles.list}
           showsVerticalScrollIndicator={false}

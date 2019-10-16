@@ -166,6 +166,13 @@ class PlaylistView extends React.Component {
       entities: {playlists, tracks},
       users: {currentUserID},
     } = this.props;
+
+    if (item.includes('empty')) {
+      return (
+        <View style={{backgroundColor: '#1b1b1e', height: height * 0.11}}></View>
+      );
+    }
+
     const {name, artists, album} = tracks.byID[item];
     const {ownerID, name: playlistName} = playlists.byID[playlistToView];
     const displayName = ownerID === 'spotify' ? 'Spotify' : ownerID;
@@ -395,7 +402,7 @@ class PlaylistView extends React.Component {
     this.closeModal();
   }
 
-  renderHeader() {
+  renderHeader = ({mode, members, currentUserID, tracks}) => () => {
     return (
       <View style={{height: HEADER_MAX_HEIGHT}}>
         <Animated.View style={[styles.gradient, {height: HEADER_MAX_HEIGHT}]}>
@@ -410,6 +417,38 @@ class PlaylistView extends React.Component {
               'rgba(27,27,30,1.0)',
             ]}
           />
+          <View style={styles.playButtonWrap}>
+            <PlayButton play={this.handlePlay(tracks[0], 0)} />
+          </View>
+          <View style={styles.headerBottomOptions}>
+            <View style={styles.shareButtonWrap}>
+              <TouchableOpacity style={styles.shareButton} disabled={true}>
+                <Ionicons name='md-share-alt' style={styles.shareIcon} />
+                <Text style={styles.shareText}>Share</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.detailsWrap}>
+              <TouchableOpacity style={styles.modeButton} disabled={true}>
+                {mode === 'hidden' && <Octicons name='telescope' style={styles.modeIcon} />}
+                {mode === 'vip' && <Foundation name='ticket' style={styles.modeIcon} />}
+                {mode === 'limitless' &&
+                  <MaterialIcons name='all-inclusive' style={styles.modeIcon} />
+                }
+              </TouchableOpacity>
+              {Array.isArray(members) && members.includes(currentUserID) &&
+                <TouchableOpacity style={styles.memberButton} disabled>
+                  <Ionicons name='md-person' color='#fefefe' style={styles.memberIcon} />
+                </TouchableOpacity>
+              }
+            </View>
+            <View style={styles.optionsWrap}>
+              <SimpleLineIcons
+                name='options'
+                style={styles.options}
+                onPress={this.openModal('', 'playlist')}
+              />
+            </View>
+          </View>
         </Animated.View>
       </View>
     );
@@ -451,11 +490,17 @@ class PlaylistView extends React.Component {
         || sessions.byID[currentSessionID].ownerID === currentUserID
       );
 
+    const newTracks = tracks.length === 1
+      ? [...tracks, 'empty', 'empty-1']
+      : tracks.length === 2
+      ? [...tracks, 'empty']
+      : [...tracks];
+
     return (
       <View style={styles.container}>
         <ImageCover {...{y, image: large, height: HEADER_MAX_HEIGHT}} />
         <AnimatedVirtualizedList
-          data={tracks}
+          data={newTracks}
           extraData={this.props}
           style={styles.list}
           renderItem={this.renderTrack(playlistToView)}
@@ -465,7 +510,7 @@ class PlaylistView extends React.Component {
           removeClippedSubviews={false}
           scrollEventThrottle={1}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={this.renderHeader}
+          ListHeaderComponent={this.renderHeader({mode, members, currentUserID, tracks})}
           ListFooterComponent={this.renderFooter}
           bounces={true}
           refreshing={refreshing.includes('tracks')}
