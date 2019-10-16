@@ -2,11 +2,18 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import FastImage from 'react-native-fast-image';
-import {Text, View, TouchableOpacity, VirtualizedList, Dimensions} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  VirtualizedList,
+  Dimensions,
+  StyleSheet,
+} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import FastImage from 'react-native-fast-image';
 import Animated from 'react-native-reanimated';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
@@ -290,6 +297,22 @@ class LibrarySingleAlbumView extends React.Component {
 
   render() {
     const {isAlbumMenuOpen, isTrackMenuOpen, selectedTrack, y} = this.state;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA - 1, HEADER_DELTA + 10],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const imageOpacity = interpolate(y, {
+      inputRange: [0, HEADER_DELTA],
+      outputRange: [0, 0.9],
+      extrapolate: 'clamp',
+    });
+    const filterOpacity = interpolate(y, {
+      inputRange: [HEADER_DELTA * 0.3, HEADER_DELTA * 0.8],
+      outputRange: [0, 1],
+      extrapolate: Extrapolate.CLAMP,
+    });
+
     const {
       albumToView,
       entities: {albums, sessions, tracks},
@@ -310,6 +333,43 @@ class LibrarySingleAlbumView extends React.Component {
     return (
       <View style={styles.container}>
         <ImageCover {...{y, image: large, height: HEADER_MAX_HEIGHT}} />
+        <Animated.View style={[styles.header, {shadowOpacity}]}>
+          <View style={styles.background}>
+            <View style={styles.wrap}>
+              {typeof large === 'string' &&
+                <FastImage style={styles.image} source={{uri: large}} />
+              }
+              {typeof large === 'string' &&
+                <Animated.Image
+                  style={[styles.image, {opacity: imageOpacity}]}
+                  blurRadius={60}
+                  source={{uri: large}}
+                />
+              }
+              <Animated.View style={[styles.gradient, {opacity: filterOpacity}]}>
+                <LinearGradient
+                  style={StyleSheet.absoluteFill}
+                  locations={[0, 1]}
+                  colors={[
+                    'rgba(27,27,30,0)',
+                    'rgba(27,27,30,0.8)',
+                  ]}
+                />
+              </Animated.View>
+            </View>
+          </View>
+          <View style={styles.nav}>
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+            <Text numberOfLines={1} style={styles.title}>
+              {name}
+            </Text>
+            <Ionicons
+              name='md-information-circle'
+              style={styles.rightIcon}
+              onPress={this.navToDetails(albumToView)}
+            />
+          </View>
+        </Animated.View>
         <Modal
           isVisible={isTrackMenuOpen}
           backdropColor={'#1b1b1e'}
