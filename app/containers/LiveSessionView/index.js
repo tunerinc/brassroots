@@ -202,7 +202,7 @@ class LiveSessionView extends React.Component {
     });
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(() => setTimeout(Actions.pop, 1));
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
   updateSlider(pos) {
     const {seekTime} = this.state;
@@ -219,7 +219,7 @@ class LiveSessionView extends React.Component {
     } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => seekPosition(currentSessionID, currentUserID, seekTime), 1);
+      seekPosition(currentSessionID, currentUserID, seekTime);
     });
   }
 
@@ -227,9 +227,7 @@ class LiveSessionView extends React.Component {
     const {viewingChat, viewingPlayer} = this.state;
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        this.setState({viewingChat: !viewingChat, viewingPlayer: !viewingPlayer});
-      }, 1);
+      this.setState({viewingChat: !viewingChat, viewingPlayer: !viewingPlayer});
     });
   }
 
@@ -257,10 +255,8 @@ class LiveSessionView extends React.Component {
 
   navToSettings() {
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        this.toggleMenu();
-        Actions.liveSettings();
-      }, 1);
+      this.toggleMenu();
+      Actions.liveSettings();
     });
   }
 
@@ -277,32 +273,30 @@ class LiveSessionView extends React.Component {
     const owner = users.byID[sessions.byID[currentSessionID].ownerID];
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        Actions.pop();
+      Actions.pop();
 
-        this.setState({
-          fetchedChat: false,
-          fetchedInfo: false,
-          fetchedQueue: false,
-        });
+      this.setState({
+        fetchedChat: false,
+        fetchedInfo: false,
+        fetchedQueue: false,
+      });
 
-        leaveSession(
-          currentUserID,
-          {
-            infoUnsubscribe,
-            queueUnsubscribe,
-            track,
-            id: currentSessionID,
-            total: sessions.byID[currentSessionID].totalListeners,
-            chatUnsubscribe: () => console.log('chat'),
-          },
-          {
-            id: owner.id,
-            name: owner.displayName,
-            image: owner.profileImage,
-          },
-        );
-      }, 1);
+      leaveSession(
+        currentUserID,
+        {
+          infoUnsubscribe,
+          queueUnsubscribe,
+          track,
+          id: currentSessionID,
+          total: sessions.byID[currentSessionID].totalListeners,
+          chatUnsubscribe: () => console.log('chat'),
+        },
+        {
+          id: owner.id,
+          name: owner.displayName,
+          image: owner.profileImage,
+        },
+      );
     });
   }
 
@@ -334,13 +328,11 @@ class LiveSessionView extends React.Component {
     const {totalPlayed, totalListeners: totalUsers} = sessions.byID[currentSessionID];
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        nextTrack(
-          {displayName, profileImage, id: currentUserID},
-          {totalQueue, totalPlayed, totalUsers, current, id: currentSessionID},
-          nextQueueID,
-        );
-      }, 1);
+      nextTrack(
+        {displayName, profileImage, id: currentUserID},
+        {totalQueue, totalPlayed, totalUsers, current, id: currentSessionID},
+        nextQueueID,
+      );
     });
   }
 
@@ -372,9 +364,7 @@ class LiveSessionView extends React.Component {
       },
     };
 
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => previousTrack(user, session), 1);
-    });
+    InteractionManager.runAfterInteractions(() => previousTrack(user, session));
   }
 
   delete = queueID => () => {
@@ -384,9 +374,7 @@ class LiveSessionView extends React.Component {
       sessions: {currentSessionID: id},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => deleteQueueTrack({id, total}, queueID), 1);
-    });
+    InteractionManager.runAfterInteractions(() => deleteQueueTrack({id, total}, queueID));
   }
 
   renderTrack({item, index}) {
@@ -463,68 +451,60 @@ class LiveSessionView extends React.Component {
     const height = session && session.ownerID === currentUserID ? 352 : 306;
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        if (session) {
-          if (isMenuOpen) {
-            Animated.sequence([
-              Animated.parallel([
-                Animated.timing(
-                  animatedDJOptionOpacity,
-                  {toValue: 0, duration: 100, easing: Easing.linear}
-                ),
-                Animated.timing(
-                  animatedHeight,
-                  {toValue: 0, duration: 100, delay: 50, easing: Easing.linear}
-                ),
-                Animated.timing(
-                  animatedOpacity,
-                  {toValue: 0, duration: 200, delay: 50, easing: Easing.linear}
-                )
-              ]),
-              Animated.timing(animatedIndex, {toValue: -5, duration: 1, easing: Easing.linear})
-            ]).start();
-          } else {
-            Animated.sequence([
-              Animated.timing(animatedIndex, {toValue: 5, duration: 1, easing: Easing.linear}),
-              Animated.parallel([
-                Animated.timing(animatedHeight, {toValue: height, duration: 100, easing: Easing.linear}),
-                Animated.timing(
-                  animatedDJOptionOpacity,
-                  {toValue: 1, duration: 100, delay: 50, easing: Easing.linear}
-                ),
-                Animated.timing(animatedOpacity, {toValue: 0.7, duration: 50, easing: Easing.linear})
-              ])
-            ]).start();
-          }
-      
-          this.setState({isMenuOpen: !isMenuOpen});
+      if (session) {
+        if (isMenuOpen) {
+          Animated.sequence([
+            Animated.parallel([
+              Animated.timing(
+                animatedDJOptionOpacity,
+                {toValue: 0, duration: 100, easing: Easing.linear}
+              ),
+              Animated.timing(
+                animatedHeight,
+                {toValue: 0, duration: 100, delay: 50, easing: Easing.linear}
+              ),
+              Animated.timing(
+                animatedOpacity,
+                {toValue: 0, duration: 200, delay: 50, easing: Easing.linear}
+              )
+            ]),
+            Animated.timing(animatedIndex, {toValue: -5, duration: 1, easing: Easing.linear})
+          ]).start();
+        } else {
+          Animated.sequence([
+            Animated.timing(animatedIndex, {toValue: 5, duration: 1, easing: Easing.linear}),
+            Animated.parallel([
+              Animated.timing(animatedHeight, {toValue: height, duration: 100, easing: Easing.linear}),
+              Animated.timing(
+                animatedDJOptionOpacity,
+                {toValue: 1, duration: 100, delay: 50, easing: Easing.linear}
+              ),
+              Animated.timing(animatedOpacity, {toValue: 0.7, duration: 50, easing: Easing.linear})
+            ])
+          ]).start();
         }
-      }, 1);
+    
+        this.setState({isMenuOpen: !isMenuOpen});
+      }
     });
   }
 
   openModal() {
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => this.setState({isSessionMenuOpen: true}), 1);
-    });
+    InteractionManager.runAfterInteractions(() => this.setState({isSessionMenuOpen: true}));
   }
 
   closeModal() {
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => this.setState({isSessionMenuOpen: false}), 1);
-    });
+    InteractionManager.runAfterInteractions(() => this.setState({isSessionMenuOpen: false}));
   }
 
   toggleEdit() {
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => this.setState({editingQueue: !this.state.editingQueue}), 1);
+      this.setState({editingQueue: !this.state.editingQueue})
     });
   }
 
   handleChangeInputHeight({nativeEvent: {contentSize: {height: inputHeight}}}) {
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => this.setState({inputHeight}), 1);
-    });
+    InteractionManager.runAfterInteractions(() => this.setState({inputHeight}));
   }
 
   handleSetChatMessage({nativeEvent: {text: message}}) {
@@ -544,7 +524,7 @@ class LiveSessionView extends React.Component {
     const user = {displayName, profileImage, id: currentUserID};
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => sendChatMessage(currentSessionID, message, user, totalCurrentChat + 1), 1);
+      sendChatMessage(currentSessionID, message, user, totalCurrentChat + 1);
     });
   }
 
@@ -560,9 +540,7 @@ class LiveSessionView extends React.Component {
     const currentSession = {progress, id: currentSessionID, current: currentTrackID};
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        if (session) togglePause(currentUserID, session.ownerID, currentSession, !paused);
-      }, 1);
+      if (session) togglePause(currentUserID, session.ownerID, currentSession, !paused);
     });
   }
 
@@ -667,7 +645,7 @@ class LiveSessionView extends React.Component {
     } = this.props;
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => toggleTrackLike(currentSessionID, queueID, currentUserID, liked), 1);
+      toggleTrackLike(currentSessionID, queueID, currentUserID, liked);
     });
   }
 
