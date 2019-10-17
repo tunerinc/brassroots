@@ -11,6 +11,7 @@ import {
   Animated,
   Easing,
   VirtualizedList,
+  InteractionManager,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -41,24 +42,32 @@ class LibraryPlaylistsView extends React.Component {
     this.renderFooter = this.renderFooter.bind(this);
     this.onEndReached = this.onEndReached.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
+    this.renderCreateButton = this.renderCreateButton.bind(this);
 
     this._onEndReached = debounce(this.onEndReached, 0);
   }
 
   componentDidMount() {
     const {getPlaylists, playlists: {userPlaylists}, users: {currentUserID}} = this.props;
-    if (!userPlaylists.length) getPlaylists(currentUserID, true, 0);
+
+    InteractionManager.runAfterInteractions(() => {
+      if (!userPlaylists.length) getPlaylists(currentUserID, true, 0);
+    });
   }
 
   navToPlaylist = (dest, playlistID) => () => {
-    if (dest === 'library') {
-      Actions.libSinglePlaylist({playlistToView: playlistID});
-    }
-
-    if (dest === 'profile') {
-      Actions.proSinglePlaylist({playlistToView: playlistID});
-    }
+    InteractionManager.runAfterInteractions(() => {
+      if (dest === 'library') {
+        Actions.libSinglePlaylist({playlistToView: playlistID});
+      }
+  
+      if (dest === 'profile') {
+        Actions.proSinglePlaylist({playlistToView: playlistID});
+      }
+    });
   }
+
+  createPlaylist = () => InteractionManager.runAfterInteractions(Actions.libNewPlaylist);
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
     const {shadowOpacity} = this.state;
@@ -123,7 +132,7 @@ class LibraryPlaylistsView extends React.Component {
 
   renderCreateButton() {
     return (
-      <TouchableOpacity style={styles.addButton} onPress={Actions.libNewPlaylist}>
+      <TouchableOpacity style={styles.addButton} onPress={this.createPlaylist}>
         <Text style={styles.addButtonText}>CREATE PLAYLIST</Text>
       </TouchableOpacity>
     );
