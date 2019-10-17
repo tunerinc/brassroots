@@ -147,8 +147,6 @@ PODS:
     - nanopb (~> 0.3)
   - gRPC-Core/Interface (1.21.0)
   - GTMSessionFetcher/Core (1.2.2)
-  - Interactable (1.0.0):
-    - React
   - leveldb-library (1.22)
   - libwebp (1.0.3):
     - libwebp/demux (= 1.0.3)
@@ -419,7 +417,6 @@ DEPENDENCIES:
   - Firebase/Storage
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - Interactable (from `../node_modules/react-native-interactable/lib/ios`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native`)
@@ -503,8 +500,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
-  Interactable:
-    :path: "../node_modules/react-native-interactable/lib/ios"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -602,7 +597,6 @@ SPEC CHECKSUMS:
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
-  Interactable: b454a1fe6ded81774e066873c51396c65bd0fa49
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   libwebp: 057912d6d0abfb6357d8bb05c0ea470301f5d61e
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
@@ -646,6 +640,6 @@ SPEC CHECKSUMS:
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
-PODFILE CHECKSUM: 5760d8f4f6a2db52dffd48b61347d05630f63408
+PODFILE CHECKSUM: acbfb76f0e50a40d7025f86864f4586fc557a859
 
 COCOAPODS: 1.8.3
