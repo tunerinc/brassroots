@@ -3,7 +3,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import FastImage from 'react-native-fast-image';
-import {Text, View, ActivityIndicator, Animated, Easing, VirtualizedList} from "react-native";
+import {
+  Text,
+  View,
+  ActivityIndicator,
+  Animated,
+  Easing,
+  VirtualizedList,
+  InteractionManager,
+} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
@@ -41,8 +49,13 @@ class LibraryAlbumsView extends React.Component {
 
   componentDidMount() {
     const {getAlbums, albums: {userAlbums}} = this.props;
-    if (!userAlbums.length) getAlbums(false, 0);
+
+    InteractionManager.runAfterInteractions(() => {
+      if (!userAlbums.length) getAlbums(false, 0);
+    });
   }
+
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
   onEndReached() {
     const {getAlbums, albums: {fetching, userAlbums, totalUserAlbums}} = this.props;
@@ -78,7 +91,9 @@ class LibraryAlbumsView extends React.Component {
     }
   }
 
-  navToAlbum = albumID => () => Actions.libSingleAlbum({albumToView: albumID});
+  navToAlbum = albumID => () => {
+    InteractionManager.runAfterInteractions(() => Actions.libSingleAlbum({albumToView: albumID}));
+  }
 
   renderAlbum({item}) {
     const {entities: {albums}} = this.props;
@@ -120,7 +135,7 @@ class LibraryAlbumsView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={Actions.pop} />
+            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>Albums</Text>
             <View style={styles.rightIcon} />
           </View>
