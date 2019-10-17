@@ -92,14 +92,12 @@ class ExploreTabView extends React.Component {
 
   openModal = selectedSession => () => {
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => this.setState({selectedSession, sessionModalOpen: true}), 1);
+      this.setState({selectedSession, sessionModalOpen: true});
     });
   }
 
   closeModal() {
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => this.setState({sessionModalOpen: false}), 1);
-    });
+    InteractionManager.runAfterInteractions(() => this.setState({sessionModalOpen: false}));
   }
 
   renderSessionModal() {
@@ -149,17 +147,15 @@ class ExploreTabView extends React.Component {
     };
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        if (currentSessionID === sessionID) {
-          Actions.liveSession();
-        } else {
-          joinSession(
-            session,
-            {id: user.id, displayName: user.displayName, profileImage: user.profileImage},
-            inSession,
-          );
-        }
-      }, 1);
+      if (currentSessionID === sessionID) {
+        Actions.liveSession();
+      } else {
+        joinSession(
+          session,
+          {id: user.id, displayName: user.displayName, profileImage: user.profileImage},
+          inSession,
+        );
+      }
     });
   }
 

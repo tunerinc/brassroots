@@ -198,9 +198,7 @@ class PlayerTabBar extends React.Component {
     BackgroundTimer.stop();
   }
 
-  openPlayer = () => InteractionManager.runAfterInteractions(() => {
-    setTimeout(Actions.liveSession, 1)
-  });
+  openPlayer = () => InteractionManager.runAfterInteractions(Actions.liveSession);
 
   setProgress() {
     const {updatePlayer, player: {progress, seeking, durationMS}} = this.props;
@@ -292,10 +290,7 @@ class PlayerTabBar extends React.Component {
 
   nav = routeName => () => {
     const {navigation: {navigate}} = this.props;
-
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => navigate(routeName), 1);
-    });
+    InteractionManager.runAfterInteractions(() => navigate(routeName));
   }
 
   handleTogglePause() {
@@ -311,14 +306,12 @@ class PlayerTabBar extends React.Component {
       if (sessions.allIDs.includes(currentSessionID)) {
         const {ownerID} = sessions.byID[currentSessionID];
   
-        setTimeout(() => {
-          togglePause(
-            currentUserID,
-            ownerID,
-            {progress, id: currentSessionID, current: currentTrackID},
-            !paused,
-          );
-        }, 1);
+        togglePause(
+          currentUserID,
+          ownerID,
+          {progress, id: currentSessionID, current: currentTrackID},
+          !paused,
+        );
       }
     });
   }

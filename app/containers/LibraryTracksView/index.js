@@ -77,18 +77,16 @@ class LibraryTracksView extends React.Component {
     });
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(() => setTimeout(Actions.pop, 1));
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
   openModal = selectedTrack => () => {
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => this.setState({selectedTrack, isTrackMenuOpen: true}), 1);
+      this.setState({selectedTrack, isTrackMenuOpen: true});
     });
   }
 
   closeModal() {
-    InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => this.setState({isTrackMenuOpen: false}), 1);
-    });
+    InteractionManager.runAfterInteractions(() => this.setState({isTrackMenuOpen: false}));
   }
 
   onEndReached() {
@@ -185,62 +183,25 @@ class LibraryTracksView extends React.Component {
     const user = {displayName, profileImage, id: currentUserID};
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        if (session && session.ownerID === currentUserID) {
-          if (session.currentTrackID === trackID) {
-            Actions.liveSession();
-          } else {
-            playTrack(
-              user,
-              {...trackToPlay, id: null, trackID: trackToPlay.id},
-              {
-                id: session.id,
-                totalPlayed: session.totalPlayed,
-                current: {
-                  nextQueueID,
-                  nextTrackID,
-                  track,
-                  id: currentQueueID,
-                  totalLikes: queueTrack.totalLikes,
-                  userID: queueTrack.userID,
-                },
-              },
-              {
-                displayName,
-                id: currentUserID,
-                name: displayName,
-                type: 'user-tracks',
-                total: totalUserTracks,
-                position: trackIndex,
-                tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
-              },
-            );
-          }
+      if (session && session.ownerID === currentUserID) {
+        if (session.currentTrackID === trackID) {
+          Actions.liveSession();
         } else {
-          if (session) {
-            leaveSession(
-              currentUserID,
-              {
-                infoUnsubscribe,
-                queueUnsubscribe,
+          playTrack(
+            user,
+            {...trackToPlay, id: null, trackID: trackToPlay.id},
+            {
+              id: session.id,
+              totalPlayed: session.totalPlayed,
+              current: {
+                nextQueueID,
+                nextTrackID,
                 track,
-                id: currentSessionID,
-                total: session.totalListeners,
-                chatUnsubscribe: () => console.log('chat'),
+                id: currentQueueID,
+                totalLikes: queueTrack.totalLikes,
+                userID: queueTrack.userID,
               },
-              {
-                id: session.ownerID,
-                name: users.byID[session.ownerID].displayName,
-                image: users.byID[session.ownerID].profileImage,
-              },
-            );
-          }
-    
-          setTimeout(Actions.liveSession, 200);
-    
-          createSession(
-            {...user, totalFollowers},
-            trackToPlay,
+            },
             {
               displayName,
               id: currentUserID,
@@ -250,10 +211,45 @@ class LibraryTracksView extends React.Component {
               position: trackIndex,
               tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
             },
-            mode,
           );
         }
-      }, 1);
+      } else {
+        if (session) {
+          leaveSession(
+            currentUserID,
+            {
+              infoUnsubscribe,
+              queueUnsubscribe,
+              track,
+              id: currentSessionID,
+              total: session.totalListeners,
+              chatUnsubscribe: () => console.log('chat'),
+            },
+            {
+              id: session.ownerID,
+              name: users.byID[session.ownerID].displayName,
+              image: users.byID[session.ownerID].profileImage,
+            },
+          );
+        }
+  
+        setTimeout(Actions.liveSession, 200);
+  
+        createSession(
+          {...user, totalFollowers},
+          trackToPlay,
+          {
+            displayName,
+            id: currentUserID,
+            name: displayName,
+            type: 'user-tracks',
+            total: totalUserTracks,
+            position: trackIndex,
+            tracks: userTracks.slice(trackIndex + 1, trackIndex + 4),
+          },
+          mode,
+        );
+      }
     });
   }
 
@@ -282,10 +278,8 @@ class LibraryTracksView extends React.Component {
           const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
           const user = {displayName, profileImage, id: currentUserID};
   
-          setTimeout(() => {
-            queueTrack(session, track, user);
-            this.closeModal();
-          }, 1);
+          queueTrack(session, track, user);
+          this.closeModal();
         }
       }
     });
@@ -332,10 +326,8 @@ class LibraryTracksView extends React.Component {
     const {changeFavoriteTrack, users: {currentUserID}} = this.props;
 
     InteractionManager.runAfterInteractions(() => {
-      setTimeout(() => {
-        changeFavoriteTrack(currentUserID, trackID);
-        this.closeModal();
-      }, 1);
+      changeFavoriteTrack(currentUserID, trackID);
+      this.closeModal();
     });
   }
 
