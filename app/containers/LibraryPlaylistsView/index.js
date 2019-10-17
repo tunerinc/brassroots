@@ -55,6 +55,8 @@ class LibraryPlaylistsView extends React.Component {
     });
   }
 
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
+
   navToPlaylist = (dest, playlistID) => () => {
     InteractionManager.runAfterInteractions(() => {
       if (dest === 'library') {
@@ -172,7 +174,7 @@ class LibraryPlaylistsView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>Playlists</Text>
             <View style={styles.rightIcon}></View>
           </View>
