@@ -3,7 +3,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+  InteractionManager,
+} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -53,6 +61,7 @@ class PlaylistDetailsView extends React.Component {
       users: {fetching},
     } = this.props;
 
+    InteractionManager.runAfterInteractions(() => {
       if (
         playlistToView
         && playlists.allIDs.includes(playlistToView)
@@ -66,19 +75,24 @@ class PlaylistDetailsView extends React.Component {
       ) {
         getUserImage(playlists.byID[playlistToView].ownerID);
       }
-  };
+    });
+  }
+
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
   navToProfile = title => () => {
-    switch (title) {
-      case 'Library':
-        Actions.libProMain({userToView: item});
-        return;
-      case 'Profile':
-        Actions.proUser({userToView: item});
-        return;
-      default:
-        return;
-    }
+    InteractionManager.runAfterInteractions(() => {
+      switch (title) {
+        case 'Library':
+          Actions.libProMain({userToView: item});
+          return;
+        case 'Profile':
+          Actions.proUser({userToView: item});
+          return;
+        default:
+          return;
+      }
+    });
   }
 
   renderMember({item, index}) {
@@ -342,7 +356,7 @@ class PlaylistDetailsView extends React.Component {
             <View style={styles.headerFilter}></View>
           </View>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>
