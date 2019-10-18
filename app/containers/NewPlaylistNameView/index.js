@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import selectPhoto from '../../utils/selectPhoto';
 import FastImage from 'react-native-fast-image';
-import {Text, View, TouchableOpacity, TextInput} from 'react-native';
+import {Text, View, TouchableOpacity, TextInput, InteractionManager} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -33,36 +33,43 @@ class NewPlaylistNameView extends React.Component {
 
   navBack() {
     const {updatePlaylists} = this.props;
-    updatePlaylists({newPlaylist: initialState.newPlaylist});
-    Actions.pop();
+
+    InteractionManager.runAfterInteractions(() => {
+      updatePlaylists({newPlaylist: initialState.newPlaylist});
+      Actions.pop();
+    });
   }
+
+  addMembers = () => InteractionManager.runAfterInteractions(Actions.libAddMembers);
 
   setPlaylistMode = mode => () => {
     const {updatePlaylists} = this.props;
-    updatePlaylists({newPlaylist: {mode}});
+    InteractionManager.runAfterInteractions(() => updatePlaylists({newPlaylist: {mode}}));
   }
 
   setPlaylistName(name) {
     const {updatePlaylists} = this.props;
-    updatePlaylists({newPlaylist: {name}});
+    InteractionManager.runAfterInteractions(() => updatePlaylists({newPlaylist: {name}}));
   }
 
   async selectNewPhoto() {
     const {updatePlaylists} = this.props;
     const image = await selectPhoto('Select Playlist Photo', true);
 
-    if (image !== 'cancelled') {
-      updatePlaylists(
-        {
-          newPlaylist: {
-            image: {
-              path: image.path,
-              base64: image.data,
+    InteractionManager.runAfterInteractions(() => {
+      if (image !== 'cancelled') {
+        updatePlaylists(
+          {
+            newPlaylist: {
+              image: {
+                path: image.path,
+                base64: image.data,
+              },
             },
           },
-        },
-      );
-    }
+        );
+      }
+    });
   }
 
   render() {
@@ -79,7 +86,7 @@ class NewPlaylistNameView extends React.Component {
               && (typeof mode === 'string' && mode !== '')
               && (image && typeof image.base64 === 'string')
             ) &&
-              <TouchableOpacity style={styles.rightIcon} onPress={Actions.libAddMembers}>
+              <TouchableOpacity style={styles.rightIcon} onPress={this.addMembers}>
                 <Text style={[styles.rightIconText, styles.enabledText]}>next</Text>
               </TouchableOpacity>
             }
