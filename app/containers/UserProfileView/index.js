@@ -12,6 +12,7 @@ import {
   FlatList,
   Dimensions,
   StyleSheet,
+  InteractionManager,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -85,81 +86,102 @@ class UserProfileView extends React.Component {
       entities: {tracks, users},
       users: {currentUserID},
     } = this.props;
-    const userID = typeof userToView === 'string' && userToView !== '' ? userToView : currentUserID;
-    const {favoriteTrackID} = users.byID[userID];
 
-    if (!tracks.allIDs.includes(favoriteTrackID)) {
-      getFavoriteTrack(favoriteTrackID, userID);
-    }
+    InteractionManager.runAfterInteractions(() => {
+      const userID = typeof userToView === 'string' && userToView !== '' ? userToView : currentUserID;
+      const {favoriteTrackID} = users.byID[userID];
+
+      if (!tracks.allIDs.includes(favoriteTrackID)) {
+        getFavoriteTrack(favoriteTrackID, userID);
+      }
+    });
   }
 
-  openModal = selectedTrack => () => this.setState({selectedTrack, isTrackMenuOpen: true});
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
-  closeModal = () => this.setState({isTrackMenuOpen: false});
+  openModal = selectedTrack => () => {
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({selectedTrack, isTrackMenuOpen: true});
+    });
+  }
+
+  closeModal = () => {
+    InteractionManager.runAfterInteractions(() => this.setState({isTrackMenuOpen: false}));
+  }
 
   navToMostPlayed = (selectedUser, title) => () => {
-    switch (title) {
-      case 'Library':
-        Actions.libProMostPlayed({selectedUser});
-        return;
-      case 'Profile':
-        Actions.proMostPlayed({selectedUser});
-        return;
-      default:
-        return;
-    }
+    InteractionManager.runAfterInteractions(() => {
+      switch (title) {
+        case 'Library':
+          Actions.libProMostPlayed({selectedUser});
+          return;
+        case 'Profile':
+          Actions.proMostPlayed({selectedUser});
+          return;
+        default:
+          return;
+      }
+    });
   }
 
   navToTopPlaylists = (selectedUser, title) => () => {
-    switch (title) {
-      case 'Library':
-        Actions.libTopPlaylists({selectedUser});
-        return;
-      case 'Profile':
-        Actions.proTopPlaylists({selectedUser});
-        return;
-      default:
-        return;
-    }
+    InteractionManager.runAfterInteractions(() => {
+      switch (title) {
+        case 'Library':
+          Actions.libTopPlaylists({selectedUser});
+          return;
+        case 'Profile':
+          Actions.proTopPlaylists({selectedUser});
+          return;
+        default:
+          return;
+      }
+    });
   }
 
   navToRecentlyPlayed = (selectedUser, title) => () => {
-    switch (title) {
-      case 'Library':
-        Actions.libProRecentlyPlayed({selectedUser});
-        return;
-      case 'Profile':
-        Actions.proRecentlyPlayed({selectedUser});
-        return;
-      default:
-        return;
-    }
+    InteractionManager.runAfterInteractions(() => {
+      switch (title) {
+        case 'Library':
+          Actions.libProRecentlyPlayed({selectedUser});
+          return;
+        case 'Profile':
+          Actions.proRecentlyPlayed({selectedUser});
+          return;
+        default:
+          return;
+      }
+    });
   }
 
   navToSettings = title => () => {
-    switch (title) {
-      case 'Library':
-        Actions.libProSettings();
-        return;
-      case 'Profile':
-        Actions.proSettings();
-        return;
-      default:
-        return;
-    }
+    InteractionManager.runAfterInteractions(() => {
+      switch (title) {
+        case 'Library':
+          Actions.libProSettings();
+          return;
+        case 'Profile':
+          Actions.proSettings();
+          return;
+        default:
+          return;
+      }
+    });
   }
 
   navToEditProfile = title => () => {
-    switch (title) {
-      case 'Library':
-        Actions.libProEditProfile();
-        return;
-      case 'Profile':
-        Actions.proEditProfile();
-        return;
-      default:
-        return;
-    }
+    InteractionManager.runAfterInteractions(() => {
+      switch (title) {
+        case 'Library':
+          Actions.libProEditProfile();
+          return;
+        case 'Profile':
+          Actions.proEditProfile();
+          return;
+        default:
+          return;
+      }
+    });
   }
 
   renderPlaylist({item}) {
@@ -224,23 +246,25 @@ class UserProfileView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    if (sessions.allIDs.includes(currentSessionID)) {
-      const {listeners, ownerID} = sessions.byID[currentSessionID];
-      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
-      const {displayName, profileImage} = users.byID[currentUserID];
-
-      if (isListenerOwner && !songInQueue) {
-        const track = tracks.byID[selectedTrack];
-        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
-        const prevTrackID = queueTracks.byID[prevQueueID];
-        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
-        const user = {displayName, profileImage, id: currentUserID};
-
-        this.closeModal();
-        queueTrack(session, track, user);
+    InteractionManager.runAfterInteractions(() => {
+      if (sessions.allIDs.includes(currentSessionID)) {
+        const {listeners, ownerID} = sessions.byID[currentSessionID];
+        const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+        const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+        const {displayName, profileImage} = users.byID[currentUserID];
+  
+        if (isListenerOwner && !songInQueue) {
+          const track = tracks.byID[selectedTrack];
+          const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+          const prevTrackID = queueTracks.byID[prevQueueID];
+          const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+          const user = {displayName, profileImage, id: currentUserID};
+  
+          this.closeModal();
+          queueTrack(session, track, user);
+        }
       }
-    }
+    });
   }
 
   renderModalContent() {
@@ -414,7 +438,7 @@ class UserProfileView extends React.Component {
               <View style={styles.leftIcon}></View>
             }
             {(!isCurrentUser || title !== 'Profile' || routeName !== 'proMain') &&
-              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             }
             <Animated.Text style={[styles.title, {opacity: titleOpacity, bottom: titleOffset}]}>
               {user.displayName}
