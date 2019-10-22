@@ -2,7 +2,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+  InteractionManager,
+} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -45,33 +53,38 @@ class AlbumDetailsView extends React.Component {
       getAlbumTopTracks,
       entities: {albums, artists},
     } = this.props;
-    const album = albums.byID[albumToView];
-    const artistsToFetch = album.artists
-      .map(a => {
-        const {small, medium, large} = artists.byID[a.id];
-        const fetchSmall = typeof small !== 'string' || small === '';
-        const fetchMedium = typeof medium !== 'string' || medium === '';
-        const fetchLarge = typeof large !== 'string' || large === '';
-        if (fetchSmall && fetchMedium && fetchLarge) return a.id;
-      })
-      .filter(id => typeof id === 'string');
 
-    if (artistsToFetch.length !== 0) {
-      getArtistImages(artistsToFetch);
-    }
+    InteractionManager.runAfterInteractions(() => {
+      const album = albums.byID[albumToView];
+      const artistsToFetch = album.artists
+        .map(a => {
+          const {small, medium, large} = artists.byID[a.id];
+          const fetchSmall = typeof small !== 'string' || small === '';
+          const fetchMedium = typeof medium !== 'string' || medium === '';
+          const fetchLarge = typeof large !== 'string' || large === '';
+          if (fetchSmall && fetchMedium && fetchLarge) return a.id;
+        })
+        .filter(id => typeof id === 'string');
 
-    if (album.topListeners.length === 0) {
-      // getAlbumTopListeners(albumToView);
-    }
+      if (artistsToFetch.length !== 0) {
+        getArtistImages(artistsToFetch);
+      }
 
-    if (album.topPlaylists.length === 0) {
-      // getAlbumTopPlaylists(albumToView);
-    }
+      if (album.topListeners.length === 0) {
+        // getAlbumTopListeners(albumToView);
+      }
 
-    if (album.topTracks.length === 0) {
-      // getAlbumTopTracks(albumToView);
-    }
+      if (album.topPlaylists.length === 0) {
+        // getAlbumTopPlaylists(albumToView);
+      }
+
+      if (album.topTracks.length === 0) {
+        // getAlbumTopTracks(albumToView);
+      }
+    });
   }
+
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
   renderPerson = (type) => ({item, index}) => {
     const {
@@ -107,7 +120,9 @@ class AlbumDetailsView extends React.Component {
     );
   }
 
-  goToProfile = userToView => () => Actions.libProMain({userToView});
+  goToProfile = userToView => () => {
+    InteractionManager.runAfterInteractions(() => Actions.libProMain({userToView}));
+  }
 
   renderTopTrack({item, index}) {
     const {entities: {tracks}} = this.props;
@@ -275,7 +290,7 @@ class AlbumDetailsView extends React.Component {
             <View style={styles.headerFilter} />
           </View>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text numberOfLines={1} style={styles.title}>
               {album.name}
             </Text>
