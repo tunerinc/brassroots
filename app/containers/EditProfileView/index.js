@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {Text, TextInput, View, TouchableOpacity, Animated} from 'react-native';
+import {Text, TextInput, View, TouchableOpacity, Animated, InteractionManager} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -53,7 +53,6 @@ class EditProfileView extends React.Component {
 
     this.handleChangePhoto = this.handleChangePhoto.bind(this);
     this.handleSetBio = this.handleSetBio.bind(this);
-    this.handleChangeBioHeight = this.handleChangeBioHeight.bind(this);
     this.handleSetLocation = this.handleSetLocation.bind(this);
     this.handleSetWebsite = this.handleSetWebsite.bind(this);
     this.handleSaveProfile = this.handleSaveProfile.bind(this);
@@ -68,33 +67,35 @@ class EditProfileView extends React.Component {
     } = this.props;
     const {favoriteTrackID, bio, location, website} = users.byID[currentUserID];
 
-    this.setState({
-      tempBio: bio,
-      tempLocation: location,
-      tempWebsite: website,
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({
+        tempBio: bio,
+        tempLocation: location,
+        tempWebsite: website,
+      });
+  
+      if (onboarding && !favoriteTrackID) {
+        getMostPlayedSpotifyTrack(currentUserID);
+      }
     });
-
-    if (onboarding && !favoriteTrackID) {
-      getMostPlayedSpotifyTrack(currentUserID);
-    }
   }
+
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
   handleChangePhoto = type => () => {
     const {changeCoverPhoto, changeProfilePhoto, users: {currentUserID}} = this.props;
 
-    if (type === 'cover') {
-      changeCoverPhoto(currentUserID);
-    } else {
-      changeProfilePhoto(currentUserID);
-    }
+    InteractionManager.runAfterInteractions(() => {
+      if (type === 'cover') {
+        changeCoverPhoto(currentUserID);
+      } else {
+        changeProfilePhoto(currentUserID);
+      }
+    });
   }
 
   handleSetBio({nativeEvent: {text: tempBio}}) {
     this.setState({tempBio});
-  }
-
-  handleChangeBioHeight({nativeEvent: {contentSize: {height}}}) {
-    this.setState({inputHeight: height});
   }
 
   handleSetLocation(tempLocation) {
@@ -108,16 +109,18 @@ class EditProfileView extends React.Component {
   handleSaveProfile() {
     const {tempBio, tempLocation, tempWebsite} = this.state;
     const {saveProfile, onboarding: {onboarding}, users: {currentUserID}} = this.props;
-    
-    saveProfile(
-      {
-        bio: tempBio,
-        location: tempLocation,
-        website: tempWebsite,
-        id: currentUserID,
-        onboarding: onboarding ? true : null,
-      },
-    );
+
+    InteractionManager.runAfterInteractions(() => {
+      saveProfile(
+        {
+          bio: tempBio,
+          location: tempLocation,
+          website: tempWebsite,
+          id: currentUserID,
+          onboarding: onboarding ? true : null,
+        },
+      );
+    });
   }
 
   render() {
@@ -210,7 +213,6 @@ class EditProfileView extends React.Component {
               <TextInput
                 multiline={true}
                 onChange={this.handleSetBio}
-                onContentSizeChange={this.handleChangeBioHeight}
                 placeholder='bio'
                 autoCapitalize='none'
                 placeholderTextColor='#888'
@@ -331,7 +333,7 @@ class EditProfileView extends React.Component {
           }
           <View style={styles.nav}>
             {title !== 'Create Profile' &&
-              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             }
             {title === 'Create Profile' && <View style={styles.leftIcon}></View>}
             {title !== 'Create Profile' && <Text style={styles.title}>Edit Profile</Text>}
