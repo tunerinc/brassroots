@@ -2,7 +2,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {TouchableHighlight, Text, View, Image, Animated, Easing} from 'react-native';
+import {
+  TouchableHighlight,
+  Text,
+  View,
+  Image,
+  Animated,
+  Easing,
+  InteractionManager,
+} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -27,10 +35,12 @@ class WelcomeView extends React.Component {
     const {attemptedToInitialize} = this.state;
     const {initializeSpotify, settings: {initialized}} = this.props;
 
-    if (!attemptedToInitialize && !initialized) {
-      this.setState({attemptedToInitialize: true});
-      initializeSpotify();
-    }
+    InteractionManager.runAfterInteractions(() => {
+      if (!attemptedToInitialize && !initialized) {
+        this.setState({attemptedToInitialize: true});
+        initializeSpotify();
+      }
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -38,32 +48,40 @@ class WelcomeView extends React.Component {
     const {settings: {initializing: oldInitializing}} = prevProps;
     const {settings: {initializing, loggedIn}, users: {currentUserID}} = this.props;
   
-    if (
-      oldInitializing
-      && !initializing
-      && (currentUserID === '' || typeof currentUserID !== 'string')
-      && !loggedIn
-    ) {
-      Animated.sequence([
-        Animated.timing(loadingOpacity,
-          {
-            toValue: 0,
-            duration: 150,
-            delay: 3133,
-            easing: Easing.linear,
-          }
-        ),
-        Animated.timing(loadingIndex,
-          {
-            toValue: -1,
-            duration: 1,
-            delay: 300,
-            easing: Easing.linear,
-          }
-        )
-      ]).start();
-    }
+    InteractionManager.runAfterInteractions(() => {
+      if (
+        oldInitializing
+        && !initializing
+        && (currentUserID === '' || typeof currentUserID !== 'string')
+        && !loggedIn
+      ) {
+        Animated.sequence([
+          Animated.timing(loadingOpacity,
+            {
+              toValue: 0,
+              duration: 150,
+              delay: 3133,
+              easing: Easing.linear,
+            }
+          ),
+          Animated.timing(loadingIndex,
+            {
+              toValue: -1,
+              duration: 1,
+              delay: 300,
+              easing: Easing.linear,
+            }
+          )
+        ]).start();
+      }
+    });
   }
+
+  navToPolicy = () => InteractionManager.runAfterInteractions(Actions.welPrivacyPolicy);
+
+  navToTerms = () => InteractionManager.runAfterInteractions(Actions.welTermsService);
+
+  auth = authorizeUser => () => InteractionManager.runAfterInteractions(authorizeUser);
   
   render() {
     const {loadingIndex, loadingOpacity} = this.state;
@@ -81,7 +99,7 @@ class WelcomeView extends React.Component {
           <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
         </Animated.View>
         <Image style={styles.logo} source={require('../../images/logo.png')} />
-        <TouchableHighlight style={styles.button} onPress={authorizeUser}>
+        <TouchableHighlight style={styles.button} onPress={this.auth(authorizeUser)}>
           <Text style={styles.text}>LOGIN WITH SPOTIFY</Text>
         </TouchableHighlight>
         <View style={styles.footnoteWrap}>
@@ -90,13 +108,13 @@ class WelcomeView extends React.Component {
             <Text
               allowFontScaling={false}
               style={styles.footLink}
-              onPress={Actions.welTermsService}
+              onPress={this.navToTerms}
             >Terms of Service</Text>
             <Text allowFontScaling={false} style={styles.footText}> and </Text>
             <Text
               allowFontScaling={false}
               style={styles.footLink}
-              onPress={Actions.welPrivacyPolicy}
+              onPress={this.navToPolicy}
             >Privacy Policy.</Text>
           </View>
         </View>
