@@ -189,6 +189,12 @@ export function leaveSession(
                 listeners: [],
               },
             },
+            users: {
+              [userID]: {
+                id: userID,
+                currentSessionID: null,
+              },
+            },
           },
         ),
       );

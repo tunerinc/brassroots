@@ -34,7 +34,6 @@ class PlayerTabBar extends React.Component {
     this.setProgress = this.setProgress.bind(this);
     this.handleDoneTrack = this.handleDoneTrack.bind(this);
     this.hideCover = this.hideCover.bind(this);
-    this.navToProfile = this.navToProfile.bind(this);
     this.createButton = this.createButton.bind(this);
     this.nav = this.nav.bind(this);
     this.handleTogglePause = this.handleTogglePause.bind(this);
@@ -198,8 +197,6 @@ class PlayerTabBar extends React.Component {
     BackgroundTimer.stop();
   }
 
-  openPlayer = () => InteractionManager.runAfterInteractions(Actions.liveSession);
-
   setProgress() {
     const {updatePlayer, player: {progress, seeking, durationMS}} = this.props;
     if (typeof progress === 'number' && !seeking) updatePlayer({progress: progress + 1000});
@@ -266,18 +263,6 @@ class PlayerTabBar extends React.Component {
     }
   }
 
-  navToProfile() {
-    const {
-      entities: {sessions},
-      sessions: {currentSessionID},
-    } = this.props;
-    const currentSession = sessions.byID[currentSessionID];
-
-    // if (currentSession) {
-    //   Actions.libProMain({userToView: currentSession.ownerID});
-    // }
-  }
-
   createButton({routeName}) {
     const {navigation: {state: {index}}} = this.props;
 
@@ -290,7 +275,7 @@ class PlayerTabBar extends React.Component {
 
   nav = routeName => () => {
     const {navigation: {navigate}} = this.props;
-    InteractionManager.runAfterInteractions(() => navigate(routeName));
+    navigate(routeName)
   }
 
   handleTogglePause() {
@@ -302,18 +287,16 @@ class PlayerTabBar extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (sessions.allIDs.includes(currentSessionID)) {
-        const {ownerID} = sessions.byID[currentSessionID];
-  
-        togglePause(
-          currentUserID,
-          ownerID,
-          {progress, id: currentSessionID, current: currentTrackID},
-          !paused,
-        );
-      }
-    });
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {ownerID} = sessions.byID[currentSessionID];
+
+      togglePause(
+        currentUserID,
+        ownerID,
+        {progress, id: currentSessionID, current: currentTrackID},
+        !paused,
+      );
+    }
   }
 
   render() {
@@ -343,7 +326,7 @@ class PlayerTabBar extends React.Component {
               />
             </View>
             <MiniPlayer
-              openPlayer={this.openPlayer}
+              openPlayer={Actions.liveSession}
               navToProfile={this.navToProfile}
               togglePause={this.handleTogglePause}
               progress={progress}

@@ -44,10 +44,7 @@ import {nextTrack} from '../../actions/player/NextTrack';
 import {playTrack} from '../../actions/player/PlayTrack';
 import {previousTrack} from '../../actions/player/PreviousTrack';
 import {seekPosition} from '../../actions/player/SeekPosition';
-import {toggleMute} from '../../actions/player/ToggleMute';
 import {togglePause} from '../../actions/player/TogglePause';
-import {toggleRepeat} from '../../actions/player/ToggleRepeat';
-import {toggleShuffle} from '../../actions/player/ToggleShuffle';
 import {updatePlayer} from '../../actions/player/UpdatePlayer';
 
 // Queue Action Creators
@@ -100,9 +97,6 @@ class LiveSessionView extends React.Component {
     this.onScroll = this.onScroll.bind(this);
     this.navToSettings = this.navToSettings.bind(this);
     this.leave = this.leave.bind(this);
-    this.handleRepeat = this.handleRepeat.bind(this);
-    this.handleShuffle = this.handleShuffle.bind(this);
-    this.handleMute = this.handleMute.bind(this);
     this.skipNext = this.skipNext.bind(this);
     this.skipPrev = this.skipPrev.bind(this);
     this.delete = this.delete.bind(this);
@@ -134,26 +128,24 @@ class LiveSessionView extends React.Component {
       users: {currentUserID},
     } = this.props;
     
-    InteractionManager.runAfterInteractions(() => {
-      if (currentSessionID) {
-        const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
-  
-        // if (!fetchedChat && !fetchingChat) {
-        //   this.setState({fetchedChat: true});
-        //   getChat(currentSessionID);
-        // }
-  
-        if (!fetchedInfo && !sessionFetching.includes('info') && !infoUnsubscribe) {
-          this.setState({fetchedInfo: true});
-          getSessionInfo(currentSessionID);
-        }
-  
-        if (!fetchedQueue && !queueFetching.includes('queue') && !queueUnsubscribe) {
-          this.setState({fetchedQueue: true});
-          getUserQueue(currentUserID, currentSessionID, isOwner);
-        }
+    if (currentSessionID) {
+      const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
+
+      // if (!fetchedChat && !fetchingChat) {
+      //   this.setState({fetchedChat: true});
+      //   getChat(currentSessionID);
+      // }
+
+      if (!fetchedInfo && !sessionFetching.includes('info') && !infoUnsubscribe) {
+        this.setState({fetchedInfo: true});
+        getSessionInfo(currentSessionID);
       }
-    });
+
+      if (!fetchedQueue && !queueFetching.includes('queue') && !queueUnsubscribe) {
+        this.setState({fetchedQueue: true});
+        getUserQueue(currentUserID, currentSessionID, isOwner);
+      }
+    }
   }
 
   componentDidUpdate(nextProps) {
@@ -171,38 +163,34 @@ class LiveSessionView extends React.Component {
     } = this.props;
     const {player: {progress: newProgress}} = nextProps;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (currentSessionID && sessions.allIDs.includes(currentSessionID)) {
-        const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
-  
-        // if (!fetchedChat && !fetchingChat) {
-        //   this.setState({fetchedChat: true});
-        //   getChat(currentSessionID);
-        // }
-  
-        if (!fetchedInfo && !sessionFetching.includes('info') && !infoUnsubscribe) {
-          this.setState({fetchedInfo: true});
-          getSessionInfo(currentSessionID);
-        }
-  
-        if (!fetchedQueue && !queueFetching.includes('queue') && !queueUnsubscribe) {
-          this.setState({fetchedQueue: true});
-          getUserQueue(currentUserID, currentSessionID, isOwner);
-        }
-      }
-  
-      if (editingQueue && userQueue.length === 0) this.toggleEdit();
-  
-      if (
-        (progress === seekTime && newProgress !== seekTime)
-        || (progress !== seekTime && newProgress === seekTime)
-      ) {
-        this.setState({seekTime: 0});
-      }
-    });
-  }
+    if (currentSessionID && sessions.allIDs.includes(currentSessionID)) {
+      const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
+      // if (!fetchedChat && !fetchingChat) {
+      //   this.setState({fetchedChat: true});
+      //   getChat(currentSessionID);
+      // }
+
+      if (!fetchedInfo && !sessionFetching.includes('info') && !infoUnsubscribe) {
+        this.setState({fetchedInfo: true});
+        getSessionInfo(currentSessionID);
+      }
+
+      if (!fetchedQueue && !queueFetching.includes('queue') && !queueUnsubscribe) {
+        this.setState({fetchedQueue: true});
+        getUserQueue(currentUserID, currentSessionID, isOwner);
+      }
+    }
+
+    if (editingQueue && userQueue.length === 0) this.toggleEdit();
+
+    if (
+      (progress === seekTime && newProgress !== seekTime)
+      || (progress !== seekTime && newProgress === seekTime)
+    ) {
+      this.setState({seekTime: 0});
+    }
+  }
 
   updateSlider(pos) {
     const {seekTime} = this.state;
@@ -214,21 +202,16 @@ class LiveSessionView extends React.Component {
     const {seekTime} = this.state;
     const {
       seekPosition,
-      sessions: {currentSessionID},
-      users: {currentUserID},
+      sessions: {currentSessionID: session},
+      users: {currentUserID: user},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      seekPosition(currentSessionID, currentUserID, seekTime);
-    });
+    InteractionManager.runAfterInteractions(() => seekPosition(session, user, seekTime));
   }
 
   changeActiveView() {
     const {viewingChat, viewingPlayer} = this.state;
-
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({viewingChat: !viewingChat, viewingPlayer: !viewingPlayer});
-    });
+    this.setState({viewingChat: !viewingChat, viewingPlayer: !viewingPlayer});
   }
 
   onScroll({nativeEvent: {contentOffset, contentSize, layoutMeasurement: {height: layoutHeight}}}) {
@@ -254,10 +237,8 @@ class LiveSessionView extends React.Component {
   }
 
   navToSettings() {
-    InteractionManager.runAfterInteractions(() => {
-      this.toggleMenu();
-      Actions.liveSettings();
-    });
+    this.toggleMenu();
+    Actions.liveSettings();
   }
 
   leave() {
@@ -272,47 +253,30 @@ class LiveSessionView extends React.Component {
     const track = tracks.byID[currentTrackID];
     const owner = users.byID[sessions.byID[currentSessionID].ownerID];
 
-    InteractionManager.runAfterInteractions(() => {
-      Actions.pop();
-
-      this.setState({
-        fetchedChat: false,
-        fetchedInfo: false,
-        fetchedQueue: false,
-      });
-
-      leaveSession(
-        currentUserID,
-        {
-          infoUnsubscribe,
-          queueUnsubscribe,
-          track,
-          id: currentSessionID,
-          total: sessions.byID[currentSessionID].totalListeners,
-          chatUnsubscribe: () => console.log('chat'),
-        },
-        {
-          id: owner.id,
-          name: owner.displayName,
-          image: owner.profileImage,
-        },
-      );
+    this.setState({
+      fetchedChat: false,
+      fetchedInfo: false,
+      fetchedQueue: false,
     });
-  }
 
-  handleRepeat() {
-    // const {toggleRepeat, player: {repeat}, sessions: {currentSessionID}} = this.props;
-    // toggleRepeat(currentSessionID, repeat);
-  }
+    Actions.pop();
 
-  handleShuffle() {
-    // const {toggleShuffle, player: {shuffle}, sessions: {currentSessionID}} = this.props;
-    // toggleShuffle(currentSessionID, shuffle);
-  }
-
-  handleMute() {
-    // const {toggleMute, sessions: {currentSessionID, muted}, users: {currentUserID}} = this.props;
-    // toggleMute(currentSessionID, currentUserID, muted);
+    leaveSession(
+      currentUserID,
+      {
+        infoUnsubscribe,
+        queueUnsubscribe,
+        track,
+        id: currentSessionID,
+        total: sessions.byID[currentSessionID].totalListeners,
+        chatUnsubscribe: () => console.log('chat'),
+      },
+      {
+        id: owner.id,
+        name: owner.displayName,
+        image: owner.profileImage,
+      },
+    );
   }
 
   skipNext() {
@@ -450,58 +414,48 @@ class LiveSessionView extends React.Component {
     const session = sessions.byID[currentSessionID];
     const height = session && session.ownerID === currentUserID ? 352 : 306;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (session) {
-        if (isMenuOpen) {
-          Animated.sequence([
-            Animated.parallel([
-              Animated.timing(
-                animatedDJOptionOpacity,
-                {toValue: 0, duration: 100, easing: Easing.linear}
-              ),
-              Animated.timing(
-                animatedHeight,
-                {toValue: 0, duration: 100, delay: 50, easing: Easing.linear}
-              ),
-              Animated.timing(
-                animatedOpacity,
-                {toValue: 0, duration: 200, delay: 50, easing: Easing.linear}
-              )
-            ]),
-            Animated.timing(animatedIndex, {toValue: -5, duration: 1, easing: Easing.linear})
-          ]).start();
-        } else {
-          Animated.sequence([
-            Animated.timing(animatedIndex, {toValue: 5, duration: 1, easing: Easing.linear}),
-            Animated.parallel([
-              Animated.timing(animatedHeight, {toValue: height, duration: 100, easing: Easing.linear}),
-              Animated.timing(
-                animatedDJOptionOpacity,
-                {toValue: 1, duration: 100, delay: 50, easing: Easing.linear}
-              ),
-              Animated.timing(animatedOpacity, {toValue: 0.7, duration: 50, easing: Easing.linear})
-            ])
-          ]).start();
-        }
-    
-        this.setState({isMenuOpen: !isMenuOpen});
+    if (session) {
+      if (isMenuOpen) {
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(
+              animatedDJOptionOpacity,
+              {toValue: 0, duration: 100, easing: Easing.linear}
+            ),
+            Animated.timing(
+              animatedHeight,
+              {toValue: 0, duration: 100, delay: 50, easing: Easing.linear}
+            ),
+            Animated.timing(
+              animatedOpacity,
+              {toValue: 0, duration: 200, delay: 50, easing: Easing.linear}
+            )
+          ]),
+          Animated.timing(animatedIndex, {toValue: -5, duration: 1, easing: Easing.linear})
+        ]).start();
+      } else {
+        Animated.sequence([
+          Animated.timing(animatedIndex, {toValue: 5, duration: 1, easing: Easing.linear}),
+          Animated.parallel([
+            Animated.timing(animatedHeight, {toValue: height, duration: 100, easing: Easing.linear}),
+            Animated.timing(
+              animatedDJOptionOpacity,
+              {toValue: 1, duration: 100, delay: 50, easing: Easing.linear}
+            ),
+            Animated.timing(animatedOpacity, {toValue: 0.7, duration: 50, easing: Easing.linear})
+          ])
+        ]).start();
       }
-    });
+  
+      this.setState({isMenuOpen: !isMenuOpen});
+    }
   }
 
-  openModal() {
-    InteractionManager.runAfterInteractions(() => this.setState({isSessionMenuOpen: true}));
-  }
+  openModal = () => this.setState({isSessionMenuOpen: true});
 
-  closeModal() {
-    InteractionManager.runAfterInteractions(() => this.setState({isSessionMenuOpen: false}));
-  }
+  closeModal = () => this.setState({isSessionMenuOpen: false});
 
-  toggleEdit() {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({editingQueue: !this.state.editingQueue})
-    });
-  }
+  toggleEdit = () => this.setState({editingQueue: !this.state.editingQueue});
 
   handleChangeInputHeight({nativeEvent: {contentSize: {height: inputHeight}}}) {
     InteractionManager.runAfterInteractions(() => this.setState({inputHeight}));
@@ -539,9 +493,7 @@ class LiveSessionView extends React.Component {
     const session = sessions.byID[currentSessionID];
     const currentSession = {progress, id: currentSessionID, current: currentTrackID};
 
-    InteractionManager.runAfterInteractions(() => {
-      if (session) togglePause(currentUserID, session.ownerID, currentSession, !paused);
-    });
+    if (session) togglePause(currentUserID, session.ownerID, currentSession, !paused);
   }
 
   renderModalContent() {
@@ -743,7 +695,7 @@ class LiveSessionView extends React.Component {
           <View style={styles.nav}>
             <TouchableOpacity
               style={styles.leftIconButton}
-              onPress={this.navBack}
+              onPress={Actions.pop}
               activeOpacity={0.5}
             >
               <Ionicons name="ios-arrow-down" style={styles.leftIcon} />
@@ -895,12 +847,9 @@ LiveSessionView.propTypes = {
   stopSessionInfoListener: PropTypes.func.isRequired,
   stopQueueListener: PropTypes.func.isRequired,
   togglePause: PropTypes.func.isRequired,
+  toggleTrackLike: PropTypes.func.isRequired,
   tracks: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  toggleMute: PropTypes.func.isRequired,
-  toggleRepeat: PropTypes.func.isRequired,
-  toggleShuffle: PropTypes.func.isRequired,
-  toggleTrackLike: PropTypes.func.isRequired,
   updatePlayer: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
 };
@@ -937,10 +886,7 @@ function mapDispatchToProps(dispatch) {
     sendChatMessage,
     stopSessionInfoListener,
     stopQueueListener,
-    toggleMute,
     togglePause,
-    toggleRepeat,
-    toggleShuffle,
     toggleTrackLike,
     updatePlayer,
   }, dispatch);
