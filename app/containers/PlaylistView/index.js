@@ -104,8 +104,6 @@ class PlaylistView extends React.Component {
     });
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
-
   onEndReached() {
     const {
       getPlaylistTracks,
@@ -154,18 +152,16 @@ class PlaylistView extends React.Component {
   }
 
   navToDetails = (playlistToView, title) => () => {
-    InteractionManager.runAfterInteractions(() => {
-      switch (title) {
-        case 'Library':
-          Actions.libPlaylistDetails({playlistToView});
-          return;
-        case 'Profile':
-          Actions.proPlaylistDetails({playlistToView});
-          return;
-        default:
-          return;
-      }
-    });
+    switch (title) {
+      case 'Library':
+        Actions.libPlaylistDetails({playlistToView});
+        return;
+      case 'Profile':
+        Actions.proPlaylistDetails({playlistToView});
+        return;
+      default:
+        return;
+    }
   }
 
   renderTrack = playlistToView => ({item, index}) => {
@@ -214,25 +210,23 @@ class PlaylistView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (sessions.allIDs.includes(currentSessionID)) {
-        const {listeners, ownerID} = sessions.byID[currentSessionID];
-        const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-        const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
-        const {displayName, profileImage} = users.byID[currentUserID];
-  
-        if (!songInQueue) {
-          const track = tracks.byID[selectedTrack];
-          const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
-          const prevTrackID = userQueue.length ? userQueue[userQueue.length - 1].trackID : currentTrackID;
-          const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
-          const user = {displayName, profileImage, id: currentUserID};
-  
-          this.closeModal();
-          queueTrack(session, track, user);
-        }
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {listeners, ownerID} = sessions.byID[currentSessionID];
+      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+      const {displayName, profileImage} = users.byID[currentUserID];
+
+      if (!songInQueue) {
+        const track = tracks.byID[selectedTrack];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+        const prevTrackID = userQueue.length ? userQueue[userQueue.length - 1].trackID : currentTrackID;
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
+
+        this.closeModal();
+        queueTrack(session, track, user);
       }
-    });
+    }
   }
 
   handlePlay = (trackID, trackIndex) => () => {
@@ -256,62 +250,25 @@ class PlaylistView extends React.Component {
     const {ownerID, name: playlistName, total} = playlists.byID[playlistToView];
     const user = {displayName, profileImage, id: currentUserID};
 
-    InteractionManager.runAfterInteractions(() => {
-      if (session && session.ownerID === currentUserID) {
-        if (session.currentTrackID === trackID) {
-          Actions.liveSession();
-        } else {
-          playTrack(
-            user,
-            {...trackToPlay, id: null, trackID: trackToPlay.id},
-            {
-              id: session.id,
-              totalPlayed: session.totalPlayed,
-              current: {
-                prevQueueID,
-                nextQueueID,
-                track,
-                id: session.currentQueueID,
-                totalLikes: queueTrack.totalLikes,
-                userID: queueTrack.userID,
-              },
-            },
-            {
-              total,
-              id: playlistToView,
-              name: playlistName,
-              displayName: ownerID === 'spotify' ? 'spotify' : users.byID[ownerID].displayName,
-              type: 'playlist',
-              position: trackIndex,
-              tracks: [],
-            },
-          );
-        }
+    if (session && session.ownerID === currentUserID) {
+      if (session.currentTrackID === trackID) {
+        Actions.liveSession();
       } else {
-        if (session) {
-          leaveSession(
-            currentUserID,
-            {
-              infoUnsubscribe,
-              queueUnsubscribe,
+        playTrack(
+          user,
+          {...trackToPlay, id: null, trackID: trackToPlay.id},
+          {
+            id: session.id,
+            totalPlayed: session.totalPlayed,
+            current: {
+              prevQueueID,
+              nextQueueID,
               track,
-              id: currentSessionID,
-              total: session.totalListeners,
-              chatUnsubscribe: () => console.log('chat'),
+              id: session.currentQueueID,
+              totalLikes: queueTrack.totalLikes,
+              userID: queueTrack.userID,
             },
-            {
-              id: session.ownerID,
-              name: users.byID[session.ownerID].displayName,
-              image: users.byID[session.ownerID].profileImage,
-            },
-          );
-        }
-  
-        setTimeout(Actions.liveSession, 200);
-  
-        createSession(
-          {...user, totalFollowers},
-          trackToPlay,
+          },
           {
             total,
             id: playlistToView,
@@ -321,10 +278,45 @@ class PlaylistView extends React.Component {
             position: trackIndex,
             tracks: [],
           },
-          mode,
         );
       }
-    });
+    } else {
+      if (session) {
+        leaveSession(
+          currentUserID,
+          {
+            infoUnsubscribe,
+            queueUnsubscribe,
+            track,
+            id: currentSessionID,
+            total: session.totalListeners,
+            chatUnsubscribe: () => console.log('chat'),
+          },
+          {
+            id: session.ownerID,
+            name: users.byID[session.ownerID].displayName,
+            image: users.byID[session.ownerID].profileImage,
+          },
+        );
+      }
+
+      setTimeout(Actions.liveSession, 200);
+
+      createSession(
+        {...user, totalFollowers},
+        trackToPlay,
+        {
+          total,
+          id: playlistToView,
+          name: playlistName,
+          displayName: ownerID === 'spotify' ? 'spotify' : users.byID[ownerID].displayName,
+          type: 'playlist',
+          position: trackIndex,
+          tracks: [],
+        },
+        mode,
+      );
+    }
   }
 
   renderModalContent(type, item) {
@@ -396,33 +388,35 @@ class PlaylistView extends React.Component {
   }
 
   openModal = (selectedTrack, type) => () => {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({
-        selectedTrack,
-        isTrackMenuOpen: type === 'track',
-        isPlaylistMenuOpen: type === 'playlist',
-      });
+    this.setState({
+      selectedTrack,
+      isTrackMenuOpen: type === 'track',
+      isPlaylistMenuOpen: type === 'playlist',
     });
   }
 
-  closeModal() {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({isTrackMenuOpen: false, isPlaylistMenuOpen: false});
-    });
-  }
+  closeModal = () => this.setState({isTrackMenuOpen: false, isPlaylistMenuOpen: false});
 
   handleChangeFavoriteTrack = trackID => () => {
     const {changeFavoriteTrack, users: {currentUserID}} = this.props;
-
-    InteractionManager.runAfterInteractions(() => {
-      changeFavoriteTrack(currentUserID, trackID);
-      this.closeModal();
-    });
+    changeFavoriteTrack(currentUserID, trackID);
+    this.closeModal();
   }
 
-  renderHeader = ({mode, members, currentUserID, tracks}) => () => {
+  renderHeader = ({mode, members, currentUserID, tracks, y}) => () => {
+    const buttonOpacity = interpolate(y, {
+      inputRange: [-HEADER_MAX_HEIGHT * 0.3, 0, HEADER_MAX_HEIGHT * 0.2],
+      outputRange: [0, 1, 0],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const optionOpacity = interpolate(y, {
+      inputRange: [-HEADER_MAX_HEIGHT * 0.3, 0, HEADER_MAX_HEIGHT * 0.5],
+      outputRange: [0, 1, 0],
+      extrapolate: Extrapolate.CLAMP,
+    });
+
     return (
-      <View style={{height: HEADER_MAX_HEIGHT}}>
+      <View style={{height: HEADER_MAX_HEIGHT, marginTop: -HEADER_MIN_HEIGHT}}>
         <Animated.View style={[styles.gradient, {height: HEADER_MAX_HEIGHT}]}>
           <LinearGradient
             style={{...StyleSheet.absoluteFill, zIndex: -1}}
@@ -435,10 +429,10 @@ class PlaylistView extends React.Component {
               'rgba(27,27,30,1.0)',
             ]}
           />
-          <View style={styles.playButtonWrap}>
+          <Animated.View style={[styles.playButtonWrap, {opacity: buttonOpacity}]}>
             <PlayButton play={this.handlePlay(tracks[0], 0)} />
-          </View>
-          <View style={styles.headerBottomOptions}>
+          </Animated.View>
+          <Animated.View style={[styles.headerBottomOptions, {opacity: optionOpacity}]}>
             <View style={styles.shareButtonWrap}>
               <TouchableOpacity style={styles.shareButton} disabled={true}>
                 <Ionicons name='md-share-alt' style={styles.shareIcon} />
@@ -466,7 +460,7 @@ class PlaylistView extends React.Component {
                 onPress={this.openModal('', 'playlist')}
               />
             </View>
-          </View>
+          </Animated.View>
         </Animated.View>
       </View>
     );
@@ -480,13 +474,13 @@ class PlaylistView extends React.Component {
       extrapolate: Extrapolate.CLAMP,
     });
     const imageOpacity = interpolate(y, {
-      inputRange: [0, HEADER_DELTA],
+      inputRange: [0, HEADER_DELTA * 0.9],
       outputRange: [0, 0.9],
-      extrapolate: 'clamp',
+      extrapolate: Extrapolate.CLAMP,
     });
     const filterOpacity = interpolate(y, {
-      inputRange: [HEADER_DELTA * 0.3, HEADER_DELTA * 0.8],
-      outputRange: [0, 1],
+      inputRange: [0, HEADER_DELTA * 0.95],
+      outputRange: [0.25, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });
 
@@ -528,7 +522,7 @@ class PlaylistView extends React.Component {
           removeClippedSubviews={false}
           scrollEventThrottle={1}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={this.renderHeader({mode, members, currentUserID, tracks})}
+          ListHeaderComponent={this.renderHeader({mode, members, currentUserID, tracks, y})}
           ListFooterComponent={this.renderFooter}
           bounces={true}
           refreshing={refreshing.includes('tracks')}
@@ -540,9 +534,6 @@ class PlaylistView extends React.Component {
         <Animated.View style={[styles.header, {shadowOpacity}]}>
           <View style={styles.background}>
             <View style={styles.wrap}>
-              {typeof large === 'string' &&
-                <FastImage style={styles.image} source={{uri: large}} />
-              }
               {typeof large === 'string' &&
                 <Animated.Image
                   style={[styles.image, {opacity: imageOpacity}]}
@@ -556,14 +547,14 @@ class PlaylistView extends React.Component {
                   locations={[0, 1]}
                   colors={[
                     'rgba(27,27,30,0)',
-                    'rgba(27,27,30,0.8)',
+                    'rgba(27,27,30,1)',
                   ]}
                 />
               </Animated.View>
             </View>
           </View>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>

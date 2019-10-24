@@ -97,91 +97,73 @@ class UserProfileView extends React.Component {
     });
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
+  openModal = selectedTrack => () => this.setState({selectedTrack, isTrackMenuOpen: true});
 
-  openModal = selectedTrack => () => {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({selectedTrack, isTrackMenuOpen: true});
-    });
-  }
-
-  closeModal = () => {
-    InteractionManager.runAfterInteractions(() => this.setState({isTrackMenuOpen: false}));
-  }
+  closeModal = () => this.setState({isTrackMenuOpen: false})
 
   navToMostPlayed = (selectedUser, title) => () => {
-    InteractionManager.runAfterInteractions(() => {
-      switch (title) {
-        case 'Library':
-          Actions.libProMostPlayed({selectedUser});
-          return;
-        case 'Profile':
-          Actions.proMostPlayed({selectedUser});
-          return;
-        default:
-          return;
-      }
-    });
+    switch (title) {
+      case 'Library':
+        Actions.libProMostPlayed({selectedUser});
+        return;
+      case 'Profile':
+        Actions.proMostPlayed({selectedUser});
+        return;
+      default:
+        return;
+    }
   }
 
   navToTopPlaylists = (selectedUser, title) => () => {
-    InteractionManager.runAfterInteractions(() => {
-      switch (title) {
-        case 'Library':
-          Actions.libTopPlaylists({selectedUser});
-          return;
-        case 'Profile':
-          Actions.proTopPlaylists({selectedUser});
-          return;
-        default:
-          return;
-      }
-    });
+    switch (title) {
+      case 'Library':
+        Actions.libTopPlaylists({selectedUser});
+        return;
+      case 'Profile':
+        Actions.proTopPlaylists({selectedUser});
+        return;
+      default:
+        return;
+    }
   }
 
   navToRecentlyPlayed = (selectedUser, title) => () => {
-    InteractionManager.runAfterInteractions(() => {
-      switch (title) {
-        case 'Library':
-          Actions.libProRecentlyPlayed({selectedUser});
-          return;
-        case 'Profile':
-          Actions.proRecentlyPlayed({selectedUser});
-          return;
-        default:
-          return;
-      }
-    });
+    switch (title) {
+      case 'Library':
+        Actions.libProRecentlyPlayed({selectedUser});
+        return;
+      case 'Profile':
+        Actions.proRecentlyPlayed({selectedUser});
+        return;
+      default:
+        return;
+    }
   }
 
   navToSettings = title => () => {
-    InteractionManager.runAfterInteractions(() => {
-      switch (title) {
-        case 'Library':
-          Actions.libProSettings();
-          return;
-        case 'Profile':
-          Actions.proSettings();
-          return;
-        default:
-          return;
-      }
-    });
+    switch (title) {
+      case 'Library':
+        Actions.libProSettings();
+        return;
+      case 'Profile':
+        Actions.proSettings();
+        return;
+      default:
+        return;
+    }
   }
 
   navToEditProfile = title => () => {
-    InteractionManager.runAfterInteractions(() => {
-      switch (title) {
-        case 'Library':
-          Actions.libProEditProfile();
-          return;
-        case 'Profile':
-          Actions.proEditProfile();
-          return;
-        default:
-          return;
-      }
-    });
+    switch (title) {
+      case 'Library':
+        Actions.libProEditProfile();
+        return;
+      case 'Profile':
+        Actions.proEditProfile();
+        return;
+      default:
+        return;
+    }
   }
 
   renderPlaylist({item}) {
@@ -246,25 +228,23 @@ class UserProfileView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (sessions.allIDs.includes(currentSessionID)) {
-        const {listeners, ownerID} = sessions.byID[currentSessionID];
-        const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-        const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
-        const {displayName, profileImage} = users.byID[currentUserID];
-  
-        if (isListenerOwner && !songInQueue) {
-          const track = tracks.byID[selectedTrack];
-          const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
-          const prevTrackID = queueTracks.byID[prevQueueID];
-          const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
-          const user = {displayName, profileImage, id: currentUserID};
-  
-          this.closeModal();
-          queueTrack(session, track, user);
-        }
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {listeners, ownerID} = sessions.byID[currentSessionID];
+      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+      const {displayName, profileImage} = users.byID[currentUserID];
+
+      if (isListenerOwner && !songInQueue) {
+        const track = tracks.byID[selectedTrack];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+        const prevTrackID = queueTracks.byID[prevQueueID];
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
+
+        this.closeModal();
+        queueTrack(session, track, user);
       }
-    });
+    }
   }
 
   renderModalContent() {
@@ -309,13 +289,13 @@ class UserProfileView extends React.Component {
       extrapolate: Extrapolate.CLAMP,
     });
     const imageOpacity = interpolate(y, {
-      inputRange: [0, HEADER_DELTA],
+      inputRange: [0, HEADER_DELTA * 0.9],
       outputRange: [0, 0.9],
-      extrapolate: 'clamp',
+      extrapolate: Extrapolate.CLAMP,
     });
     const filterOpacity = interpolate(y, {
-      inputRange: [HEADER_DELTA * 0.3, HEADER_DELTA * 0.8],
-      outputRange: [0, 1],
+      inputRange: [0, HEADER_DELTA * 0.95],
+      outputRange: [0.25, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });
     const titleOpacity = interpolate(y, {
@@ -412,9 +392,6 @@ class UserProfileView extends React.Component {
           <View style={styles.background}>
             <View style={styles.wrap}>
               {typeof user.coverImage === 'string' &&
-                <FastImage style={styles.image} source={{uri: user.coverImage}} />
-              }
-              {typeof user.coverImage === 'string' &&
                 <Animated.Image
                   style={[styles.image, {opacity: imageOpacity}]}
                   blurRadius={60}
@@ -427,7 +404,7 @@ class UserProfileView extends React.Component {
                   locations={[0, 1]}
                   colors={[
                     'rgba(27,27,30,0)',
-                    'rgba(27,27,30,0.8)',
+                    'rgba(27,27,30,1)',
                   ]}
                 />
               </Animated.View>
@@ -438,7 +415,7 @@ class UserProfileView extends React.Component {
               <View style={styles.leftIcon}></View>
             }
             {(!isCurrentUser || title !== 'Profile' || routeName !== 'proMain') &&
-              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             }
             <Animated.Text style={[styles.title, {opacity: titleOpacity, bottom: titleOffset}]}>
               {user.displayName}

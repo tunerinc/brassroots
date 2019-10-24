@@ -46,6 +46,7 @@ const styles: Styles = StyleSheet.create({
   },
   list: {
     flex: 1,
+    marginTop: HEADER_MIN_HEIGHT,
   },
   gradient: {
     position: "absolute",
@@ -61,7 +62,6 @@ const styles: Styles = StyleSheet.create({
     right: 0,
     height: HEADER_MIN_HEIGHT,
     paddingHorizontal: 15,
-    backgroundColor: '#1b1b1e',
     shadowColor: '#101010',
     shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
@@ -90,7 +90,7 @@ const styles: Styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     paddingTop: HEADER_MIN_HEIGHT + height * 0.1,
     alignItems: "center",
-    zIndex: 11,
+    zIndex: 12,
   },
   nav: {
     height: HEADER_MIN_HEIGHT,
