@@ -2,7 +2,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, TouchableOpacity, ScrollView, Animated, Easing} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Animated,
+  Easing,
+  InteractionManager,
+} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -33,37 +41,46 @@ class DisplaySoundView extends React.Component {
   componentDidMount() {
     const {settings: {soundEffects, theme}} = this.props;
 
-    this.setState({
-      tempSound: soundEffects,
-      tempTheme: theme,
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({
+        tempSound: soundEffects,
+        tempTheme: theme,
+      });
     });
   }
 
   componentWillUnmount() {
     const {tempSound, tempTheme} = this.state;
     const {settings: {theme, soundEffects}} = this.props;
-    if (tempSound !== soundEffects || tempTheme !== theme) this.handleSaveSettings();
+
+    InteractionManager.runAfterInteractions(() => {
+      if (tempSound !== soundEffects || tempTheme !== theme) this.handleSaveSettings();
+    });
   }
 
+  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
+
   setSound = tempSound => () => {
-    this.setState({tempSound});
+    InteractionManager.runAfterInteractions(() => this.setState({tempSound}));
   }
 
   setTheme = tempTheme => () => {
-    this.setState({tempTheme});
+    InteractionManager.runAfterInteractions(() => this.setState({tempTheme}));
   }
 
   handleSaveSettings() {
     const {tempSound, tempTheme} = this.state;
     const {saveSettings, users: {currentUserID}} = this.props;
 
-    saveSettings(
-      {
-        id: currentUserID,
-        soundEffects: tempSound,
-        theme: tempTheme,
-      },
-    );
+    InteractionManager.runAfterInteractions(() => {
+      saveSettings(
+        {
+          id: currentUserID,
+          soundEffects: tempSound,
+          theme: tempTheme,
+        },
+      );
+    });
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -93,7 +110,7 @@ class DisplaySoundView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
             <Text style={styles.title}>Display & Sound</Text>
             <View style={styles.rightIcon}></View>
           </View>
