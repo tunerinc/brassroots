@@ -127,6 +127,21 @@ export default class ProfileContent extends React.Component<Props, State> {
       outputRange: [0, 1, 0],
       extrapolate: Extrapolate.CLAMP,
     });
+    const userOpacity = interpolate(y, {
+      inputRange: [-HEADER_MAX_HEIGHT * 0.3, 0, HEADER_MAX_HEIGHT * 0.1],
+      outputRange: [0, 1, 0],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const infoOpacity = interpolate(y, {
+      inputRange: [-HEADER_MAX_HEIGHT * 0.3, 0, HEADER_MAX_HEIGHT * 0.3],
+      outputRange: [0, 1, 0],
+      extrapolate: Extrapolate.CLAMP,
+    });
+    const followOpacity = interpolate(y, {
+      inputRange: [-HEADER_MAX_HEIGHT * 0.3, 0, HEADER_MAX_HEIGHT * 0.5],
+      outputRange: [0, 1, 0],
+      extrapolate: Extrapolate.CLAMP,
+    });
 
     return (
       <Animated.ScrollView
@@ -149,7 +164,7 @@ export default class ProfileContent extends React.Component<Props, State> {
               ]}
             />
             <View style={[styles.profileHeader]}>
-              <View style={styles.user}>
+              <Animated.View style={[styles.user, {opacity: userOpacity}]}>
                 <View style={styles.userPhoto}>
                   {typeof user.profileImage === 'string' &&
                     <FastImage style={styles.roundPhoto} source={{uri: user.profileImage}} />
@@ -183,8 +198,8 @@ export default class ProfileContent extends React.Component<Props, State> {
                     <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.followPlus} />
                   </TouchableOpacity>
                 }
-              </View>
-              <View style={styles.bio}>
+              </Animated.View>
+              <Animated.View style={[styles.bio, {opacity: infoOpacity}]}>
                 <FontAwesome name='newspaper-o' color='#888' style={styles.bioIcon} />
                 <View>
                   {(user && typeof user.bio === 'string' && user.bio !== '') &&
@@ -219,8 +234,8 @@ export default class ProfileContent extends React.Component<Props, State> {
                     </View>
                   }
                 </View>
-              </View>
-              <View style={styles.location}>
+              </Animated.View>
+              <Animated.View style={[styles.location, {opacity: infoOpacity}]}>
                 <Ionicons name='md-pin' color='#888' style={styles.locationIcon} />
                 <View>
                   {(user && typeof user.location === 'string' && user.location !== '') &&
@@ -255,8 +270,8 @@ export default class ProfileContent extends React.Component<Props, State> {
                     </View>
                   }
                 </View>
-              </View>
-              <View style={styles.website}>
+              </Animated.View>
+              <Animated.View style={[styles.website, {opacity: infoOpacity}]}>
                 <Entypo name='link' color='#888' style={styles.websiteIcon} />
                 <View>
                   {(user && typeof user.website === 'string' && user.website !== '') &&
@@ -291,8 +306,8 @@ export default class ProfileContent extends React.Component<Props, State> {
                     </View>
                   }
                 </View>
-              </View>
-              <View style={styles.followCount}>
+              </Animated.View>
+              <Animated.View style={[styles.followCount, {opacity: followOpacity}]}>
                 <TouchableOpacity style={styles.followers} disabled>
                   <Text>
                     <Text style={styles.followersCount}>
@@ -309,7 +324,7 @@ export default class ProfileContent extends React.Component<Props, State> {
                     <Text style={styles.followingText}> following</Text>
                   </Text>
                 </TouchableOpacity>
-              </View>
+              </Animated.View>
             </View>
           </Animated.View>
         </View>

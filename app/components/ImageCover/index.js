@@ -31,9 +31,9 @@ export default class ImageCover extends React.Component<Props, State> {
   render() {
     const {image, y, height} = this.props;
     const opacity = interpolate(y, {
-      inputRange: [0, HEADER_DELTA],
-      outputRange: [0, 0.9],
-      extrapolate: 'clamp',
+      inputRange: [0, HEADER_DELTA * 0.9],
+      outputRange: [0.4, 0.9],
+      extrapolate: Extrapolate.CLAMP,
     });
 
     return (

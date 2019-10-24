@@ -43,7 +43,6 @@ const styles: Styles = StyleSheet.create({
     right: 0,
     height: HEADER_MIN_HEIGHT,
     paddingHorizontal: 15,
-    backgroundColor: '#1b1b1e',
     shadowColor: '#101010',
     shadowOffset: {width: 0, height: 8},
     shadowRadius: 5,
@@ -72,7 +71,7 @@ const styles: Styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     height: HEADER_MIN_HEIGHT,
-    zIndex: 11,
+    zIndex: 12,
   },
   nav: {
     paddingTop: 15,
