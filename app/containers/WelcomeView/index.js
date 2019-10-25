@@ -35,12 +35,10 @@ class WelcomeView extends React.Component {
     const {attemptedToInitialize} = this.state;
     const {initializeSpotify, settings: {initialized}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (!attemptedToInitialize && !initialized) {
-        this.setState({attemptedToInitialize: true});
-        initializeSpotify();
-      }
-    });
+    if (!attemptedToInitialize && !initialized) {
+      this.setState({attemptedToInitialize: true});
+      InteractionManager.runAfterInteractions(initializeSpotify);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -48,40 +46,32 @@ class WelcomeView extends React.Component {
     const {settings: {initializing: oldInitializing}} = prevProps;
     const {settings: {initializing, loggedIn}, users: {currentUserID}} = this.props;
   
-    InteractionManager.runAfterInteractions(() => {
-      if (
-        oldInitializing
-        && !initializing
-        && (currentUserID === '' || typeof currentUserID !== 'string')
-        && !loggedIn
-      ) {
-        Animated.sequence([
-          Animated.timing(loadingOpacity,
-            {
-              toValue: 0,
-              duration: 150,
-              delay: 3133,
-              easing: Easing.linear,
-            }
-          ),
-          Animated.timing(loadingIndex,
-            {
-              toValue: -1,
-              duration: 1,
-              delay: 300,
-              easing: Easing.linear,
-            }
-          )
-        ]).start();
-      }
-    });
+    if (
+      oldInitializing
+      && !initializing
+      && (currentUserID === '' || typeof currentUserID !== 'string')
+      && !loggedIn
+    ) {
+      Animated.sequence([
+        Animated.timing(loadingOpacity,
+          {
+            toValue: 0,
+            duration: 150,
+            delay: 3133,
+            easing: Easing.linear,
+          }
+        ),
+        Animated.timing(loadingIndex,
+          {
+            toValue: -1,
+            duration: 1,
+            delay: 300,
+            easing: Easing.linear,
+          }
+        )
+      ]).start();
+    }
   }
-
-  navToPolicy = () => InteractionManager.runAfterInteractions(Actions.welPrivacyPolicy);
-
-  navToTerms = () => InteractionManager.runAfterInteractions(Actions.welTermsService);
-
-  auth = authorizeUser => () => InteractionManager.runAfterInteractions(authorizeUser);
   
   render() {
     const {loadingIndex, loadingOpacity} = this.state;
@@ -99,7 +89,7 @@ class WelcomeView extends React.Component {
           <Image style={styles.loadingGif} source={require('../../images/loading.gif')} />
         </Animated.View>
         <Image style={styles.logo} source={require('../../images/logo.png')} />
-        <TouchableHighlight style={styles.button} onPress={this.auth(authorizeUser)}>
+        <TouchableHighlight style={styles.button} onPress={authorizeUser}>
           <Text style={styles.text}>LOGIN WITH SPOTIFY</Text>
         </TouchableHighlight>
         <View style={styles.footnoteWrap}>
@@ -108,13 +98,13 @@ class WelcomeView extends React.Component {
             <Text
               allowFontScaling={false}
               style={styles.footLink}
-              onPress={this.navToTerms}
+              onPress={Actions.welTermsService}
             >Terms of Service</Text>
             <Text allowFontScaling={false} style={styles.footText}> and </Text>
             <Text
               allowFontScaling={false}
               style={styles.footLink}
-              onPress={this.navToPolicy}
+              onPress={Actions.welPrivacyPolicy}
             >Privacy Policy.</Text>
           </View>
         </View>
