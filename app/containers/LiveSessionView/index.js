@@ -12,7 +12,6 @@ import {
   Easing,
   VirtualizedList,
   TextInput,
-  InteractionManager,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -206,7 +205,7 @@ class LiveSessionView extends React.Component {
       users: {currentUserID: user},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => seekPosition(session, user, seekTime));
+    seekPosition(session, user, seekTime);
   }
 
   changeActiveView() {
@@ -291,13 +290,11 @@ class LiveSessionView extends React.Component {
     const {displayName, profileImage} = users.byID[currentUserID];
     const {totalPlayed, totalListeners: totalUsers} = sessions.byID[currentSessionID];
 
-    InteractionManager.runAfterInteractions(() => {
-      nextTrack(
-        {displayName, profileImage, id: currentUserID},
-        {totalQueue, totalPlayed, totalUsers, current, id: currentSessionID},
-        nextQueueID,
-      );
-    });
+    nextTrack(
+      {displayName, profileImage, id: currentUserID},
+      {totalQueue, totalPlayed, totalUsers, current, id: currentSessionID},
+      nextQueueID,
+    );
   }
 
   skipPrev() {
@@ -328,7 +325,7 @@ class LiveSessionView extends React.Component {
       },
     };
 
-    InteractionManager.runAfterInteractions(() => previousTrack(user, session));
+    previousTrack(user, session);
   }
 
   delete = queueID => () => {
@@ -338,7 +335,7 @@ class LiveSessionView extends React.Component {
       sessions: {currentSessionID: id},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => deleteQueueTrack({id, total}, queueID));
+    deleteQueueTrack({id, total}, queueID);
   }
 
   renderTrack({item, index}) {
@@ -458,11 +455,11 @@ class LiveSessionView extends React.Component {
   toggleEdit = () => this.setState({editingQueue: !this.state.editingQueue});
 
   handleChangeInputHeight({nativeEvent: {contentSize: {height: inputHeight}}}) {
-    InteractionManager.runAfterInteractions(() => this.setState({inputHeight}));
+    this.setState({inputHeight});
   }
 
   handleSetChatMessage({nativeEvent: {text: message}}) {
-    InteractionManager.runAfterInteractions(() => this.setState({message}));
+    this.setState({message});
   }
 
   sendChatMessage() {
@@ -477,9 +474,7 @@ class LiveSessionView extends React.Component {
     const {displayName, profileImage} = users.byID[currentUserID];
     const user = {displayName, profileImage, id: currentUserID};
 
-    InteractionManager.runAfterInteractions(() => {
-      sendChatMessage(currentSessionID, message, user, totalCurrentChat + 1);
-    });
+    sendChatMessage(currentSessionID, message, user, totalCurrentChat + 1);
   }
 
   togglePause() {
@@ -596,9 +591,7 @@ class LiveSessionView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      toggleTrackLike(currentSessionID, queueID, currentUserID, liked);
-    });
+    toggleTrackLike(currentSessionID, queueID, currentUserID, liked);
   }
 
   renderFooter() {
