@@ -1,15 +1,7 @@
 'use strict';
 
 import React from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Animated,
-  Easing,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, TouchableOpacity, ScrollView, Animated, Easing} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -27,8 +19,6 @@ class AddMembersView extends React.Component {
 
     this.onScroll = this.onScroll.bind(this);
   }
-
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
     const {shadowOpacity} = this.state;
@@ -70,7 +60,7 @@ class AddMembersView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Add Members</Text>
             <TouchableOpacity style={styles.rightIcon} disabled={true}>
               <Text style={[styles.rightIconText, styles.disabledText]}>next</Text>
