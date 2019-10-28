@@ -84,8 +84,6 @@ class AlbumDetailsView extends React.Component {
     });
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
-
   renderPerson = (type) => ({item, index}) => {
     const {
       artists: {fetching},
@@ -120,9 +118,7 @@ class AlbumDetailsView extends React.Component {
     );
   }
 
-  goToProfile = userToView => () => {
-    InteractionManager.runAfterInteractions(() => Actions.libProMain({userToView}));
-  }
+  goToProfile = userToView => () => Actions.libProMain({userToView});
 
   renderTopTrack({item, index}) {
     const {entities: {tracks}} = this.props;
@@ -161,10 +157,13 @@ class AlbumDetailsView extends React.Component {
     const {
       albumToView,
       entities: {albums, artists},
-      albums: {fetching: albumFetching, error: albumsError},
-      artists: {fetching: artistFetching},
+      albums: {fetching: albumFetch, error: albumError},
+      artists: {fetching: artistFetch},
     } = this.props;
     const album = albums.byID[albumToView];
+    const fetchingListeners: boolean = albumFetch.includes('topListeners');
+    const fetchingTracks: boolean = albumFetch.includes('topTracks');
+    const fetchingImages: boolean = artistFetch.includes('images');
 
     return (
       <View style={styles.container}>
@@ -188,13 +187,13 @@ class AlbumDetailsView extends React.Component {
                   artistImage={artists.byID[album.artists[0].id].small}
                   artistName={artists.byID[album.artists[0].id].name}
                   navToArtist={() => console.log('artist pressed')}
-                  fetchingImage={artistFetching.includes('images')}
+                  fetchingImage={fetchingImages}
                 />
               }
             </View>
             <View style={styles.topListeners}>
               <Text style={styles.sectionTitle}>TOP LISTENERS</Text>
-              {(!albumFetching.includes('topListeners') && album.topListeners.length !== 0) &&
+              {(!fetchingListeners && album.topListeners.length !== 0) &&
                 <FlatList
                   data={album.topListeners}
                   renderItem={this.renderPerson('user')}
@@ -202,18 +201,14 @@ class AlbumDetailsView extends React.Component {
                   horizontal
                 />
               }
-              {(
-                albumFetching.includes('topListeners')
-                || album.topListeners.length === 0
-                || albumsError
-              ) &&
+              {(fetchingListeners || album.topListeners.length === 0 || albumError) &&
                 <View>
-                  {(!albumFetching.includes('topListeners') && albumsError) &&
+                  {(!albumFetch.includes('topListeners') && albumError) &&
                     <View style={styles.topListenersError}>
                       <Text style={styles.topListenersErrorText}>Unable to load top listeners</Text>
                     </View>
                   }
-                  {(albumFetching.includes('topListeners') && !albumsError) &&
+                  {(fetchingListeners && !albumError) &&
                     <View style={styles.loadingSection}>
                       <LoadingUser />
                       <LoadingUser />
@@ -247,29 +242,21 @@ class AlbumDetailsView extends React.Component {
                   {paddingBottom: 10},
                 ]}
               >TOP TRACKS</Text>
-              {(
-                !albumFetching.includes('topTracks')
-                && !albumsError
-                && album.topTracks.length !== 0
-              ) &&
+              {(!fetchingTracks && !albumError && album.topTracks.length !== 0) &&
                 <FlatList
                   data={album.topTracks}
                   renderItem={this.renderTopTrack}
                   keyExtractor={item => item}
                 />
               }
-              {(
-                albumFetching.includes('topTracks')
-                || albumsError
-                || album.topTracks.length === 0
-              ) &&
+              {(fetchingTracks || albumError || album.topTracks.length === 0) &&
                 <View>
-                  {(!albumFetching.includes('topTracks') && albumsError) &&
+                  {(!fetchingTracks && albumError) &&
                     <View style={styles.topTracksError}>
                       <Text style={styles.topTracksErrorText}>Unable to load top tracks</Text>
                     </View>
                   }
-                  {(albumFetching.includes('topTracks') && !albumsError) &&
+                  {(fetchingTracks && !albumError) &&
                     <View>
                       <LoadingTrack type='top' />
                     </View>
@@ -290,7 +277,7 @@ class AlbumDetailsView extends React.Component {
             <View style={styles.headerFilter} />
           </View>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
               {album.name}
             </Text>
