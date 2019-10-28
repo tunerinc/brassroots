@@ -55,21 +55,15 @@ class LibraryPlaylistsView extends React.Component {
     });
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
-
   navToPlaylist = (dest, playlistID) => () => {
-    InteractionManager.runAfterInteractions(() => {
-      if (dest === 'library') {
-        Actions.libSinglePlaylist({playlistToView: playlistID});
-      }
-  
-      if (dest === 'profile') {
-        Actions.proSinglePlaylist({playlistToView: playlistID});
-      }
-    });
-  }
+    if (dest === 'library') {
+      Actions.libSinglePlaylist({playlistToView: playlistID});
+    }
 
-  createPlaylist = () => InteractionManager.runAfterInteractions(Actions.libNewPlaylist);
+    if (dest === 'profile') {
+      Actions.proSinglePlaylist({playlistToView: playlistID});
+    }
+  }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
     const {shadowOpacity} = this.state;
@@ -134,7 +128,7 @@ class LibraryPlaylistsView extends React.Component {
 
   renderCreateButton() {
     return (
-      <TouchableOpacity style={styles.addButton} onPress={this.createPlaylist}>
+      <TouchableOpacity style={styles.addButton} onPress={Actions.libNewPlaylist}>
         <Text style={styles.addButtonText}>CREATE PLAYLIST</Text>
       </TouchableOpacity>
     );
@@ -174,7 +168,7 @@ class LibraryPlaylistsView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Playlists</Text>
             <View style={styles.rightIcon}></View>
           </View>

@@ -55,8 +55,6 @@ class LibraryAlbumsView extends React.Component {
     });
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
-
   onEndReached() {
     const {getAlbums, albums: {fetching, userAlbums, totalUserAlbums}} = this.props;
 
@@ -91,9 +89,7 @@ class LibraryAlbumsView extends React.Component {
     }
   }
 
-  navToAlbum = albumID => () => {
-    InteractionManager.runAfterInteractions(() => Actions.libSingleAlbum({albumToView: albumID}));
-  }
+  navToAlbum = albumID => () => Actions.libSingleAlbum({albumToView: albumID});
 
   renderAlbum({item}) {
     const {entities: {albums}} = this.props;
@@ -135,7 +131,7 @@ class LibraryAlbumsView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name="ios-arrow-back" style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Albums</Text>
             <View style={styles.rightIcon} />
           </View>

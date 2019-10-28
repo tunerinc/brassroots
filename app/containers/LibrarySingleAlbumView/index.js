@@ -2,15 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  VirtualizedList,
-  Dimensions,
-  StyleSheet,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, TouchableOpacity, VirtualizedList, Dimensions, StyleSheet} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';

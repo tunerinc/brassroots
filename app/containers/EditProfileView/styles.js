@@ -87,11 +87,12 @@ const styles: Styles = StyleSheet.create({
   },
   input: {
     flex: 5,
-    height: 54,
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 19.2, // x1.2
     color: '#fefefe',
+    paddingTop: 16,
+    paddingBottom: 16,
     paddingLeft: 10,
   },
   bio: {

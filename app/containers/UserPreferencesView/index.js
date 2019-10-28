@@ -2,15 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Animated,
-  Easing,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, TouchableOpacity, ScrollView, Animated, Easing} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -41,12 +33,10 @@ class UserPreferencesView extends React.Component {
   componentDidMount() {
     const {settings: {preference}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({
-        tempPlaylist: preference.playlist,
-        tempSession: preference.session,
-        tempMessage: preference.message,
-      });
+    this.setState({
+      tempPlaylist: preference.playlist,
+      tempSession: preference.session,
+      tempMessage: preference.message,
     });
   }
 
@@ -54,35 +44,27 @@ class UserPreferencesView extends React.Component {
     const {tempPlaylist, tempSession, tempMessage} = this.state;
     const {settings: {preference: {playlist, session, message}}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (tempPlaylist !== playlist || tempSession !== session || tempMessage !== message) {
-        this.handleSaveSettings();
-      }
-    });
+    if (tempPlaylist !== playlist || tempSession !== session || tempMessage !== message) {
+      this.handleSaveSettings();
+    }
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
-
-  setSetting = updates => () => {
-    InteractionManager.runAfterInteractions(() => this.setState({...updates}));
-  }
+  setSetting = updates => () => this.setState({...updates});
 
   handleSaveSettings() {
     const {tempPlaylist, tempSession, tempMessage} = this.state;
     const {saveSettings, users: {currentUserID}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      saveSettings(
-        {
-          id: currentUserID,
-          preference: {
-            playlist: tempPlaylist,
-            session: tempSession,
-            message: tempMessage,
-          },
+    saveSettings(
+      {
+        id: currentUserID,
+        preference: {
+          playlist: tempPlaylist,
+          session: tempSession,
+          message: tempMessage,
         },
-      );
-    });
+      },
+    );
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -113,7 +95,7 @@ class UserPreferencesView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Preferences</Text>
             <View style={styles.rightIcon}></View>
           </View>

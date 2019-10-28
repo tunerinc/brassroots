@@ -44,7 +44,6 @@ class EditProfileView extends React.Component {
 
     this.state = {
       scrollY: new Animated.Value(0),
-      inputHeight: 64,
       tempBio: '',
       tempLocation: '',
       tempWebsite: '',
@@ -67,60 +66,59 @@ class EditProfileView extends React.Component {
     } = this.props;
     const {favoriteTrackID, bio, location, website} = users.byID[currentUserID];
 
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({
-        tempBio: bio,
-        tempLocation: location,
-        tempWebsite: website,
-      });
-  
-      if (onboarding && !favoriteTrackID) {
-        getMostPlayedSpotifyTrack(currentUserID);
-      }
+    this.setState({
+      tempBio: bio,
+      tempLocation: location,
+      tempWebsite: website,
     });
+
+    if (onboarding && !favoriteTrackID) {
+      getMostPlayedSpotifyTrack(currentUserID);
+    }
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
+  componentWillUnmount() {
+    const {tempBio, tempLocation, tempWebsite} = this.state;
+    const {
+      entities: {users},
+      users: {currentUserID},
+    } = this.props;
+    const {bio, location, website} = users.byID[currentUserID];
+
+    if (tempBio !== bio || tempLocation !== location || tempWebsite !== website) {
+      this.handleSaveProfile();
+    }
+  }
 
   handleChangePhoto = type => () => {
     const {changeCoverPhoto, changeProfilePhoto, users: {currentUserID}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (type === 'cover') {
-        changeCoverPhoto(currentUserID);
-      } else {
-        changeProfilePhoto(currentUserID);
-      }
-    });
+    if (type === 'cover') {
+      changeCoverPhoto(currentUserID);
+    } else {
+      changeProfilePhoto(currentUserID);
+    }
   }
 
-  handleSetBio({nativeEvent: {text: tempBio}}) {
-    this.setState({tempBio});
-  }
+  handleSetBio = tempBio => this.setState({tempBio});
 
-  handleSetLocation(tempLocation) {
-    this.setState({tempLocation});
-  }
+  handleSetLocation = tempLocation => this.setState({tempLocation});
 
-  handleSetWebsite(tempWebsite) {
-    this.setState({tempWebsite, websiteValid: isURL(tempWebsite)});
-  }
+  handleSetWebsite = tempWebsite => this.setState({tempWebsite, websiteValid: isURL(tempWebsite)});
 
   handleSaveProfile() {
     const {tempBio, tempLocation, tempWebsite} = this.state;
     const {saveProfile, onboarding: {onboarding}, users: {currentUserID}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      saveProfile(
-        {
-          bio: tempBio,
-          location: tempLocation,
-          website: tempWebsite,
-          id: currentUserID,
-          onboarding: onboarding ? true : null,
-        },
-      );
-    });
+    saveProfile(
+      {
+        bio: tempBio,
+        location: tempLocation,
+        website: tempWebsite,
+        id: currentUserID,
+        onboarding: onboarding ? true : null,
+      },
+    );
   }
 
   render() {
@@ -199,33 +197,27 @@ class EditProfileView extends React.Component {
                 style={styles.input}
                 editable={false}
                 onChangeText={this.handleSetName}
+                maxLength={15}
+                value={displayName}
                 autoCapitalize='none'
-                autoCorrect={false}
                 returnKeyType='done'
                 placeholder='display name'
                 placeholderTextColor='#888'
-                maxLength={15}
-                value={displayName}
               />
             </View>
             <View style={styles.bio}>
               <FontAwesome name='newspaper-o' style={styles.profileLeftIcon} />
               <TextInput
+                style={styles.input}
                 multiline={true}
-                onChange={this.handleSetBio}
-                placeholder='bio'
-                autoCapitalize='none'
-                placeholderTextColor='#888'
-                placeholderStyle={{fontWeight: '600'}}
+                onChangeText={this.handleSetBio}
                 value={tempBio}
                 maxLength={100}
-                style={[
-                  styles.input,
-                  {
-                    height: inputHeight > 10 ? inputHeight + 32 : 54,
-                    paddingTop: 16,
-                  }
-                ]}
+                autoCapitalize='none'
+                autoCorrect={false}
+                placeholder='bio'
+                placeholderTextColor='#888'
+                placeholderStyle={{fontWeight: '600'}}
               />
             </View>
             <View style={styles.location}>
@@ -233,13 +225,14 @@ class EditProfileView extends React.Component {
               <TextInput
                 style={styles.input}
                 onChangeText={this.handleSetLocation}
+                value={tempLocation}
+                maxLength={30}
                 autoCapitalize='none'
                 autoCorrect={false}
                 returnKeyType='done'
                 placeholder='location'
                 placeholderTextColor='#888'
-                value={tempLocation}
-                maxLength={30}
+                placeholderStyle={{fontWeight: '600'}}
               />
             </View>
             <View style={styles.website}>
@@ -247,13 +240,14 @@ class EditProfileView extends React.Component {
               <TextInput
                 style={styles.input}
                 onChangeText={this.handleSetWebsite}
+                value={tempWebsite}
+                maxLength={30}
                 autoCapitalize='none'
                 autoCorrect={false}
                 returnKeyType='done'
                 placeholder='website'
                 placeholderTextColor='#888'
-                value={tempWebsite}
-                maxLength={30}
+                placeholderStyle={{fontWeight: '600'}}
               />
               {tempWebsite !== '' &&
                 <View style={styles.profileRightIconWrap}>
@@ -281,12 +275,9 @@ class EditProfileView extends React.Component {
               <TextInput
                 style={styles.input}
                 editable={false}
+                value={email}
                 autoCapitalize='none'
                 autoCorrect={false}
-                returnKeyType='done'
-                placeholder='email'
-                placeholderTextColor='#888'
-                value={email}
               />
               <Ionicons name='md-lock' size={25} style={styles.profileRightIcon} />
             </View>
@@ -295,12 +286,9 @@ class EditProfileView extends React.Component {
               <TextInput
                 style={styles.input}
                 editable={false}
+                value={birthdate}
                 autoCapitalize='none'
                 autoCorrect={false}
-                returnKeyType='done'
-                placeholder='birthdate'
-                placeholderTextColor='#888'
-                value={birthdate}
               />
               <Ionicons name='md-lock' size={25} style={styles.profileRightIcon} />
             </View>
@@ -333,7 +321,7 @@ class EditProfileView extends React.Component {
           }
           <View style={styles.nav}>
             {title !== 'Create Profile' &&
-              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+              <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             }
             {title === 'Create Profile' && <View style={styles.leftIcon}></View>}
             {title !== 'Create Profile' && <Text style={styles.title}>Edit Profile</Text>}
@@ -342,28 +330,36 @@ class EditProfileView extends React.Component {
                 {title}
               </Text>
             }
+            {title !== 'Create Profile' && <View style={{flex: 1}}></View>}
             {(
-              (
-                (websiteValid && tempWebsite !== '')
-                || tempWebsite === ''
-              )
+              title === 'Create Profile'
               && !userFetch.includes('cover')
               && !userFetch.includes('profile')
               && coverImageExists
               && profileImageExists
-            ) ? (
+              && (
+                (websiteValid && tempWebsite !== '')
+                || tempWebsite === ''
+              )
+            ) &&
               <TouchableOpacity style={styles.rightIcon} onPress={this.handleSaveProfile}>
-                <Text style={[styles.createText, styles.enabledText]}>
-                  {title === 'Create Profile' ? 'create' : 'save'}
-                </Text>
+                <Text style={[styles.createText, styles.enabledText]}>create</Text>
               </TouchableOpacity>
-            ) : (
+            }
+            {(
+              title === 'Create Profile'
+              && (
+                (tempWebsite !== '' && !websiteValid)
+                || userFetch.includes('cover')
+                || userFetch.includes('profile')
+                || !coverImageExists
+                || !profileImageExists
+              )
+            ) &&
               <TouchableOpacity style={styles.rightIcon} disabled={true}>
-                <Text style={[styles.createText, styles.disabledText]}>
-                  {title === 'Create Profile' ? 'create' : 'save'}
-                </Text>
+                <Text style={[styles.createText, styles.disabledText]}>create</Text>
               </TouchableOpacity>
-            )}
+            }
           </View>
           <Animated.View style={[styles.photos, {opacity: photosOpacity, bottom: photosOffset}]}>
             <View style={styles.editProfilePhoto}>

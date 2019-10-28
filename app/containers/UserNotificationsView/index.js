@@ -2,15 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Animated,
-  Easing,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, TouchableOpacity, ScrollView, Animated, Easing} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -47,18 +39,16 @@ class UserNotificationsView extends React.Component {
   componentDidMount() {
     const {settings: {notify}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({
-        tempSession: notify.session,
-        tempChat: notify.chat,
-        tempMessage: notify.message,
-        tempGroup: notify.groupMessage,
-        tempNearby: notify.nearbySession,
-        tempChange: notify.playlistChange,
-        tempJoin: notify.playlistJoin,
-        tempLike: notify.likedTrack,
-        tempFollow: notify.newFollower,
-      });
+    this.setState({
+      tempSession: notify.session,
+      tempChat: notify.chat,
+      tempMessage: notify.message,
+      tempGroup: notify.groupMessage,
+      tempNearby: notify.nearbySession,
+      tempChange: notify.playlistChange,
+      tempJoin: notify.playlistJoin,
+      tempLike: notify.likedTrack,
+      tempFollow: notify.newFollower,
     });
   }
 
@@ -76,27 +66,22 @@ class UserNotificationsView extends React.Component {
     } = this.state;
     const {settings: {notify}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (
-        tempSession !== notify.session
-        || tempChat !== notify.chat
-        || tempMessage !== notify.message
-        || tempGroup !== notify.groupMessage
-        || tempNearby !== notify.nearbySession
-        || tempChange !== notify.playlistChange
-        || tempJoin !== notify.playlistJoin
-        || tempLike !== notify.likedTrack
-        || tempFollow !== notify.newFollower
-      ) {
-        this.handleSaveSettings();
-      }
-    });
+    if (
+      tempSession !== notify.session
+      || tempChat !== notify.chat
+      || tempMessage !== notify.message
+      || tempGroup !== notify.groupMessage
+      || tempNearby !== notify.nearbySession
+      || tempChange !== notify.playlistChange
+      || tempJoin !== notify.playlistJoin
+      || tempLike !== notify.likedTrack
+      || tempFollow !== notify.newFollower
+    ) {
+      this.handleSaveSettings();
+    }
   }
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
-  setSetting = updates => () => {
-    InteractionManager.runAfterInteractions(() => this.setState({...updates}));
-  }
+  setSetting = updates => () => this.setState({...updates});
 
   handleSaveSettings() {
     const {
@@ -111,26 +96,24 @@ class UserNotificationsView extends React.Component {
       tempFollow,
     } = this.state;
 
-    InteractionManager.runAfterInteractions(() => {
-      const {saveSettings, users: {currentUserID}} = this.props;
+    const {saveSettings, users: {currentUserID}} = this.props;
 
-      saveSettings(
-        {
-          id: currentUserID,
-          notify: {
-            session: tempSession,
-            chat: tempChat,
-            message: tempMessage,
-            groupMessage: tempGroup,
-            nearbySession: tempNearby,
-            playlistChange: tempChange,
-            playlistJoin: tempJoin,
-            likedTrack: tempLike,
-            newFollower: tempFollow,
-          },
+    saveSettings(
+      {
+        id: currentUserID,
+        notify: {
+          session: tempSession,
+          chat: tempChat,
+          message: tempMessage,
+          groupMessage: tempGroup,
+          nearbySession: tempNearby,
+          playlistChange: tempChange,
+          playlistJoin: tempJoin,
+          likedTrack: tempLike,
+          newFollower: tempFollow,
         },
-      );
-    });
+      },
+    );
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -182,7 +165,7 @@ class UserNotificationsView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Notifications</Text>
             <View style={styles.rightIcon}></View>
           </View>

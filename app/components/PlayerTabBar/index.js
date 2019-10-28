@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {View, Image, TouchableOpacity, Animated, Easing, InteractionManager} from 'react-native';
+import {View, Image, TouchableOpacity, Animated, Easing} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';

@@ -2,16 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Animated,
-  Easing,
-  TextInput,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, TouchableOpacity, ScrollView, Animated, Easing, TextInput} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -34,8 +25,6 @@ class ReportProblemView extends React.Component {
     this.onScroll = this.onScroll.bind(this);
     this.handleSetReportMessage = this.handleSetReportMessage.bind(this);
   }
-
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
     const {shadowOpacity} = this.state;
@@ -70,7 +59,7 @@ class ReportProblemView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Report Problem</Text>
             {types.length !== 0 && text !== '' &&
               <TouchableOpacity style={styles.rightIcon} disabled>

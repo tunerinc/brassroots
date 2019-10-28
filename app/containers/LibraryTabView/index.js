@@ -2,16 +2,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Animated,
-  Easing,
-  FlatList,
-  InteractionManager,
-} from "react-native";
+import {Text, View, TouchableOpacity, ScrollView, Animated, Easing, FlatList} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
@@ -95,36 +86,30 @@ class LibraryTabView extends React.Component {
   navToLibrary = route => () => {
     const {users: {currentUserID}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      switch (route) {
-        case "playlists":
-          Actions.libPlaylists();
-          return;
-        case "albums":
-          Actions.libAlbums();
-          return;
-        case "tracks":
-          Actions.libTracks();
-          return;
-        case "recent":
-          Actions.libRecentlyPlayed({selectedUser: currentUserID});
-          return;
-        case "top":
-          Actions.libTopPlaylists({selectedUser: currentUserID});
-          return;
-        case "most":
-          Actions.libMostPlayed({selectedUser: currentUserID});
-        default:
-          return;
-      }
-    });
+    switch (route) {
+      case "playlists":
+        Actions.libPlaylists();
+        return;
+      case "albums":
+        Actions.libAlbums();
+        return;
+      case "tracks":
+        Actions.libTracks();
+        return;
+      case "recent":
+        Actions.libRecentlyPlayed({selectedUser: currentUserID});
+        return;
+      case "top":
+        Actions.libTopPlaylists({selectedUser: currentUserID});
+        return;
+      case "most":
+        Actions.libMostPlayed({selectedUser: currentUserID});
+      default:
+        return;
+    }
   }
 
-  navToPlaylist = playlistID => () => {
-    InteractionManager.runAfterInteractions(() => {
-      Actions.proSinglePlaylist({playlistToView: playlistID});
-    });
-  };
+  navToPlaylist = playlistID => () => Actions.proSinglePlaylist({playlistToView: playlistID});
 
   renderPlaylist({item}) {
     const {
@@ -181,15 +166,9 @@ class LibraryTabView extends React.Component {
     );
   }
 
-  openModal = selectedTrack => () => {
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({selectedTrack, isTrackMenuOpen: true});
-    });
-  }
+  openModal = selectedTrack => () => this.setState({selectedTrack, isTrackMenuOpen: true});
 
-  closeModal = () => {
-    InteractionManager.runAfterInteractions(() => this.setState({isTrackMenuOpen: false}));
-  }
+  closeModal = () => this.setState({isTrackMenuOpen: false});
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
     const {shadowOpacity} = this.state;
@@ -222,25 +201,23 @@ class LibraryTabView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (sessions.allIDs.includes(currentSessionID)) {
-        const {listeners, ownerID} = sessions.byID[currentSessionID];
-        const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
-        const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
-        const {displayName, profileImage} = users.byID[currentUserID];
-  
-        if (isListenerOwner && !songInQueue) {
-          const track = tracks.byID[selectedTrack];
-          const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
-          const prevTrackID = queueTracks.byID[prevQueueID];
-          const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
-          const user = {displayName, profileImage, id: currentUserID};
-  
-          this.closeModal();
-          queueTrack(session, track, user);
-        }
+    if (sessions.allIDs.includes(currentSessionID)) {
+      const {listeners, ownerID} = sessions.byID[currentSessionID];
+      const isListenerOwner = listeners.includes(currentUserID) || ownerID === currentUserID;
+      const songInQueue = userQueue.map(t => t.trackID).includes(selectedTrack);
+      const {displayName, profileImage} = users.byID[currentUserID];
+
+      if (isListenerOwner && !songInQueue) {
+        const track = tracks.byID[selectedTrack];
+        const prevQueueID = userQueue.length ? userQueue[userQueue.length - 1].id : currentQueueID;
+        const prevTrackID = queueTracks.byID[prevQueueID];
+        const session = {prevQueueID, prevTrackID, totalQueue, id: currentSessionID};
+        const user = {displayName, profileImage, id: currentUserID};
+
+        this.closeModal();
+        queueTrack(session, track, user);
       }
-    });
+    }
   }
 
   renderModalContent() {
