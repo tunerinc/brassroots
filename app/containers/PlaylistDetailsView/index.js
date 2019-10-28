@@ -78,21 +78,17 @@ class PlaylistDetailsView extends React.Component {
     });
   }
 
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
-
   navToProfile = title => () => {
-    InteractionManager.runAfterInteractions(() => {
-      switch (title) {
-        case 'Library':
-          Actions.libProMain({userToView: item});
-          return;
-        case 'Profile':
-          Actions.proUser({userToView: item});
-          return;
-        default:
-          return;
-      }
-    });
+    switch (title) {
+      case 'Library':
+        Actions.libProMain({userToView: item});
+        return;
+      case 'Profile':
+        Actions.proUser({userToView: item});
+        return;
+      default:
+        return;
+    }
   }
 
   renderMember({item, index}) {
@@ -356,7 +352,7 @@ class PlaylistDetailsView extends React.Component {
             <View style={styles.headerFilter}></View>
           </View>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>
