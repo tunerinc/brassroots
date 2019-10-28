@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import selectPhoto from '../../utils/selectPhoto';
 import FastImage from 'react-native-fast-image';
-import {Text, View, TouchableOpacity, TextInput, InteractionManager} from 'react-native';
+import {Text, View, TouchableOpacity, TextInput} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -25,51 +25,42 @@ class NewPlaylistNameView extends React.Component {
   constructor(props) {
     super(props);
 
-    this.navBack = this.navBack.bind(this);
     this.setPlaylistMode = this.setPlaylistMode.bind(this);
     this.setPlaylistName = this.setPlaylistName.bind(this);
     this.selectNewPhoto = this.selectNewPhoto.bind(this);
   }
 
-  navBack() {
+  componentWillUnmount() {
     const {updatePlaylists} = this.props;
-
-    InteractionManager.runAfterInteractions(() => {
-      updatePlaylists({newPlaylist: initialState.newPlaylist});
-      Actions.pop();
-    });
+    updatePlaylists({newPlaylist: initialState.newPlaylist});
   }
-
-  addMembers = () => InteractionManager.runAfterInteractions(Actions.libAddMembers);
 
   setPlaylistMode = mode => () => {
     const {updatePlaylists} = this.props;
-    InteractionManager.runAfterInteractions(() => updatePlaylists({newPlaylist: {mode}}));
+    updatePlaylists({newPlaylist: {mode}});
   }
 
   setPlaylistName(name) {
     const {updatePlaylists} = this.props;
-    InteractionManager.runAfterInteractions(() => updatePlaylists({newPlaylist: {name}}));
+    updatePlaylists({newPlaylist: {name}});
   }
 
   async selectNewPhoto() {
     const {updatePlaylists} = this.props;
     const image = await selectPhoto('Select Playlist Photo', true);
 
-    InteractionManager.runAfterInteractions(() => {
-      if (image !== 'cancelled') {
-        updatePlaylists(
-          {
-            newPlaylist: {
-              image: {
-                path: image.path,
-                base64: image.data,
-              },
+    if (image !== 'cancelled') {
+      updatePlaylists(
+        {
+          newPlaylist: {
+            image: {
+              path: image.path,
+              base64: image.data,
             },
           },
-        );
-      }
-    });
+        },
+      );
+    }
   }
 
   render() {
@@ -79,14 +70,14 @@ class NewPlaylistNameView extends React.Component {
       <View style={styles.container}>
         <View style={styles.shadow}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>New Playlist</Text>
             {(
               (typeof name === 'string' && name !== '')
               && (typeof mode === 'string' && mode !== '')
               && (image && typeof image.base64 === 'string')
             ) &&
-              <TouchableOpacity style={styles.rightIcon} onPress={this.addMembers}>
+              <TouchableOpacity style={styles.rightIcon} onPress={Actions.libAddMembers}>
                 <Text style={[styles.rightIconText, styles.enabledText]}>next</Text>
               </TouchableOpacity>
             }
