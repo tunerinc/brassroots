@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, TouchableOpacity, InteractionManager} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -23,35 +23,29 @@ class UserSettingsView extends React.Component {
   navToSetting = setting => () => {
     const {title} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      switch (setting) {
-        case 'notifications':
-          title === 'Library' ? Actions.libProNotif() : Actions.proNotifications();
-          return;
-        case 'preferences':
-          title === 'Library' ? Actions.libProPreferences() : Actions.proPreferences();
-          return;
-        case 'displaySound':
-          title === 'Library' ? Actions.libProDisplaySound() : Actions.proDisplaySound();
-          return;
-        case 'langRegion':
-          title === 'Library' ? Actions.libProLanguageRegion() : Actions.proLanguageRegion();
-          return;
-        case 'about':
-          title === 'Library' ? Actions.libProAboutApp() : Actions.proAboutApp();
-          return;
-        case 'report':
-          title === 'Library' ? Actions.libProReportProblem() : Actions.proReportProblem();
-          return;
-        default:
-          return;
-      }
-    });
+    switch (setting) {
+      case 'notifications':
+        title === 'Library' ? Actions.libProNotif() : Actions.proNotifications();
+        return;
+      case 'preferences':
+        title === 'Library' ? Actions.libProPreferences() : Actions.proPreferences();
+        return;
+      case 'displaySound':
+        title === 'Library' ? Actions.libProDisplaySound() : Actions.proDisplaySound();
+        return;
+      case 'langRegion':
+        title === 'Library' ? Actions.libProLanguageRegion() : Actions.proLanguageRegion();
+        return;
+      case 'about':
+        title === 'Library' ? Actions.libProAboutApp() : Actions.proAboutApp();
+        return;
+      case 'report':
+        title === 'Library' ? Actions.libProReportProblem() : Actions.proReportProblem();
+        return;
+      default:
+        return;
+    }
   }
-
-  navBack = () => InteractionManager.runAfterInteractions(Actions.pop);
-
-  logOut = logOut => () => InteractionManager.runAfterInteractions(logOut);
 
   render() {
     const {logOut} = this.props;
@@ -60,7 +54,7 @@ class UserSettingsView extends React.Component {
       <View style={styles.container}>
         <View style={styles.shadow}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>Settings</Text>
             <View style={styles.rightIcon}></View>
           </View>
@@ -73,7 +67,7 @@ class UserSettingsView extends React.Component {
           <UserSettingOption action={this.navToSetting('about')} title='About' />
           <UserSettingOption action={this.navToSetting('report')} title='Report Problem' />
           <View style={styles.logout}>
-            <TouchableOpacity style={styles.logoutWrap} onPress={this.logOut(logOut)}>
+            <TouchableOpacity style={styles.logoutWrap} onPress={logOut}>
               <Text style={styles.logoutText}>Log Out</Text>
             </TouchableOpacity>
           </View>
