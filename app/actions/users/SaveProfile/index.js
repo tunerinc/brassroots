@@ -62,7 +62,6 @@ export function saveProfile(
       dispatch(actions.success());
 
       if (onboarding) Actions.root({type: ActionConst.RESET});
-      if (!onboarding) Actions.pop();
     } catch (err) {
       dispatch(actions.failure(err));
     }
