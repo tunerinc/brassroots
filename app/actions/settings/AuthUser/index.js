@@ -73,11 +73,11 @@ export function authorizeUser(): ThunkAction {
         };
 
         dispatch(actions.success());
+        dispatch(updateOnboarding({onboarding: false}));
         dispatch(addEntities({users: {[user.id]: user}}));
         dispatch(updateUsers({currentUserID: user.id}));
-        dispatch(updateOnboarding({onboarding: false}));
-        dispatch(getUserSettings(user.id));
         Actions.root({type: ActionConst.RESET});
+        dispatch(getUserSettings(user.id));
       } else {
         dispatch(actions.success());
         dispatch(updateOnboarding({onboarding: true}));
