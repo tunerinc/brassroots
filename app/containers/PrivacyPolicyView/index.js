@@ -2,7 +2,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, ScrollView, Animated, Easing, RefreshControl, Dimensions} from 'react-native';
+import {
+  Text,
+  View,
+  ScrollView,
+  Animated,
+  Easing,
+  RefreshControl,
+  Dimensions,
+  InteractionManager,
+} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -32,7 +41,10 @@ class PrivacyPolicyView extends React.Component {
 
   componentDidMount() {
     const {getPolicy, legal: {privacy: {text}}} = this.props;
-    if (text === '') getPolicy();
+
+    InteractionManager.runAfterInteractions(() => {
+      if (text === '') getPolicy();
+    });
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
