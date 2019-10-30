@@ -298,7 +298,7 @@ class PlaylistDetailsView extends React.Component {
                 }
               </View>
             }
-            {totalPlays === 1 &&
+            {/* {totalPlays === 1 &&
               <Text style={styles.playlistPlays}>
                 <Text style={styles.playlistPlaysNumber}>
                   {totalPlays}
@@ -338,7 +338,7 @@ class PlaylistDetailsView extends React.Component {
                 </View>
               }
               {playlistFetching.includes('topTracks') && <LoadingTrack type='top' />}
-            </View>
+            </View> */}
           </View>
         </ScrollView>
         <View style={styles.header}>

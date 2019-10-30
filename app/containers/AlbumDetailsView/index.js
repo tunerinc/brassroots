@@ -191,7 +191,7 @@ class AlbumDetailsView extends React.Component {
                 />
               }
             </View>
-            <View style={styles.topListeners}>
+            {/* <View style={styles.topListeners}>
               <Text style={styles.sectionTitle}>TOP LISTENERS</Text>
               {(!fetchingListeners && album.topListeners.length !== 0) &&
                 <FlatList
@@ -263,7 +263,7 @@ class AlbumDetailsView extends React.Component {
                   }
                 </View>
               }
-            </View>
+            </View> */}
           </View>
         </ScrollView>
         <View style={styles.header}>

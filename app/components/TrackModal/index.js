@@ -92,7 +92,7 @@ export default class TrackModal extends React.PureComponent<Props, State> {
             </TouchableHighlight>
           </View>
         }
-        <View style={styles.option}>
+        {/* <View style={styles.option}>
           <TouchableHighlight
             style={styles.button}
             activeOpacity={0.5}
@@ -151,7 +151,7 @@ export default class TrackModal extends React.PureComponent<Props, State> {
           >
             <Text style={[styles.text, styles.danger]}>delete</Text>
           </TouchableHighlight>
-        </View>
+        </View> */}
         <View style={styles.cancel}>
           <TouchableHighlight
             style={styles.cancelButton}

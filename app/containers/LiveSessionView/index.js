@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import styles from './styles';
 import Modal from 'react-native-modal';
 import Placeholder from 'rn-placeholder';
@@ -409,7 +409,7 @@ class LiveSessionView extends React.Component {
       users: {currentUserID},
     } = this.props;
     const session = sessions.byID[currentSessionID];
-    const height = session && session.ownerID === currentUserID ? 352 : 306;
+    const height = session && session.ownerID === currentUserID ? 108 : 108;
 
     if (session) {
       if (isMenuOpen) {
@@ -626,6 +626,10 @@ class LiveSessionView extends React.Component {
         image={profileImage}
         contextQueue={contextTracks}
         context={context}
+        addTrack={() => {
+          Actions.pop();
+          Actions.root({type: ActionConst.RESET});
+        }}
       />
     );
   }

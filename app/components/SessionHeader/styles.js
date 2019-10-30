@@ -34,7 +34,7 @@ interface Styles {
 const styles: Styles = StyleSheet.create({
   sessionLiveMode: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: 15,
     marginTop: 5,

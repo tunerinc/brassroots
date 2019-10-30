@@ -109,15 +109,15 @@ export default class LiveSessionCard extends React.Component<Props, State> {
               </Text>
             </View>
             <TouchableOpacity style={styles.action}>
-              <Ionicons
+              {/* <Ionicons
                 name='md-share-alt'
                 style={styles.actionIcon}
                 color='#fefefe'
               />
-              <Text style={styles.actionText}>Share</Text>
+              <Text style={styles.actionText}>Share</Text> */}
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionsButton} onPress={openModal} activeOpacity={0.5}>
-              <SimpleLineIcons name='options' style={styles.options} />
+              {/* <SimpleLineIcons name='options' style={styles.options} /> */}
             </TouchableOpacity>
           </View>
         </View>

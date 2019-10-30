@@ -65,7 +65,7 @@ class UserSettingsView extends React.Component {
           <UserSettingOption action={this.navToSetting('displaySound')} title='Display & Sound' />
           <UserSettingOption action={this.navToSetting('langRegion')} title='Language & Region' />
           <UserSettingOption action={this.navToSetting('about')} title='About' />
-          <UserSettingOption action={this.navToSetting('report')} title='Report Problem' />
+          {/* <UserSettingOption action={this.navToSetting('report')} title='Report Problem' /> */}
           <View style={styles.logout}>
             <TouchableOpacity style={styles.logoutWrap} onPress={logOut}>
               <Text style={styles.logoutText}>Log Out</Text>

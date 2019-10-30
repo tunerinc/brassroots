@@ -432,7 +432,7 @@ class PlaylistView extends React.Component {
           <Animated.View style={[styles.playButtonWrap, {opacity: buttonOpacity}]}>
             <PlayButton play={this.handlePlay(tracks[0], 0)} />
           </Animated.View>
-          <Animated.View style={[styles.headerBottomOptions, {opacity: optionOpacity}]}>
+          {/* <Animated.View style={[styles.headerBottomOptions, {opacity: optionOpacity}]}>
             <View style={styles.shareButtonWrap}>
               <TouchableOpacity style={styles.shareButton} disabled={true}>
                 <Ionicons name='md-share-alt' style={styles.shareIcon} />
@@ -460,7 +460,7 @@ class PlaylistView extends React.Component {
                 onPress={this.openModal('', 'playlist')}
               />
             </View>
-          </Animated.View>
+          </Animated.View> */}
         </Animated.View>
       </View>
     );
@@ -558,11 +558,12 @@ class PlaylistView extends React.Component {
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>
-            <Ionicons
+            <View style={styles.rightIcon}></View>
+            {/* <Ionicons
               name='md-information-circle'
               style={styles.rightIcon}
               onPress={this.navToDetails(playlistToView, title)}
-            />
+            /> */}
           </View>
         </Animated.View>
         <Modal

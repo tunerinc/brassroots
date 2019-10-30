@@ -43,7 +43,7 @@ export default class DJModal extends React.PureComponent<Props, State> {
       <Animated.View style={[styles.options, {zIndex}]}>
         <Animated.View style={[styles.menu, {height}]}>
           <Animated.View style={[styles.opacity, {opacity: optionsOpacity}]}>
-            <View style={styles.option}>
+            {/* <View style={styles.option}>
               {isCurrentUser &&
                 <TouchableHighlight
                   style={styles.button}
@@ -119,7 +119,7 @@ export default class DJModal extends React.PureComponent<Props, State> {
                   <Text style={styles.text}>kick user</Text>
                 </TouchableHighlight>
               </View>
-            }
+            } */}
             <View style={styles.option}>
               <TouchableHighlight
                 style={styles.button}
