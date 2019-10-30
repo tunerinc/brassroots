@@ -7,6 +7,7 @@
 
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
+import {Actions} from 'react-native-router-flux'
 import LikeButton from '../LikeButton';
 import TrackCard from '../TrackCard';
 import styles from './styles';
@@ -21,6 +22,7 @@ type Track = {|
 |};
 
 type Props = {|
+  addTrack: () => any,
   toggleLike: () => any,
   currentUserID: string,
   displayName: string,
@@ -42,11 +44,11 @@ export default class SessionFooter extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const {toggleLike, currentUserID, displayName, image, contextQueue, context} = this.props;
+    const {toggleLike, currentUserID, displayName, image, contextQueue, context, addTrack} = this.props;
 
     return (
       <View>
-        <TouchableOpacity style={styles.addTrackButton} disabled>
+        <TouchableOpacity style={styles.addTrackButton} onPress={addTrack}>
           <View style={styles.addTrackIcon}>
             <MaterialCommunityIcons name='plus' style={styles.addTrackPlus} />
           </View>

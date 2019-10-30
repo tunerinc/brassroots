@@ -185,7 +185,7 @@ class LibraryPlaylistsView extends React.Component {
             removeClippedSubviews={false}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
-            ListHeaderComponent={this.renderCreateButton}
+            // ListHeaderComponent={this.renderCreateButton}
             ListFooterComponent={this.renderFooter}
             ListEmptyComponent={<Text>Nothing to show</Text>}
             refreshing={refreshing.includes('playlists')}
@@ -196,11 +196,10 @@ class LibraryPlaylistsView extends React.Component {
         }
         {(userPlaylists.length === 0 || !userPlaylists.length) &&
           <View style={styles.playlistsWrap}>
-            {(!fetching.includes('playlists') && !playlistError) && <Text>Nothing to show</Text>}
             {(!fetching.includes('playlists') && playlistError) && <Text>There was an error.</Text>}
-            {fetching.includes('playlists') &&
+            {fetching.includes('playlists' || (!fetching.includes('playlists') && !playlistError))  &&
               <View>
-                {this.renderCreateButton()}
+                {/* {this.renderCreateButton()} */}
                 <LoadingPlaylist />
                 <LoadingPlaylist />
                 <LoadingPlaylist />

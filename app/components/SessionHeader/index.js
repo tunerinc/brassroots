@@ -102,7 +102,7 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
           image={image}
         />
         <View style={styles.sessionLiveMode}>
-          <SessionModeIcon mode={mode} />
+          {/* <SessionModeIcon mode={mode} /> */}
           <Text style={styles.sessionLiveText}>LIVE</Text>
         </View>
         <PlayerSlider
@@ -140,10 +140,10 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
               {distance} mi
             </Text>
           </View>
-          <TouchableOpacity style={styles.shareButton} disabled>
+          {/* <TouchableOpacity style={styles.shareButton} disabled>
             <Ionicons name='md-share-alt' color='#fefefe' style={styles.shareIcon} />
             <Text style={styles.shareText}>Share</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.queue}>
           <Text style={styles.queueTitle}>Queue</Text>

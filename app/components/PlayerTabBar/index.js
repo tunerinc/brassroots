@@ -266,6 +266,8 @@ class PlayerTabBar extends React.Component {
   createButton({routeName}) {
     const {navigation: {state: {index}}} = this.props;
 
+    if (routeName === 'search' || routeName === 'social') return null;
+
     return (
       <TouchableOpacity style={styles.tabButton} onPress={this.nav(routeName)} key={routeName}>
         <TabIcon routeName={routeName} routeIndex={index} />

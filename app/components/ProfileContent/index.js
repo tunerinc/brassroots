@@ -307,7 +307,7 @@ export default class ProfileContent extends React.Component<Props, State> {
                   }
                 </View>
               </Animated.View>
-              <Animated.View style={[styles.followCount, {opacity: followOpacity}]}>
+              {/* <Animated.View style={[styles.followCount, {opacity: followOpacity}]}>
                 <TouchableOpacity style={styles.followers} disabled>
                   <Text>
                     <Text style={styles.followersCount}>
@@ -324,7 +324,7 @@ export default class ProfileContent extends React.Component<Props, State> {
                     <Text style={styles.followingText}> following</Text>
                   </Text>
                 </TouchableOpacity>
-              </Animated.View>
+              </Animated.View> */}
             </View>
           </Animated.View>
         </View>
@@ -375,7 +375,7 @@ export default class ProfileContent extends React.Component<Props, State> {
               }
             </View>
           </View>
-          {user &&
+          {/* {user &&
             <MusicSection
               renderItem={renderMostTrack}
               viewMore={viewMost}
@@ -407,7 +407,7 @@ export default class ProfileContent extends React.Component<Props, State> {
               showError={typeof trackError === Error}
               fetching={trackFetching.includes('recent')}
             />
-          }
+          } */}
         </View>
       </Animated.ScrollView>
     );

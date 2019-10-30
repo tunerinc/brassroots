@@ -43,10 +43,10 @@ export default class SessionTrack extends React.Component<Props, State> {
 
     return (
       <View style={styles.track}>
-        <TouchableOpacity style={styles.action} disabled={true}>
+        {/* <TouchableOpacity style={styles.action} disabled={true}>
           {saved && <Ionicons name='md-checkmark' color='#2b6dc0' style={styles.check} />}
           {!saved && <MaterialCommunityIcons name='plus' color='#fefefe' style={styles.plus} />}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity style={styles.info} disabled={true}>
           <TextTicker
             numberOfLines={1}
@@ -70,9 +70,9 @@ export default class SessionTrack extends React.Component<Props, State> {
             {displayName}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.optionsButton} onPress={openModal} activeOpacity={0.5}>
+        {/* <TouchableOpacity style={styles.optionsButton} onPress={openModal} activeOpacity={0.5}>
           <SimpleLineIcons name='options' style={styles.options} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   }

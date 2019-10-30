@@ -250,7 +250,7 @@ class UserProfileView extends React.Component {
   renderModalContent() {
     const {selectedTrack} = this.state;
     const {
-      entities: {queueTracks, sessions, tracks},
+      entities: {queueTracks, sessions, tracks, users},
       queue: {userQueue},
       sessions: {currentSessionID},
       users: {currentUserID},
@@ -277,6 +277,7 @@ class UserProfileView extends React.Component {
         albumImage={tracks.byID[selectedTrack].album.small}
         trackInQueue={songQueued}
         isListenerOwner={sessionExists ? isListenerOwner : null}
+        isFavorite={users.byID[currentUserID].favoriteTrackID === selectedTrack}
       />
     );
   }

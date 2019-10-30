@@ -326,7 +326,7 @@ class LibrarySingleAlbumView extends React.Component {
           <Animated.View style={[styles.playButtonWrap, {opacity: buttonOpacity}]}>
             <PlayButton play={this.handlePlay(userTracks[0], 0)} />
           </Animated.View>
-          <Animated.View style={[styles.headerBottomOptions, {opacity: optionOpacity}]}>
+          {/* <Animated.View style={[styles.headerBottomOptions, {opacity: optionOpacity}]}>
             <TouchableOpacity style={styles.shareButton} disabled={true}>
               <Ionicons name='md-share-alt' style={styles.shareIcon} />
               <Text style={styles.shareText}>Share</Text>
@@ -336,7 +336,7 @@ class LibrarySingleAlbumView extends React.Component {
               style={styles.options}
               onPress={this.openModal('', 'album')}
             />
-          </Animated.View>
+          </Animated.View> */}
         </Animated.View>
       </View>
     );
@@ -427,11 +427,12 @@ class LibrarySingleAlbumView extends React.Component {
             <Text numberOfLines={1} style={styles.title}>
               {name}
             </Text>
-            <Ionicons
+            <View style={styles.rightIcon}></View>
+            {/* <Ionicons
               name='md-information-circle'
               style={styles.rightIcon}
               onPress={this.navToDetails(albumToView)}
-            />
+            /> */}
           </View>
         </Animated.View>
         <Modal

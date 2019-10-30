@@ -101,11 +101,11 @@ export default class TrackCard extends React.PureComponent<Props, State> {
           {(showSquareImage && typeof image === 'string') &&
             <View>
               <FastImage style={styles.image} source={{uri: image}} />
-              {editingFavorite &&
+              {/* {editingFavorite &&
                 <TouchableOpacity style={styles.imageFilter} disabled>
                   <MaterialIcons name='edit' style={styles.editIcon} />
                 </TouchableOpacity>
-              }
+              } */}
             </View>
           }
           {(showRoundImage && typeof image === 'string') &&
