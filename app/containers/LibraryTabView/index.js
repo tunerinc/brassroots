@@ -316,7 +316,7 @@ class LibraryTabView extends React.Component {
             <Text style={styles.libraryOptionText}>Songs</Text>
             <Ionicons name="ios-arrow-forward" style={styles.libraryOptionArrow} />
           </TouchableOpacity>
-          <MusicSection
+          {/* <MusicSection
             renderItem={this.renderTrack('user-recently')}
             viewMore={this.navToLibrary('recent')}
             type='recent'
@@ -342,7 +342,7 @@ class LibraryTabView extends React.Component {
             items={mostPlayed}
             showError={typeof trackError === Error}
             fetching={trackFetching.includes('mostPlayed')}
-          />
+          /> */}
         </ScrollView>
         <Modal
           isVisible={isTrackMenuOpen}
