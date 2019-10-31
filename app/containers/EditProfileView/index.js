@@ -26,7 +26,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 // Tracks Action Creators
 import {changeFavoriteTrack} from '../../actions/tracks/ChangeFavoriteTrack';
-import {getMostPlayedSpotifyTrack} from '../../actions/tracks/GetMostPlayedSpotifyTrack';
 
 // Users Action Creators
 import {changeCoverPhoto} from '../../actions/users/ChangeCoverPhoto';
@@ -59,9 +58,7 @@ class EditProfileView extends React.Component {
 
   componentDidMount() {
     const {
-      getMostPlayedSpotifyTrack,
       entities: {users},
-      onboarding: {onboarding},
       users: {currentUserID},
     } = this.props;
     const {favoriteTrackID, bio, location, website} = users.byID[currentUserID];
@@ -71,10 +68,6 @@ class EditProfileView extends React.Component {
       tempLocation: location,
       tempWebsite: website,
     });
-
-    if (onboarding && !favoriteTrackID) {
-      getMostPlayedSpotifyTrack(currentUserID);
-    }
   }
 
   componentWillUnmount() {
@@ -424,7 +417,6 @@ EditProfileView.propTypes = {
   onboarding: PropTypes.object.isRequired,
   saveProfile: PropTypes.func.isRequired,
   changeFavoriteTrack: PropTypes.func.isRequired,
-  getMostPlayedSpotifyTrack: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({albums, artists, entities, onboarding, tracks, users}) {
@@ -443,7 +435,6 @@ function mapDispatchToProps(dispatch) {
     changeCoverPhoto,
     changeFavoriteTrack,
     changeProfilePhoto,
-    getMostPlayedSpotifyTrack,
     saveProfile,
   }, dispatch);
 }
