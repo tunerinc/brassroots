@@ -186,6 +186,37 @@ export function createSession(
       const timeJoined: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
       const {total: contextTotal, ...restOfContext} = context;
 
+      session = updateObject(session, {
+        mode,
+        id: newSessionKey,
+        currentTrackID: track.id,
+        currentQueueID: newTrackID,
+        ownerID: user.id,
+        distance: 0,
+        totalListeners: 1,
+      });
+
+      dispatch(actions.success());
+      dispatch(updateQueue({context}));
+      dispatch(
+        addEntities(
+          {
+            sessions: {[session.id]: session},
+            users: {[user.id]: {...user, currentSessionID: session.id}},
+          },
+        ),
+      );
+
+      dispatch(updateSessions({currentSessionID: session.id}));
+      dispatch(
+        updatePlayer(
+          {
+            currentQueueID: session.currentQueueID,
+            currentTrackID: session.currentTrackID,
+          },
+        ),
+      );
+
       batch.update(userRef, {currentSession: newSessionKey, online: true});
       batch.set(userRef.collection('sessions').doc(newSessionKey), {id: newSessionKey, timeJoined});
       batch.set(
@@ -262,38 +293,7 @@ export function createSession(
         },
       );
 
-      session = updateObject(session, {
-        mode,
-        id: newSessionKey,
-        currentTrackID: track.id,
-        currentQueueID: newTrackID,
-        ownerID: user.id,
-        distance: 0,
-        totalListeners: 1,
-      });
-
       await batch.commit();
-      dispatch(actions.success());
-      dispatch(updateSessions({currentSessionID: session.id}));
-      dispatch(updateQueue({context}));
-      dispatch(
-        updatePlayer(
-          {
-            currentQueueID: session.currentQueueID,
-            currentTrackID: session.currentTrackID,
-          },
-        ),
-      );
-
-
-      dispatch(
-        addEntities(
-          {
-            sessions: {[session.id]: session},
-            users: {[user.id]: {...user, currentSessionID: session.id}},
-          },
-        ),
-      );
 
       dispatch(
         // $FlowFixMe
