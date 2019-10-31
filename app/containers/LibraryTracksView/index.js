@@ -65,16 +65,19 @@ class LibraryTracksView extends React.Component {
     this.renderModalContent = this.renderModalContent.bind(this);
     this.handleChangeFavoriteTrack = this.handleChangeFavoriteTrack.bind(this);
 
-    this._onEndReached = debounce(this.onEndReached, 0);
+    this._onEndReached = debounce(this.onEndReached, 50);
   }
 
   componentDidMount() {
     const {getTracks, tracks: {userTracks}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      this.closeModal();
-      if (!userTracks.length) getTracks(true, 0);
-    });
+    this.closeModal();
+
+    if (!userTracks.length) {
+      setTimeout(() => {
+        getTracks(true, 0);
+      }, 100);
+    }
   }
 
   openModal = selectedTrack => () => this.setState({selectedTrack, isTrackMenuOpen: true});
@@ -373,21 +376,20 @@ class LibraryTracksView extends React.Component {
         {(userTracks.length === 0 || !userTracks.length) &&
           <View style={styles.scrollContainer}>
             <View style={styles.scrollWrap}>
-              {(!fetching.includes('tracks') && !trackError) && <Text>Nothing to show</Text>}
               {(!fetching.includes('tracks') && trackError) && <Text>There was an error.</Text>}
-              {fetching.includes('tracks') &&
+              {(fetching.includes('tracks') || (!fetching.includes('tracks') && !trackError)) &&
                 <View>
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
-                <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
+                  <LoadingTrack />
                 </View>
               }
             </View>
@@ -398,11 +400,11 @@ class LibraryTracksView extends React.Component {
           backdropColor={"#1b1b1e"}
           backdropOpacity={0.7}
           animationIn="slideInUp"
-          animationInTiming={200}
-          backdropTransitionInTiming={200}
+          animationInTiming={230}
+          backdropTransitionInTiming={230}
           animationOut="slideOutDown"
-          animationOutTiming={200}
-          backdropTransitionOutTiming={200}
+          animationOutTiming={230}
+          backdropTransitionOutTiming={230}
           hideModalContentWhileAnimating
           useNativeDriver={true}
           style={styles.modal}
