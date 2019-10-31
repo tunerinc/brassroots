@@ -111,7 +111,6 @@ export function createProfile(
         {
           ...newUserProfile,
           currentSession: null,
-          favoriteTrackID: null,
           online: false,
           bio: null,
           location: null,
