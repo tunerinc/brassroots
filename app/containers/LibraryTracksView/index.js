@@ -10,7 +10,6 @@ import {
   Easing,
   VirtualizedList,
   ActivityIndicator,
-  InteractionManager,
   TouchableOpacity,
 } from "react-native";
 import {bindActionCreators} from "redux";
