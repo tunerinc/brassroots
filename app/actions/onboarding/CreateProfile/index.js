@@ -11,6 +11,8 @@
 
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
+import getUserTopTrack from '../../../utils/spotifyAPI/getUserTopTrack';
+import addMusicItems from '../../../utils/addMusicItems';
 import fetchRemoteURL from '../../../utils/fetchRemoteURL';
 import {Actions} from 'react-native-router-flux';
 import {addEntities} from '../../entities/AddEntities';
@@ -18,7 +20,10 @@ import {updateUsers} from '../../users/UpdateUsers';
 import * as actions from './actions';
 import {initialState} from '../../../reducers/settings';
 import {type ThunkAction} from '../../../reducers/onboarding';
-import {type PrivateUser} from '../../../utils/spotifyAPI/types';
+import {
+  type PrivateUser,
+  type FullTrack,
+} from '../../../utils/spotifyAPI/types';
 import {
   type Blob,
   type BRUser,
@@ -57,27 +62,49 @@ export function createProfile(
     const usersRef: FirestoreRef = firestore.collection('users');
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
+    let batch = firestore.batch();
+
     try {
       const user: PrivateUser = spotifyUser ? spotifyUser : await Spotify.getMe();
-      const profileImage: string = user.images.length > 0
+      const topTrack = await getUserTopTrack();
+      const fullTrack: FullTrack = await Spotify.getTrack(topTrack.items[0].id, {});
+      const music = addMusicItems([fullTrack]);
+      const hasImage: boolean = fullTrack.album.images.length !== 0;
+      const coverURL: ?string = hasImage ? fullTrack.album.images[0].url : null;
+      const profileURL: string = user.images.length > 0
         ? user.images[0].url
         : 'https://static1.squarespace.com/static/557d1981e4b097936a86b629/t/558cf487e4b05d368538793a/1435301000191/';
 
-      const blob: Blob = await fetchRemoteURL(profileImage, 'blob');
-      const uploadTask: StorageUploadTask = storage.child(`profileImages/${user.id}`).put(blob);
-      await uploadTask;
-      const url: string = await uploadTask.snapshot.ref.getDownloadURL();
+      const profileBlob: Blob = await fetchRemoteURL(profileURL, 'blob');
+      const coverBlob: ?Blob = typeof coverURL === 'string'
+        ? await fetchRemoteURL(coverURL, 'blob')
+        : null;
+
+      const profileTask: StorageUploadTask = storage.child(`profileImages/${user.id}`)
+        .put(profileBlob);
+      
+      const coverTask: ?StorageUploadTask = coverBlob ? storage.child(`coverImages/${user.id}`)
+        .put(coverBlob) : null;
+
+      await Promise.all([profileTask, ...(coverTask ? [coverTask] : [])]);
+      const profileImage: string = await profileTask.snapshot.ref.getDownloadURL();
+      const coverImage: string = coverTask ? await coverTask.snapshot.ref.getDownloadURL() : '';
       const newUserProfile: BRUser = {
+        profileImage,
+        coverImage,
         id: user.id,
         displayName: user.display_name,
         birthdate: moment(user.birthdate).format('MMM D'),
         country: user.country,
         email: user.email,
-        profileImage: url,
         spotifyAccountStatus: user.product,
+        favoriteTrackID: fullTrack.id,
       };
 
-      let batch = firestore.batch();
+      dispatch(addEntities({...music, users: {[user.id]: newUserProfile}}));
+      dispatch(updateUsers({currentUserID: user.id}));
+      dispatch(actions.success());
+      Actions.createProfile();
 
       batch.set(
         usersRef.doc(user.id),
@@ -86,7 +113,6 @@ export function createProfile(
           currentSession: null,
           favoriteTrackID: null,
           online: false,
-          coverImage: null,
           bio: null,
           location: null,
           website: null,
@@ -134,11 +160,6 @@ export function createProfile(
       );
 
       await batch.commit();
-
-      dispatch(addEntities({users: {[user.id]: newUserProfile}}));
-      dispatch(updateUsers({currentUserID: user.id}));
-      dispatch(actions.success());
-      Actions.createProfile();
     } catch (err) {
       dispatch(actions.failure(err));
     }

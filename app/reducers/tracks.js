@@ -216,9 +216,6 @@ export default function reducer(
       case types.GET_FAVORITE_TRACK_REQUEST:
       case types.GET_FAVORITE_TRACK_SUCCESS:
       case types.GET_FAVORITE_TRACK_FAILURE:
-      case types.GET_MOST_PLAYED_SPOTIFY_TRACK_REQUEST:
-      case types.GET_MOST_PLAYED_SPOTIFY_TRACK_SUCCESS:
-      case types.GET_MOST_PLAYED_SPOTIFY_TRACK_FAILURE:
         return update(state, action, 'favorite');
       case types.GET_MOST_PLAYED_TRACKS_REQUEST:
       case types.GET_MOST_PLAYED_TRACKS_SUCCESS:
