@@ -25,7 +25,6 @@ class LiveSettingsView extends React.Component {
     };
 
     this.onScroll = this.onScroll.bind(this);
-    this.navBack = this.navBack.bind(this);
     this.save = this.save.bind(this);
     this.selectMode = this.selectMode.bind(this);
   }
@@ -37,6 +36,17 @@ class LiveSettingsView extends React.Component {
     } = this.props;
     const {mode: selectedMode} = sessions.byID[sessionID];
     this.setState({selectedMode});
+  }
+
+  componentWillUnmount() {
+    const {selectedMode} = this.state;
+    const {
+      entities: {sessions},
+      sessions: {currentSessionID},
+      users: {currentUserID},
+    } = this.props;
+    const {ownerID, mode} = sessions.byID[currentSessionID];
+    if (ownerID === currentUserID && mode !== selectedMode) this.save();
   }
 
   onScroll({nativeEvent: {contentOffset: {y}}}) {
@@ -57,20 +67,6 @@ class LiveSettingsView extends React.Component {
         easing: Easing.linear,
       }).start()
     }
-  }
-
-  navBack() {
-    const {selectedMode} = this.state;
-    const {
-      entities: {sessions},
-      sessions: {currentSessionID},
-      users: {currentUserID},
-    } = this.props;
-    const {ownerID, mode} = sessions.byID[currentSessionID];
-    
-    Actions.pop();
-
-    if (ownerID === currentUserID && mode !== selectedMode) this.save();
   }
 
   save() {
@@ -95,7 +91,7 @@ class LiveSettingsView extends React.Component {
       <View style={styles.container}>
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
-            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={this.navBack} />
+            <Ionicons name='ios-arrow-back' style={styles.leftIcon} onPress={Actions.pop} />
             <Text style={styles.title}>
               {titleText}
             </Text>
