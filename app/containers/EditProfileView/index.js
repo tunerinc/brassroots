@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 import {Text, TextInput, View, TouchableOpacity, Animated, InteractionManager} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import {Placeholder, PlaceholderMedia, Fade, PlaceholderLine} from 'rn-placeholder';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import isURL from '../../utils/isURL';
@@ -83,6 +83,8 @@ class EditProfileView extends React.Component {
     }
   }
 
+  navToLibrary = () => Actions.root({type: ActionConst.RESET});
+
   handleChangePhoto = type => () => {
     const {changeCoverPhoto, changeProfilePhoto, users: {currentUserID}} = this.props;
 
@@ -101,7 +103,7 @@ class EditProfileView extends React.Component {
 
   handleSaveProfile() {
     const {tempBio, tempLocation, tempWebsite} = this.state;
-    const {saveProfile, onboarding: {onboarding}, users: {currentUserID}} = this.props;
+    const {saveProfile, users: {currentUserID}} = this.props;
 
     saveProfile(
       {
@@ -109,7 +111,6 @@ class EditProfileView extends React.Component {
         location: tempLocation,
         website: tempWebsite,
         id: currentUserID,
-        onboarding: onboarding ? true : null,
       },
     );
   }
@@ -335,7 +336,7 @@ class EditProfileView extends React.Component {
                 || tempWebsite === ''
               )
             ) &&
-              <TouchableOpacity style={styles.rightIcon} onPress={this.handleSaveProfile}>
+              <TouchableOpacity style={styles.rightIcon} onPress={this.navToLibrary}>
                 <Text style={[styles.createText, styles.enabledText]}>create</Text>
               </TouchableOpacity>
             }

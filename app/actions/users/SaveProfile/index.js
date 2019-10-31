@@ -60,8 +60,6 @@ export function saveProfile(
       dispatch(updateOnboarding({onboarding: false}));
       dispatch(addEntities({users: {[user.id]: user}}));
       dispatch(actions.success());
-
-      if (onboarding) Actions.root({type: ActionConst.RESET});
     } catch (err) {
       dispatch(actions.failure(err));
     }
