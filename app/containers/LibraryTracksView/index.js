@@ -226,7 +226,7 @@ class LibraryTracksView extends React.Component {
         );
       }
 
-      setTimeout(Actions.liveSession, 200);
+      Actions.liveSession();
 
       createSession(
         {...user, totalFollowers},
