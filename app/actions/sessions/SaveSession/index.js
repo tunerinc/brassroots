@@ -47,8 +47,8 @@ export function saveSession(
 
     try {
       if (typeof sessionID === 'string') {
-        await sessionRef.update({...updates});
         dispatch(addEntities({sessions: {[sessionID]: {id: sessionID, ...updates}}}));
+        await sessionRef.update({...updates});
       }
 
       dispatch(actions.success());
