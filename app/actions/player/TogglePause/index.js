@@ -94,8 +94,8 @@ export function togglePause(
         await Spotify.playURI(`spotify:track:${session.current}`, 0, session.progress / 1000);
       }
 
-      await batch.commit();
       dispatch(actions.success(paused, session.progress));
+      await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err));
     };
