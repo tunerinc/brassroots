@@ -12,7 +12,6 @@ import {
   VirtualizedList,
   ScrollView,
   RefreshControl,
-  InteractionManager,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -55,6 +54,8 @@ class ExploreTabView extends React.Component {
     this.animatedOpacity = new Animated.Value(0);
     this.animatedIndex = new Animated.Value(-5);
     this.animatedFilterOpacity = new Animated.Value(0);
+
+    this._paginate = debounce(this.paginate, 50);
   }
 
   componentDidMount() {
@@ -66,7 +67,7 @@ class ExploreTabView extends React.Component {
     const timeDiff = moment().diff(lastUpdated, 'minutes', true);
 
     if (timeDiff >= 1 || trendingIDs.length === 0) {
-      InteractionManager.runAfterInteractions(getTrendingSessions);
+      setTimeout(getTrendingSessions, 100);
     }
   }
   
@@ -278,7 +279,7 @@ class ExploreTabView extends React.Component {
             getItemCount={data => data.length}
             removeClippedSubviews={false}
             showsVerticalScrollIndicator={false}
-            onEndReached={this.paginate}
+            onEndReached={this._paginate}
             onEndReachedThreshold={0.7}
             onRefresh={this.refresh}
             refreshing={refreshing}
