@@ -92,7 +92,6 @@ export function getUserQueue(
                 );
 
                 if (!change.doc.metadata.hasPendingWrites) {
-                  dispatch(actions.success([], unsubscribe));
                   dispatch(
                     addEntities(
                       {
@@ -111,6 +110,8 @@ export function getUserQueue(
                       },
                     ),
                   );
+
+                  dispatch(actions.success([], unsubscribe));
 
                   if (queueTrack.isCurrent) {
                     dispatch(removeQueueTrack(queueTrack.id));
