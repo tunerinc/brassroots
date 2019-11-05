@@ -8,6 +8,7 @@
 import * as React from 'react';
 import {View, Text, TouchableOpacity, Easing} from 'react-native';
 import TextTicker from 'react-native-text-ticker';
+import {Placeholder, PlaceholderLine, Fade} from 'rn-placeholder';
 import styles from './styles';
 
 // Icons
@@ -17,11 +18,10 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 type Props = {|
   trackID: string,
-  queueID: string,
   name: string,
   saved: boolean,
   artists: string,
-  displayName: string,
+  displayName: ?string,
   openModal: () => any,
 |};
 
@@ -33,9 +33,9 @@ export default class SessionTrack extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    const {trackID, queueID} = this.props;
-    const {trackID: newTrackID, queueID: newQueueID} = nextProps;
-    return trackID !== newTrackID || queueID !== newQueueID;
+    const {trackID, displayName} = this.props;
+    const {trackID: newTrackID, displayName: oldName} = nextProps;
+    return trackID !== newTrackID || displayName !== oldName;
   }
 
   render() {
@@ -66,9 +66,18 @@ export default class SessionTrack extends React.Component<Props, State> {
               {artists}
             </Text>
           </TextTicker>
-          <Text numberOfLines={1} style={styles.user}>
-            {displayName}
-          </Text>
+          {typeof displayName === 'string' &&
+            <Text numberOfLines={1} style={styles.user}>
+              {displayName}
+            </Text>
+          }
+          {typeof displayName !== 'string' &&
+            <View style={styles.loadWrap}>
+              <Placeholder Animate={Fade}>
+                <PlaceholderLine width={100} style={styles.loadingName} />
+              </Placeholder>
+            </View>
+          }
         </TouchableOpacity>
         {/* <TouchableOpacity style={styles.optionsButton} onPress={openModal} activeOpacity={0.5}>
           <SimpleLineIcons name='options' style={styles.options} />
