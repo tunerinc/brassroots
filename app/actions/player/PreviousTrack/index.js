@@ -148,6 +148,32 @@ export function previousTrack(
         throw new Error('Unable to retrieve tracks from Firestore.');
       }
 
+      await Spotify.playURI(`spotify:track:${prevDoc.data().track.id}`, 0, 0);
+
+      dispatch(
+        addEntities(
+          {
+            sessions: {
+              [session.id]: {
+                id: session.id,
+                currentTrackID: prevDoc.data().track.id,
+                currentQueueID: queueID,
+              },
+            }
+          },
+        ),
+      );
+
+      dispatch(
+        actions.success(
+          queueID,
+          prevDoc.data().track.id,
+          prevDoc.data().track.durationMS,
+          prevDoc.data().prevQueueID,
+          prevDoc.data().prevTrackID,
+        ),
+      );
+
       batch.update(sessionUserRef, {progress: 0, paused: false});
       batch.set(
         sessionPrevRef.doc(current.id),
@@ -202,36 +228,7 @@ export function previousTrack(
 
       batch.delete(sessionQueueRef.doc(current.id));
 
-      await Promise.all(
-        [
-          batch.commit(),
-          Spotify.playURI(`spotify:track:${prevDoc.data().track.id}`, 0, 0),
-        ],
-      );
-
-      dispatch(
-        addEntities(
-          {
-            sessions: {
-              [session.id]: {
-                id: session.id,
-                currentTrackID: prevDoc.data().track.id,
-                currentQueueID: queueID,
-              },
-            }
-          },
-        ),
-      );
-
-      dispatch(
-        actions.success(
-          queueID,
-          prevDoc.data().track.id,
-          prevDoc.data().track.durationMS,
-          prevDoc.data().prevQueueID,
-          prevDoc.data().prevTrackID,
-        ),
-      );
+      await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err));
     }
