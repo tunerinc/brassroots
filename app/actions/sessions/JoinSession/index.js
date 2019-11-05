@@ -142,7 +142,7 @@ export function joinSession(
       if (
         owner
         && current
-        && total
+        && typeof total === 'number'
         && track
         && chatUnsubscribe
         && infoUnsubscribe
@@ -219,6 +219,13 @@ export function joinSession(
       const diff = moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').diff(timeLastPlayed, 'seconds');
       const progress = newSession.progress + (diff * 1000);
 
+      if (newSession.context) dispatch(updateQueue({context: newSession.context}));
+
+      dispatch(updatePlayer({progress}));
+      dispatch(updateSessions({currentSessionID: session.id}));
+      dispatch(actions.success());
+      Actions.liveSession();
+
       batch.update(userRef, {live: true, currentSession: session.id});
       batch.set(userRef.collection('sessions').doc(session.id), {timeJoined, id: session.id});
       batch.set(
@@ -234,13 +241,6 @@ export function joinSession(
       );
 
       await batch.commit();
-
-      if (newSession.context) dispatch(updateQueue({context: newSession.context}));
-
-      dispatch(updatePlayer({progress}));
-      dispatch(updateSessions({currentSessionID: session.id}));
-      dispatch(actions.success());
-      Actions.liveSession();
     } catch (err) {
       dispatch(actions.failure(err));
     }
