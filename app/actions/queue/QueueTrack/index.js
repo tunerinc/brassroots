@@ -132,8 +132,8 @@ export function queueTrack(
         },
       );
 
-      await batch.commit();
       dispatch(actions.success());
+      await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err))
     }
