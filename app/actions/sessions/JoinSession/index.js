@@ -214,7 +214,7 @@ export function joinSession(
       const timeJoined: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
       const timeLastPlayed = newSession.timeLastPlayed
         ? newSession.timeLastPlayed
-        : moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').subtract(10, 'seconds');
+        : moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a');
 
       const diff = moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').diff(timeLastPlayed, 'seconds');
       const progress = newSession.progress + (diff * 1000);
