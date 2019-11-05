@@ -510,13 +510,13 @@ class LiveSessionView extends React.Component {
       !currentSessionID
       || !currentTrackID
       || !sessions.allIDs.includes(currentSessionID)
-      || !queueTracks.allIDs.includes(currentQueueID)
     ) return <View></View>;
 
     const {totalListeners, distance, mode, ownerID} = sessions.byID[currentSessionID];
     const {album, durationMS, name, artists} = tracks.byID[currentTrackID];
-    const {userID} = queueTracks.byID[currentQueueID];
-    const {displayName} = users.byID[userID];
+    const queueTrack = queueTracks.allIDs.includes(currentQueueID)
+      ? queueTracks.byID[currentQueueID]
+      : null;
 
     let listenerTotal = 0;
     let formattedDistance = '';
@@ -579,7 +579,7 @@ class LiveSessionView extends React.Component {
         name={name}
         saved={userTracks.includes(currentTrackID)}
         artists={artists.map(a => a.name).join(', ')}
-        displayName={displayName}
+        displayName={queueTrack ? users.byID[queueTrack.userID].displayName : null}
       />
     );
   };

@@ -46,12 +46,12 @@ type Props = {|
   name: string,
   saved: boolean,
   artists: string,
-  displayName: string,
+  displayName: ?string,
 |};
 
 type State = {||};
 
-export default class SessionHeader extends React.PureComponent<Props, State> {
+export default class SessionHeader extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
   }
@@ -119,7 +119,6 @@ export default class SessionHeader extends React.PureComponent<Props, State> {
         {trackID &&
           <SessionTrack
             trackID={trackID}
-            queueID={currentQueueID}
             name={name}
             saved={saved}
             artists={artists}

@@ -25,6 +25,8 @@ interface Styles {
   user: TextStyleProp,
   optionsButton: ViewStyleProp,
   options: TextStyleProp,
+  loadWrap: ViewStyleProp,
+  loadingName: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -106,6 +108,17 @@ const styles: Styles = StyleSheet.create({
     textAlign: 'right',
     fontSize: 30,
     color: '#fefefe',
+  },
+  loadWrap: {
+    paddingTop: 6,
+    width: 150,
+    height: 22,
+    justifyContent: 'center',
+  },
+  loadingName: {
+    marginTop: 10,
+    height: 16,
+    backgroundColor: '#888',
   },
 });
 
