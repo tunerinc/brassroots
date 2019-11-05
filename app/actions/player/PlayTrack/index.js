@@ -193,6 +193,9 @@ export function playTrack(
         track = updateObject(track, {id: queueID});
       }
 
+      await Spotify.playURI(`spotify:track:${track.trackID}`, 0, 0);
+      dispatch(actions.success(track.id, track.trackID, track.durationMS));
+
       if (
         context
         && context.type === 'user-tracks'
@@ -297,13 +300,7 @@ export function playTrack(
         batch.delete(sessionQueueRef.doc(current.id));
       }
 
-      const promises = [
-        batch.commit(),
-        Spotify.playURI(`spotify:track:${track.trackID}`, 0, 0),
-      ];
-
-      await Promise.all(promises);
-      dispatch(actions.success(track.id, track.trackID, track.durationMS));
+      await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err));
     }
