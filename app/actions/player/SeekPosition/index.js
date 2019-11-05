@@ -54,12 +54,15 @@ export function seekPosition(
     try {
       const seconds: number = parseInt(Math.abs(progress / 1000).toFixed(0));
 
+      await Spotify.seek(seconds);
+
+      dispatch(updatePlayer({progress}));
+      dispatch(actions.success());
+
       batch.update(sessionRef, {timeLastPlayed, progress});
       batch.update(sessionUserRef, {progress});
 
-      await Promise.all([batch.commit(), Spotify.seek(seconds)]);
-      dispatch(updatePlayer({progress}));
-      dispatch(actions.success());
+      await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err));
     }
