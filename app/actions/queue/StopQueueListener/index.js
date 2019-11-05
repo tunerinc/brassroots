@@ -37,7 +37,7 @@ export function stopQueueListener(
     dispatch(actions.request());
 
     try {
-      await unsubscribe();
+      unsubscribe();
       dispatch(actions.success());
     } catch (err) {
       dispatch(actions.failure(err));

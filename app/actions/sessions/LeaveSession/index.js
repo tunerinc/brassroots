@@ -133,9 +133,6 @@ export function leaveSession(
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.request());
-    dispatch(stopSessionInfoListener(session.infoUnsubscribe));
-    // $FlowFixMe
-    dispatch(stopQueueListener(session.queueUnsubscribe));
 
     const firestore: FirestoreInstance = getFirestore();
     const geoRef: FirestoreRef = firestore.collection('geo');
@@ -198,6 +195,10 @@ export function leaveSession(
       batch.update(sessionRef.collection('users').doc(userID), {timeLeft, active: false, paused: true});
       batch.update(userRef, {currentSession: null, online: false});
       batch.update(userRef.collection('sessions').doc(session.id), {timeLeft});
+
+      dispatch(stopSessionInfoListener(session.infoUnsubscribe));
+      // $FlowFixMe
+      dispatch(stopQueueListener(session.queueUnsubscribe));
 
       await batch.commit();
     } catch (err) {
