@@ -63,7 +63,7 @@ export default class SessionFooter extends React.PureComponent<Props, State> {
         </TouchableOpacity>
         {!contextQueue.length !== 0 &&
           <View style={styles.upNext}>
-            <View style={styles.upNextHeading}>
+            {/* <View style={styles.upNextHeading}>
               <Text style={styles.upNextHeadingText} numberOfLines={1}>
                 <Text>From </Text>
                 {(
@@ -92,7 +92,7 @@ export default class SessionFooter extends React.PureComponent<Props, State> {
                   </Text>
                 }
               </Text>
-            </View>
+            </View> */}
             {
               contextQueue
                 .slice(0, 3)
