@@ -11,8 +11,6 @@
 
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
-// import {GeoFirestore} from 'geofirestore';
-// import {addRecentTrack} from '../../tracks/AddRecentTrack';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {removeQueueTrack} from '../../queue/RemoveQueueTrack';
@@ -85,8 +83,6 @@ export function nextTrack(
     const sessionPrevRef: FirestoreDocs = sessionRef.collection('previouslyPlayed');
     const sessionQueueRef: FirestoreDocs = sessionRef.collection('queue');
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(user.id);
-    // const geoRef: FirestoreRef = firestore.collection('geo');
-    // const geoFirestore = new GeoFirestore(geoRef);
     const {totalQueue, totalPlayed, totalUsers, current, coords} = session;
 
     let batch: FirestoreBatch = firestore.batch();
@@ -104,6 +100,19 @@ export function nextTrack(
       if (!currentDoc.exists || !nextDoc.exists) {
         throw new Error('Unable to retrieve tracks from Firestore');
       }
+
+      await Spotify.playURI(`spotify:track:${nextDoc.data().track.id}`, 0, 0);
+
+      dispatch(removeQueueTrack(nextQueueID));
+      dispatch(
+        actions.success(
+          nextQueueID,
+          nextDoc.data().track.id,
+          nextDoc.data().track.durationMS,
+          nextDoc.data().nextQueueID,
+          nextDoc.data().nextTrackID,
+        ),
+      );
 
       batch.update(sessionQueueRef.doc(nextQueueID), {isCurrent: true});
       batch.update(sessionUserRef, {progress: 0, paused: false});
@@ -135,22 +144,7 @@ export function nextTrack(
         },
       );
 
-      const promises = [
-        batch.commit(),
-        Spotify.playURI(`spotify:track:${nextDoc.data().track.id}`, 0, 0),
-      ];
-
-      await Promise.all(promises);
-      dispatch(removeQueueTrack(nextQueueID));
-      dispatch(
-        actions.success(
-          nextQueueID,
-          nextDoc.data().track.id,
-          nextDoc.data().track.durationMS,
-          nextDoc.data().nextQueueID,
-          nextDoc.data().nextTrackID,
-        ),
-      );
+      await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err));
     }
