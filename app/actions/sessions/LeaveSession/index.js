@@ -15,8 +15,6 @@ import Spotify from 'rn-spotify-sdk';
 import * as actions from './actions';
 import {addEntities} from '../../entities/AddEntities';
 import {stopSessionInfoListener} from '../StopSessionInfoListener';
-import {resetChat} from '../../chat/ResetChat';
-import {stopChatListener} from '../../chat/StopChatListener';
 import {resetPlayer} from '../../player/ResetPlayer';
 import {resetQueue} from '../../queue/ResetQueue';
 import {stopQueueListener} from '../../queue/StopQueueListener';
@@ -135,11 +133,9 @@ export function leaveSession(
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.request());
-    // dispatch(stopChatListener(session.chatUnsubscribe));
     dispatch(stopSessionInfoListener(session.infoUnsubscribe));
     // $FlowFixMe
     dispatch(stopQueueListener(session.queueUnsubscribe));
-    // dispatch(addRecentTrack(userID, session.track));
 
     const firestore: FirestoreInstance = getFirestore();
     const geoRef: FirestoreRef = firestore.collection('geo');
@@ -150,32 +146,7 @@ export function leaveSession(
     let batch: FirestoreBatch = firestore.batch();
 
     try {
-      if (owner.id === userID) {
-        if (session.total === 1) {
-          batch.update(sessionRef, {live: false, "totals.listeners": 0, paused: true});
-        } else {
-          const sessionUsers: FirestoreDocs = await sessionRef.collection('users').where('active', '==', true).get();
-          const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random()*sessionUsers.docs.length)];
-  
-          batch.update(
-            sessionRef,
-            {
-              "totals.listeners": session.total - 1,
-              "owner.id": newOwnerDoc.data().id,
-              "owner.name": newOwnerDoc.data().displayName,
-              "owner.image": newOwnerDoc.data().profileImage,
-            }
-          );
-        }
-      } else {
-        batch.update(sessionRef, {'totals.listeners': session.total - 1});
-      }
-
       const timeLeft: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
-
-      batch.update(sessionRef.collection('users').doc(userID), {timeLeft, active: false, paused: true});
-      batch.update(userRef, {currentSession: null, online: false});
-      batch.update(userRef.collection('sessions').doc(session.id), {timeLeft});
 
       await Spotify.setPlaying(false);
 
@@ -200,11 +171,35 @@ export function leaveSession(
       );
 
       dispatch(actions.success(owner.id === userID));
-
-      await batch.commit();
-      dispatch(resetChat());
       dispatch(resetPlayer());
       dispatch(resetQueue());
+
+      if (owner.id === userID) {
+        if (session.total === 1) {
+          batch.update(sessionRef, {live: false, "totals.listeners": 0, paused: true});
+        } else {
+          const sessionUsers: FirestoreDocs = await sessionRef.collection('users').where('active', '==', true).get();
+          const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random()*sessionUsers.docs.length)];
+  
+          batch.update(
+            sessionRef,
+            {
+              "totals.listeners": session.total - 1,
+              "owner.id": newOwnerDoc.data().id,
+              "owner.name": newOwnerDoc.data().displayName,
+              "owner.image": newOwnerDoc.data().profileImage,
+            }
+          );
+        }
+      } else {
+        batch.update(sessionRef, {'totals.listeners': session.total - 1});
+      }
+
+      batch.update(sessionRef.collection('users').doc(userID), {timeLeft, active: false, paused: true});
+      batch.update(userRef, {currentSession: null, online: false});
+      batch.update(userRef.collection('sessions').doc(session.id), {timeLeft});
+
+      await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err));
     }
