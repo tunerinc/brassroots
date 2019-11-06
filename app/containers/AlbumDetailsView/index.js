@@ -2,20 +2,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
-import styles from './styles';
 import debounce from "lodash.debounce";
+
+// Styles
+import styles from './styles';
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -54,34 +48,32 @@ class AlbumDetailsView extends React.Component {
       entities: {albums, artists},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      const album = albums.byID[albumToView];
-      const artistsToFetch = album.artists
-        .map(a => {
-          const {small, medium, large} = artists.byID[a.id];
-          const fetchSmall = typeof small !== 'string' || small === '';
-          const fetchMedium = typeof medium !== 'string' || medium === '';
-          const fetchLarge = typeof large !== 'string' || large === '';
-          if (fetchSmall && fetchMedium && fetchLarge) return a.id;
-        })
-        .filter(id => typeof id === 'string');
+    const album = albums.byID[albumToView];
+    const artistsToFetch = album.artists
+      .map(a => {
+        const {small, medium, large} = artists.byID[a.id];
+        const fetchSmall = typeof small !== 'string' || small === '';
+        const fetchMedium = typeof medium !== 'string' || medium === '';
+        const fetchLarge = typeof large !== 'string' || large === '';
+        if (fetchSmall && fetchMedium && fetchLarge) return a.id;
+      })
+      .filter(id => typeof id === 'string');
 
-      if (artistsToFetch.length !== 0) {
-        getArtistImages(artistsToFetch);
-      }
+    if (artistsToFetch.length !== 0) {
+      setTimeout(() => getArtistImages(artistsToFetch), 100);
+    }
 
-      if (album.topListeners.length === 0) {
-        // getAlbumTopListeners(albumToView);
-      }
+    if (album.topListeners.length === 0) {
+      // getAlbumTopListeners(albumToView);
+    }
 
-      if (album.topPlaylists.length === 0) {
-        // getAlbumTopPlaylists(albumToView);
-      }
+    if (album.topPlaylists.length === 0) {
+      // getAlbumTopPlaylists(albumToView);
+    }
 
-      if (album.topTracks.length === 0) {
-        // getAlbumTopTracks(albumToView);
-      }
-    });
+    if (album.topTracks.length === 0) {
+      // getAlbumTopTracks(albumToView);
+    }
   }
 
   renderPerson = (type) => ({item, index}) => {
