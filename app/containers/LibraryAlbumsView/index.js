@@ -46,7 +46,7 @@ class LibraryAlbumsView extends React.Component {
     const timeDiff = moment().diff(last, 'minutes', true);
 
     if (!userAlbums.length || timeDiff >= 1) {
-      setTimeout(() => getAlbums(false, 0), 100);
+      setTimeout(() => getAlbums(true, 0), 100);
     }
   }
 

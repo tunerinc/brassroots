@@ -237,9 +237,7 @@ function update(
   const newUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
   const updates: State = Array.isArray(fetching) && Array.isArray(userAlbums)
     ? {
-      lastUpdated: Array.isArray(action.albums)
-        ? newUpdated
-        : oldUpdated,
+      lastUpdated: Array.isArray(action.albums) ? newUpdated : oldUpdated,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: action.refreshing && !action.replace ? action.refreshing : false,
       error: haveError ? action.error : null,

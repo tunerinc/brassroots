@@ -177,13 +177,14 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {totalUserTracks, fetching, userTracks, refreshing} = state;
+  const {totalUserTracks, fetching, userTracks, refreshing, lastUpdated: oldUpdated} = state;
   const isAddRecent: boolean = typeof action.type === 'string' && action.type.includes('ADD_RECENT');
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const newUpdated: string = moment().format("ddd, MMM D, YYYY, h:mm:ss a");
   const updates: State = Array.isArray(fetching) && Array.isArray(userTracks)
     ? {
-      lastUpdated,
+      lastUpdated: Array.isArray(action.tracks) ? newUpdated : oldUpdated,
       addingRecent: add && isAddRecent ? true : false,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: action.refreshing && !action.replace ? action.refreshing : false,

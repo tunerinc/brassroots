@@ -320,9 +320,7 @@ function update(
   )
     ? {
       ...(action.updates ? action.updates : {}),
-      lastUpdated: Array.isArray(action.playlists)
-        ? newUpdated
-        : oldUpdated,
+      lastUpdated: Array.isArray(action.playlists) ? newUpdated : oldUpdated,
       fetching: add && type ? oldFetch.concat(type) : type ? oldFetch.filter(t => t !== type) : oldFetch,
       error: haveError ? action.error : null,
       totalUserPlaylists: typeof action.total === 'number' ? action.total : totalUserPlaylists,

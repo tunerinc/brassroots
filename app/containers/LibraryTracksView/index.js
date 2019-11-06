@@ -17,6 +17,9 @@ import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
 import Modal from "react-native-modal";
 import debounce from "lodash.debounce";
+import moment from 'moment';
+
+// Styles
 import styles from "./styles";
 
 // Components
@@ -68,14 +71,14 @@ class LibraryTracksView extends React.Component {
   }
 
   componentDidMount() {
-    const {getTracks, tracks: {userTracks}} = this.props;
+    const {getTracks, tracks: {userTracks, lastUpdated}} = this.props;
+    const last = moment(lastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a');
+    const timeDiff = moment().diff(last, 'minutes', true);
 
     this.closeModal();
 
-    if (!userTracks.length) {
-      setTimeout(() => {
-        getTracks(true, 0);
-      }, 100);
+    if (!userTracks.length || timeDiff >= 1) {
+      setTimeout(() => getTracks(true, 0), 100);
     }
   }
 
@@ -364,34 +367,32 @@ class LibraryTracksView extends React.Component {
             removeClippedSubviews={false}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
             ListEmptyComponent={<Text>Nothing to show</Text>}
             refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.5}
+            showsVerticalScrollIndicator={false}
           />
         }
         {(userTracks.length === 0 || !userTracks.length) &&
-          <View style={styles.scrollContainer}>
-            <View style={styles.scrollWrap}>
-              {(!fetching.includes('tracks') && trackError) && <Text>There was an error.</Text>}
-              {(fetching.includes('tracks') || (!fetching.includes('tracks') && !trackError)) &&
-                <View>
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                  <LoadingTrack />
-                </View>
-              }
-            </View>
+          <View style={styles.tracksWrap}>
+            {(!fetching.includes('tracks') && trackError) && <Text>There was an error.</Text>}
+            {(fetching.includes('tracks') || (!fetching.includes('tracks') && !trackError)) &&
+              <View>
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+                <LoadingTrack />
+              </View>
+            }
           </View>
         }
         <Modal
