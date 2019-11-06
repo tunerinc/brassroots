@@ -46,13 +46,9 @@ export function pausePlayer(
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(userID);
 
     try {
-      const promises = [
-        Spotify.setPlaying(false),
-        sessionUserRef.update({progress, paused: true}),
-      ];
-      
-      await Promise.all(promises);
+      await  Spotify.setPlaying(false);
       dispatch(actions.success());
+      await  sessionUserRef.update({progress, paused: true});
     } catch (err) {
       dispatch(actions.failure(err));
     }
