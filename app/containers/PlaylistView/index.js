@@ -10,17 +10,19 @@ import {
   VirtualizedList,
   Dimensions,
   StyleSheet,
-  InteractionManager,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
-import debounce from "lodash.debounce";
-import FastImage from 'react-native-fast-image';
-import Animated from 'react-native-reanimated';
 import {onScroll} from 'react-native-redash';
+import Animated from 'react-native-reanimated';
+import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
+import debounce from "lodash.debounce";
+import moment from 'moment';
 import Modal from 'react-native-modal';
+
+// Styles
 import styles from './styles';
 
 // Components
@@ -92,16 +94,18 @@ class PlaylistView extends React.Component {
   componentDidMount() {
     const {getPlaylistTracks, playlistToView, entities: {playlists}} = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      this.closeModal();
+    this.closeModal();
 
-      if (
-        playlistToView
-        && !playlists.byID[playlistToView].tracks.length
-      ) {
-        getPlaylistTracks(playlistToView);
+    if (playlistToView) {
+      const {tracks, lastUpdated} = playlists.byID[playlistToView]
+      const last = moment(lastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a');
+      const timeDiff = moment().diff(last, 'minutes', true);
+
+      if (!tracks.length || timeDiff >= 1) {
+        const refreshing = tracks.length > 0;
+        setTimeout(() => getPlaylistTracks(playlistToView, refreshing), 100);
       }
-    });
+    }
   }
 
   onEndReached() {
@@ -466,6 +470,16 @@ class PlaylistView extends React.Component {
     );
   }
 
+  renderEmpty() {
+    return (
+      <View style={{backgroundColor: '#1b1b1e'}}>
+        <LoadingTrack type='cover' />
+        <LoadingTrack type='cover' />
+        <LoadingTrack type='cover' />
+      </View>
+    );
+  }
+
   render() {
     const {isTrackMenuOpen, isPlaylistMenuOpen, selectedTrack, y} = this.state;
     const shadowOpacity = interpolate(y, {
@@ -521,15 +535,16 @@ class PlaylistView extends React.Component {
           getItemCount={data => data.length}
           removeClippedSubviews={false}
           scrollEventThrottle={1}
-          showsVerticalScrollIndicator={false}
           ListHeaderComponent={this.renderHeader({mode, members, currentUserID, tracks, y})}
           ListFooterComponent={this.renderFooter}
+          ListEmptyComponent={this.renderEmpty}
           bounces={true}
           refreshing={refreshing.includes('tracks')}
           onRefresh={this.handleRefresh}
           onEndReached={this._onEndReached}
           onEndReachedThreshold={0.5}
           onScroll={onScroll({y})}
+          showsVerticalScrollIndicator={false}
         />
         <Animated.View style={[styles.header, {shadowOpacity}]}>
           <View style={styles.background}>
