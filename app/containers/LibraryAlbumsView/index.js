@@ -3,19 +3,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import FastImage from 'react-native-fast-image';
-import {
-  Text,
-  View,
-  ActivityIndicator,
-  Animated,
-  Easing,
-  VirtualizedList,
-  InteractionManager,
-} from "react-native";
+import {Text, View, ActivityIndicator, Animated, Easing, VirtualizedList} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
 import debounce from "lodash.debounce";
+import moment from 'moment';
 
 // Styles
 import styles from "./styles";
@@ -48,11 +41,13 @@ class LibraryAlbumsView extends React.Component {
   }
 
   componentDidMount() {
-    const {getAlbums, albums: {userAlbums}} = this.props;
+    const {getAlbums, albums: {userAlbums, lastUpdated}} = this.props;
+    const last = moment(lastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a');
+    const timeDiff = moment().diff(last, 'minutes', true);
 
-    InteractionManager.runAfterInteractions(() => {
-      if (!userAlbums.length) getAlbums(false, 0);
-    });
+    if (!userAlbums.length || timeDiff >= 1) {
+      setTimeout(() => getAlbums(false, 0), 100);
+    }
   }
 
   onEndReached() {
@@ -150,21 +145,19 @@ class LibraryAlbumsView extends React.Component {
             removeClippedSubviews={false}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
             ListEmptyComponent={<Text>Nothing to show</Text>}
             refreshing={refreshing}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.5}
+            showsVerticalScrollIndicator={false}
           />
         }
         {(userAlbums.length === 0 || !userAlbums.length) &&
-          <View style={styles.scrollContainer}>
-            <View style={styles.scrollWrap}>
-              {(!fetching.includes('albums') && !albumError) && <Text>Nothing to show</Text>}
-              {(!fetching.includes('albums') && albumError) && <Text>There was an error.</Text>}
-              {fetching.includes('albums') &&
-                <View>
+          <View style={styles.albumsWrap}>
+            {(!fetching.includes('albums') && albumError) && <Text>There was an error.</Text>}
+            {fetching.includes('albums' || (!fetching.includes('albums') && !albumError))  &&
+              <View>
                 <LoadingAlbum />
                 <LoadingAlbum />
                 <LoadingAlbum />
@@ -176,9 +169,8 @@ class LibraryAlbumsView extends React.Component {
                 <LoadingAlbum />
                 <LoadingAlbum />
                 <LoadingAlbum />
-                </View>
-              }
-            </View>
+              </View>
+            }
           </View>
         }
       </View>

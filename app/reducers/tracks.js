@@ -188,7 +188,7 @@ function update(
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: action.refreshing && !action.replace ? action.refreshing : false,
       error: haveError ? action.error : null,
-      totalUserTracks: action.total ? action.total : totalUserTracks,
+      totalUserTracks: typeof action.total === 'number' ? action.total : totalUserTracks,
       userTracks: (Array.isArray(action.tracks) && (refreshing || action.replace))
         ? [...action.tracks]
         : Array.isArray(action.tracks)

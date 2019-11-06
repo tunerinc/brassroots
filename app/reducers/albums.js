@@ -231,12 +231,15 @@ function update(
   action: Action,
   type?: string,
 ): State {
-  const {totalUserAlbums, fetching, userAlbums, refreshing} = state;
+  const {totalUserAlbums, fetching, userAlbums, refreshing, lastUpdated: oldUpdated} = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const newUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
   const updates: State = Array.isArray(fetching) && Array.isArray(userAlbums)
     ? {
-      lastUpdated,
+      lastUpdated: Array.isArray(action.albums)
+        ? newUpdated
+        : oldUpdated,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: action.refreshing && !action.replace ? action.refreshing : false,
       error: haveError ? action.error : null,

@@ -179,7 +179,7 @@ export function message(
 ): Message {
   switch (action.type) {
     case entitiesTypes.ADD_ENTITIES:
-      return updateObject(state, {...(action.item ? action.item : {})});
+      return updateObject(state, {...(typeof action.item === 'object' ? action.item : {})});
     default:
       return state;
   }

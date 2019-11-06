@@ -17,6 +17,8 @@ import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import debounce from "lodash.debounce";
 import moment from 'moment';
+
+// Styles
 import styles from './styles';
 
 // Components
