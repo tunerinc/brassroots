@@ -248,12 +248,13 @@ function addOrUpdatePlaylist(
   state: Playlist,
   action: Action,
 ): Playlist {
-  const {members, tracks} = state;
+  const {members, tracks, lastUpdated: oldUpdated} = state;
   const {item, refreshing} = action;
+  const newUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
   const updates: Playlist = item && Array.isArray(members) && Array.isArray(tracks)
     ? {
       ...item,
-      lastUpdated,
+      lastUpdated: item.tracks ? newUpdated: oldUpdated,
       members: item.members && refreshing
         ? [...item.members]
         : item.members
