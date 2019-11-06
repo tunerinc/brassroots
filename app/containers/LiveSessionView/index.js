@@ -252,28 +252,31 @@ class LiveSessionView extends React.Component {
     const track = tracks.byID[currentTrackID];
     const owner = users.byID[sessions.byID[currentSessionID].ownerID];
 
-    this.setState({
+    this.setState(
+      {
       fetchedChat: false,
       fetchedInfo: false,
       fetchedQueue: false,
-    });
-
-    Actions.pop();
-
-    leaveSession(
-      currentUserID,
-      {
-        infoUnsubscribe,
-        queueUnsubscribe,
-        track,
-        id: currentSessionID,
-        total: sessions.byID[currentSessionID].totalListeners,
-        chatUnsubscribe: () => console.log('chat'),
       },
-      {
-        id: owner.id,
-        name: owner.displayName,
-        image: owner.profileImage,
+      () => {
+        Actions.pop();
+
+        leaveSession(
+          currentUserID,
+          {
+            infoUnsubscribe,
+            queueUnsubscribe,
+            track,
+            id: currentSessionID,
+            total: sessions.byID[currentSessionID].totalListeners,
+            chatUnsubscribe: () => console.log('chat'),
+          },
+          {
+            id: owner.id,
+            name: owner.displayName,
+            image: owner.profileImage,
+          },
+        );
       },
     );
   }

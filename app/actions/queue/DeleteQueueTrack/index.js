@@ -62,13 +62,23 @@ export function deleteQueueTrack(
       const {prevQueueID, prevTrackID, nextQueueID, nextTrackID, likes} = queueTrack.data();
       const prevDoc: FirestoreDoc = queueRef.doc(prevQueueID);
 
+      if (session.total === 1) {
+        dispatch(updatePlayer({nextQueueID: null, nextTrackID: null}));
+      }
+
       batch.update(prevDoc, {
         nextQueueID: nextQueueID ? nextQueueID : null,
         nextTrackID: nextTrackID ? nextTrackID : null,
       });
 
-      if (session.total === 1) {
-        dispatch(updatePlayer({nextQueueID: null, nextTrackID: null}));
+      if (nextQueueID && prevQueueID) {
+        batch.update(
+          queueRef.doc(nextQueueID),
+          {
+            prevQueueID,
+            prevTrackID,
+          },
+        );
       }
 
       likes.forEach(userID => {
