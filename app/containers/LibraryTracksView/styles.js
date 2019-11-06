@@ -17,7 +17,7 @@ interface Styles {
   title: TextStyleProp,
   rightIcon: ViewStyleProp,
   scrollContainer: ViewStyleProp,
-  scrollWrap: ViewStyleProp,
+  tracksWrap: ViewStyleProp,
   shuffleButton: ViewStyleProp,
   shuffleButtonText: TextStyleProp,
   modal: ViewStyleProp,
@@ -85,10 +85,11 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#1b1b1e',
     marginTop: 65,
   },
-  scrollWrap: {
+  tracksWrap: {
     flex: 1,
     zIndex: -1,
     backgroundColor: 'transparent',
+    marginTop: 65,
   },
   shuffleButton: {
     padding: 3,

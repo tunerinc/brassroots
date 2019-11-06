@@ -21,7 +21,7 @@ interface Styles {
   title: TextStyleProp,
   rightIcon: ViewStyleProp,
   scrollContainer: ViewStyleProp,
-  scrollWrap: ViewStyleProp,
+  albumsWrap: ViewStyleProp,
   footer: ViewStyleProp,
   loadingGif: ImageStyleProp,
 };
@@ -84,10 +84,11 @@ const styles: Styles = StyleSheet.create({
     backgroundColor: '#1b1b1e',
     marginTop: 65,
   },
-  scrollWrap: {
+  albumsWrap: {
     flex: 1,
     zIndex: -1,
     backgroundColor: 'transparent',
+    marginTop: 65,
   },
   footer: {
     justifyContent: 'center',
