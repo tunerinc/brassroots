@@ -304,6 +304,7 @@ function update(
 ): State {
   const {
     totalUserPlaylists,
+    lastUpdated: oldUpdated,
     fetching: oldFetch,
     userPlaylists: oldPlaylists,
     refreshing: oldRefresh,
@@ -311,6 +312,7 @@ function update(
   } = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  const newUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
   const updates: State = (
     Array.isArray(oldRefresh)
     && Array.isArray(oldFetch)
@@ -318,7 +320,9 @@ function update(
   )
     ? {
       ...(action.updates ? action.updates : {}),
-      lastUpdated,
+      lastUpdated: Array.isArray(action.playlists)
+        ? newUpdated
+        : oldUpdated,
       fetching: add && type ? oldFetch.concat(type) : type ? oldFetch.filter(t => t !== type) : oldFetch,
       error: haveError ? action.error : null,
       totalUserPlaylists: action.total ? action.total : totalUserPlaylists,
