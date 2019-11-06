@@ -75,8 +75,8 @@ export function toggleTrackLike(
         ),
       ];
       
-      await Promise.all(promises);
       dispatch(actions.success(queueID));
+      await Promise.all(promises);
     } catch (err) {
       dispatch(actions.failure(queueID, err));
     }
