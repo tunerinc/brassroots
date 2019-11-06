@@ -48,13 +48,9 @@ export function startPlayer(
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(userID);
 
     try {
-      const promises = [
-        Spotify.playURI(`spotify:track:${trackID}`, 0, position),
-        sessionUserRef.update({paused: false}),
-      ];
-      
-      await Promise.all(promises);
+      await Spotify.playURI(`spotify:track:${trackID}`, 0, position);
       dispatch(actions.success());
+      await sessionUserRef.update({paused: false});
     } catch (err) {
       dispatch(actions.failure(err));
     }
