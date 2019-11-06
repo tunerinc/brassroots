@@ -11,12 +11,12 @@ import {
   Animated,
   Easing,
   VirtualizedList,
-  InteractionManager,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import debounce from "lodash.debounce";
+import moment from 'moment';
 import styles from './styles';
 
 // Components
@@ -42,17 +42,22 @@ class LibraryPlaylistsView extends React.Component {
     this.renderFooter = this.renderFooter.bind(this);
     this.onEndReached = this.onEndReached.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
-    this.renderCreateButton = this.renderCreateButton.bind(this);
 
     this._onEndReached = debounce(this.onEndReached, 0);
   }
 
   componentDidMount() {
-    const {getPlaylists, playlists: {userPlaylists}, users: {currentUserID}} = this.props;
+    const {
+      getPlaylists,
+      playlists: {userPlaylists, lastUpdated},
+      users: {currentUserID},
+    } = this.props;
+    const last = moment(lastUpdated, 'ddd, MMM D, YYYY, h:mm:ss a');
+    const timeDiff = moment().diff(last, 'minutes', true);
 
-    InteractionManager.runAfterInteractions(() => {
-      if (!userPlaylists.length) getPlaylists(currentUserID, true, 0);
-    });
+    if (!userPlaylists.length || timeDiff >= 1) {
+      setTimeout(() => getPlaylists(currentUserID, true, 0), 100);
+    }
   }
 
   navToPlaylist = (dest, playlistID) => () => {
@@ -185,13 +190,13 @@ class LibraryPlaylistsView extends React.Component {
             removeClippedSubviews={false}
             onScroll={this.onScroll}
             scrollEventThrottle={16}
-            // ListHeaderComponent={this.renderCreateButton}
             ListFooterComponent={this.renderFooter}
             ListEmptyComponent={<Text>Nothing to show</Text>}
             refreshing={refreshing.includes('playlists')}
             onRefresh={this.handleRefresh}
             onEndReached={this._onEndReached}
             onEndReachedThreshold={0.5}
+            showsVerticalScrollIndicator={false}
           />
         }
         {(userPlaylists.length === 0 || !userPlaylists.length) &&
@@ -199,7 +204,6 @@ class LibraryPlaylistsView extends React.Component {
             {(!fetching.includes('playlists') && playlistError) && <Text>There was an error.</Text>}
             {fetching.includes('playlists' || (!fetching.includes('playlists') && !playlistError))  &&
               <View>
-                {/* {this.renderCreateButton()} */}
                 <LoadingPlaylist />
                 <LoadingPlaylist />
                 <LoadingPlaylist />
