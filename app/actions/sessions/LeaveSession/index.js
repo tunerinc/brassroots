@@ -11,8 +11,8 @@
 
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
-// import GeoFirestore from 'geofirestore';
 import * as actions from './actions';
+import {stopChatListener} from '../../chat/StopChatListener';
 import {addEntities} from '../../entities/AddEntities';
 import {stopSessionInfoListener} from '../StopSessionInfoListener';
 import {resetPlayer} from '../../player/ResetPlayer';
@@ -138,7 +138,6 @@ export function leaveSession(
     const geoRef: FirestoreRef = firestore.collection('geo');
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
     const userRef: FirestoreDoc = firestore.collection('users').doc(userID);
-    // const geoFirestore = new GeoFirestore(geoRef);
 
     let batch: FirestoreBatch = firestore.batch();
 
@@ -199,6 +198,7 @@ export function leaveSession(
       dispatch(stopSessionInfoListener(session.infoUnsubscribe));
       // $FlowFixMe
       dispatch(stopQueueListener(session.queueUnsubscribe));
+      // dispatch(stopChatListener(session.chatUnsubscribe));
 
       await batch.commit();
     } catch (err) {
