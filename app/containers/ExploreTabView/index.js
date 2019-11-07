@@ -7,8 +7,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Animated,
-  Easing,
   VirtualizedList,
   ScrollView,
   RefreshControl,
@@ -16,6 +14,8 @@ import {
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import {onScroll} from 'react-native-redash';
+import Animated from 'react-native-reanimated';
 import moment from 'moment';
 import debounce from "lodash.debounce";
 import Modal from 'react-native-modal';
@@ -30,6 +30,9 @@ import {getTrendingSessions} from '../../actions/sessions/GetTrendingSessions';
 import {joinSession} from '../../actions/sessions/JoinSession';
 import {paginateTrendingSessions} from '../../actions/sessions/PaginateTrendingSessions';
 
+const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
+const {Value, interpolate, Extrapolate} = Animated;
+
 class ExploreTabView extends React.Component {
   constructor(props) {
     super(props);
@@ -37,10 +40,9 @@ class ExploreTabView extends React.Component {
     this.state = {
       selectedSession: null,
       sessionModalOpen: false,
-      shadowOpacity: new Animated.Value(0),
+      y: new Value(0),
     };
 
-    this.onScroll = this.onScroll.bind(this);
     this.renderSessionModal = this.renderSessionModal.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -68,26 +70,6 @@ class ExploreTabView extends React.Component {
 
     if (timeDiff >= 1 || trendingIDs.length === 0) {
       setTimeout(getTrendingSessions, 100);
-    }
-  }
-  
-  onScroll({nativeEvent: {contentOffset: {y}}}) {
-    const {shadowOpacity} = this.state;
-
-    if (y > 0) {
-      if (shadowOpacity != 0.9) {
-        Animated.timing(shadowOpacity, {
-          toValue: 0.9,
-          duration: 75,
-          easing: Easing.linear,
-        }).start();
-      };
-    } else {
-      Animated.timing(shadowOpacity, {
-        toValue: 0,
-        duration: 75,
-        easing: Easing.linear,
-      }).start()
     }
   }
 
@@ -246,7 +228,13 @@ class ExploreTabView extends React.Component {
   }
 
   render() {
-    const {sessionModalOpen, shadowOpacity} = this.state;
+    const {sessionModalOpen, y} = this.state;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [-1, 20],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
+
     const {
       users: {error: userError},
       sessions: {
@@ -267,9 +255,9 @@ class ExploreTabView extends React.Component {
           </View>
         </Animated.View>
         {trendingIDs.length !== 0 &&
-          <VirtualizedList
+          <AnimatedVirtualizedList
             style={styles.scrollContainer}
-            onScroll={this.onScroll}
+            onScroll={onScroll({y})}
             scrollEventThrottle={16}
             data={trendingIDs}
             renderItem={this.renderSession}

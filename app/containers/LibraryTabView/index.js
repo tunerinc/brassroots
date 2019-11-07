@@ -6,7 +6,14 @@ import {Text, View, TouchableOpacity, ScrollView, Animated, Easing, FlatList} fr
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
+import {onScroll} from 'react-native-redash';
+import Reanimated from 'react-native-reanimated';
 import Modal from "react-native-modal";
+
+// Styles
+import styles from "./styles";
+
+// Components
 import AddToQueueDialog from "../../components/AddToQueueDialog";
 import PlaylistCard from "../../components/PlaylistCard";
 import LoadingPlaylist from "../../components/LoadingPlaylist";
@@ -14,7 +21,6 @@ import TrackCard from "../../components/TrackCard";
 import LoadingTrack from "../../components/LoadingTrack";
 import TrackModal from "../../components/TrackModal";
 import MusicSection from '../../components/MusicSection';
-import styles from "./styles";
 
 // Icons
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -35,6 +41,8 @@ import {leaveSession} from "../../actions/sessions/LeaveSession";
 import {getMostPlayedTracks} from "../../actions/tracks/GetMostPlayedTracks";
 import {getRecentTracks} from "../../actions/tracks/GetRecentTracks";
 
+const {Value, interpolate, Extrapolate} = Reanimated;
+
 class LibraryTabView extends React.Component {
   constructor(props) {
     super(props);
@@ -43,6 +51,7 @@ class LibraryTabView extends React.Component {
       scrollEnabled: true,
       isTrackMenuOpen: false,
       selectedTrack: "",
+      y: new Value(0),
       shadowOpacity: new Animated.Value(0),
       syncIndex: new Animated.Value(5),
       syncOpacity: new Animated.Value(1),
@@ -52,7 +61,6 @@ class LibraryTabView extends React.Component {
     this.navToLibrary = this.navToLibrary.bind(this);
     this.renderPlaylist = this.renderPlaylist.bind(this);
     this.renderTrack = this.renderTrack.bind(this);
-    this.onScroll = this.onScroll.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.handleAddTrack = this.handleAddTrack.bind(this);
@@ -170,26 +178,6 @@ class LibraryTabView extends React.Component {
 
   closeModal = () => this.setState({isTrackMenuOpen: false});
 
-  onScroll({nativeEvent: {contentOffset: {y}}}) {
-    const {shadowOpacity} = this.state;
-
-    if (y > 0) {
-      if (shadowOpacity !== 0.9) {
-        Animated.timing(shadowOpacity, {
-          toValue: 0.9,
-          duration: 75,
-          easing: Easing.linear,
-        }).start();
-      };
-    } else {
-      Animated.timing(shadowOpacity, {
-        toValue: 0,
-        duration: 75,
-        easing: Easing.linear,
-      }).start()
-    }
-  }
-
   handleAddTrack() {
     const {selectedTrack} = this.state;
     const {
@@ -259,10 +247,16 @@ class LibraryTabView extends React.Component {
       scrollEnabled,
       isTrackMenuOpen,
       selectedTrack,
-      shadowOpacity,
       syncOpacity,
       syncIndex,
+      y,
     } = this.state;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [-1, 20],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
+
     const {
       entities: {albums, sessions, tracks, users},
       playlists: {fetching: playlistFetching, error: playlistError},
@@ -286,17 +280,17 @@ class LibraryTabView extends React.Component {
             styles.syncScreen,
             {opacity: syncOpacity, zIndex: syncIndex},
           ]}></Animated.View>
-        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
+        <Reanimated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <View style={styles.leftIcon}></View>
             <Text style={styles.title}>Library</Text>
             <View style={styles.rightIcon}></View>
           </View>
-        </Animated.View>
-        <ScrollView
+        </Reanimated.View>
+        <Reanimated.ScrollView
           style={styles.libraryWrap}
-          onScroll={this.onScroll}
-          scrollEventThrottle={16}
+          onScroll={onScroll({y})}
+          scrollEventThrottle={1}
           scrollEnabled={scrollEnabled}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
@@ -343,7 +337,7 @@ class LibraryTabView extends React.Component {
             showError={typeof trackError === Error}
             fetching={trackFetching.includes('mostPlayed')}
           /> */}
-        </ScrollView>
+        </Reanimated.ScrollView>
         <Modal
           isVisible={isTrackMenuOpen}
           backdropColor={"#1b1b1e"}

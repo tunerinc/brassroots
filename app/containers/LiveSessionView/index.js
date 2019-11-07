@@ -16,9 +16,13 @@ import {
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions, ActionConst} from 'react-native-router-flux';
-import styles from './styles';
+import {onScroll} from 'react-native-redash';
+import Reanimated from 'react-native-reanimated';
 import Modal from 'react-native-modal';
 import Placeholder from 'rn-placeholder';
+
+// Styles
+import styles from './styles';
 
 // Components
 import TrackCard from '../../components/TrackCard';
@@ -59,7 +63,8 @@ import {getSessionInfo} from '../../actions/sessions/GetSessionInfo';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 import {stopSessionInfoListener} from '../../actions/sessions/StopSessionInfoListener';
 
-const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
+const AnimatedVirtualizedList = Reanimated.createAnimatedComponent(VirtualizedList);
+const {Value, interpolate, Extrapolate} = Reanimated;
 
 class LiveSessionView extends React.Component {
   constructor(props) {
@@ -75,7 +80,7 @@ class LiveSessionView extends React.Component {
       seekTime: 0,
       editingQueue: false,
       message: '',
-      shadowOpacity: new Animated.Value(0),
+      y: new Value(0),
       playerOpacity: new Animated.Value(1),
       chatOpacity: new Animated.Value(0),
       animatedHeight: new Animated.Value(0),
@@ -93,7 +98,6 @@ class LiveSessionView extends React.Component {
     this.updateSlider = this.updateSlider.bind(this);
     this.seekTrack = this.seekTrack.bind(this);
     this.changeActiveView = this.changeActiveView.bind(this);
-    this.onScroll = this.onScroll.bind(this);
     this.navToSettings = this.navToSettings.bind(this);
     this.leave = this.leave.bind(this);
     this.skipNext = this.skipNext.bind(this);
@@ -211,28 +215,6 @@ class LiveSessionView extends React.Component {
   changeActiveView() {
     const {viewingChat, viewingPlayer} = this.state;
     this.setState({viewingChat: !viewingChat, viewingPlayer: !viewingPlayer});
-  }
-
-  onScroll({nativeEvent: {contentOffset, contentSize, layoutMeasurement: {height: layoutHeight}}}) {
-    const {viewingChat, viewingPlayer, shadowOpacity} = this.state;
-    const scrollingPlayer = viewingPlayer && contentOffset.y > 0;
-    const scrollingChat = viewingChat && (contentSize.height - layoutHeight - 20) > contentOffset.y;
-
-    if (scrollingPlayer || scrollingChat) {
-      if (shadowOpacity !== 0.9) {
-        Animated.timing(shadowOpacity, {
-          toValue: 0.9,
-          duration: 230,
-          easing: Easing.linear
-        }).start();
-      }
-    } else {
-      Animated.timing(shadowOpacity, {
-        toValue: 0,
-        duration: 230,
-        easing: Easing.linear
-      }).start()
-    }
   }
 
   navToSettings() {
@@ -645,13 +627,19 @@ class LiveSessionView extends React.Component {
       isSessionMenuOpen,
       isMenuOpen,
       message,
-      shadowOpacity,
+      y,
       animatedOpacity,
       animatedHeight,
       animatedDJOptionOpacity,
       animatedIndex,
     } = this.state;
     const animatedBottomMargin = {marginBottom: inputHeight > 24 ? inputHeight + 44 : 68};
+    const shadowOpacity = interpolate(y, {
+      inputRange: [-1, 20],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
+
     const {
       entities: {sessions, tracks, users},
       chat: {currentChat},
@@ -679,7 +667,7 @@ class LiveSessionView extends React.Component {
           }
           <View style={styles.backgroundFilter}></View>
         </View>
-        <Animated.View style={[styles.shadow, {shadowOpacity}]}>
+        <Reanimated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.shadowBackground}>
             <View style={styles.shadowBackgroundWrap}>
               {(session && track) &&
@@ -716,9 +704,9 @@ class LiveSessionView extends React.Component {
               viewingPlayer={viewingPlayer}
             />
           </View>
-        </Animated.View>
+        </Reanimated.View>
         {(session && track && viewingPlayer) &&
-          <VirtualizedList
+          <AnimatedVirtualizedList
             data={userQueue}
             renderItem={this.renderTrack}
             keyExtractor={item => item.id}
@@ -728,8 +716,8 @@ class LiveSessionView extends React.Component {
             ListFooterComponent={this.renderFooter}
             onEndReachedThreshold={0.7}
             removeClippedSubviews={false}
-            onScroll={this.onScroll}
-            scrollEventThrottle={16}
+            onScroll={onScroll({y})}
+            scrollEventThrottle={1}
             showsVerticalScrollIndicator={false}
             style={styles.playerWrap}
           />
@@ -744,8 +732,8 @@ class LiveSessionView extends React.Component {
               getItemCount={data => data.length}
               onEndReachedThreshold={0.7}
               removeClippedSubviews={false}
-              onScroll={this.onScroll}
-              scrollEventThrottle={16}
+              onScroll={onScroll({y})}
+              scrollEventThrottle={1}
               showsVerticalScrollIndicator={false}
               inverted
               contentContainerStyle={{paddingTop: 20}}

@@ -3,10 +3,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import FastImage from 'react-native-fast-image';
-import {Text, View, ActivityIndicator, Animated, Easing, VirtualizedList} from "react-native";
+import {Text, View, ActivityIndicator, VirtualizedList} from "react-native";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {Actions} from "react-native-router-flux";
+import {onScroll} from 'react-native-redash';
+import Animated from 'react-native-reanimated';
 import debounce from "lodash.debounce";
 import moment from 'moment';
 
@@ -23,15 +25,17 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 // Albums Action Creators
 import {getAlbums} from "../../actions/albums/GetAlbums";
 
+const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
+const {Value, interpolate, Extrapolate} = Animated;
+
 class LibraryAlbumsView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      shadowOpacity: new Animated.Value(0),
+      y: new Value(0),
     };
 
-    this.onScroll = this.onScroll.bind(this);
     this.renderAlbum = this.renderAlbum.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
     this.onEndReached = this.onEndReached.bind(this);
@@ -62,26 +66,6 @@ class LibraryAlbumsView extends React.Component {
     const {getAlbums, albums: {refreshing}} = this.props;
     if (refreshing) return;
     getAlbums(true, 0);
-  }
-
-  onScroll({nativeEvent: {contentOffset: {y}}}) {
-    const {shadowOpacity} = this.state;
-
-    if (y > 0) {
-      if (shadowOpacity != 0.9) {
-        Animated.timing(shadowOpacity, {
-          toValue: 0.9,
-          duration: 75,
-          easing: Easing.linear,
-        }).start();
-      };
-    } else {
-      Animated.timing(shadowOpacity, {
-        toValue: 0,
-        duration: 75,
-        easing: Easing.linear,
-      }).start()
-    }
   }
 
   navToAlbum = albumID => () => Actions.libSingleAlbum({albumToView: albumID});
@@ -119,8 +103,13 @@ class LibraryAlbumsView extends React.Component {
   }
 
   render() {
-    const {shadowOpacity} = this.state;
+    const {y} = this.state;
     const {albums: {userAlbums, fetching, refreshing, error: albumError}} = this.props;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [-1, 20],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
 
     return (
       <View style={styles.container}>
@@ -132,7 +121,7 @@ class LibraryAlbumsView extends React.Component {
           </View>
         </Animated.View>
         {userAlbums.length !== 0 &&
-          <VirtualizedList
+          <AnimatedVirtualizedList
             data={userAlbums}
             extraData={this.props}
             style={styles.scrollContainer}
@@ -143,8 +132,8 @@ class LibraryAlbumsView extends React.Component {
             ListHeaderComponent={<View />}
             ListFooterComponent={this.renderFooter}
             removeClippedSubviews={false}
-            onScroll={this.onScroll}
-            scrollEventThrottle={16}
+            onScroll={onScroll({y})}
+            scrollEventThrottle={1}
             ListEmptyComponent={<Text>Nothing to show</Text>}
             refreshing={refreshing}
             onRefresh={this.handleRefresh}

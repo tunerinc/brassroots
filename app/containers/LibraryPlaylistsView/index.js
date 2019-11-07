@@ -3,18 +3,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ActivityIndicator,
-  Animated,
-  Easing,
-  VirtualizedList,
-} from 'react-native';
+import {Text, View, TouchableOpacity, ActivityIndicator, VirtualizedList} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import {onScroll} from 'react-native-redash';
+import Animated from 'react-native-reanimated';
 import debounce from "lodash.debounce";
 import moment from 'moment';
 
@@ -31,15 +25,17 @@ import {getPlaylists} from '../../actions/playlists/GetPlaylists';
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
+const {Value, interpolate, Extrapolate} = Animated;
+
 class LibraryPlaylistsView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      shadowOpacity: new Animated.Value(0),
+      y: new Value(0),
     };
     
-    this.onScroll = this.onScroll.bind(this);
     this.renderPlaylist = this.renderPlaylist.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
     this.onEndReached = this.onEndReached.bind(this);
@@ -69,26 +65,6 @@ class LibraryPlaylistsView extends React.Component {
 
     if (dest === 'profile') {
       Actions.proSinglePlaylist({playlistToView: playlistID});
-    }
-  }
-
-  onScroll({nativeEvent: {contentOffset: {y}}}) {
-    const {shadowOpacity} = this.state;
-
-    if (y > 0) {
-      if (shadowOpacity != 0.9) {
-        Animated.timing(shadowOpacity, {
-          toValue: 0.9,
-          duration: 75,
-          easing: Easing.linear,
-        }).start();
-      };
-    } else {
-      Animated.timing(shadowOpacity, {
-        toValue: 0,
-        duration: 75,
-        easing: Easing.linear,
-      }).start()
     }
   }
 
@@ -168,8 +144,13 @@ class LibraryPlaylistsView extends React.Component {
   }
 
   render() {
-    const {shadowOpacity} = this.state;
+    const {y} = this.state;
     const {playlists: {userPlaylists, refreshing, fetching, error: playlistError}} = this.props;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [-1, 20],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
 
     return (
       <View style={styles.container}>
@@ -181,7 +162,7 @@ class LibraryPlaylistsView extends React.Component {
           </View>
         </Animated.View>
         {userPlaylists.length !== 0 &&
-          <VirtualizedList
+          <AnimatedVirtualizedList
             data={userPlaylists}
             extraData={this.props}
             style={styles.scrollContainer}
@@ -190,7 +171,7 @@ class LibraryPlaylistsView extends React.Component {
             getItem={(data, index) => data[index]}
             getItemCount={data => data.length}
             removeClippedSubviews={false}
-            onScroll={this.onScroll}
+            onScroll={onScroll({y})}
             scrollEventThrottle={16}
             ListFooterComponent={this.renderFooter}
             ListEmptyComponent={<Text>Nothing to show</Text>}
