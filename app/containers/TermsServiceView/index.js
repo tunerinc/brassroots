@@ -2,21 +2,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  Easing,
-  RefreshControl,
-  Dimensions,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, ScrollView, RefreshControl, Dimensions} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import {onScroll} from 'react-native-redash';
+import Animated from 'react-native-reanimated';
 import HTML from 'react-native-render-html';
 import {Placeholder, PlaceholderLine, Fade} from 'rn-placeholder';
+
+// Styles
 import styles from './styles';
 
 // Icons
@@ -26,45 +21,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {getTerms} from '../../actions/legal/GetTerms';
 
 const screenWidth = Dimensions.get('window').width;
+const {Value, interpolate, Extrapolate} = Animated;
 
 class TermsServiceView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      shadowOpacity: new Animated.Value(0),
+      y: new Animated.Value(0),
     };
 
-    this.onScroll = this.onScroll.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
   }
 
   componentDidMount() {
     const {getTerms, legal: {terms: {text}}} = this.props;
-
-    InteractionManager.runAfterInteractions(() => {
-      if (text === '') getTerms();
-    });
-  }
-
-  onScroll({nativeEvent: {contentOffset: {y}}}) {
-    const {shadowOpacity} = this.state;
-
-    if (y > 0) {
-      if (shadowOpacity != 0.9) {
-        Animated.timing(shadowOpacity, {
-          toValue: 0.9,
-          duration: 75,
-          easing: Easing.linear,
-        }).start();
-      };
-    } else {
-      Animated.timing(shadowOpacity, {
-        toValue: 0,
-        duration: 75,
-        easing: Easing.linear,
-      }).start()
-    }
+    if (text === '') setTimeout(getTerms, 100);
   }
 
   handleRefresh() {
@@ -73,10 +45,15 @@ class TermsServiceView extends React.Component {
   }
 
   render() {
-    const {shadowOpacity} = this.state;
+    const {y} = this.state;
     const {legal: {terms: {text, fetching, refreshing, error}}} = this.props;
     const emptyTerms = fetching && !refreshing && text === '';
     const termsExists = (!fetching || refreshing) && (text !== '' || error);
+    const shadowOpacity = interpolate(y, {
+      inputRange: [-1, 20],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
 
     return (
       <View style={styles.container}>
@@ -97,10 +74,10 @@ class TermsServiceView extends React.Component {
           </View>
         }
         {termsExists &&
-          <ScrollView
+          <Animated.ScrollView
             style={styles.scrollContainer}
-            onScroll={this.onScroll}
-            scrollEventThrottle={16}
+            onScroll={onScroll({y})}
+            scrollEventThrottle={1}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={this.handleRefresh} />
             }
@@ -116,7 +93,7 @@ class TermsServiceView extends React.Component {
                 />
               }
             </View>
-          </ScrollView>
+          </Animated.ScrollView>
         }
       </View>
     );

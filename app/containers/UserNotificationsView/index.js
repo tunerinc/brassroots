@@ -2,10 +2,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Text, View, TouchableOpacity, ScrollView, Animated, Easing} from 'react-native';
+import {Text, View, TouchableOpacity, ScrollView} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import {onScroll} from 'react-native-redash';
+import Animated from 'react-native-reanimated';
+
+// Styles
 import styles from './styles';
 
 // Icons
@@ -14,12 +18,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // Settings Action Creators
 import {saveSettings} from '../../actions/settings/SaveSettings';
 
+const {Value, interpolate, Extrapolate} = Animated;
+
 class UserNotificationsView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      shadowOpacity: new Animated.Value(0),
+      y: new Value(0),
       tempSession: '',
       tempChat: '',
       tempMessage: true,
@@ -33,7 +39,6 @@ class UserNotificationsView extends React.Component {
 
     this.setSetting = this.setSetting.bind(this);
     this.handleSaveSettings = this.handleSaveSettings.bind(this);
-    this.onScroll = this.onScroll.bind(this);
   }
 
   componentDidMount() {
@@ -116,29 +121,9 @@ class UserNotificationsView extends React.Component {
     );
   }
 
-  onScroll({nativeEvent: {contentOffset: {y}}}) {
-    const {shadowOpacity} = this.state;
-
-    if (y > 0) {
-      if (shadowOpacity != 0.9) {
-        Animated.timing(shadowOpacity, {
-          toValue: 0.9,
-          duration: 75,
-          easing: Easing.linear,
-        }).start();
-      };
-    } else {
-      Animated.timing(shadowOpacity, {
-        toValue: 0,
-        duration: 75,
-        easing: Easing.linear,
-      }).start()
-    }
-  }
-
   render() {
     const {
-      shadowOpacity,
+      y,
       tempSession,
       tempChat,
       tempMessage,
@@ -149,6 +134,12 @@ class UserNotificationsView extends React.Component {
       tempLike,
       tempFollow,
     } = this.state;
+    const shadowOpacity = interpolate(y, {
+      inputRange: [-1, 20],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
+
     const opacity = (setting, option) => {
       if (typeof setting === 'boolean') {
         if (option === 'off' && !setting) return 1;
@@ -170,7 +161,7 @@ class UserNotificationsView extends React.Component {
             <View style={styles.rightIcon}></View>
           </View>
         </Animated.View>
-        <ScrollView style={styles.wrap} onScroll={this.onScroll} scrollEventThrottle={16}>
+        <Animated.ScrollView style={styles.wrap} onScroll={onScroll({y})} scrollEventThrottle={1}>
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionHeaderText}>LIVE SESSIONS</Text>
@@ -531,7 +522,7 @@ class UserNotificationsView extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
       </View>
     );
   }

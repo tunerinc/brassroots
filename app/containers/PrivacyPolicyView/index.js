@@ -2,21 +2,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Text,
-  View,
-  ScrollView,
-  Animated,
-  Easing,
-  RefreshControl,
-  Dimensions,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, ScrollView, RefreshControl, Dimensions} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+import {onScroll} from 'react-native-redash';
+import Animated from 'react-native-reanimated';
 import HTML from 'react-native-render-html';
 import {Placeholder, PlaceholderLine, Fade} from 'rn-placeholder';
+
+// Styles
 import styles from './styles';
 
 // Icons
@@ -26,45 +21,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {getPolicy} from '../../actions/legal/GetPolicy';
 
 const screenWidth = Dimensions.get('window').width;
+const {Value, interpolate, Extrapolate} = Animated;
 
 class PrivacyPolicyView extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      shadowOpacity: new Animated.Value(0),
+      y: new Value(0),
     };
 
-    this.onScroll = this.onScroll.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
   }
 
   componentDidMount() {
     const {getPolicy, legal: {privacy: {text}}} = this.props;
-
-    InteractionManager.runAfterInteractions(() => {
-      if (text === '') getPolicy();
-    });
-  }
-
-  onScroll({nativeEvent: {contentOffset: {y}}}) {
-    const {shadowOpacity} = this.state;
-
-    if (y > 0) {
-      if (shadowOpacity != 0.9) {
-        Animated.timing(shadowOpacity, {
-          toValue: 0.9,
-          duration: 75,
-          easing: Easing.linear,
-        }).start();
-      };
-    } else {
-      Animated.timing(shadowOpacity, {
-        toValue: 0,
-        duration: 75,
-        easing: Easing.linear,
-      }).start()
-    }
+    if (text === '') setTimeout(getPolicy, 100);
   }
 
   handleRefresh() {
@@ -73,10 +45,15 @@ class PrivacyPolicyView extends React.Component {
   }
 
   render() {
-    const {shadowOpacity} = this.state;
+    const {y} = this.state;
     const {legal: {privacy: {text, fetching, refreshing, error}}} = this.props;
     const emptyPolicy = fetching && !refreshing && text === '';
     const policyExists = (!fetching || refreshing) && (text !== '' || error);
+    const shadowOpacity = interpolate(y, {
+      inputRange: [-1, 20],
+      outputRange: [0, 0.9],
+      extrapolate: Extrapolate.CLAMP,
+    });
 
     return (
       <View style={styles.container}>
@@ -97,10 +74,10 @@ class PrivacyPolicyView extends React.Component {
           </View>
         }
         {policyExists &&
-          <ScrollView
+          <Animated.ScrollView
             style={styles.privacyWrap}
-            onScroll={this.onScroll}
-            scrollEventThrottle={16}
+            onScroll={onScroll({y})}
+            scrollEventThrottle={1}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={this.handleRefresh} />
             }
@@ -114,7 +91,7 @@ class PrivacyPolicyView extends React.Component {
                 tagsStyles={{p: {margin: 0}}}
               />
             }
-          </ScrollView>
+          </Animated.ScrollView>
         }
       </View>
     );
