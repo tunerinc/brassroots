@@ -12,7 +12,6 @@ import {
   FlatList,
   Dimensions,
   StyleSheet,
-  InteractionManager,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -87,14 +86,12 @@ class UserProfileView extends React.Component {
       users: {currentUserID},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      const userID = typeof userToView === 'string' && userToView !== '' ? userToView : currentUserID;
-      const {favoriteTrackID} = users.byID[userID];
+    const userID = typeof userToView === 'string' && userToView !== '' ? userToView : currentUserID;
+    const {favoriteTrackID} = users.byID[userID];
 
-      if (!tracks.allIDs.includes(favoriteTrackID)) {
-        getFavoriteTrack(favoriteTrackID, userID);
-      }
-    });
+    if (!tracks.allIDs.includes(favoriteTrackID)) {
+      setTimeout(() => getFavoriteTrack(favoriteTrackID, userID), 100);
+    }
   }
 
   openModal = selectedTrack => () => this.setState({selectedTrack, isTrackMenuOpen: true});
