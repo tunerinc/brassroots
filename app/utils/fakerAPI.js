@@ -231,6 +231,17 @@ const FakerAPI = {
         );
       };
 
+      batch.set(
+        newSessionDoc.collection('messages').doc('test'),
+        {
+          id: 'test',
+          text: 'Test out the chat by typing something below.',
+          owner: owner.id,
+          timestamp: null,
+          read: [owner.id],
+        },
+      );
+
       await batch.commit();
       console.log('success');
     } catch (err) {

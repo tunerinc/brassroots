@@ -13,7 +13,11 @@ import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/chat';
-import {type FirebaseInstance} from '../../../utils/firebaseTypes';
+import {
+  type FirestoreInstance,
+  type FirestoreDoc,
+  type FirestoreDocs,
+} from '../../../utils/firebaseTypes';
 
 /**
  * Async function which gets the now playing session's chat messages
@@ -32,28 +36,29 @@ import {type FirebaseInstance} from '../../../utils/firebaseTypes';
 export function getChat(
   sessionID: string,
 ): ThunkAction {
-  return (dispatch, _, {getFirebase, getFirestore}) => {
+  return (dispatch, _, {getFirestore}) => {
     dispatch(actions.request());
 
-    const firebase: FirebaseInstance = getFirebase();
+    const firestore: FirestoreInstance = getFirestore();
+    const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
+    const chatRef: FirestoreDocs = sessionRef.collection('messages');
 
-    let users = {};
+    const unsubscribe = chatRef
+    // const unsubscribe = firebase.database()
+    //   .ref(`sessions/live/${sessionID}/messages`)
+    //   .limitToLast(100)
+    //   .on('value', dbMessages => {
+    //     if (dbMessages && dbMessages.val()) {
+    //       const messages = dbMessages.reduce((obj, msg) => {
+    //         const {user} = msg.val();
+    //         users = updateObject(users, {[user.id]: {...user}});
+    //         return updateObject(obj, {[msg.val().id]: {...msg.val()}});
+    //       }, {});
 
-    const unsubscribe = firebase.database()
-      .ref(`sessions/live/${sessionID}/messages`)
-      .limitToLast(100)
-      .on('value', dbMessages => {
-        if (dbMessages && dbMessages.val()) {
-          const messages = dbMessages.reduce((obj, msg) => {
-            const {user} = msg.val();
-            users = updateObject(users, {[user.id]: {...user}});
-            return updateObject(obj, {[msg.val().id]: {...msg.val()}});
-          }, {});
-
-          dispatch(addEntities({messages, users}));
-          dispatch(actions.success(dbMessages.map(m => m.val().id), unsubscribe));
-        }
-      },
-      err => dispatch(actions.failure(err)));
+    //       dispatch(addEntities({messages, users}));
+    //       dispatch(actions.success(dbMessages.map(m => m.val().id), unsubscribe));
+    //     }
+    //   },
+    //   err => dispatch(actions.failure(err)));
   };
 }
