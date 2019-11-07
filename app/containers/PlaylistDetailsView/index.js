@@ -3,15 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FastImage from 'react-native-fast-image';
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  InteractionManager,
-} from 'react-native';
+import {Text, View, Image, TouchableOpacity, ScrollView, FlatList} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
@@ -61,21 +53,19 @@ class PlaylistDetailsView extends React.Component {
       users: {fetching},
     } = this.props;
 
-    InteractionManager.runAfterInteractions(() => {
-      if (
-        playlistToView
-        && playlists.allIDs.includes(playlistToView)
-        && !fetching.includes('images')
-        && playlists.byID[playlistToView].ownerID !== 'spotify'
-        && (
-          !users.allIDs.includes(playlists.byID[playlistToView].ownerID)
-          || typeof users.byID[playlists.byID[playlistToView].ownerID].profileImage !== 'string'
-          || users.byID[playlists.byID[playlistToView].ownerID].profileImage === ''
-        )
-      ) {
-        getUserImage(playlists.byID[playlistToView].ownerID);
-      }
-    });
+    if (
+      playlistToView
+      && playlists.allIDs.includes(playlistToView)
+      && !fetching.includes('images')
+      && playlists.byID[playlistToView].ownerID !== 'spotify'
+      && (
+        !users.allIDs.includes(playlists.byID[playlistToView].ownerID)
+        || typeof users.byID[playlists.byID[playlistToView].ownerID].profileImage !== 'string'
+        || users.byID[playlists.byID[playlistToView].ownerID].profileImage === ''
+      )
+    ) {
+      setTimeout(() => getUserImage(playlists.byID[playlistToView].ownerID), 100);
+    }
   }
 
   navToProfile = title => () => {
