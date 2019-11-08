@@ -27,10 +27,14 @@ type User = {
 };
 
 type Message = {
-  message: string,
-  user: User,
+  text: string,
   id: string,
   timestamp: string,
+  sender: {
+    id: string,
+    name: string,
+    image: string,
+  },
 };
 
 /**
@@ -42,11 +46,11 @@ type Message = {
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
  * @param    {string}  sessionID         The session id to send a chat message inside of for the current user
- * @param    {string}  message           The message the current user is sending in the session
- * @param    {object}  user              The user object for the current user
- * @param    {string}  user.id           The id of the current user
- * @param    {string}  user.displayName  The display name of the current user
- * @param    {string}  user.profileImage The profile image URL of the current user
+ * @param    {string}  text              The message the current user is sending in the session
+ * @param    {object}  owner              The user object for the current user
+ * @param    {string}  owner.id           The id of the current user
+ * @param    {string}  owner.displayName  The display name of the current user
+ * @param    {string}  owner.profileImage The profile image URL of the current user
  * @param    {number}  total             The new total amount of chat messages
  *
  * @return   {Promise}
@@ -55,8 +59,8 @@ type Message = {
  */
 export function sendChatMessage(
   sessionID: string,
-  message: string,
-  user: User,
+  text: string,
+  owner: User,
   total: number,
 ): ThunkAction {
   return async (dispatch, _, {getFirestore}) => {
@@ -64,26 +68,27 @@ export function sendChatMessage(
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
-    const chatMessagesRef: FirestoreDocs = sessionRef.collection('messages');
+    const chatRef: FirestoreDocs = sessionRef.collection('messages');
     
     let batch: FirestoreBatch = firestore.batch();
 
     try {
-      const messageDoc: FirestoreDoc = chatMessagesRef.doc();
+      const messageDoc: FirestoreDoc = chatRef.doc();
       const messageID: string = messageDoc.id;
-      const newMessage: Message = {
-        message,
-        user,
+      const newMessage = {
+        text,
+        owner,
         id: messageID,
         timestamp: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
+        timeAdded: firestore.FieldValue.serverTimestamp(),
+        read: [owner.id],
       };
 
-      batch.set(chatMessagesRef.doc(messageID), newMessage);
+      batch.set(chatRef.doc(messageID), newMessage);
       batch.update(sessionRef, {'totals.messages': total});
 
-      await batch.commit();
-      dispatch(addEntities({messages: {[messageID]: newMessage}}));
       dispatch(actions.success());
+      await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err))
     }

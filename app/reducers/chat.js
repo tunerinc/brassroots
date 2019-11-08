@@ -46,7 +46,6 @@ type Action = {
 
 type State = {
   +lastUpdated?: string,
-  +text?: string,
   +currentChat?: Array<string>,
   +totalCurrentChat?: number,
   +fetching?: Array<string>,
@@ -81,7 +80,6 @@ export type {
  */
 export const initialState: State = {
   lastUpdated,
-  text: '',
   currentChat: [],
   totalCurrentChat: 0,
   fetching: [],
