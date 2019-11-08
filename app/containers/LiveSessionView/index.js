@@ -212,7 +212,7 @@ class LiveSessionView extends React.Component {
     seekPosition(session, user, seekTime);
   }
 
-  changeActiveView() {
+  changeActiveView(props) {
     const {viewingChat, viewingPlayer} = this.state;
     this.setState({viewingChat: !viewingChat, viewingPlayer: !viewingPlayer});
   }
