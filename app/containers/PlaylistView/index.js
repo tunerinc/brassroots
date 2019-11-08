@@ -483,7 +483,7 @@ class PlaylistView extends React.Component {
   render() {
     const {isTrackMenuOpen, isPlaylistMenuOpen, selectedTrack, y} = this.state;
     const shadowOpacity = interpolate(y, {
-      inputRange: [HEADER_DELTA - 1, HEADER_DELTA + 10],
+      inputRange: [HEADER_DELTA, HEADER_DELTA + 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });

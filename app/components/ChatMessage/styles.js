@@ -45,10 +45,10 @@ const styles: Styles = StyleSheet.create({
   },
   messageText: {
     color: '#1b1b1e',
-    fontSize: 20,
-    fontFamily: 'Muli',
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 24,
+    fontFamily: 'Muli',
+    lineHeight: 19.2,
   },
   userInfo: {
     alignSelf: 'flex-end',

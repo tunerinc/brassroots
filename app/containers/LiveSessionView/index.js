@@ -134,10 +134,10 @@ class LiveSessionView extends React.Component {
     if (currentSessionID) {
       const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
 
-      // if (!fetchedChat && !fetchingChat) {
-      //   this.setState({fetchedChat: true});
-      //   getChat(currentSessionID);
-      // }
+      if (!fetchedChat && !chatFetching.includes('chat') && !chatUnsubscribe) {
+        this.setState({fetchedChat: true});
+        getChat(currentUserID, currentSessionID);
+      }
 
       if (!fetchedInfo && !sessionFetching.includes('info') && !infoUnsubscribe) {
         this.setState({fetchedInfo: true});
@@ -169,10 +169,10 @@ class LiveSessionView extends React.Component {
     if (currentSessionID && sessions.allIDs.includes(currentSessionID)) {
       const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
 
-      // if (!fetchedChat && !fetchingChat) {
-      //   this.setState({fetchedChat: true});
-      //   getChat(currentSessionID);
-      // }
+      if (!fetchedChat && !chatFetching.includes('chat') && !chatUnsubscribe) {
+        this.setState({fetchedChat: true});
+        getChat(currentUserID, currentSessionID);
+      }
 
       if (!fetchedInfo && !sessionFetching.includes('info') && !infoUnsubscribe) {
         this.setState({fetchedInfo: true});
@@ -212,7 +212,7 @@ class LiveSessionView extends React.Component {
     seekPosition(session, user, seekTime);
   }
 
-  changeActiveView() {
+  changeActiveView(props) {
     const {viewingChat, viewingPlayer} = this.state;
     this.setState({viewingChat: !viewingChat, viewingPlayer: !viewingPlayer});
   }
@@ -225,6 +225,7 @@ class LiveSessionView extends React.Component {
   leave() {
     const {
       leaveSession,
+      chat: {unsubscribe: chatUnsubscribe},
       entities: {sessions, tracks, users},
       player: {currentTrackID},
       queue: {unsubscribe: queueUnsubscribe},
@@ -246,12 +247,12 @@ class LiveSessionView extends React.Component {
         leaveSession(
           currentUserID,
           {
+            chatUnsubscribe,
             infoUnsubscribe,
             queueUnsubscribe,
             track,
             id: currentSessionID,
             total: sessions.byID[currentSessionID].totalListeners,
-            chatUnsubscribe: () => console.log('chat'),
           },
           {
             id: owner.id,
@@ -364,18 +365,17 @@ class LiveSessionView extends React.Component {
 
   renderMessage({item}) {
     const {
-      entities: {messages, users},
+      entities: {messages},
       users: {currentUserID},
     } = this.props;
-    const {text, timestamp, userID: chatOwner} = messages.byID[item];
-    const {profileImage} = users.byID[chatOwner];
+    const {text, timestamp, sender} = messages.byID[item];
 
     return (
       <ChatMessage
         text={text}
         timestamp={timestamp}
-        image={profileImage}
-        isCurrentUser={chatOwner === currentUserID}
+        image={sender.image}
+        isCurrentUser={sender.id === currentUserID}
       />
     );
   }
@@ -634,8 +634,16 @@ class LiveSessionView extends React.Component {
       animatedIndex,
     } = this.state;
     const animatedBottomMargin = {marginBottom: inputHeight > 24 ? inputHeight + 44 : 68};
-    const shadowOpacity = interpolate(y, {
-      inputRange: [-1, 20],
+    const shadowOpacity = viewingPlayer
+      ? interpolate(y, {
+          inputRange: [0, 20],
+          outputRange: [0, 0.9],
+          extrapolate: Extrapolate.CLAMP,
+        })
+      : 0
+
+    const bottomShadow = interpolate(y, {
+      inputRange: [0, 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });
@@ -739,7 +747,19 @@ class LiveSessionView extends React.Component {
               contentContainerStyle={{paddingTop: 20}}
               style={[styles.chatList, animatedBottomMargin]}
             />
-            <View style={styles.chatMessageBar}>
+            <Reanimated.View style={[styles.chatMessageBar, {shadowOpacity: bottomShadow}]}>
+              <View style={styles.shadowBackground}>
+                <View style={styles.shadowBackgroundWrap}>
+                  {(session && track) &&
+                    <Image
+                      style={styles.barShadowImage}
+                      blurRadius={90}
+                      source={{uri: track.album.large}}
+                    />
+                  }
+                  <View style={styles.backgroundFilter}></View>
+                </View>
+              </View>
               {track &&
                 <TouchableOpacity
                   style={styles.chatMessageArtButton}
@@ -781,7 +801,7 @@ class LiveSessionView extends React.Component {
                   <Text style={[styles.sendText, {color: '#888'}]}>send</Text>
                 </TouchableOpacity>
               }
-            </View>
+            </Reanimated.View>
           </View>
         }
         <Modal

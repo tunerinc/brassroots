@@ -300,7 +300,7 @@ class LibraryTracksView extends React.Component {
   render() {
     const {isTrackMenuOpen, selectedTrack, y} = this.state;
     const shadowOpacity = interpolate(y, {
-      inputRange: [-1, 20],
+      inputRange: [0, 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });

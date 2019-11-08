@@ -135,7 +135,7 @@ class UserNotificationsView extends React.Component {
       tempFollow,
     } = this.state;
     const shadowOpacity = interpolate(y, {
-      inputRange: [-1, 20],
+      inputRange: [0, 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });

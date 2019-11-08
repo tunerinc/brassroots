@@ -50,7 +50,7 @@ class PrivacyPolicyView extends React.Component {
     const emptyPolicy = fetching && !refreshing && text === '';
     const policyExists = (!fetching || refreshing) && (text !== '' || error);
     const shadowOpacity = interpolate(y, {
-      inputRange: [-1, 20],
+      inputRange: [0, 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });

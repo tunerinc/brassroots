@@ -106,7 +106,7 @@ class LibraryAlbumsView extends React.Component {
     const {y} = this.state;
     const {albums: {userAlbums, fetching, refreshing, error: albumError}} = this.props;
     const shadowOpacity = interpolate(y, {
-      inputRange: [-1, 20],
+      inputRange: [0, 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });

@@ -229,6 +229,22 @@ const FakerAPI = {
             },
           }
         );
+
+        batch.set(
+          newSessionDoc.collection('messages').doc('test'),
+          {
+            id: 'test',
+            text: 'Test out the chat by typing something below.',
+            timestamp: null,
+            read: [owner.id],
+            timeAdded: Firestore.FieldValue.serverTimestamp(),
+            owner: {
+              id: owner.id,
+              displayName: owner.name,
+              profileImage: owner.image,
+            },
+          },
+        );
       };
 
       await batch.commit();
