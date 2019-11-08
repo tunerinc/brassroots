@@ -79,7 +79,7 @@ class LiveSessionView extends React.Component {
       newTrackPosition: 0,
       seekTime: 0,
       editingQueue: false,
-      message: '',
+      text: '',
       y: new Value(0),
       playerOpacity: new Animated.Value(1),
       chatOpacity: new Animated.Value(0),
@@ -151,20 +151,20 @@ class LiveSessionView extends React.Component {
     }
   }
 
-  componentDidUpdate(nextProps) {
+  componentDidUpdate(prevProps) {
     const {fetchedChat, fetchedInfo, fetchedQueue, editingQueue, seekTime} = this.state;
     const {
       getChat,
       getSessionInfo,
       getUserQueue,
-      chat: {fetching: chatFetching, chatUnsubscribe},
+      chat: {fetching: chatFetching, chatUnsubscribe, error: chatError},
       entities: {sessions},
       player: {progress},
       queue: {userQueue, fetching: queueFetching, unsubscribe: queueUnsubscribe},
       sessions: {currentSessionID, fetching: sessionFetching, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
-    const {player: {progress: newProgress}} = nextProps;
+    const {chat: oldChat, player: {progress: oldProgress}} = prevProps;
 
     if (currentSessionID && sessions.allIDs.includes(currentSessionID)) {
       const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
@@ -188,8 +188,8 @@ class LiveSessionView extends React.Component {
     if (editingQueue && userQueue.length === 0) this.toggleEdit();
 
     if (
-      (progress === seekTime && newProgress !== seekTime)
-      || (progress !== seekTime && newProgress === seekTime)
+      (progress === seekTime && oldProgress !== seekTime)
+      || (progress !== seekTime && oldProgress === seekTime)
     ) {
       this.setState({seekTime: 0});
     }
@@ -443,12 +443,12 @@ class LiveSessionView extends React.Component {
     this.setState({inputHeight});
   }
 
-  handleSetChatMessage({nativeEvent: {text: message}}) {
-    this.setState({message});
+  handleSetChatMessage({nativeEvent: {text}}) {
+    this.setState({text});
   }
 
   sendChatMessage() {
-    const {message} = this.state;
+    const {text} = this.state;
     const {
       sendChatMessage,
       chat: {totalCurrentChat},
@@ -459,7 +459,8 @@ class LiveSessionView extends React.Component {
     const {displayName, profileImage} = users.byID[currentUserID];
     const user = {displayName, profileImage, id: currentUserID};
 
-    sendChatMessage(currentSessionID, message, user, totalCurrentChat + 1);
+    sendChatMessage(currentSessionID, text, user, totalCurrentChat + 1);
+    this.setState({text: ''});
   }
 
   togglePause() {
@@ -626,7 +627,7 @@ class LiveSessionView extends React.Component {
       viewingChat,
       isSessionMenuOpen,
       isMenuOpen,
-      message,
+      text,
       y,
       animatedOpacity,
       animatedHeight,
@@ -772,7 +773,7 @@ class LiveSessionView extends React.Component {
                 <TextInput
                   multiline={true}
                   onChange={this.handleSetChatMessage}
-                  value={message}
+                  value={text}
                   onContentSizeChange={this.handleChangeInputHeight}
                   placeholder=''
                   autoCapitalize='none'
@@ -788,7 +789,7 @@ class LiveSessionView extends React.Component {
                   ]}
                 />
               </Animated.View>
-              {message !== '' &&
+              {text !== '' &&
                 <TouchableOpacity
                   style={styles.sendButton}
                   onPress={this.sendChatMessage}
@@ -796,7 +797,7 @@ class LiveSessionView extends React.Component {
                   <Text style={styles.sendText}>send</Text>
                 </TouchableOpacity>
               }
-              {message === '' &&
+              {text === '' &&
                 <TouchableOpacity style={styles.sendButton} disabled>
                   <Text style={[styles.sendText, {color: '#888'}]}>send</Text>
                 </TouchableOpacity>
