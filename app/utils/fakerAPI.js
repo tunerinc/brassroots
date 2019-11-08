@@ -235,9 +235,14 @@ const FakerAPI = {
           {
             id: 'test',
             text: 'Test out the chat by typing something below.',
-            owner: owner.id,
             timestamp: null,
             read: [owner.id],
+            timeAdded: Firestore.FieldValue.serverTimestamp(),
+            owner: {
+              id: owner.id,
+              displayName: owner.name,
+              profileImage: owner.image,
+            },
           },
         );
       };

@@ -10,7 +10,6 @@
  */
 
 import moment from 'moment';
-// import GeoFirestore from 'geofirestore';
 import {Actions} from 'react-native-router-flux';
 import {leaveSession} from '../LeaveSession';
 import {updateSessions} from '../UpdateSessions';
@@ -167,8 +166,6 @@ export function joinSession(
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
     const userRef: FirestoreDoc = firestore.collection('users').doc(user.id);
-    // const geoRef: FirestoreRef = firestore.collection('geo');
-    // const geoFirestore = new GeoFirestore(geoRef);
 
     let batch: FirestoreBatch = firestore.batch();
 

@@ -50,7 +50,7 @@ class TermsServiceView extends React.Component {
     const emptyTerms = fetching && !refreshing && text === '';
     const termsExists = (!fetching || refreshing) && (text !== '' || error);
     const shadowOpacity = interpolate(y, {
-      inputRange: [-1, 20],
+      inputRange: [0, 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });

@@ -9,6 +9,7 @@
  * @module GetChat
  */
 
+import moment from 'moment';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {addEntities} from '../../entities/AddEntities';
@@ -27,6 +28,7 @@ import {
  * 
  * @author Aldo Gonzalez <aldo@tunerinc.com>
  *
+ * @param  {string}  userID    The Spotify id of the current user
  * @param  {string}  sessionID The session id to get the chat messages from
  *
  * @return {Promise}
@@ -34,6 +36,7 @@ import {
  * @reject {Error}             The error which caused the get chat failure
  */
 export function getChat(
+  userID: string,
   sessionID: string,
 ): ThunkAction {
   return (dispatch, _, {getFirestore}) => {
@@ -43,22 +46,44 @@ export function getChat(
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
     const chatRef: FirestoreDocs = sessionRef.collection('messages');
 
-    const unsubscribe = chatRef
-    // const unsubscribe = firebase.database()
-    //   .ref(`sessions/live/${sessionID}/messages`)
-    //   .limitToLast(100)
-    //   .on('value', dbMessages => {
-    //     if (dbMessages && dbMessages.val()) {
-    //       const messages = dbMessages.reduce((obj, msg) => {
-    //         const {user} = msg.val();
-    //         users = updateObject(users, {[user.id]: {...user}});
-    //         return updateObject(obj, {[msg.val().id]: {...msg.val()}});
-    //       }, {});
+    try {
+      const unsubscribe = chatRef.orderBy('timeAdded', 'desc')
+        .onSnapshot(
+          {includeMetadataChanges: false},
+          snapshot => {
+            const messageIDs: Array<string> = snapshot.docs.map(m => m.data().id);
+            const users = snapshot.docs.reduce((obj, doc) => {
+              const {owner} = doc.data();
+              if (owner.id === userID) return obj;
+              return updateObject(obj, {[owner.id]: owner});
+            }, {});
 
-    //       dispatch(addEntities({messages, users}));
-    //       dispatch(actions.success(dbMessages.map(m => m.val().id), unsubscribe));
-    //     }
-    //   },
-    //   err => dispatch(actions.failure(err)));
+            const messages = snapshot.docs.reduce((obj, doc) => {
+              const {...msg} = doc.data();
+              const timestamp: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
+
+              return updateObject(obj, {
+                [msg.id]: {
+                  id: msg.id,
+                  text: msg.text,
+                  read: msg.read.includes(userID),
+                  timestamp: msg.timestamp ? msg.timestamp: timestamp,
+                  sender: {
+                    id: msg.owner.id,
+                    name: msg.owner.displayName,
+                    image: msg.owner.profileImage,
+                  },
+                },
+              });
+            }, {});
+
+            dispatch(addEntities({users, messages}));
+            dispatch(actions.success(messageIDs, unsubscribe));
+          },
+          error => {throw error},
+        );
+    } catch (err) {
+      dispatch(actions.failure(err));
+    }
   };
 }

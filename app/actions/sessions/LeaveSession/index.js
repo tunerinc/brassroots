@@ -198,7 +198,8 @@ export function leaveSession(
       dispatch(stopSessionInfoListener(session.infoUnsubscribe));
       // $FlowFixMe
       dispatch(stopQueueListener(session.queueUnsubscribe));
-      // dispatch(stopChatListener(session.chatUnsubscribe));
+      // $FlowFixMe
+      dispatch(stopChatListener(session.chatUnsubscribe));
 
       await batch.commit();
     } catch (err) {

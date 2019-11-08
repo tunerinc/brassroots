@@ -147,7 +147,7 @@ class LibraryPlaylistsView extends React.Component {
     const {y} = this.state;
     const {playlists: {userPlaylists, refreshing, fetching, error: playlistError}} = this.props;
     const shadowOpacity = interpolate(y, {
-      inputRange: [-1, 20],
+      inputRange: [0, 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });

@@ -76,7 +76,7 @@ class UserPreferencesView extends React.Component {
     const {y, tempPlaylist, tempSession, tempMessage} = this.state;
     const opacity = (setting, option) => setting === option ? 1 : 0;
     const shadowOpacity = interpolate(y, {
-      inputRange: [-1, 20],
+      inputRange: [0, 20],
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });
