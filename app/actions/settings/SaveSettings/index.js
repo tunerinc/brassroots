@@ -65,9 +65,9 @@ export function saveSettings(
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     try {
-      await settingsRef.doc(settings.id).update({...settings});
       dispatch(updateSettings(settings));
       dispatch(actions.success());
+      await settingsRef.doc(settings.id).update({...settings});
     } catch (err) {
       dispatch(actions.failure(err));
     }
