@@ -39,9 +39,9 @@ export function changeFavoriteTrack(
     const firestore: FirestoreInstance = getFirestore();
 
     try {
-      await firestore.collection('users').doc(userID).update({favoriteTrackID});
       dispatch(addEntities({users: {[userID]: {id: userID, favoriteTrackID}}}));
       dispatch(actions.success());
+      await firestore.collection('users').doc(userID).update({favoriteTrackID});
     } catch (err) {
       dispatch(actions.failure(err));
     }

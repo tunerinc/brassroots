@@ -293,8 +293,8 @@ class LibraryTracksView extends React.Component {
 
   handleChangeFavoriteTrack = trackID => () => {
     const {changeFavoriteTrack, users: {currentUserID}} = this.props;
-    changeFavoriteTrack(currentUserID, trackID);
     this.closeModal();
+    changeFavoriteTrack(currentUserID, trackID);
   }
 
   render() {
