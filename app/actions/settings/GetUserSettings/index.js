@@ -45,8 +45,8 @@ export function getUserSettings(
       const settings: FirestoreDoc = await settingsRef.doc(userID).get();
 
       if (settings.exists) {
-        dispatch(updateSettings(settings.data()));
         dispatch(actions.success());
+        dispatch(updateSettings(settings.data()));
       } else {
         throw new Error('Unable to retrieve user settings from Ultrasound');
       }
