@@ -61,11 +61,12 @@ export function changeProfilePhoto(
           ImageCropPicker.clean(),
         ];
 
-        await Promise.all(promises);
         dispatch(addEntities({users: {[userID]: {id: userID, profileImage}}}));
+        dispatch(actions.success());
+        await Promise.all(promises);
+      } else {
+        dispatch(actions.success());
       }
-
-      dispatch(actions.success());
     } catch (err) {
       dispatch(actions.failure(err));
     }

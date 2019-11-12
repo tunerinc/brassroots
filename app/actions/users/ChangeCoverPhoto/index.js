@@ -61,11 +61,12 @@ export function changeCoverPhoto(
           ImageCropPicker.clean(),
         ];
 
-        await Promise.all(promises);
         dispatch(addEntities({users: {[userID]: {id: userID, coverImage}}}));
+        dispatch(actions.success());
+        await Promise.all(promises);
+      } else {
+        dispatch(actions.success());
       }
-
-      dispatch(actions.success());
     } catch (err) {
       dispatch(actions.failure(err));
     }
