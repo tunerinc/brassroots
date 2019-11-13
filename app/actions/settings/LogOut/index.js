@@ -45,7 +45,7 @@ export function logOut(): ThunkAction {
     try {
       await Spotify.logout();
       Actions.welcome({type: ActionConst.RESET});
-      
+
       dispatch(actions.success());
       dispatch(resetAlbums());
       dispatch(resetArtists());

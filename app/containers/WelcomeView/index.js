@@ -2,18 +2,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  TouchableHighlight,
-  Text,
-  View,
-  Image,
-  Animated,
-  Easing,
-  InteractionManager,
-} from 'react-native';
+import {TouchableHighlight, Text, View, Image, Animated, Easing} from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
+
+// Styles
 import styles from './styles';
 
 // Users Action Creators
@@ -37,18 +31,17 @@ class WelcomeView extends React.Component {
 
     if (!attemptedToInitialize && !initialized) {
       this.setState({attemptedToInitialize: true});
-      InteractionManager.runAfterInteractions(initializeSpotify);
+      setTimeout(initializeSpotify, 100);
     }
   }
 
   componentDidUpdate(prevProps) {
     const {loadingOpacity, loadingIndex} = this.state;
     const {settings: {initializing: oldInitializing}} = prevProps;
-    const {settings: {initializing, loggedIn}, users: {currentUserID}} = this.props;
+    const {settings: {initializing, loggedIn, initialized}, users: {currentUserID}} = this.props;
   
     if (
-      oldInitializing
-      && !initializing
+      ((oldInitializing && !initializing) || initialized)
       && (currentUserID === '' || typeof currentUserID !== 'string')
       && !loggedIn
     ) {
@@ -72,7 +65,7 @@ class WelcomeView extends React.Component {
       ]).start();
     }
   }
-  
+
   render() {
     const {loadingIndex, loadingOpacity} = this.state;
     const {authorizeUser} = this.props;
