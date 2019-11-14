@@ -149,7 +149,7 @@ export type {
  */
 export const initialState: State = {
   lastUpdated,
-  version: '0.3.8',
+  version: '0.3.9',
   initializing: false,
   loggingIn: false,
   loggedIn: false,
