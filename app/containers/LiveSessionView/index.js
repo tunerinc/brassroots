@@ -12,6 +12,7 @@ import {
   Easing,
   VirtualizedList,
   TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -63,6 +64,7 @@ import {getSessionInfo} from '../../actions/sessions/GetSessionInfo';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 import {stopSessionInfoListener} from '../../actions/sessions/StopSessionInfoListener';
 
+const AnimatedAvoidingView = Reanimated.createAnimatedComponent(KeyboardAvoidingView);
 const AnimatedVirtualizedList = Reanimated.createAnimatedComponent(VirtualizedList);
 const {Value, interpolate, Extrapolate} = Reanimated;
 
@@ -732,7 +734,12 @@ class LiveSessionView extends React.Component {
           />
         }
         {(session && track && viewingChat) &&
-          <View style={styles.chatWrap}>
+          <KeyboardAvoidingView
+            style={styles.chatWrap}
+            behavior='position'
+            enabled
+            contentContainerStyle={{flex: 1}}
+          >
             <AnimatedVirtualizedList
               data={currentChat}
               renderItem={this.renderMessage}
@@ -803,7 +810,7 @@ class LiveSessionView extends React.Component {
                 </TouchableOpacity>
               }
             </Reanimated.View>
-          </View>
+          </KeyboardAvoidingView>
         }
         <Modal
           isVisible={isSessionMenuOpen}
