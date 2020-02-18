@@ -55,7 +55,7 @@ export function authorizeUser(): ThunkAction {
       const userDoc: FirestoreDoc = await usersRef.doc(spotifyUser.id).get();
 
       if (userDoc.exists) {
-        console.log(58)
+        console.log(58);
         const user = {
           id: spotifyUser.id,
           displayName: spotifyUser.display_name,
@@ -80,15 +80,15 @@ export function authorizeUser(): ThunkAction {
         Actions.root({type: ActionConst.RESET});
         dispatch(getUserSettings(user.id));
       } else {
-        console.log(83)
+        console.log(83);
         dispatch(actions.success());
         dispatch(updateOnboarding({onboarding: true}));
         // $FlowFixMe
         dispatch(createProfile(spotifyUser));
       }
     } catch (err) {
-      console.log(90)
-      console.log(err)
+      console.log(90);
+      console.log(err);
       dispatch(actions.failure(err));
     }
   };

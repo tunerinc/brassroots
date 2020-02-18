@@ -63,29 +63,24 @@ export function createProfile(
     const settingsRef: FirestoreRef = firestore.collection('settings');
 
     let batch = firestore.batch();
-
     try {
       const user: PrivateUser = spotifyUser ? spotifyUser : await Spotify.getMe();
       const topTrack = await getUserTopTrack();
-      const fullTrack: FullTrack = await Spotify.getTrack(topTrack.items[0].id, {});
+      const fullTrack: FullTrack = await Spotify.getTrack('3n3Ppam7vgaVa1iaRUc9Lp', {});
       const music = addMusicItems([fullTrack]);
       const hasImage: boolean = fullTrack.album.images.length !== 0;
       const coverURL: ?string = hasImage ? fullTrack.album.images[0].url : null;
       const profileURL: string = user.images.length > 0
         ? user.images[0].url
         : 'https://static1.squarespace.com/static/557d1981e4b097936a86b629/t/558cf487e4b05d368538793a/1435301000191/';
-
       const profileBlob: Blob = await fetchRemoteURL(profileURL, 'blob');
       const coverBlob: ?Blob = typeof coverURL === 'string'
         ? await fetchRemoteURL(coverURL, 'blob')
         : null;
-
       const profileTask: StorageUploadTask = storage.child(`profileImages/${user.id}`)
         .put(profileBlob);
-      
       const coverTask: ?StorageUploadTask = coverBlob ? storage.child(`coverImages/${user.id}`)
         .put(coverBlob) : null;
-
       await Promise.all([profileTask, ...(coverTask ? [coverTask] : [])]);
       const profileImage: string = await profileTask.snapshot.ref.getDownloadURL();
       const coverImage: string = coverTask ? await coverTask.snapshot.ref.getDownloadURL() : '';
