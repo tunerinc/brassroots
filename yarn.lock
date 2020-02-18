@@ -8481,10 +8481,10 @@ rn-placeholder@3.0.0:
   resolved "https://registry.yarnpkg.com/rn-placeholder/-/rn-placeholder-3.0.0.tgz#d51063cfc20cf702547205b936d934e92c4941b0"
   integrity sha512-ydlIDoth4uvj9PPEOZLZxgNtNJlmUR49IGFtRKM7FWcKuMG2hC89kIPa8xRCO5vfxSDPwMGTyshYGGsQXOJJNA==
 
-rn-spotify-sdk@1.2.11:
-  version "1.2.11"
-  resolved "https://registry.yarnpkg.com/rn-spotify-sdk/-/rn-spotify-sdk-1.2.11.tgz#bd6eadd6840fc3c58a8da95f1ef91b5cf4172564"
-  integrity sha512-UMD6+MXNF1LZCuolJ8uypCebELuZOaGOomA8BVC2z0tmbfeLa3rVEqUx/42UxM1cyWtNuhIvmkqSzf4xHGk7uA==
+rn-spotify-sdk@^1.2.13:
+  version "1.2.13"
+  resolved "https://registry.yarnpkg.com/rn-spotify-sdk/-/rn-spotify-sdk-1.2.13.tgz#cf32e3e780e211f7f2602f8ee72fc64bb3a1701d"
+  integrity sha512-gmFUADblFYQ1gJwrE004pI0WAA52hHoinjCv7Vgu83mf3LDj0BeVgJCzsI5YngUgsgRk1vJ1d/AhEkdmToYIeA==
   dependencies:
     react-native-events "^1.0.15"
 
