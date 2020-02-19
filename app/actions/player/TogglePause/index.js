@@ -64,7 +64,6 @@ export function togglePause(
 
     try {  
       if (paused) {
-        console.log("paused-TogglePause:")
         await Spotify.setPlaying(false);
         playbackState = await Spotify.getPlaybackStateAsync();
 
@@ -73,9 +72,6 @@ export function togglePause(
         }
 
         session = updateObject(session, {progress: playbackState.position * 1000});
-      }
-      else {
-        await Spotify.playURI(`spotify:track:${session.current}`, 0, session.progress / 1000);
       }
 
       const timeLastPlayed: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
@@ -94,9 +90,9 @@ export function togglePause(
         }
       }
 
-      // if (!paused) {
-      //   await Spotify.playURI(`spotify:track:${session.current}`, 0, session.progress / 1000);
-      // }
+      if (!paused) {
+        await Spotify.playURI(`spotify:track:${session.current}`, 0, session.progress / 1000);
+      }
 
       dispatch(actions.success(paused, session.progress));
       await batch.commit();
