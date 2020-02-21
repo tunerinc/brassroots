@@ -120,6 +120,9 @@ class LiveSessionView extends React.Component {
     this.renderFooter = this.renderFooter.bind(this);
   }
 
+  componentWillUnmount() {
+    dispatch(leaveSession(user.id, sessionToLeave, owner));
+  }
   componentDidMount() {
     const {fetchedChat, fetchedInfo, fetchedQueue} = this.state;
     const {

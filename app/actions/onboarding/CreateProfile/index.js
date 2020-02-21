@@ -66,7 +66,7 @@ export function createProfile(
     try {
       const user: PrivateUser = spotifyUser ? spotifyUser : await Spotify.getMe();
       const topTrack = await getUserTopTrack();
-      const fullTrack: FullTrack = await Spotify.getTrack('3n3Ppam7vgaVa1iaRUc9Lp', {});
+      const fullTrack: FullTrack = await Spotify.getTrack('1xiregrfsrkcwzxej9kku694g', {});
       const music = addMusicItems([fullTrack]);
       const hasImage: boolean = fullTrack.album.images.length !== 0;
       const coverURL: ?string = hasImage ? fullTrack.album.images[0].url : null;

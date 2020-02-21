@@ -92,6 +92,7 @@ class EditProfileView extends React.Component {
       changeCoverPhoto(currentUserID);
     } else {
       changeProfilePhoto(currentUserID);
+      
     }
   }
 
