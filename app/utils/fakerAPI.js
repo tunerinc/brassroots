@@ -248,9 +248,7 @@ const FakerAPI = {
       };
 
       await batch.commit();
-      console.log('success');
     } catch (err) {
-      console.log(err);
     };
   },
 
@@ -384,9 +382,7 @@ const FakerAPI = {
       };
 
       await batch.commit();
-      console.log('success');
     } catch (err) {
-      console.log(err);
     };
   },
 };

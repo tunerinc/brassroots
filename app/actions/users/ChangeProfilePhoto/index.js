@@ -50,13 +50,11 @@ export function changeProfilePhoto(
       //   photoURI = value;
       // })
      const photoURI = await selectPhoto('Change Profile Photo');
-     console.log(photoURI)
       
       if (typeof photoURI === 'string' && photoURI !== 'cancelled') {
         dispatch(actions.request());
 
         const blob: Blob = await fetchRemoteURL(photoURI, 'blob');
-        console.log(photoURI)
         await storage.child(`profileImages/${userID}`).delete();
         const uploadTask: StorageUploadTask = storage.child(`profileImages/${userID}`).put(blob);
         await uploadTask;
@@ -73,7 +71,6 @@ export function changeProfilePhoto(
         dispatch(actions.success());
       }
     } catch (err) {
-      console.log(err);
       dispatch(actions.failure(err));
     }
   };

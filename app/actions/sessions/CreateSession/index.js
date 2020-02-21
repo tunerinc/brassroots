@@ -126,7 +126,6 @@ export function createSession(
     const geoRef: FirestoreRef = firestore.collection('geo');
     const sessionsRef: FirestoreRef = firestore.collection('sessions');
     const userRef: FirestoreDoc = firestore.collection('users').doc(user.id);
-    console.log('Create Session::::::::~~~~~~~~~~~~~~')
     // const geoFirestore = new GeoFirestore(geoRef);
 
     try {

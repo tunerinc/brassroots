@@ -122,7 +122,7 @@ class ArtistDetailsView extends React.Component {
   }
 
   goToAlbum = (albumID) => () => {
-    console.log(albumID);
+    //console.log(albumID);
   }
 
   renderTopAlbum({item, index}) {
