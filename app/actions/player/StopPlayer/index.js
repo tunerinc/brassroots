@@ -40,10 +40,11 @@ export function stopPlayer(
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
     const timeLastPlayed: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
-
+    let batch: FirestoreBatch = firestore.batch();
     try {
       dispatch(actions.success())
       await sessionRef.update({timeLastPlayed, paused: true, progress: 0});
+      batch.update(sessionRef,{paused: true});
     } catch (err) {
       dispatch(actions.failure(err));
     }

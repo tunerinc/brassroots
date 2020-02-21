@@ -46,11 +46,14 @@ export function startPlayer(
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(userID);
+    let batch: FirestoreBatch = firestore.batch();
 
     try {
       await Spotify.playURI(`spotify:track:${trackID}`, 0, position);
       dispatch(actions.success());
       await sessionUserRef.update({paused: false});
+      batch.update(sessionRef,{paused:false});
+
     } catch (err) {
       dispatch(actions.failure(err));
     }
