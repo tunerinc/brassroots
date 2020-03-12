@@ -121,7 +121,7 @@ class LiveSessionView extends React.Component {
   }
 
   componentWillUnmount() {
-    dispatch(leaveSession(user.id, sessionToLeave, owner));
+    this.leave();
   }
   componentDidMount() {
     const {fetchedChat, fetchedInfo, fetchedQueue} = this.state;

@@ -40,7 +40,7 @@
     "react-addons-pure-render-mixin": "15.6.2",
     "react-addons-test-utils": "15.6.2",
     "react-native": "0.61.2",
-    "react-native-background-timer": "2.1.1",
+    "react-native-background-timer": "^2.1.1",
     "react-native-events": "1.0.15",
     "react-native-fast-image": "7.0.2",
     "react-native-gesture-handler": "^1.4.1",
