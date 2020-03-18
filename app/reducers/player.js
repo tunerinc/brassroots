@@ -163,9 +163,9 @@ export default function reducer(
       case types.NEXT_TRACK_FAILURE:
         return updateObject(state, {error: action.error, skippingNext: false});
       case types.PAUSE_PLAYER_REQUEST:
-        return updateObject(state, {pausing: true, error: null});
+        return updateObject(state, {pausing: true, paused: false, error: null});
       case types.PAUSE_PLAYER_SUCCESS:
-        return updateObject(state, {lastUpdated, paused: true, pausing: false, error: null});
+        return updateObject(state, {lastUpdated, pausing: false, paused: true, error: null});
       case types.PAUSE_PLAYER_FAILURE:
         return updateObject(state, {error: action.error, paused: false, pausing: false});
       case types.PLAY_TRACK_REQUEST:

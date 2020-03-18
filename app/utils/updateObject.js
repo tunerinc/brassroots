@@ -1,5 +1,6 @@
 'use strict';
 
+
 /**
  * @module UpdateObject
  */

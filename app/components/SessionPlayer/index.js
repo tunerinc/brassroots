@@ -31,7 +31,6 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
   }
-
   render() {
     const {
       togglePause,

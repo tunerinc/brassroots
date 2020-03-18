@@ -258,7 +258,7 @@ PODS:
     - RSKImageCropper
   - RNReanimated (1.7.0):
     - React
-  - RNSpotify (1.2.13):
+  - RNSpotify (1.2.11):
     - React
     - RNEventEmitter
   - RNVectorIcons (6.6.0):
@@ -449,7 +449,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 02905abe54e1f6e59c081a10b4bd689721e17aa6
   RNImageCropPicker: f675353bbe18f66113a39b319c0aeb36655a6e4c
   RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
-  RNSpotify: 56a20358ebbae1dff52a8c4b3a933a0c0bc2eaf8
+  RNSpotify: 860bf83776bdf4d1786c9557713a542bd34038bf
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   SDWebImage: 4d5c027c935438f341ed33dbac53ff9f479922ca

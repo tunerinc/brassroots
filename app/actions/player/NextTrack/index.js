@@ -143,7 +143,6 @@ export function nextTrack(
           'totals.queue': totalQueue - 1,
         },
       );
-
       await batch.commit();
     } catch (err) {
       dispatch(actions.failure(err));

@@ -155,7 +155,6 @@ export function createSession(
 
         user = updateObject(user, {coords: {...pos}});
       }
-
       if (
         context.type === 'user-tracks'
         && Array.isArray(context.tracks)

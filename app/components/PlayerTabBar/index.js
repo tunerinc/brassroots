@@ -22,6 +22,7 @@ import {togglePause} from '../../actions/player/TogglePause';
 import {updatePlayer} from '../../actions/player/UpdatePlayer';
 
 class PlayerTabBar extends React.Component {
+  static pausedFlag = true;
   constructor(props) {
     super(props);
 
@@ -31,8 +32,6 @@ class PlayerTabBar extends React.Component {
       coverIndex: new Animated.Value(2),
     };
 
-    this.updateProgress = this.updateProgress.bind(this);
-    this.getState = this.getState.bind(this);
     this.setProgress = this.setProgress.bind(this);
     this.handleDoneTrack = this.handleDoneTrack.bind(this);
     this.hideCover = this.hideCover.bind(this);
@@ -115,7 +114,7 @@ class PlayerTabBar extends React.Component {
       this.tabBarBGColor = '#28282b';
     }
 
-    // Format Queue
+    // Format Queue 
     if (userQueue.length === 0 && oldQueue.length > 0) {
       updatePlayer({nextTrackID: null, nextQueueID: null});
     }
@@ -125,7 +124,7 @@ class PlayerTabBar extends React.Component {
       updatePlayer({nextTrackID: userQueue[0].trackID, nextQueueID: userQueue[0].id});
     }
 
-    // First Play
+
     if (
       currentSession
       && oldSession
@@ -136,7 +135,8 @@ class PlayerTabBar extends React.Component {
     ) {
       updatePlayer({progress: 0});
     }
-// If DJ press pause Button.
+
+    
     if (
       !playerError
       && !paused
@@ -149,7 +149,7 @@ class PlayerTabBar extends React.Component {
       this.progressInterval = setInterval(this.setProgress, 985);
     }
 
-    // It's listener.
+    //Listener
     if (currentSession && currentUserID !== currentSession.ownerID) {
       if (
         oldSession
@@ -159,41 +159,43 @@ class PlayerTabBar extends React.Component {
           || oldSession.currentTrackID !== currentSession.currentTrackID
         )
       ) {
-        clearInterval(this.progressInterval);
-        this.progressInterval = null;
-        this.progressInterval = setInterval(this.getState, 985);
+        currentSession.progress = progress;
         updatePlayer({progress: currentSession.progress});
-
         if (!paused) {
-          startPlayer(
+          Promise.resolve(startPlayer(
             currentSessionID,
             currentUserID,
             currentSession.currentTrackID,
             currentSession.progress / 1000,
-          );
+          )).then(function(e) {
+            PlayerTabBar.pausedFlag = true;
+          })
         }
       }
 
       if (
         (
-          (!oldSessionID || oldSessionID !== currentSessionID)
+          ((!oldSessionID || oldSessionID !== currentSessionID)
           && typeof progress === 'number'
           && durationMS !== 0
           && !paused
         )
         || (oldSeeking && !seeking)
-        || (oldPaused && !paused)
+        || (oldPaused && !paused)) && !PlayerTabBar.pausedFlag
       ) {
-        startPlayer(currentSessionID, currentUserID, currentSession.currentTrackID, progress / 1000);
+        Promise.resolve(startPlayer(currentSessionID, currentUserID, currentSession.currentTrackID, currentSession.progress / 1000)).then(function(e) {
+          PlayerTabBar.pausedFlag = true;
+        }) 
       }
-  
       if (
         currentSession
         && !seeking
         && !oldPaused
-        && paused
+        && paused && PlayerTabBar.pausedFlag
       ) {
-        pausePlayer(currentSessionID, currentUserID, oldProgress);
+        Promise.resolve(pausePlayer(currentSessionID, currentUserID, oldProgress)).then(function(e) {
+          PlayerTabBar.pausedFlag = false;
+        })        
       }
     }
   }
@@ -209,23 +211,6 @@ class PlayerTabBar extends React.Component {
   setProgress() {
     const {updatePlayer, player: {progress, seeking, durationMS}} = this.props;
     if (typeof progress === 'number' && !seeking) updatePlayer({progress: progress + 1000});
-  }
-  updateProgress() {
-    if (
-      currentSession
-      && !seeking
-      && !oldPaused
-      && paused
-    ) {
-      pausePlayer(currentSessionID, currentUserID, oldProgress);
-    }
-  }
-  getState() {
-    if(paused) {
-      this.updateProgress();
-      clearInterval(this.progressInterval);
-      this.progressInterval = null;
-    }
   }
 
   handleDoneTrack() {

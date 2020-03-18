@@ -188,7 +188,7 @@ export function joinSession(
           owner: newOwner,
           totals: {listeners, users, previouslyPlayed},
         } = doc.data();
-
+        
         transaction.update(
           sessionRef,
           {'totals.listeners': listeners + 1, 'totals.users': users + 1},
@@ -213,8 +213,12 @@ export function joinSession(
         ? newSession.timeLastPlayed
         : moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a');
 
-      const diff = moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').diff(timeLastPlayed, 'seconds');
-      const progress = newSession.progress + (diff * 1000);
+      
+      let progress = newSession.progress;
+      if(!newSession.paused){
+        const diff = moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').diff(timeLastPlayed, 'seconds');
+        progress = newSession.progress + (diff * 1000);
+      }
 
       if (newSession.context) dispatch(updateQueue({context: newSession.context}));
 
@@ -236,8 +240,8 @@ export function joinSession(
           paused: newSession.paused,
         }
       );
-
       await batch.commit();
+
     } catch (err) {
       dispatch(actions.failure(err));
     }
