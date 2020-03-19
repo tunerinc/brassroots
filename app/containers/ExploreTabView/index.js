@@ -72,7 +72,6 @@ class ExploreTabView extends React.Component {
       setTimeout(getTrendingSessions, 100);
     }
   }
-
   openModal = selectedSession => () => this.setState({selectedSession, sessionModalOpen: true});
 
   closeModal = () => this.setState({sessionModalOpen: false});

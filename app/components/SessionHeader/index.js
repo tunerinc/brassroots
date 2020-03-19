@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, AppState} from 'react-native';
 import SessionPlayer from '../SessionPlayer';
 import SessionModeIcon from '../SessionModeIcon';
 import PlayerSlider from '../PlayerSlider';
@@ -16,6 +16,7 @@ import styles from './styles';
 // Icons
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { leaveSession } from '../../actions/sessions/LeaveSession';
 
 type Props = {|
   toggleEdit: () => any,
@@ -47,6 +48,7 @@ type Props = {|
   saved: boolean,
   artists: string,
   displayName: ?string,
+  leave: () => any,
 |};
 
 type State = {||};
@@ -54,6 +56,24 @@ type State = {||};
 export default class SessionHeader extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+  }
+
+  state = {
+    appState: AppState.currentState,
+  }
+  componentDidMount() {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+  handleAppStateChange = (nextAppState) => {
+    if (this.state.appState === 'inactive' && nextAppState === 'background')
+    {
+     // this.props.leave;
+      console.log("leave completed");
+    }
+    this.setState({appState: nextAppState});
   }
 
   render() {
@@ -87,6 +107,7 @@ export default class SessionHeader extends React.Component<Props, State> {
       saved,
       artists,
       displayName,
+      leave,
     } = this.props;
 
     return (

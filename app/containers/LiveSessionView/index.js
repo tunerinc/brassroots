@@ -119,10 +119,6 @@ class LiveSessionView extends React.Component {
     this.toggleLike = this.toggleLike.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
   }
-
-  componentWillUnmount() {
-    this.leave();
-  }
   componentDidMount() {
     const {fetchedChat, fetchedInfo, fetchedQueue} = this.state;
     const {
@@ -228,6 +224,7 @@ class LiveSessionView extends React.Component {
   }
 
   leave() {
+    //console.log("leaveFFFFF");
     const {
       leaveSession,
       chat: {unsubscribe: chatUnsubscribe},
@@ -568,6 +565,7 @@ class LiveSessionView extends React.Component {
         progress={progress}
         trackID={currentTrackID}
         name={name}
+        leave={this.leave}
         saved={userTracks.includes(currentTrackID)}
         artists={artists.map(a => a.name).join(', ')}
         displayName={queueTrack ? users.byID[queueTrack.userID].displayName : null}
