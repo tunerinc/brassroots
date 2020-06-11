@@ -24,11 +24,8 @@ import {
   type FirestoreRef,
   type FirestoreDoc,
 } from '../../../utils/firebaseTypes';
-import { persistSession } from '../../../utils/persistSession';
-import { leaveSession } from '../../sessions/LeaveSession';
 import { type Context } from '../../../reducers/queue';
 import { type TrackArtist } from '../../../reducers/tracks';
-import firebase from 'firebase';
 import store from '../../../store/configureStore';
 
 /**

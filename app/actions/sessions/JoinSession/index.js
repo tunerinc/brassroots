@@ -26,7 +26,6 @@ import {
   type FirestoreRef,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
-import { persistSession } from '../../../utils/persistSession';
 
 type Session = {
   +id: string,

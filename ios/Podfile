@@ -48,9 +48,6 @@ target 'brassroots' do
   # React Native Permissions
   pod 'ReactNativePermissions', :path=> '../node_modules/react-native-permissions'
 
-  # Background Timer
-  pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
-
   # Async Storage
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
