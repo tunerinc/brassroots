@@ -12,15 +12,15 @@
 import moment from 'moment';
 import Spotify from 'rn-spotify-sdk';
 import * as actions from './actions';
-import { stopChatListener } from '../../chat/StopChatListener';
-import { addEntities } from '../../entities/AddEntities';
-import { stopSessionInfoListener } from '../StopSessionInfoListener';
-import { resetPlayer } from '../../player/ResetPlayer';
-import { resetQueue } from '../../queue/ResetQueue';
-import { stopQueueListener } from '../../queue/StopQueueListener';
-import { addRecentTrack } from '../../tracks/AddRecentTrack';
-import { type ThunkAction } from '../../../reducers/sessions';
-import { type TrackArtist } from '../../../reducers/tracks';
+import {stopChatListener} from '../../chat/StopChatListener';
+import {addEntities} from '../../entities/AddEntities';
+import {stopSessionInfoListener} from '../StopSessionInfoListener';
+import {resetPlayer} from '../../player/ResetPlayer';
+import {resetQueue} from '../../queue/ResetQueue';
+import {stopQueueListener} from '../../queue/StopQueueListener';
+import {addRecentTrack} from '../../tracks/AddRecentTrack';
+import {type ThunkAction} from '../../../reducers/sessions';
+import {type TrackArtist} from '../../../reducers/tracks';
 import {
   type FirestoreInstance,
   type FirestoreRef,
@@ -32,36 +32,36 @@ import {
 type Session = {
   +id: string,
   +track: {
-  +trackID ?: string,
-    +timeAdded ?: string | number,
+    +trackID?: string,
+    +timeAdded?: string | number,
     +id: string,
+    +name: string,
+    +trackNumber: number,
+    +durationMS: number,
+    +artists: Array<TrackArtist>,
+    +album: {
+      +id: string,
       +name: string,
-        +trackNumber: number,
-          +durationMS: number,
-            +artists: Array < TrackArtist >,
-              +album: {
-    +id: string,
-      +name: string,
-        +small: string,
-          +medium: string,
-            +large: string,
-              +artists: Array < TrackArtist >,
+      +small: string,
+      +medium: string,
+      +large: string,
+      +artists: Array<TrackArtist>,
     },
-},
-+total: number,
+  },
+  +total: number,
   +chatUnsubscribe: () => void,
-    +infoUnsubscribe: () => void,
-      +queueUnsubscribe: () => void,
-        +coords ?: {
-    + lat: number,
-  +lon: number,
+  +infoUnsubscribe: () => void,
+  +queueUnsubscribe: () => void,
+  +coords?: {
+    +lat: number,
+    +lon: number,
   },
 };
 
 type Owner = {
   +id: string,
   +name: string,
-    +image: string,
+  +image: string,
 };
 
 /**
@@ -131,17 +131,13 @@ export function leaveSession(
   session: Session,
   owner: Owner,
 ): ThunkAction {
-  return async (dispatch, _, { getFirestore }) => {
+  return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.request());
-    
+
     const firestore: FirestoreInstance = getFirestore();
     const geoRef: FirestoreRef = firestore.collection('geo');
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
     const userRef: FirestoreDoc = firestore.collection('users').doc(userID);
-
-    // const snapshot = await sessionRef.get();
-    // console.log("==================SESSION=========================")
-    // console.log(snapshot.data());
 
     let batch: FirestoreBatch = firestore.batch();
 
@@ -176,12 +172,11 @@ export function leaveSession(
 
       if (owner.id === userID) {
         if (session.total === 1) {
-          console.log("leaving session ooo====================================================")
-          batch.update(sessionRef, { live: false, "totals.listeners": 0, paused: true });
+          batch.update(sessionRef, {live: false, "totals.listeners": 0, paused: true});
         } else {
           const sessionUsers: FirestoreDocs = await sessionRef.collection('users').where('active', '==', true).get();
-          const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random() * sessionUsers.docs.length)];
-
+          const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random()*sessionUsers.docs.length)];
+  
           batch.update(
             sessionRef,
             {
@@ -193,12 +188,12 @@ export function leaveSession(
           );
         }
       } else {
-        batch.update(sessionRef, { 'totals.listeners': session.total - 1 });
+        batch.update(sessionRef, {'totals.listeners': session.total - 1});
       }
 
-      batch.update(sessionRef.collection('users').doc(userID), { timeLeft, active: false, paused: true });
-      batch.update(userRef, { currentSession: null, online: false });
-      batch.update(userRef.collection('sessions').doc(session.id), { timeLeft });
+      batch.update(sessionRef.collection('users').doc(userID), {timeLeft, active: false, paused: true});
+      batch.update(userRef, {currentSession: null, online: false});
+      batch.update(userRef.collection('sessions').doc(session.id), {timeLeft});
 
       dispatch(stopSessionInfoListener(session.infoUnsubscribe));
       // $FlowFixMe
@@ -207,13 +202,6 @@ export function leaveSession(
       dispatch(stopChatListener(session.chatUnsubscribe));
 
       await batch.commit();
-
-      // sessionRef.onSnapshot((coll) => {
-      //   coll.forEach(doc => {
-      //     console.log("real-time update loading...")
-      //     console.log(doc)
-      //   })
-      // })
     } catch (err) {
       dispatch(actions.failure(err));
     }

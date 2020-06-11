@@ -10,69 +10,68 @@
  */
 
 import moment from 'moment';
-import { Actions } from 'react-native-router-flux';
-import { leaveSession } from '../LeaveSession';
-import { updateSessions } from '../UpdateSessions';
-import { updatePlayer } from '../../player/UpdatePlayer';
-import { updateQueue } from '../../queue/UpdateQueue';
+import {Actions} from 'react-native-router-flux';
+import {leaveSession} from '../LeaveSession';
+import {updateSessions} from '../UpdateSessions';
+import {updatePlayer} from '../../player/UpdatePlayer';
+import {updateQueue} from '../../queue/UpdateQueue';
 import * as actions from './actions';
-import { type ThunkAction } from '../../../reducers/sessions';
-import { type TrackArtist } from '../../../reducers/tracks';
-import { type Context } from '../../../reducers/queue';
-import { type BRSession } from '../../../utils/brassrootsTypes';
+import {type ThunkAction} from '../../../reducers/sessions';
+import {type TrackArtist} from '../../../reducers/tracks';
+import {type Context} from '../../../reducers/queue';
+import {type BRSession} from '../../../utils/brassrootsTypes';
 import {
   type FirestoreInstance,
   type FirestoreDoc,
   type FirestoreRef,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
-import { persistSession } from '../../../utils/persistSession';
 
 type Session = {
   +id: string,
-  +currentTrackID ?: string,
-  +totalListeners ?: number,
-  +timeLastPlayed ?: string,
-  +progress ?: number,
-  +paused ?: boolean,
-  +context ?: Context,
-  +owner ?: {
-    + id: string,
-  +name: string,
+  +currentTrackID?: string,
+  +totalListeners?: number,
+  +timeLastPlayed?: string,
+  +progress?: number,
+  +paused?: boolean,
+  +context?: Context,
+  +owner?: {
+    +id: string,
+    +name: string,
     +image: string,
   },
-+current ?: string,
-  +total ?: number,
-  +track ?: {
-    + trackID ?: string,
-  +timeAdded ?: string | number,
-  +id: string,
+  +current?: string,
+  +total?: number,
+  +track?: {
+    +trackID?: string,
+    +timeAdded?: string | number,
+    +id: string,
     +name: string,
-      +trackNumber: number,
-        +durationMS: number,
-          +artists: Array < TrackArtist >,
-            +album: {
-  +id: string,
-    +name: string,
+    +trackNumber: number,
+    +durationMS: number,
+    +artists: Array<TrackArtist>,
+    +album: {
+      +id: string,
+      +name: string,
       +small: string,
-        +medium: string,
-          +large: string,
-            +artists: Array < TrackArtist >,
+      +medium: string,
+      +large: string,
+      +artists: Array<TrackArtist>,
     },
   },
-+coords ?: {
-    + lat: number,
-  +lon: number,
+  +coords?: {
+    +lat: number,
+    +lon: number,
   },
-+chatUnsubscribe: ?() => void,
+  +chatUnsubscribe: ?() => void,
   +infoUnsubscribe: ?() => void,
-    +queueUnsubscribe: ?() => void,
+  +queueUnsubscribe: ?() => void,
 };
 
 type User = {|
   +id: string,
   +displayName: string,
-    +profileImage: string,
+  +profileImage: string,
 |};
 
 /**
@@ -126,7 +125,7 @@ export function joinSession(
   user: User,
   leaving: boolean,
 ): ThunkAction {
-  return async (dispatch, _, { getFirestore }) => {
+  return async (dispatch, _, {getFirestore}) => {
     if (leaving) {
       const {
         owner,
@@ -138,6 +137,7 @@ export function joinSession(
         infoUnsubscribe,
         queueUnsubscribe,
       } = session;
+
       if (
         owner
         && current
@@ -186,12 +186,12 @@ export function joinSession(
           progress,
           paused,
           owner: newOwner,
-          totals: { listeners, users, previouslyPlayed },
+          totals: {listeners, users, previouslyPlayed},
         } = doc.data();
 
         transaction.update(
           sessionRef,
-          { 'totals.listeners': listeners + 1, 'totals.users': users + 1 },
+          {'totals.listeners': listeners + 1, 'totals.users': users + 1},
         );
 
         return {
@@ -216,15 +216,15 @@ export function joinSession(
       const diff = moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').diff(timeLastPlayed, 'seconds');
       const progress = newSession.progress + (diff * 1000);
 
-      if (newSession.context) dispatch(updateQueue({ context: newSession.context }));
+      if (newSession.context) dispatch(updateQueue({context: newSession.context}));
 
-      dispatch(updatePlayer({ progress }));
-      dispatch(updateSessions({ currentSessionID: session.id }));
+      dispatch(updatePlayer({progress}));
+      dispatch(updateSessions({currentSessionID: session.id}));
       dispatch(actions.success());
       Actions.liveSession();
 
-      batch.update(userRef, { live: true, currentSession: session.id });
-      batch.set(userRef.collection('sessions').doc(session.id), { timeJoined, id: session.id });
+      batch.update(userRef, {live: true, currentSession: session.id});
+      batch.set(userRef.collection('sessions').doc(session.id), {timeJoined, id: session.id});
       batch.set(
         sessionRef.collection('users').doc(user.id),
         {
@@ -234,7 +234,6 @@ export function joinSession(
           active: true,
           muted: false,
           paused: newSession.paused,
-          currentSessionID: session.id,
         }
       );
 
