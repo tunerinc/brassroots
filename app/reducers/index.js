@@ -28,7 +28,6 @@ import settings from './settings';
 import share from './share';
 import tracks from './tracks';
 import users from './users';
-import socket from './socket';
 
 const reducers = {
   albums,
@@ -53,7 +52,6 @@ const reducers = {
   share,
   tracks,
   users,
-  socket,
 }
 
 export default combineReducers(reducers);

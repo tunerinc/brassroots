@@ -10,26 +10,20 @@
  */
 
 import Spotify from 'rn-spotify-sdk';
-import { Actions, ActionConst } from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import * as actions from './actions';
-import { getUserSettings } from '../GetUserSettings';
-import { addEntities } from '../../entities/AddEntities';
-import { updateOnboarding } from '../../onboarding/UpdateOnboarding';
-import { updateUsers } from '../../users/UpdateUsers';
+import {getUserSettings} from '../GetUserSettings';
+import {addEntities} from '../../entities/AddEntities';
+import {updateOnboarding} from '../../onboarding/UpdateOnboarding';
+import {updateUsers} from '../../users/UpdateUsers';
 import envConfig from '../../../../env.json';
-import { type ThunkAction } from '../../../reducers/settings';
-import { type PrivateUser } from '../../../utils/spotifyAPI/types';
+import {type ThunkAction} from '../../../reducers/settings';
+import {type PrivateUser} from '../../../utils/spotifyAPI/types';
 import {
   type FirestoreInstance,
   type FirestoreRef,
   type FirestoreDoc,
 } from '../../../utils/firebaseTypes';
-import { persistSession } from '../../../utils/persistSession';
-import { leaveSession } from '../../sessions/LeaveSession';
-import { type Context } from '../../../reducers/queue';
-import { type TrackArtist } from '../../../reducers/tracks';
-import firebase from 'firebase';
-import store from '../../../store/configureStore';
 
 /**
  * Async function that initializes Spotify for Ultrasound
@@ -44,7 +38,7 @@ import store from '../../../store/configureStore';
  * @rejects  {Error}   The error which caused the initialize spotify failure
  */
 export function initializeSpotify(): ThunkAction {
-  return async (dispatch, _, { getFirestore }) => {
+  return async (dispatch, _, {getFirestore}) => {
     dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
@@ -86,7 +80,6 @@ export function initializeSpotify(): ThunkAction {
         const userDoc = await firestore.collection('users').doc(spotifyUser.id).get();
 
         if (userDoc.exists) {
-          store().getState().socket.emit("init", spotifyUser.id);
           const user = {
             id: spotifyUser.id,
             displayName: spotifyUser.display_name,
@@ -102,13 +95,13 @@ export function initializeSpotify(): ThunkAction {
             favoriteTrackID: userDoc.data().favoriteTrackID,
             totalFollowers: userDoc.data().totals.followers,
             totalFollowing: userDoc.data().totals.following,
-            currentSession: userDoc.data().currentSession,
           };
-          
-          dispatch(updateOnboarding({ onboarding: false }));
-          dispatch(addEntities({ users: { [user.id]: user } }));
-          dispatch(updateUsers({ currentUserID: user.id }));
-          Actions.root({ type: ActionConst.RESET });
+
+          dispatch(actions.success(true));
+          dispatch(updateOnboarding({onboarding: false}));
+          dispatch(addEntities({users: {[user.id]: user}}));
+          dispatch(updateUsers({currentUserID: user.id}));
+          Actions.root({type: ActionConst.RESET});
           dispatch(getUserSettings(user.id));
         } else {
           dispatch(actions.success(false));

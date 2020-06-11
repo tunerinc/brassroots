@@ -11,7 +11,6 @@ import envConfig from '../../env';
 import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/storage';
-import defaultState from '../reducers/default';
 
 const firebaseConfig = {
   apiKey: envConfig.firebaseAuthKey,
@@ -51,7 +50,7 @@ const createStoreWithMiddleware = compose(
   reduxFirestore(firebase, rfConfig),
 )(createStore);
 
-export default function configureStore(initialState={}) {
-  const store = createStoreWithMiddleware(reducers, Object.assign(initialState, defaultState));
+export default function configureStore(initialState) {
+  const store = createStoreWithMiddleware(reducers, initialState);
   return store;
 }

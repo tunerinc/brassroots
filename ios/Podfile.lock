@@ -101,9 +101,6 @@ PODS:
     - boost-for-react-native
     - DoubleConversion
     - glog
-  - GCDWebServer (3.5.4):
-    - GCDWebServer/Core (= 3.5.4)
-  - GCDWebServer/Core (3.5.4)
   - glog (0.3.5)
   - GoogleAppMeasurement (6.1.2):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
@@ -150,8 +147,6 @@ PODS:
     - nanopb (~> 0.3)
   - gRPC-Core/Interface (1.21.0)
   - GTMSessionFetcher/Core (1.2.2)
-  - Interactable (2.0.1):
-    - React
   - leveldb-library (1.22)
   - libwebp (1.0.3):
     - libwebp/demux (= 1.0.3)
@@ -379,11 +374,6 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.2)
   - ReactNativePermissions (1.2.0):
     - React
-  - RealmJS (6.0.1):
-    - GCDWebServer
-    - React
-  - RNBackgroundFetch (2.0.8):
-    - React
   - RNCAsyncStorage (1.6.1):
     - React
   - RNEventEmitter (1.0.15):
@@ -427,7 +417,6 @@ DEPENDENCIES:
   - Firebase/Storage
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - Interactable (from `../node_modules/react-native-interactable`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../node_modules/react-native`)
@@ -456,8 +445,6 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativePermissions (from `../node_modules/react-native-permissions`)
-  - RealmJS (from `../node_modules/realm`)
-  - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - RNEventEmitter (from `../node_modules/react-native-events`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
@@ -499,8 +486,6 @@ SPEC REPOS:
     - RSKImageCropper
     - SDWebImage
     - SDWebImageWebPCoder
-  trunk:
-    - GCDWebServer
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -515,8 +500,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
-  Interactable:
-    :path: "../node_modules/react-native-interactable"
   RCTRequired:
     :path: "../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -567,10 +550,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   ReactNativePermissions:
     :path: "../node_modules/react-native-permissions"
-  RealmJS:
-    :path: "../node_modules/realm"
-  RNBackgroundFetch:
-    :path: "../node_modules/react-native-background-fetch"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
   RNEventEmitter:
@@ -610,7 +589,6 @@ SPEC CHECKSUMS:
   FirebaseMessaging: b22b949cc45c14da01e60404dd7bffc78956380c
   FirebaseStorage: b7c6d00997bc21d4465453bdcc5cc65513110fed
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
-  GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   GoogleAppMeasurement: 0ae90be1cc4dad40f4a27fc767ef59fa032ec87b
   GoogleDataTransport: c8617c00e4f3eb9418e42ac0e8ac5241a9d555dd
@@ -619,7 +597,6 @@ SPEC CHECKSUMS:
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
-  Interactable: 334971ca372efcb6791bb47f81f3265963c47f3e
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   libwebp: 057912d6d0abfb6357d8bb05c0ea470301f5d61e
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
@@ -650,8 +627,6 @@ SPEC CHECKSUMS:
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
   ReactNativePermissions: f0aec11433d43d45953c678b6982921d83ad94c8
-  RealmJS: cf6501f27894264dac14a97de49ad8499f31af11
-  RNBackgroundFetch: aa533598c6c75dc7b2a914033ca28135a97df7fe
   RNCAsyncStorage: 621bad7a889b5bf1583a52547f2dcd3a4d1ff15e
   RNEventEmitter: a43a853a0de1dee334d007a4b3d2a6dc29c77270
   RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
@@ -667,4 +642,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: acbfb76f0e50a40d7025f86864f4586fc557a859
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.8.3
