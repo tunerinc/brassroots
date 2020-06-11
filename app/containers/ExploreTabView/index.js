@@ -113,8 +113,8 @@ class ExploreTabView extends React.Component {
     const owner = inSession ? users.byID[sessions.byID[currentSessionID].ownerID] : null;
     const user = users.byID[currentUserID];
     const session = {
-      queueUnsubscribe,
-      infoUnsubscribe,
+      queueUnsubscribe: !queueUnsubscribe ? () => console.log('queue unsub') : queueUnsubscribe,
+      infoUnsubscribe: !infoUnsubscribe ? () => console.log('info unsub') : infoUnsubscribe,
       track,
       chatUnsubscribe: inSession ? () => console.log('chat unsub') : null,
       id: sessionID,

@@ -7,12 +7,12 @@
 
 // React
 import React from 'react';
-import {StyleSheet, StatusBar} from 'react-native';
-import {Router, Scene, Stack, Tabs, Modal} from 'react-native-router-flux';
-import {type ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
+import { StyleSheet, StatusBar, AppState } from 'react-native';
+import { Router, Scene, Stack, Tabs, Modal } from 'react-native-router-flux';
+import { type ViewStyleProp } from 'react-native/Libraries/StyleSheet/StyleSheet';
 
 // Store w/ Redux
-import {Provider, connect} from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import configureStore from './store/configureStore';
 
 import PlayerTabBar from './components/PlayerTabBar';
@@ -86,6 +86,8 @@ import LanguageRegionView from './containers/LanguageRegionView';
 import ReportProblemView from './containers/ReportProblemView';
 import ReportUserView from './containers/ReportUserView';
 
+import { leaveSession } from './actions/sessions/LeaveSession';
+
 type Props = {};
 
 interface Styles {
@@ -104,6 +106,14 @@ export default class App extends React.Component<Props> {
 
     // @see: https://github.com/facebook/react-native/issues/9599
     if (typeof global.self === 'undefined') global.self = global;
+  }
+
+  componentDidMount() {
+    
+  }
+
+  componentWillUnmount() {
+    
   }
 
   render() {
