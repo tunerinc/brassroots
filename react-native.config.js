@@ -4,8 +4,10 @@ const ios = require('@react-native-community/cli-platform-ios');
 const android = require('@react-native-community/cli-platform-android');
 
 module.exports = {
-  root: '/Users/aldogonzalez/Desktop/brassroots',
-  reactNativePath: '/Users/aldogonzalez/Desktop/brassroots/node_modules/react-native',
+  // root: '/Users/aldogonzalez/Desktop/brassroots',
+  // reactNativePath: '/Users/aldogonzalez/Desktop/brassroots/node_modules/react-native',
+  root: '/Users/hackathon/Documents/Hackathon/Projects/brassroots',
+  reactNativePath: '/Users/hackathon/Documents/Hackathon/Projects/brassroots/node_modules/react-native',
   commands: [...ios.commands, ...android.commands],
   dependencies: {
     'react-native-events': {

@@ -33,6 +33,7 @@ import {
   type FirestoreDocs,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
+import { persistSession } from '../../../utils/persistSession';
 
 type User = {|
   id: string,
