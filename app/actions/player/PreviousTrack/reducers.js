@@ -37,7 +37,7 @@ export function success(
   state: State,
   action: Action,
 ): State {
-  const {currentQueueID, currentTrackID, durationMS, prevQueueID, prevTrackID} = action;
+  const {currentQueueID, currentTrackID, durationMS, prevQueueID, prevTrackID, skip} = action;
 
   return updateObject(state, {
     currentQueueID,
@@ -47,6 +47,7 @@ export function success(
     durationMS,
     progress: 0,
     skippingPrev: false,
+    skip,
     paused: false,
     error: null,
   });
