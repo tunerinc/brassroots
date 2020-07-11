@@ -14,9 +14,9 @@ import Spotify from 'rn-spotify-sdk';
 import getMySavedTracks from '../../../utils/spotifyAPI/getMySavedTracks';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addRecentTrack} from '../../tracks/AddRecentTrack';
-import {type TrackArtist} from '../../../reducers/tracks';
-import {type ThunkAction} from '../../../reducers/player';
+import { addRecentTrack } from '../../tracks/AddRecentTrack';
+import { type TrackArtist } from '../../../reducers/tracks';
+import { type ThunkAction } from '../../../reducers/player';
 import {
   type FirestoreInstance,
   type FirestoreRef,
@@ -172,7 +172,7 @@ export function playTrack(
   session: Session,
   context: ?Context,
 ): ThunkAction {
-  return async (dispatch, _, {getFirestore}) => {
+  return async (dispatch, _, { getFirestore }) => {
     dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
@@ -182,7 +182,7 @@ export function playTrack(
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(user.id);
     const geoRef: FirestoreRef = firestore.collection('geo');
     // const geoFirestore = new GeoFirestore(geoRef);
-    const {totalPlayed, current, coords} = session;
+    const { totalPlayed, current, coords } = session;
 
     let batch = firestore.batch();
 
@@ -190,117 +190,124 @@ export function playTrack(
       if (!track.id) {
         const queueDoc: FirestoreDoc = sessionQueueRef.doc();
         const queueID: string = queueDoc.id;
-        track = updateObject(track, {id: queueID});
+        track = updateObject(track, { id: queueID });
       }
 
-      await Spotify.playURI(`spotify:track:${track.trackID}`, 0, 0);
-      dispatch(actions.success(track.id, track.trackID, track.durationMS));
+      Spotify.playURI(`spotify:track:${track.trackID}`, 0, 0)
+        .then(async played => {
+          // alert("played")
+          dispatch(actions.success(track.id, track.trackID, track.durationMS));
 
-      if (
-        context
-        && context.type === 'user-tracks'
-        && Array.isArray(context.tracks)
-        && context.tracks.length !== 3
-        && typeof context.position === 'number'
-        && typeof context.total === 'number'
-        && (context.tracks.length + context.position + 1) < context.total
-      ) {
-        const options: {
-          limit: number,
-          offset: number,
-          market: string,
-        } = {
-          limit: 3 - context.tracks.length,
-          offset: context.tracks.length + context.position + 1,
-          market: 'US',
-        };
+          if (
+            context
+            && context.type === 'user-tracks'
+            && Array.isArray(context.tracks)
+            && context.tracks.length !== 3
+            && typeof context.position === 'number'
+            && typeof context.total === 'number'
+            && (context.tracks.length + context.position + 1) < context.total
+          ) {
+            const options: {
+              limit: number,
+              offset: number,
+              market: string,
+            } = {
+              limit: 3 - context.tracks.length,
+              offset: context.tracks.length + context.position + 1,
+              market: 'US',
+            };
 
-        const {items} = await getMySavedTracks(options);
+            const { items } = await getMySavedTracks(options);
 
-        context = updateObject(context, {
-          tracks: Array.isArray(context.tracks) && Array.isArray(items)
-            ? [...context.tracks, ...items.map(item => item.track.id)]
-            : context.tracks,
-        });
-      }
+            context = updateObject(context, {
+              tracks: Array.isArray(context.tracks) && Array.isArray(items)
+                ? [...context.tracks, ...items.map(item => item.track.id)]
+                : context.tracks,
+            });
+          }
 
-      batch.update(sessionUserRef, {paused: false, progress: 0});
-      batch.update(
-        sessionRef,
-        {
-          progress: 0,
-          currentQueueID: track.id,
-          currentTrackID: track.trackID,
-          timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
-          paused: false,
-          ...(context
-            ? {
-              'context.id': context.id,
-              'context.name': context.name,
-              'context.type': context.type,
-              'context.displayName': context.displayName,
-              'context.position': context.position,
-              'context.tracks': Array.isArray(context.tracks) ? context.tracks : null,
-              'totals.context': context.total,
-              'totals.previouslyPlayed': totalPlayed + 1,
-            }
-            : {}
-          ),
-        },
-      );
-
-      if (context && current) {
-        // dispatch(addRecentTrack(user.id, current.track));
-        const queueTrack = await sessionQueueRef.doc(current.id).get();
-
-        if (!queueTrack.exists) {
-          throw new Error('Unable to retrieve current track from Firestore');
-        }
-
-        batch.set(
-          sessionPrevRef.doc(current.id),
-          {
-            id: current.id,
-            userID: current.userID,
-            totalLikes: current.totalLikes,
-            prevQueueID: queueTrack.data().prevQueueID,
-            prevTrackID: queueTrack.data().prevTrackID,
-            nextQueueID: track.id,
-            nextTrackID: track.trackID,
-            track: {...current.track},
-          },
-        );
-
-        batch.set(
-          sessionQueueRef.doc(track.id),
-          {
-            user,
-            id: track.id,
-            likes: [],
-            totalLikes: 0,
-            timeAdded: firestore.FieldValue.serverTimestamp(),
-            isCurrent: true,
-            prevQueueID: current.id,
-            prevTrackID: current.track.id,
-            nextQueueID: current.nextQueueID || null,
-            nextTrackID: current.nextTrackID || null,
-            track: {...track, id: track.trackID, trackID: null},
-          },
-        );
-
-        if (current.nextQueueID) {
-          batch.update(sessionQueueRef.doc(current.nextQueueID),
+          batch.update(sessionUserRef, { paused: false, progress: 0 });
+          batch.update(
+            sessionRef,
             {
-              prevQueueID: track.id,
-              prevTrackID: track.trackID,
+              progress: 0,
+              currentQueueID: track.id,
+              currentTrackID: track.trackID,
+              timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
+              paused: false,
+              ...(context
+                ? {
+                  'context.id': context.id,
+                  'context.name': context.name,
+                  'context.type': context.type,
+                  'context.displayName': context.displayName,
+                  'context.position': context.position,
+                  'context.tracks': Array.isArray(context.tracks) ? context.tracks : null,
+                  'totals.context': context.total,
+                  'totals.previouslyPlayed': totalPlayed + 1,
+                }
+                : {}
+              ),
             },
           );
-        }
 
-        batch.delete(sessionQueueRef.doc(current.id));
-      }
+          if (context && current) {
+            // dispatch(addRecentTrack(user.id, current.track));
+            const queueTrack = await sessionQueueRef.doc(current.id).get();
 
-      await batch.commit();
+            if (!queueTrack.exists) {
+              throw new Error('Unable to retrieve current track from Firestore');
+            }
+
+            batch.set(
+              sessionPrevRef.doc(current.id),
+              {
+                id: current.id,
+                userID: current.userID,
+                totalLikes: current.totalLikes,
+                prevQueueID: queueTrack.data().prevQueueID,
+                prevTrackID: queueTrack.data().prevTrackID,
+                nextQueueID: track.id,
+                nextTrackID: track.trackID,
+                track: { ...current.track },
+              },
+            );
+
+            batch.set(
+              sessionQueueRef.doc(track.id),
+              {
+                user,
+                id: track.id,
+                likes: [],
+                totalLikes: 0,
+                timeAdded: firestore.FieldValue.serverTimestamp(),
+                isCurrent: true,
+                prevQueueID: current.id,
+                prevTrackID: current.track.id,
+                nextQueueID: current.nextQueueID || null,
+                nextTrackID: current.nextTrackID || null,
+                track: { ...track, id: track.trackID, trackID: null },
+              },
+            );
+
+            if (current.nextQueueID) {
+              batch.update(sessionQueueRef.doc(current.nextQueueID),
+                {
+                  prevQueueID: track.id,
+                  prevTrackID: track.trackID,
+                },
+              );
+            }
+
+            batch.delete(sessionQueueRef.doc(current.id));
+          }
+
+          await batch.commit();
+        })
+        .catch(err => {
+          throw new Error('Unable to play track');
+        })
+
     } catch (err) {
       dispatch(actions.failure(err));
     }
