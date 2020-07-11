@@ -43,7 +43,7 @@ export function stopPlayer(
 
     try {
       dispatch(actions.success())
-      await sessionRef.update({timeLastPlayed, paused: true, progress: 0});
+      await sessionRef.update({timeLastPlayed, paused: true, progress: 0,});
     } catch (err) {
       dispatch(actions.failure(err));
     }

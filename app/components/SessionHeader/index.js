@@ -16,6 +16,7 @@ import styles from './styles';
 // Icons
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { string } from 'prop-types';
 
 type Props = {|
   toggleEdit: () => any,
@@ -32,6 +33,7 @@ type Props = {|
   editingQueue: boolean,
   image: string,
   mode: string,
+  live: string,
   prevTrackID: ?string,
   nextTrackID: ?string,
   currentQueueID: string,
@@ -72,6 +74,7 @@ export default class SessionHeader extends React.Component<Props, State> {
       editingQueue,
       image,
       mode,
+      live,
       prevTrackID,
       nextTrackID,
       currentQueueID,
@@ -103,7 +106,7 @@ export default class SessionHeader extends React.Component<Props, State> {
         />
         <View style={styles.sessionLiveMode}>
           {/* <SessionModeIcon mode={mode} /> */}
-          <Text style={styles.sessionLiveText}>LIVE</Text>
+          <Text style={[styles.sessionLiveText, !live && { color: "#ccc", opacity: 0.5 }]}>LIVE</Text>
         </View>
         <PlayerSlider
           sessionID={sessionID}

@@ -40,6 +40,15 @@ export function success(): Action {
   return {type: types.GET_TRENDING_SESSIONS_SUCCESS};
 }
 
+// export function success(
+//   unsubscribe: () => void,
+// ): Action {
+//   return {
+//     type: types.GET_TRENDING_SESSIONS_SUCCESS,
+//     unsubscribe,
+//   };
+// }
+
 /**
  * Notify the app of a get trending sessions failure
  * 

@@ -41,6 +41,7 @@ class ExploreTabView extends React.Component {
       selectedSession: null,
       sessionModalOpen: false,
       y: new Value(0),
+      inactiveSessions: [],
     };
 
     this.renderSessionModal = this.renderSessionModal.bind(this);
@@ -72,6 +73,15 @@ class ExploreTabView extends React.Component {
       setTimeout(getTrendingSessions, 100);
     }
   }
+
+  // componentDidUpdate(prevProps) {
+  //   const { sessions: { live, currentSessionID, }, } = this.props;
+  //   const { sessions: { live: oldLive } } = prevProps;
+  //   if (live == true && live !== oldLive) {
+  //     this.setState((prevState => ({ inactiveSessions: [...prevState.inactiveSessions, currentSessionID,] })));
+  //     alert(currentSessionID);
+  //   }
+  // }
 
   openModal = selectedSession => () => this.setState({selectedSession, sessionModalOpen: true});
 
@@ -142,6 +152,7 @@ class ExploreTabView extends React.Component {
 
     const track = tracks.byID[session.currentTrackID];
     const owner = users.byID[session.ownerID];
+    const live = session.live;
 
     let listenerTotal = 0;
     let formattedDistance = '';
@@ -186,6 +197,7 @@ class ExploreTabView extends React.Component {
         album={track.album.name}
         listeners={listenerTotal}
         distance={formattedDistance}
+        live={live}
       />
     );
   }

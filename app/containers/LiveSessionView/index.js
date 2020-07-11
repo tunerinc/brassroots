@@ -94,6 +94,7 @@ class LiveSessionView extends React.Component {
       fetchedChat: false,
       fetchedInfo: false,
       fetchedQueue: false,
+      liveStatus: false,
     };
 
     this.progressInterval;
@@ -154,7 +155,7 @@ class LiveSessionView extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const {fetchedChat, fetchedInfo, fetchedQueue, editingQueue, seekTime} = this.state;
+    const {fetchedChat, fetchedInfo, fetchedQueue, editingQueue, seekTime, liveStatus} = this.state;
     const {
       getChat,
       getSessionInfo,
@@ -170,6 +171,14 @@ class LiveSessionView extends React.Component {
 
     if (currentSessionID && sessions.allIDs.includes(currentSessionID)) {
       const isOwner = sessions.byID[currentSessionID].ownerID === currentUserID;
+
+      const {live} = sessions.byID[currentSessionID];
+      if (live == false && !liveStatus) {
+        this.setState({liveStatus:true})
+        Actions.pop();
+        // alert(live)
+        // this.leave();
+      }
 
       if (!fetchedChat && !chatFetching.includes('chat') && !chatUnsubscribe) {
         this.setState({fetchedChat: true});
@@ -500,7 +509,7 @@ class LiveSessionView extends React.Component {
       || !sessions.allIDs.includes(currentSessionID)
     ) return <View></View>;
 
-    const {totalListeners, distance, mode, ownerID} = sessions.byID[currentSessionID];
+    const {totalListeners, distance, mode, ownerID,live} = sessions.byID[currentSessionID];
     const {album, durationMS, name, artists} = tracks.byID[currentTrackID];
     const queueTrack = queueTracks.allIDs.includes(currentQueueID)
       ? queueTracks.byID[currentQueueID]
@@ -553,6 +562,7 @@ class LiveSessionView extends React.Component {
         editingQueue={editingQueue}
         image={album.large}
         mode={mode}
+        live={live}
         prevTrackID={prevTrackID}
         nextTrackID={nextTrackID}
         currentQueueID={currentQueueID}
@@ -616,7 +626,8 @@ class LiveSessionView extends React.Component {
         context={context}
         addTrack={() => {
           Actions.pop();
-          Actions.root({type: ActionConst.RESET});
+          Actions.library();
+          // Actions.root({type: ActionConst.RESET});
         }}
       />
     );

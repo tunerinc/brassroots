@@ -66,6 +66,7 @@ type Music = {|
  * @resolves {array}          The paginated sessions from Ultrasound
  * @rejects  {Error}          The error which caused the paginate trending sessions failure
  */
+
 export function paginateTrendingSessions(
   userID: string,
   cursor: number,
@@ -94,6 +95,7 @@ export function paginateTrendingSessions(
         users = updateObject(users, {[userID]: {id: userID, coords: pos.coords}});
       }
 
+      // alert(cursor)
       const trendingSessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
         .orderBy('totals.listeners', 'desc')
         .startAfter(cursor)
@@ -101,7 +103,7 @@ export function paginateTrendingSessions(
         .get();
 
       if (trendingSessions.empty) {
-        dispatch(updateSessions({explore: {trendingCanPaginate: false}}));
+        dispatch(updateSessions({explore: {trendingCanPaginate: false, }}));
         dispatch(actions.success());
       } else {
         const trendingIDs: Array<string> = trendingSessions.docs.map(doc => doc.data().id);
@@ -170,7 +172,7 @@ export function paginateTrendingSessions(
           });
 
         dispatch(addEntities({...music, playlists, sessions, users}));
-        dispatch(updateSessions({explore: {trendingIDs, trendingCanPaginate}}));
+        dispatch(updateSessions({explore: {trendingIDs, trendingCanPaginate,}}));
         dispatch(actions.success());
       }
     } catch (err) {

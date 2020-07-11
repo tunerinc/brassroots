@@ -80,7 +80,7 @@ export function togglePause(
         batch.update(sessionUserRef, {paused, progress: session.progress});
 
         if (ownerID === userID) {
-          batch.update(sessionRef, {timeLastPlayed, paused, progress: session.progress});
+          batch.update(sessionRef, {timeLastPlayed, paused, progress: session.progress,});
         }
       } else {
         batch.update(sessionUserRef, {paused});

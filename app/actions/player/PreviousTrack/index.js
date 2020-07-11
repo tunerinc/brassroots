@@ -222,6 +222,7 @@ export function previousTrack(
           currentTrackID: prevDoc.data().track.id,
           timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
           paused: false,
+          // inactive:false,
           'totals.previouslyPlayed': totalPlayed + 1,
         }
       );

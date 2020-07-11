@@ -50,7 +50,7 @@ export function startPlayer(
     try {
       await Spotify.playURI(`spotify:track:${trackID}`, 0, position);
       dispatch(actions.success());
-      await sessionUserRef.update({paused: false});
+      await sessionUserRef.update({paused: false,});
     } catch (err) {
       dispatch(actions.failure(err));
     }

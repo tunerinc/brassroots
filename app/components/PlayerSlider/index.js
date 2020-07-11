@@ -54,6 +54,7 @@ export default class PlayerSlider extends React.Component<Props, State> {
     const remTime: string = seeking
       ? convertMillisTime(durationMS - seekTime)
       : convertMillisTime(durationMS - progress);
+    // alert(currentTime);
 
     return (
       <View style={styles.container}>

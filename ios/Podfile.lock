@@ -610,6 +610,8 @@ PODS:
     - React
     - SDWebImage (~> 5.0)
     - SDWebImageWebPCoder (~> 0.2.3)
+  - RNFS (2.16.6):
+    - React
   - RNGestureHandler (1.6.1):
     - React
   - RNImageCropPicker (0.25.2):
@@ -676,6 +678,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - RNEventEmitter (from `../node_modules/react-native-events`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -787,6 +790,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-events"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
@@ -864,10 +869,11 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 621bad7a889b5bf1583a52547f2dcd3a4d1ff15e
   RNEventEmitter: a43a853a0de1dee334d007a4b3d2a6dc29c77270
   RNFastImage: 9b0c22643872bb7494c8d87bbbb66cc4c0d9e7a2
+  RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNImageCropPicker: f675353bbe18f66113a39b319c0aeb36655a6e4c
   RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
-  RNSpotify: bb6ed096906bd010d9aeec59efa15a40d6e7f849
+  RNSpotify: 190090d0bf0734480d1115a98d4a0ad51f121a8d
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   SDWebImage: e3eae2eda88578db0685a0c88597fdadd9433f05

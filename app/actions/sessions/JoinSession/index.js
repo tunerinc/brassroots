@@ -184,9 +184,15 @@ export function joinSession(
           timeLastPlayed,
           progress,
           paused,
+          live,
           owner: newOwner,
           totals: { listeners, users, previouslyPlayed },
         } = doc.data();
+
+        if (!live) {
+          dispatch(updateSessions({ currentSessionID: session.id, live: false }));
+          throw new Error('Unable to retrieve the session from Ultrasound');
+        }
 
         transaction.update(
           sessionRef,

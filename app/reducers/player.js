@@ -18,6 +18,7 @@ import * as types from '../actions/player/types';
 import * as nextTrack from '../actions/player/NextTrack/reducers';
 import * as playTrack from '../actions/player/PlayTrack/reducers';
 import * as previousTrack from '../actions/player/PreviousTrack/reducers';
+import { bool } from 'prop-types';
 
 export const lastUpdated: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
 
@@ -52,6 +53,7 @@ type Action = {
   +prevTrackID?: ?string,
   +progress?: number,
   +status?: boolean,
+  +skip?: boolean,
   +updates?: Updates,
 };
 
@@ -157,11 +159,11 @@ export default function reducer(
   if (typeof action.type === 'string') {
     switch (action.type) {
       case types.NEXT_TRACK_REQUEST:
-        return updateObject(state, {skippingNext: true, error: null});
+        return updateObject(state, {skippingNext: true, error: null, skip:null});
       case types.NEXT_TRACK_SUCCESS:
-        return nextTrack.success(state, action);
+        return nextTrack.success(state, { ...action, skip: true, });
       case types.NEXT_TRACK_FAILURE:
-        return updateObject(state, {error: action.error, skippingNext: false});
+        return updateObject(state, {error: action.error, skippingNext: false, skip:null});
       case types.PAUSE_PLAYER_REQUEST:
         return updateObject(state, {pausing: true, error: null});
       case types.PAUSE_PLAYER_SUCCESS:
@@ -175,11 +177,11 @@ export default function reducer(
       case types.PLAY_TRACK_FAILURE:
         return updateObject(state, {error: action.error, attemptingToPlay: false});
       case types.PREVIOUS_TRACK_REQUEST:
-        return updateObject(state, {skippingPrev: true, error: null});
+        return updateObject(state, {skippingPrev: true, error: null, skip:null});
       case types.PREVIOUS_TRACK_SUCCESS:
-        return previousTrack.success(state, action);
+        return previousTrack.success(state, { ...action, skip: true, });
       case types.PREVIOUS_TRACK_FAILURE:
-        return updateObject(state, {error: action.error, skippingPrev: false});
+        return updateObject(state, {error: action.error, skippingPrev: false, skip:null});
       case types.RESET_PLAYER:
         return initialState;
       case types.SEEK_POSITION_REQUEST:

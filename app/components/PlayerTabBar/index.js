@@ -73,6 +73,7 @@ class PlayerTabBar extends React.Component {
       entities: {sessions},
       player: {
         paused,
+        livePause,
         seeking,
         progress,
         durationMS,
@@ -80,6 +81,7 @@ class PlayerTabBar extends React.Component {
         nextQueueID,
         skippingPrev,
         skippingNext,
+        skip,
         error: playerError,
       },
       queue: {context, userQueue},
@@ -100,6 +102,7 @@ class PlayerTabBar extends React.Component {
         currentQueueID: oldCurrentID,
         skippingPrev: oldSkippingPrev,
         skippingNext: oldSkippingNext,
+        skip: oldSkip,
       },
     } = prevProps;
     const currentSession = sessions.byID[currentSessionID];
@@ -155,7 +158,7 @@ class PlayerTabBar extends React.Component {
       ) {
         updatePlayer({progress: currentSession.progress});
 
-        if (!paused) {
+        if (!currentSession.paused) {
           startPlayer(
             currentSessionID,
             currentUserID,
@@ -186,6 +189,26 @@ class PlayerTabBar extends React.Component {
       ) {
         pausePlayer(currentSessionID, currentUserID, oldProgress);
       }
+    }
+
+    if (skip && skip !== oldSkip) {
+      Spotify.on('play', () => {
+        if (!this.startedBackgroundTimer) {
+          BackgroundTimer.start();
+          this.startedBackgroundTimer = true;
+        }
+
+        if (typeof this.progressInterval !== 'number') {
+          this.progressInterval = setInterval(this.setProgress, 985);
+        }
+      });
+
+      Spotify.on('pause', () => {
+        clearInterval(this.progressInterval);
+        this.progressInterval = null;
+      });
+
+      Spotify.on('trackDelivered', this.handleDoneTrack);
     }
   }
 

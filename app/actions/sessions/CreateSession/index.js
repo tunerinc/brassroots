@@ -15,17 +15,17 @@ import getMySavedTracks from '../../../utils/spotifyAPI/getMySavedTracks';
 import getUserLocation from '../../../utils/getUserLocation';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {playTrack} from '../../player/PlayTrack';
-import {addEntities} from '../../entities/AddEntities';
-import {updatePlayer} from '../../player/UpdatePlayer';
-import {updateQueue} from '../../queue/UpdateQueue';
-import {updateSessions} from '../UpdateSessions';
-import {type TrackArtist} from '../../../reducers/tracks';
+import { playTrack } from '../../player/PlayTrack';
+import { addEntities } from '../../entities/AddEntities';
+import { updatePlayer } from '../../player/UpdatePlayer';
+import { updateQueue } from '../../queue/UpdateQueue';
+import { updateSessions } from '../UpdateSessions';
+import { type TrackArtist } from '../../../reducers/tracks';
 import {
   type ThunkAction,
   type Session,
 } from '../../../reducers/sessions';
-import {type Context} from '../../../reducers/queue';
+import { type Context } from '../../../reducers/queue';
 import {
   type FirestoreInstance,
   type FirestoreRef,
@@ -33,29 +33,30 @@ import {
   type FirestoreDocs,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
+import { getTrendingSessions } from '../GetTrendingSessions';
 
 type User = {|
   id: string,
-  displayName: string,
-  profileImage: string,
-  totalFollowers: number,
+    displayName: string,
+      profileImage: string,
+        totalFollowers: number,
 |};
 
 type Track = {|
   trackID?: string,
-  timeAdded?: string | number,
-  id: string,
-  name: string,
-  trackNumber: number,
-  durationMS: number,
-  artists: Array<TrackArtist>,
-  album: {
+    timeAdded ?: string | number,
     id: string,
+      name: string,
+        trackNumber: number,
+          durationMS: number,
+            artists: Array < TrackArtist >,
+              album: {
+  id: string,
     name: string,
-    small: string,
-    medium: string,
-    large: string,
-    artists: Array<TrackArtist>,
+      small: string,
+        medium: string,
+          large: string,
+            artists: Array < TrackArtist >,
   },
 |};
 
@@ -119,7 +120,7 @@ export function createSession(
   context: Context,
   mode: string,
 ): ThunkAction {
-  return async (dispatch, _, {getFirestore}) => {
+  return async (dispatch, _, { getFirestore }) => {
     dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
@@ -136,14 +137,23 @@ export function createSession(
       const newTrackDoc: FirestoreDoc = queueRef.doc();
       const newTrackID: string = newTrackDoc.id;
 
+      // var unsubscribe = sessionsRef.doc(newSessionDoc.id)
+      //   .onSnapshot((snapshot) => {
+      //     alert("SEEN OO")
+      //     unsubscribe();
+      //     // if (coll) {
+      //     //   dispatch(getTrendingSessions(user.id));
+      //     // }
+      //   })
+
       let batch: FirestoreBatch = firestore.batch();
       let pos: Coords = {};
-      let session: Session = {coords: null};
+      let session: Session = { coords: null };
 
       if (permission === 'authorized') {
         pos = await getUserLocation();
       } else if (permission === 'undetermined') {
-        await Permissions.request('location', {type: 'whenInUse'});
+        await Permissions.request('location', { type: 'whenInUse' });
         pos = await getUserLocation();
       }
 
@@ -153,7 +163,7 @@ export function createSession(
           lon: pos.coords.longitude
         });
 
-        user = updateObject(user, {coords: {...pos}});
+        user = updateObject(user, { coords: { ...pos } });
       }
 
       if (
@@ -174,7 +184,7 @@ export function createSession(
           market: 'US',
         };
 
-        const {items} = await getMySavedTracks(options);
+        const { items } = await getMySavedTracks(options);
 
         context = updateObject(context, {
           tracks: Array.isArray(context.tracks)
@@ -184,7 +194,7 @@ export function createSession(
       }
 
       const timeJoined: string = moment().format('ddd, MMM D, YYYY, h:mm:ss a');
-      const {total: contextTotal, ...restOfContext} = context;
+      const { total: contextTotal, ...restOfContext } = context;
 
       session = updateObject(session, {
         mode,
@@ -196,18 +206,19 @@ export function createSession(
         totalListeners: 1,
       });
 
+      // dispatch(getTrendingSessions(user.id));
       dispatch(actions.success());
-      dispatch(updateQueue({context}));
+      dispatch(updateQueue({ context }));
       dispatch(
         addEntities(
           {
-            sessions: {[session.id]: session},
-            users: {[user.id]: {...user, currentSessionID: session.id}},
+            sessions: { [session.id]: session },
+            users: { [user.id]: { ...user, currentSessionID: session.id } },
           },
         ),
       );
 
-      dispatch(updateSessions({currentSessionID: session.id}));
+      dispatch(updateSessions({ currentSessionID: session.id }));
       dispatch(
         updatePlayer(
           {
@@ -217,8 +228,8 @@ export function createSession(
         ),
       );
 
-      batch.update(userRef, {currentSession: newSessionKey, online: true});
-      batch.set(userRef.collection('sessions').doc(newSessionKey), {id: newSessionKey, timeJoined});
+      batch.update(userRef, { currentSession: newSessionKey, online: true });
+      batch.set(userRef.collection('sessions').doc(newSessionKey), { id: newSessionKey, timeJoined });
       batch.set(
         sessionsRef.doc(newSessionKey),
         {
@@ -233,7 +244,7 @@ export function createSession(
           repeat: false,
           seeking: false,
           shuffle: false,
-          coords: typeof pos.lat === 'number' && typeof pos.lon === 'number' ? {...pos} : null,
+          coords: typeof pos.lat === 'number' && typeof pos.lon === 'number' ? { ...pos } : null,
           context: {
             ...restOfContext,
             tracks: context.tracks || null,
@@ -299,11 +310,21 @@ export function createSession(
         // $FlowFixMe
         playTrack(
           user,
-          {...track, id: newTrackID, trackID: track.id},
-          {id: session.id, totalPlayed: 0},
+          { ...track, id: newTrackID, trackID: track.id },
+          { id: session.id, totalPlayed: 0 },
           null,
         ),
       );
+
+
+      // sessionsRef.onSnapshot((coll) => {
+      //   alert(coll)
+      //   console.log(coll)
+      //   // if (coll) {
+      //   //   dispatch(getTrendingSessions(user.id));
+      //   // }
+      // })
+
     } catch (err) {
       dispatch(actions.failure(err));
     }
