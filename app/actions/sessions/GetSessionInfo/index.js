@@ -2,7 +2,7 @@
 
 /**
  * @format
- * @flow
+ * @flows
  */
 
 /**
@@ -11,13 +11,16 @@
 
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {addEntities} from '../../entities/AddEntities';
-import {updatePlayer} from '../../player/UpdatePlayer';
-import {type ThunkAction} from '../../../reducers/sessions';
+import { addEntities } from '../../entities/AddEntities';
+import { updatePlayer } from '../../player/UpdatePlayer';
+import { type ThunkAction } from '../../../reducers/sessions';
 import {
   type FirestoreInstance,
   type FirestoreDoc,
 } from '../../../utils/firebaseTypes';
+import store from '../../../store/configureStore';
+import { leaveSession } from '../LeaveSession';
+import { getTrendingSessions } from '../GetTrendingSessions';
 
 /**
  * Async function that gets the info for a session from Ultrasound
@@ -36,20 +39,32 @@ import {
 export function getSessionInfo(
   sessionID: string,
 ): ThunkAction {
-  return async (dispatch, _, {getFirestore}) => {
+  return async (dispatch, getState, { getFirestore }) => {
     dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
-    
+    // const sessionsRef: FirestoreDoc = firestore.collection('sessions');
+
     try {
       const unsubscribe = sessionRef.onSnapshot(
         doc => {
+          const {
+            chat: { unsubscribe: chatUnsubscribe },
+            entities: { sessions, tracks, users },
+            player: { currentTrackID },
+            queue: { unsubscribe: queueUnsubscribe },
+            sessions: { currentSessionID, infoUnsubscribe },
+            users: { currentUserID },
+          } = getState();
+
           const session = {
             id: doc.data().id,
             currentTrackID: doc.data().currentTrackID,
             currentQueueID: doc.data().currentQueueID,
             progress: doc.data().progress,
+            paused: doc.data().paused,
+            live: doc.data().live,
             timeLastPlayed: doc.data().timeLastPlayed,
             ownerID: doc.data().owner.id,
             mode: doc.data().mode,
@@ -58,11 +73,35 @@ export function getSessionInfo(
             totalPlayed: doc.data().totals.previouslyPlayed,
           };
 
-          dispatch(addEntities({sessions: {[session.id]: session}}));
-          dispatch(updatePlayer({paused: doc.data().paused}));
+          if (doc.data().live == false) {
+            if (currentSessionID) {
+              const track = tracks.byID[currentTrackID];
+              const owner = users.byID[sessions.byID[currentSessionID].ownerID];
+              dispatch(leaveSession(
+                currentUserID,
+                {
+                  chatUnsubscribe,
+                  infoUnsubscribe,
+                  queueUnsubscribe,
+                  track,
+                  id: currentSessionID,
+                  total: sessions.byID[currentSessionID].totalListeners,
+                },
+                {
+                  id: owner.id,
+                  name: owner.displayName,
+                  image: owner.profileImage,
+                },
+              ));
+            }
+            dispatch(getTrendingSessions(currentUserID));
+          }
+
+          dispatch(addEntities({ sessions: { [session.id]: session } }));
+          dispatch(updatePlayer({paused: doc.data().paused,}));
           dispatch(actions.success(unsubscribe));
         },
-        error => {throw error},
+        error => { throw error },
       );
     } catch (err) {
       dispatch(actions.failure(err));
