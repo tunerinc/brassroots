@@ -71,6 +71,7 @@ type Action = {
   +sessionID?: string,
   +updates?: Session,
   +isOwner?: boolean,
+  // +reset?: boolean,
   +updates?: State,
   +item?: Session,
   +refreshing?: boolean,
@@ -275,6 +276,9 @@ function update(
   } = state;
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
+  // if (action.updates) {
+  //   alert((action.updates && action.updates.refreshing))
+  // }
   const updates: State = (
     explore
     && typeof action.type === 'string'
@@ -285,7 +289,7 @@ function update(
       ...(action.updates ? action.updates : {}),
       lastUpdated,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
-      refreshing: add && type === 'trending' && explore.trendingIDs.length !== 0 ? true : false,
+      refreshing: (add && type === 'trending' && explore.trendingIDs.length !== 0) || (action.updates && action.updates.refreshing) ? true : false,
       currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS'
         ? null
         : action.updates && typeof action.updates.currentSessionID === 'string'
@@ -303,23 +307,24 @@ function update(
       saving: action.type === 'SAVE_SESSION_REQUEST' ? true : false,
       error: haveError ? action.error : null,
       explore: action.isOwner && Array.isArray(explore.trendingIDs)
-        ? updateObject(explore, {
-          trendingLastUpdated: lastUpdated,
-          trendingIDs: explore.trendingIDs.filter(id => id !== currentSessionID),
-        })
-        : action.updates && action.updates.explore
-        ? updateObject(explore, {
-          trendingLastUpdated: lastUpdated,
-          trendingCanPaginate: typeof action.updates.explore.trendingCanPaginate === 'boolean'
-            ? action.updates.explore.trendingCanPaginate
-            : explore.trendingCanPaginate,
-          trendingIDs: action.updates.explore.trendingIDs && refreshing
-            ? [...action.updates.explore.trendingIDs]
-            : action.updates.explore.trendingIDs
-            ? [...explore.trendingIDs, ...action.updates.explore.trendingIDs]
-            : [...explore.trendingIDs],
-        })
-        : {...explore},
+          ? updateObject(explore, {
+            trendingLastUpdated: lastUpdated,
+            trendingIDs: explore.trendingIDs.filter(id => id !== currentSessionID),
+          })
+          : action.updates && action.updates.explore
+            ? updateObject(explore, {
+              trendingLastUpdated: lastUpdated,
+              // reset: action.updates && action.updates.explore && action.updates.explore.reset,
+              trendingCanPaginate: typeof action.updates.explore.trendingCanPaginate === 'boolean'
+                ? action.updates.explore.trendingCanPaginate
+                : explore.trendingCanPaginate,
+              trendingIDs: action.updates.explore.trendingIDs && (refreshing || action.updates.refreshing)
+                ? [...action.updates.explore.trendingIDs]
+                : action.updates.explore.trendingIDs
+                  ? [...explore.trendingIDs, ...action.updates.explore.trendingIDs]
+                  : [...explore.trendingIDs],
+            })
+            : { ...explore },
     }
     : {};
 
