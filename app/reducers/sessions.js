@@ -5,7 +5,8 @@
  * @flow
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import updateObject from '../utils/updateObject';
 import * as types from '../actions/sessions/types';
 import * as entitiesTypes from '../actions/entities/types';
@@ -274,11 +275,10 @@ function update(
     infoUnsubscribe,
     explore: explore,
   } = state;
+  
   const add: boolean = typeof action.type === 'string' && action.type.includes('REQUEST');
   const haveError: boolean = typeof action.type === 'string' && action.type.includes('FAILURE');
-  // if (action.updates) {
-  //   alert((action.updates && action.updates.refreshing))
-  // }
+
   const updates: State = (
     explore
     && typeof action.type === 'string'
@@ -290,11 +290,11 @@ function update(
       lastUpdated,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
       refreshing: (add && type === 'trending' && explore.trendingIDs.length !== 0) || (action.updates && action.updates.refreshing) ? true : false,
-      currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS'
+      currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS' || action.updates && !action.updates.currentSessionID
         ? null
         : action.updates && typeof action.updates.currentSessionID === 'string'
         ? action.updates.currentSessionID
-        : currentSessionID,
+          : currentSessionID,
       infoUnsubscribe: action.type === 'STOP_SESSION_INFO_LISTENER_SUCCESS'
         ? null
         : typeof action.unsubscribe === 'function'

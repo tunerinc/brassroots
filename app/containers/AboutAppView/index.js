@@ -6,7 +6,8 @@ import {Text, View, TouchableOpacity, Animated} from 'react-native';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import styles from './styles';
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 
 // Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';

@@ -19,7 +19,8 @@ import Animated from 'react-native-reanimated';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import debounce from "lodash.debounce";
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import Modal from 'react-native-modal';
 
 // Styles

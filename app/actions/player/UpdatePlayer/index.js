@@ -14,6 +14,29 @@ import {
   type Action,
   type Updates,
 } from '../../../reducers/player';
+import { type ThunkAction } from '../../../reducers/player';
+import { firestore } from 'firebase';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
+import { update } from 'lodash';
+import * as actions from './actions';
+import {
+  type FirestoreInstance,
+  type FirestoreDoc,
+  type FirestoreRef,
+  type FirestoreBatch,
+} from '../../../utils/firebaseTypes';
+import { getFirestore } from 'redux-firestore';
+
+// const envConfig = require('../../../../env.json');
+// const Firestore = require('@google-cloud/firestore');
+
+// const firestore = new Firestore({
+//   projectId: envConfig.FIREBASE_PROJECT_ID,
+//   keyFilename: '../../../../Downloads/brassroots-eae79e34a66d.json',
+// });
+
+// firestore.settings({timestampsInSnapshots: true});
 
 /**
  * Update the player with any new information
@@ -38,7 +61,31 @@ import {
  */
 export function updatePlayer(
   updates: Updates,
+  sessionID?: string,
+  userID?: string,
+  pausing?: Boolean,
 ): Action {
+  if (pausing) {
+    return async () => {
+      const firestore: FirestoreInstance = getFirestore();
+      const sessionRef = firestore.collection('sessions').doc(sessionID);
+      const sessionUserRef = sessionRef.collection('users').doc(userID);
+
+      let batch = firestore.batch();
+
+      batch.update(sessionUserRef, { paused: false, });
+      batch.update(
+        sessionRef,
+        {
+          timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
+          paused: false,
+        },
+      );
+
+      await batch.commit();
+    }
+  }
+
   return {
     type: types.UPDATE_PLAYER,
     updates,

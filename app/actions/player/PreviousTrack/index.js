@@ -9,7 +9,8 @@
  * @module PreviousTrack
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import Spotify from 'rn-spotify-sdk';
 // import {GeoFirestore} from 'geofirestore';
 import * as actions from './actions';

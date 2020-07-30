@@ -20,6 +20,7 @@ import {startPlayer} from '../../actions/player/StartPlayer';
 import {stopPlayer} from '../../actions/player/StopPlayer';
 import {togglePause} from '../../actions/player/TogglePause';
 import {updatePlayer} from '../../actions/player/UpdatePlayer';
+import { leaveSession } from '../../actions/sessions/LeaveSession';
 
 class PlayerTabBar extends React.Component {
   constructor(props) {
@@ -54,6 +55,14 @@ class PlayerTabBar extends React.Component {
       if (typeof this.progressInterval !== 'number') {
         this.progressInterval = setInterval(this.setProgress, 985);
       }
+
+      const {
+        updatePlayer,
+        sessions: {currentSessionID},
+        users: {currentUserID},
+      } = this.props;
+
+      updatePlayer({paused: false,}, currentSessionID, currentUserID, true);
     });
 
     Spotify.on('pause', () => {
@@ -229,13 +238,16 @@ class PlayerTabBar extends React.Component {
     const {
       nextTrack,
       stopPlayer,
-      entities: {sessions, users},
+      leaveSession,
+      entities: {sessions, users, tracks},
       player: {nextQueueID, seeking, currentQueueID: current},
-      queue: {userQueue, contextQueue, totalQueue},
-      sessions: {currentSessionID},
+      queue: {userQueue, contextQueue, totalQueue,unsubscribe: queueUnsubscribe},
+      sessions: {currentSessionID, infoUnsubscribe},
       users: {currentUserID},
     } = this.props;
     const {displayName, profileImage} = users.byID[currentUserID];
+    const session = sessions.byID[currentSessionID];
+    const track = session ? tracks.byID[session.currentTrackID] : null;
     
     if (currentSessionID && sessions.allIDs.includes(currentSessionID)) {
       const {ownerID, totalPlayed, totalListeners: totalUsers} = sessions.byID[currentSessionID];
@@ -246,6 +258,25 @@ class PlayerTabBar extends React.Component {
       // add seeking edge case when song close to end
 
       if (ownerID === currentUserID) {
+        if (typeof nextQueueID !== 'string' && !seeking) {
+          Actions.pop();
+          leaveSession( 
+            currentUserID,
+            {
+              infoUnsubscribe,
+              queueUnsubscribe,
+              track,
+              id: currentSessionID,
+              total: session.totalListeners,
+              chatUnsubscribe: () => console.log('chat'),
+            },
+            {
+              id: session.ownerID,
+              name: users.byID[session.ownerID].displayName,
+              image: users.byID[session.ownerID].profileImage,
+            },
+          );
+        }
         if (typeof nextQueueID === 'string' && !seeking) {
           nextTrack(
             {displayName, profileImage, id: currentUserID},
@@ -338,6 +369,9 @@ class PlayerTabBar extends React.Component {
     const session = sessions.byID[currentSessionID];
     const track = tracks.byID[currentTrackID];
 
+    // console.log("----------live sessions--------------")
+    // console.log(session)
+    // console.log(users)
     return (
       <Animated.View style={[styles.container, {shadowOpacity}]}>
         {(track && session) &&
@@ -350,19 +384,19 @@ class PlayerTabBar extends React.Component {
                 source={{uri: track.album.large}}
               />
             </View>
-            <MiniPlayer
-              openPlayer={Actions.liveSession}
-              navToProfile={this.navToProfile}
-              togglePause={this.handleTogglePause}
-              progress={progress}
-              durationMS={durationMS}
-              profileImage={users.byID[session.ownerID].profileImage}
-              name={track.name}
-              artists={track.artists.map(a => a.name).join(', ')}
-              displayName={users.byID[session.ownerID].displayName}
-              paused={paused}
-              isOwner={session.ownerID === currentUserID}
-            />
+          {!session.prevOwner || (session.prevOwner && session.prevOwner !== currentUserID) ? <MiniPlayer
+            openPlayer={Actions.liveSession}
+            navToProfile={this.navToProfile}
+            togglePause={this.handleTogglePause}
+            progress={progress}
+            durationMS={durationMS}
+            profileImage={users.byID[session.ownerID].profileImage}
+            name={track.name}
+            artists={track.artists.map(a => a.name).join(', ')}
+            displayName={users.byID[session.ownerID].displayName}
+            paused={paused}
+            isOwner={session.ownerID === currentUserID}
+          /> : null}
           </View>
         }
         <Animated.View style={[styles.tabbar, animatedBGColor]}>
@@ -388,6 +422,7 @@ PlayerTabBar.propTypes = {
   title: PropTypes.string,
   updatePlayer: PropTypes.func.isRequired,
   users: PropTypes.object.isRequired,
+  leaveSession: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({entities, player, queue, sessions, tracks, users}) {
@@ -405,6 +440,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     nextTrack,
     pausePlayer,
+    leaveSession,
     startPlayer,
     stopPlayer,
     togglePause,

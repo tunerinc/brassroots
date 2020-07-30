@@ -1,5 +1,7 @@
 'use strict';
 
+const { number } = require("prop-types");
+
 /**
  * @format
  * @flow
@@ -21,6 +23,7 @@ function convertMillisTime(millis: number): string {
   const sec: number = parseInt(((millis % 60000) / 1000).toFixed(0));
   const formattedMin: number = sec === 60 ? min + 1 : min;
   const formattedSec: string | number = sec === 60 ? '00' : sec < 10 ? `0${sec}` : sec;
+  // alert(millis)
   return `${formattedMin}:${formattedSec}`;
 }
 

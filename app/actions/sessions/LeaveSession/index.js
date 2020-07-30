@@ -9,7 +9,8 @@
  * @module LeaveSession
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import Spotify from 'rn-spotify-sdk';
 import * as actions from './actions';
 import { stopChatListener } from '../../chat/StopChatListener';
@@ -174,6 +175,9 @@ export function leaveSession(
           dispatch(actions.success(owner.id === userID));
           dispatch(resetPlayer());
           dispatch(resetQueue());
+
+          const sessionUserRef = await sessionRef.collection('users').doc(userID);
+          sessionUserRef.update({active:false});
 
           if (owner.id === userID) {
             if (session.total === 1) {

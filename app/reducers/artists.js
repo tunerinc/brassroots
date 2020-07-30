@@ -5,7 +5,8 @@
  * @flow
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import updateObject from '../utils/updateObject';
 import {type Action as AlbumAction} from './albums';
 import {type Action as TrackAction} from './tracks';

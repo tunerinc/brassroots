@@ -27,6 +27,7 @@ type Props = {|
   album: string,
   listeners: string | number,
   distance: string | number,
+  refresh: boolean,
 |};
 
 type State = {||};
@@ -37,9 +38,9 @@ export default class LiveSessionCard extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    const {sessionID} = this.props;
+    const {sessionID,refresh} = this.props;
     const {sessionID: newID} = nextProps;
-    return sessionID !== newID;
+    return sessionID !== newID || refresh;
   }
 
   render() {

@@ -35,6 +35,8 @@
     "lodash.debounce": "4.0.8",
     "merge": "1.2.1",
     "moment": "2.24.0",
+    "moment-timezone": "^0.5.31",
+    "native-base": "^2.13.12",
     "path": "^0.12.7",
     "prop-types": "15.7.2",
     "react": "16.8.1",

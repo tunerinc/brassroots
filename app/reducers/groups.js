@@ -5,7 +5,8 @@
  * @flow
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import updateObject from '../utils/updateObject';
 import {type Firebase} from '../utils/firebaseTypes';
 import {type Action as EntitiesAction} from './entities';

@@ -8,7 +8,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {View, Text, TouchableHighlight} from 'react-native';
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import styles from './styles';
 
 // Icons

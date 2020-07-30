@@ -9,7 +9,8 @@
  * @module ToggleTrackLike
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import * as actions from './actions';
 import {type ThunkAction} from '../../../reducers/queue';
 import {

@@ -9,7 +9,7 @@
  * @module CreateSession
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
 import Permissions from 'react-native-permissions';
 import getMySavedTracks from '../../../utils/spotifyAPI/getMySavedTracks';
 import getUserLocation from '../../../utils/getUserLocation';
@@ -34,6 +34,11 @@ import {
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
 import { getTrendingSessions } from '../GetTrendingSessions';
+import Spotify from 'rn-spotify-sdk';
+import {
+  type PrivateUser,
+  type FullTrack,
+} from '../../../utils/spotifyAPI/types';
 
 type User = {|
   id: string,
@@ -114,6 +119,9 @@ type Coords = {
  * @resolves {object}                              The newly created session object for the current user
  * @rejects  {Error}                               The error which caused the create session failure
  */
+
+moment.tz.setDefault("America/Chicago");
+
 export function createSession(
   user: User,
   track: Track,
@@ -228,6 +236,8 @@ export function createSession(
         ),
       );
 
+      // const fullTrack: FullTrack = await Spotify.getTrack(track.id, {});
+
       batch.update(userRef, { currentSession: newSessionKey, online: true });
       batch.set(userRef.collection('sessions').doc(newSessionKey), { id: newSessionKey, timeJoined });
       batch.set(
@@ -239,6 +249,7 @@ export function createSession(
           currentTrackID: track.id,
           currentQueueID: newTrackID,
           timeLastPlayed: timeJoined,
+          durationMS: track.durationMS,
           live: true,
           paused: true,
           repeat: false,

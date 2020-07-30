@@ -21,6 +21,10 @@ import {
 import store from '../../../store/configureStore';
 import { leaveSession } from '../LeaveSession';
 import { getTrendingSessions } from '../GetTrendingSessions';
+import { updateSessions } from '../UpdateSessions';
+import { initialState } from '../../../reducers/player';
+import { initialState as sessionInitialState } from '../../../reducers/sessions';
+import { initialState as entityInitialState } from '../../../reducers/entities';
 
 /**
  * Async function that gets the info for a session from Ultrasound
@@ -71,34 +75,54 @@ export function getSessionInfo(
             distance: 0,
             totalListeners: doc.data().totals.listeners,
             totalPlayed: doc.data().totals.previouslyPlayed,
+            prevOwner: doc.data().prevOwner,
           };
 
-          if (doc.data().live == false) {
+          if (doc.data().live == false || session.prevOwner === currentUserID) {
             if (currentSessionID) {
               const track = tracks.byID[currentTrackID];
               const owner = users.byID[sessions.byID[currentSessionID].ownerID];
-              dispatch(leaveSession(
-                currentUserID,
-                {
-                  chatUnsubscribe,
-                  infoUnsubscribe,
-                  queueUnsubscribe,
-                  track,
-                  id: currentSessionID,
-                  total: sessions.byID[currentSessionID].totalListeners,
-                },
-                {
-                  id: owner.id,
-                  name: owner.displayName,
-                  image: owner.profileImage,
-                },
-              ));
+              if (owner && track) {
+                dispatch(leaveSession(
+                  currentUserID,
+                  {
+                    chatUnsubscribe,
+                    infoUnsubscribe,
+                    queueUnsubscribe,
+                    track,
+                    id: currentSessionID,
+                    total: sessions.byID[currentSessionID].totalListeners,
+                  },
+                  {
+                    id: owner.id,
+                    name: owner.displayName,
+                    image: owner.profileImage,
+                  },
+                ));
+              }
             }
             dispatch(getTrendingSessions(currentUserID));
           }
 
+          if (session.prevOwner === currentUserID) {
+            session.live = false;
+            sessionRef.update({prevOwner:null,});
+            // dispatch(updatePlayer(initialState));
+            // dispatch(updateSessions(sessionInitialState));
+            // dispatch(addEntities(entityInitialState));
+          }
+
+          // if (session.prevOwner === currentUserID) {
+          //   session.live = false;
+          //   dispatch(updateSessions({ currentSessionID: null, live: false }));
+          //   sessionRef.update({prevOwner:null,});
+          //   // unsubscribe();
+          //   // alert("dispatch")
+          //   // dispatch(updateSessions({ currentSessionID: "eeee", }));
+          // }
+
           dispatch(addEntities({ sessions: { [session.id]: session } }));
-          dispatch(updatePlayer({paused: doc.data().paused,}));
+          dispatch(updatePlayer({ paused: doc.data().paused, }));
           dispatch(actions.success(unsubscribe));
         },
         error => { throw error },

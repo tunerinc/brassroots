@@ -27,6 +27,7 @@ import {
 import { type Context } from '../../../reducers/queue';
 import { type TrackArtist } from '../../../reducers/tracks';
 import store from '../../../store/configureStore';
+import { leaveSession } from '../../sessions/LeaveSession';
 
 /**
  * Async function that initializes Spotify for Ultrasound
@@ -81,6 +82,7 @@ export function initializeSpotify(): ThunkAction {
       if (loggedIn) {
         const spotifyUser: PrivateUser = await Spotify.getMe();
         const userDoc = await firestore.collection('users').doc(spotifyUser.id).get();
+        // const userDoc = userRef.get();
 
         if (userDoc.exists) {
           store().getState().socket.emit("init", spotifyUser.id);
@@ -101,7 +103,38 @@ export function initializeSpotify(): ThunkAction {
             totalFollowing: userDoc.data().totals.following,
             currentSession: userDoc.data().currentSession,
           };
-          
+
+          if (user.currentSession) {
+            const sessionRef = await firestore.collection('sessions').doc(user.currentSession);
+            const userRef = await firestore.collection('users').doc(spotifyUser.id);
+
+            const session = sessionRef.get();
+            const sessionToLeave = {
+              coords: session.data().coords,
+              total: session.data().totals.listeners,
+              chatUnsubscribe: () => console.log('chat'),
+              infoUnsubscribe: () => console.log('info'),
+              queueUnsubscribe: () => console.log('queue'),
+              id: session.data().id,
+            };
+
+            const owner = {
+              id: session.data().owner.id,
+              name: session.data().owner.name,
+              image: session.data().owner.image,
+            };
+
+            // dispatch(leaveSession(
+            //   user.id,
+            //   sessionToLeave,
+            //   owner,
+            // ));
+            if (session.data().owner.id == user.id && session.data().total.listeners == 1) {
+              sessionRef.update({ live: false, paused: false, });
+              userRef.update({ currentSession: null, });
+            }
+          }
+
           dispatch(updateOnboarding({ onboarding: false }));
           dispatch(addEntities({ users: { [user.id]: user } }));
           dispatch(updateUsers({ currentUserID: user.id }));

@@ -47,7 +47,7 @@ export function success(
     prevQueueID: currentQueueID === prevQueueID ? null : prevQueueID,
     prevTrackID: currentTrackID === prevTrackID ? null : prevTrackID,
     attemptingToPlay: false,
-    paused: false,
+    // paused: false,
     error: null,
   });
 }

@@ -11,7 +11,8 @@ import {onScroll} from 'react-native-redash';
 import Animated from 'react-native-reanimated';
 import Modal from "react-native-modal";
 import debounce from "lodash.debounce";
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 
 // Styles
 import styles from "./styles";

@@ -9,7 +9,8 @@
  * @module CreateProfile
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import Spotify from 'rn-spotify-sdk';
 import getUserTopTrack from '../../../utils/spotifyAPI/getUserTopTrack';
 import addMusicItems from '../../../utils/addMusicItems';

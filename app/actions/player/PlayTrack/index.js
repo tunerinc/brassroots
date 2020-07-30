@@ -9,7 +9,8 @@
  * @module PlayTrack
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import Spotify from 'rn-spotify-sdk';
 import getMySavedTracks from '../../../utils/spotifyAPI/getMySavedTracks';
 import updateObject from '../../../utils/updateObject';
@@ -226,7 +227,7 @@ export function playTrack(
             });
           }
 
-          batch.update(sessionUserRef, { paused: false, progress: 0 });
+          batch.update(sessionUserRef, { progress: 0 });
           batch.update(
             sessionRef,
             {
@@ -234,7 +235,6 @@ export function playTrack(
               currentQueueID: track.id,
               currentTrackID: track.trackID,
               timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
-              paused: false,
               ...(context
                 ? {
                   'context.id': context.id,

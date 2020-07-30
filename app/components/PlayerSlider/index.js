@@ -31,6 +31,7 @@ export default class PlayerSlider extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Props) {
+    // debugger;
     const {progress, seekTime} = nextProps;
     const {progress: currentProgress, seekTime: newSeekTime} = this.props;
     return ((progress !== currentProgress) || (seekTime !== newSeekTime));

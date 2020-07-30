@@ -9,7 +9,8 @@
  * @module JoinSession
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import { Actions } from 'react-native-router-flux';
 import { leaveSession } from '../LeaveSession';
 import { updateSessions } from '../UpdateSessions';
@@ -26,6 +27,7 @@ import {
   type FirestoreRef,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
+import { getTrendingSessions } from '../GetTrendingSessions';
 
 type Session = {
   +id: string,
@@ -34,6 +36,7 @@ type Session = {
   +timeLastPlayed ?: string,
   +progress ?: number,
   +paused ?: boolean,
+  +live ?: boolean,
   +context ?: Context,
   +owner ?: {
     + id: string,
@@ -127,6 +130,7 @@ export function joinSession(
 ): ThunkAction {
   return async (dispatch, _, { getFirestore }) => {
     if (leaving) {
+      alert(leaving)
       const {
         owner,
         coords,
@@ -188,9 +192,15 @@ export function joinSession(
           owner: newOwner,
           totals: { listeners, users, previouslyPlayed },
         } = doc.data();
-
-        if (!live) {
-          dispatch(updateSessions({ currentSessionID: session.id, live: false }));
+        // debugger;
+        if (!live || listeners == 0) {
+          if (listeners == 0) {
+            batch.update(sessionRef, { live: false, paused: false });
+            await batch.commit();
+          }
+          dispatch(updateSessions({ currentSessionID: null, live: false }));
+          // dispatch(addEntities({ sessions: { [session.id]: undefined } }));
+          dispatch(getTrendingSessions(user.id, true));
           throw new Error('Unable to retrieve the session from Ultrasound');
         }
 
@@ -217,9 +227,16 @@ export function joinSession(
       const timeLastPlayed = newSession.timeLastPlayed
         ? newSession.timeLastPlayed
         : moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a');
+        // console.log("-------TIME JOINED-------")
+        // console.log(sessionRef.data())
+        // console.log(sessionRef.get().data())
+        // console.log(moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a'))
 
       const diff = moment(timeJoined, 'ddd, MMM D, YYYY, h:mm:ss a').diff(timeLastPlayed, 'seconds');
-      const progress = newSession.progress + (diff * 1000);
+      const _progress = newSession.progress + (diff * 1000);
+      const progress = newSession.progress;
+      // alert(diff)
+      // alert(progress)
 
       if (newSession.context) dispatch(updateQueue({ context: newSession.context }));
 

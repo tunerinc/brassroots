@@ -9,7 +9,8 @@
  * @module SendChatMessage
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import * as actions from './actions';
 import {addEntities} from '../../entities/AddEntities';
 import {type ThunkAction} from '../../../reducers/chat';

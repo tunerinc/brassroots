@@ -5,7 +5,8 @@
  * @flow
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import reducer, {
   initialState,
   type State,

@@ -57,6 +57,7 @@ type Coords = {
  */
 export function getTrendingSessions(
   userID: string,
+  refreshing?: boolean,
 ): ThunkAction {
   return async (dispatch, _, { getFirestore }) => {
     dispatch(actions.request());
@@ -82,99 +83,84 @@ export function getTrendingSessions(
         users = updateObject(users, { [userID]: { id: userID, coords: pos.coords } });
       }
 
-      var unsubscribe = sessionsRef.where('live', '==', true)
+      const trendingSessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
         .orderBy('totals.listeners', 'desc')
         .limit(15)
-        .onSnapshot(async (snapshot) => {
-          const trendingSessions: FirestoreDocs = snapshot;
-          await doSomething(trendingSessions, true)
-        })
+        .get();
 
-      // const trendingSessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
-      //   .orderBy('totals.listeners', 'desc')
-      //   .limit(15)
-      //   .get();
+      if (trendingSessions.empty) {
+        dispatch(updateSessions({ explore: { trendingIDs: [], trendingCanPaginate: true, }, refreshing: true, }));
+        dispatch(actions.success());
+      } else {
+        const trendingIDs: Array<string> = trendingSessions.docs.map(doc => doc.data().id);
+        const trendingCanPaginate: boolean = trendingIDs.length === 15;
+        const tracksToFetch: Array<string> = trendingSessions.docs.map(doc => doc.data().currentTrackID);
+        const trackRes = await Spotify.getTracks(tracksToFetch, {});
+        const music = addMusicItems(trackRes.tracks);
+        
+        const sessions = await trendingSessions.docs.reduce((obj, doc) => {
+          const {
+            coords,
+            currentQueueID,
+            currentTrackID,
+            owner,
+            id,
+            totals: { listeners: totalListeners, previouslyPlayed: totalPlayed },
+          } = doc.data();
 
-      // doSomething(trendingSessions);
+          let distance: number = -1;
 
-      async function doSomething(trendingSessions, refreshing=false) {
-        if (trendingSessions.empty) {
-          dispatch(updateSessions({ explore: { trendingIDs: [], trendingCanPaginate: true, }, refreshing: true, }));
-          dispatch(actions.success());
-        } else {
-          const trendingIDs: Array<string> = trendingSessions.docs.map(doc => doc.data().id);
-          const trendingCanPaginate: boolean = trendingIDs.length === 15;
-          const tracksToFetch: Array<string> = trendingSessions.docs.map(doc => doc.data().currentTrackID);
-          const trackRes = await Spotify.getTracks(tracksToFetch, {});
-          const music = addMusicItems(trackRes.tracks);
-          // console.log("=============TRENDING!!!")
-          // console.log(trendingIDs)
-          const sessions = trendingSessions.docs.reduce((obj, doc) => {
-            const {
-              coords,
+          if (coords && pos.coords) {
+            distance = calculateDistance(
+              coords.lat,
+              coords.lon,
+              pos.coords.latitude,
+              pos.coords.longitude,
+            );
+
+            if (distance.toFixed(0) !== 0) {
+              distance = parseInt(distance.toFixed(0));
+            }
+          }
+
+          users = updateObject(users, {
+            [owner.id]: {
+              id: owner.id,
+              displayName: owner.name,
+              profileImage: owner.image,
+              currentSessionID: id,
+            },
+          });
+
+          return updateObject(obj, {
+            [id]: {
+              id,
               currentQueueID,
               currentTrackID,
-              owner,
-              id,
-              totals: { listeners: totalListeners, previouslyPlayed: totalPlayed },
-            } = doc.data();
+              distance,
+              totalListeners,
+              totalPlayed,
+              ownerID: owner.id,
+            },
+          });
+        }, {});
 
-            let distance: number = -1;
+        trendingSessions.docs.filter(doc => doc.data().context.type === 'user')
+          .forEach(doc => {
+            const { context: { id, name: displayName } } = doc.data();
+            users = updateObject(users, { [id]: { id, displayName } });
+          });
 
-            if (coords && pos.coords) {
-              distance = calculateDistance(
-                coords.lat,
-                coords.lon,
-                pos.coords.latitude,
-                pos.coords.longitude,
-              );
+        trendingSessions.docs.filter(doc => doc.data().context.type === 'playlist')
+          .forEach(doc => {
+            const { context: { id, name } } = doc.data();
+            playlists = updateObject(playlists, { [id]: { id, name, members: [], tracks: [] } });
+          });
 
-              if (distance.toFixed(0) !== 0) {
-                distance = parseInt(distance.toFixed(0));
-              }
-            }
-
-            users = updateObject(users, {
-              [owner.id]: {
-                id: owner.id,
-                displayName: owner.name,
-                profileImage: owner.image,
-                currentSessionID: id,
-              },
-            });
-
-            return updateObject(obj, {
-              [id]: {
-                id,
-                currentQueueID,
-                currentTrackID,
-                distance,
-                totalListeners,
-                totalPlayed,
-                ownerID: owner.id,
-              },
-            });
-          }, {});
-
-          trendingSessions.docs.filter(doc => doc.data().context.type === 'user')
-            .forEach(doc => {
-              const { context: { id, name: displayName } } = doc.data();
-              users = updateObject(users, { [id]: { id, displayName } });
-            });
-
-          trendingSessions.docs.filter(doc => doc.data().context.type === 'playlist')
-            .forEach(doc => {
-              const { context: { id, name } } = doc.data();
-              playlists = updateObject(playlists, { [id]: { id, name, members: [], tracks: [] } });
-            });
-
-          dispatch(addEntities({ ...music, playlists, sessions, users }));
-          dispatch(updateSessions({ explore: { trendingIDs, trendingCanPaginate, }, refreshing, }));
-          dispatch(actions.success());
-        }
+        dispatch(addEntities({ ...music, playlists, sessions, users }));
+        dispatch(updateSessions({ explore: { trendingIDs, trendingCanPaginate, }, refreshing, }));
+        dispatch(actions.success());
       }
-
-      // .get();
 
     } catch (err) {
       dispatch(actions.failure(err));

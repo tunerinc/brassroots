@@ -9,7 +9,8 @@
  * @module GetChat
  */
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
 import {addEntities} from '../../entities/AddEntities';

@@ -16,7 +16,8 @@ import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
 import {onScroll} from 'react-native-redash';
 import Animated from 'react-native-reanimated';
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import debounce from "lodash.debounce";
 import Modal from 'react-native-modal';
 import LoadingSession from '../../components/LoadingSession';
@@ -29,6 +30,7 @@ import styles from './styles';
 import {getTrendingSessions} from '../../actions/sessions/GetTrendingSessions';
 import {joinSession} from '../../actions/sessions/JoinSession';
 import {paginateTrendingSessions} from '../../actions/sessions/PaginateTrendingSessions';
+import Notify from '../../components/Notify';
 
 const AnimatedVirtualizedList = Animated.createAnimatedComponent(VirtualizedList);
 const {Value, interpolate, Extrapolate} = Animated;
@@ -40,6 +42,9 @@ class ExploreTabView extends React.Component {
     this.state = {
       selectedSession: null,
       sessionModalOpen: false,
+      notify: false,
+      notifyMsg: '',
+      refresh:false,
       y: new Value(0),
       inactiveSessions: [],
     };
@@ -74,14 +79,28 @@ class ExploreTabView extends React.Component {
     }
   }
 
-  // componentDidUpdate(prevProps) {
-  //   const { sessions: { live, currentSessionID, }, } = this.props;
-  //   const { sessions: { live: oldLive } } = prevProps;
-  //   if (live == true && live !== oldLive) {
-  //     this.setState((prevState => ({ inactiveSessions: [...prevState.inactiveSessions, currentSessionID,] })));
-  //     alert(currentSessionID);
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    // const { sessions: { live, currentSessionID, }, } = this.props;
+    // const { sessions: { live: oldLive } } = prevProps;
+    // if (live == true && live !== oldLive) {
+    //   this.setState((prevState => ({ inactiveSessions: [...prevState.inactiveSessions, currentSessionID,] })));
+    //   alert(currentSessionID);
+    // }
+    const {
+      sessions: {
+        error: sessionError,
+      },
+    } = this.props;
+    const {
+      sessions: {
+        error: oldSessionError,
+      },
+    } = prevProps;
+
+    if (sessionError && sessionError !== 'Unauthorized' && sessionError !== oldSessionError) {
+      this.setState({notify:true,notifyMsg:sessionError.message,});
+    }
+  }
 
   openModal = selectedSession => () => this.setState({selectedSession, sessionModalOpen: true});
 
@@ -110,6 +129,7 @@ class ExploreTabView extends React.Component {
   }
 
   joinSession = sessionID => () => {
+    this.setState({notify:false,});
     const {
       joinSession,
       entities: {sessions, tracks, users},
@@ -131,9 +151,10 @@ class ExploreTabView extends React.Component {
       owner: inSession ? {id: owner.id, name: owner.displayName, image: owner.profileImage} : null,
       current: inSession ? currentSessionID : null,
       total: inSession ? sessions.byID[currentSessionID].totalListeners : null,
+      live: inSession ? sessions.byID[currentSessionID].live : null,
     };
 
-    if (currentSessionID === sessionID) {
+    if (currentSessionID === sessionID && session.live) {
       Actions.liveSession();
     } else {
       joinSession(
@@ -146,6 +167,7 @@ class ExploreTabView extends React.Component {
 
   renderSession({item}) {
     const {entities: {sessions, tracks, users}} = this.props;
+    const {refresh}=this.state;
     const session = sessions.byID[item];
 
     if (!session) return <View></View>;
@@ -197,7 +219,8 @@ class ExploreTabView extends React.Component {
         album={track.album.name}
         listeners={listenerTotal}
         distance={formattedDistance}
-        live={live}
+        // live={live}
+        refresh={refresh}
       />
     );
   }
@@ -235,6 +258,7 @@ class ExploreTabView extends React.Component {
   }
 
   refresh() {
+    this.setState({notify:false, refresh:true,});
     const {getTrendingSessions, sessions: {refreshing}} = this.props;
     if (!refreshing) getTrendingSessions();
   }
@@ -246,6 +270,8 @@ class ExploreTabView extends React.Component {
       outputRange: [0, 0.9],
       extrapolate: Extrapolate.CLAMP,
     });
+
+    const {notify,notifyMsg,}=this.state;
 
     const {
       users: {error: userError},
@@ -285,6 +311,12 @@ class ExploreTabView extends React.Component {
             refreshing={refreshing}
           />
         }
+        {notify && <Notify
+          title="Message"
+          message={notifyMsg}
+          duration={2000}
+          type="danger"
+        />}
         {(trendingIDs.length === 0 || !trendingIDs.length) &&
           <ScrollView
             style={styles.scrollContainer}
@@ -317,6 +349,11 @@ class ExploreTabView extends React.Component {
                   {(userError || (sessionError && sessionError !== 'Unauthorized')) &&
                     <Text>There was an error</Text>
                   }
+                  {/* {(sessionError&&sessionError!=='Unauthorized')&&<Notify
+                    title="Welcome to Artisan App"
+                    message={`We connect customers to artisans at their convinience, in just a click!`}
+                    duration={8000}
+                />} */}
                 </View>
               }
             </View>

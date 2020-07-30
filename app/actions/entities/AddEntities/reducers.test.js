@@ -1,6 +1,7 @@
 'use strict';
 
-import moment from 'moment';
+import moment from 'moment-timezone';
+moment.tz.setDefault("America/Chicago");
 import reducer, {initialState} from '../../../reducers/entities';
 import * as actions from '../AddEntities';
 import {lastUpdated as albumLast} from '../../../reducers/albums';
