@@ -29,6 +29,8 @@ import {
   type FirestoreDoc,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
+import { getTrendingSessions } from '../GetTrendingSessions';
+import MusicControl from 'react-native-music-control';
 
 type Session = {
   +id: string,
@@ -173,11 +175,12 @@ export function leaveSession(
           );
 
           dispatch(actions.success(owner.id === userID));
+          MusicControl.stopControl();
           dispatch(resetPlayer());
           dispatch(resetQueue());
 
           const sessionUserRef = await sessionRef.collection('users').doc(userID);
-          sessionUserRef.update({active:false});
+          await sessionUserRef.update({active:false});
 
           if (owner.id === userID) {
             if (session.total === 1) {
@@ -198,6 +201,9 @@ export function leaveSession(
               );
             }
           } else {
+            if (session.total === 1) {
+              batch.update(sessionRef, { live: false, "totals.listeners": 0, paused: true });
+            }
             batch.update(sessionRef, { 'totals.listeners': session.total - 1 });
           }
 
@@ -210,6 +216,7 @@ export function leaveSession(
           dispatch(stopQueueListener(session.queueUnsubscribe));
           // $FlowFixMe
           dispatch(stopChatListener(session.chatUnsubscribe));
+          dispatch(getTrendingSessions(userID, true));
 
           await batch.commit();
 

@@ -87,6 +87,9 @@ import ReportProblemView from './containers/ReportProblemView';
 import ReportUserView from './containers/ReportUserView';
 
 import { leaveSession } from './actions/sessions/LeaveSession';
+import socket from './reducers/socket';
+
+import MusicControl from 'react-native-music-control';
 
 type Props = {};
 
@@ -109,11 +112,35 @@ export default class App extends React.Component<Props> {
   }
 
   componentDidMount() {
-    
+    AppState.addEventListener('change', this._handleAppStateChange);
+
+  //   MusicControl.on('play', () => {
+  //     alert("ddddddjdjdjdj")
+  //     console.log("----------------PLAYYING--------------")
+  //   })
+
+  //   // on iOS this event will also be triggered by audio router change events
+  //   // happening when headphones are unplugged or a bluetooth audio peripheral disconnects from the device
+  //   MusicControl.on('pause', () => {
+  //     console.log("----------------PAUSING--------------")
+  //   })
+
+  //   MusicControl.enableBackgroundMode(true);
+  //  // Always allow user to close notification on swipe
+  //   MusicControl.enableControl('closeNotification', true, { when: 'always' })
   }
 
   componentWillUnmount() {
-    
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    if (nextAppState === 'background') {
+      console.log('App has come to the background!')
+    }
+    if (nextAppState === 'inactive') {
+      console.log('App has come to inactive!')
+    }
   }
 
   render() {

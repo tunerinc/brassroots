@@ -28,6 +28,11 @@ import {
 } from '../../../utils/firebaseTypes';
 import { getFirestore } from 'redux-firestore';
 
+type Session = {
+  +id: string,
+  +ownerID : string,
+};
+
 // const envConfig = require('../../../../env.json');
 // const Firestore = require('@google-cloud/firestore');
 
@@ -61,29 +66,36 @@ import { getFirestore } from 'redux-firestore';
  */
 export function updatePlayer(
   updates: Updates,
-  sessionID?: string,
+  session?: Session,
   userID?: string,
-  pausing?: Boolean,
+  playing?: Boolean,
 ): Action {
-  if (pausing) {
-    return async () => {
-      const firestore: FirestoreInstance = getFirestore();
-      const sessionRef = firestore.collection('sessions').doc(sessionID);
-      const sessionUserRef = sessionRef.collection('users').doc(userID);
 
-      let batch = firestore.batch();
+  const firestore: FirestoreInstance = getFirestore();
 
-      batch.update(sessionUserRef, { paused: false, });
-      batch.update(
-        sessionRef,
-        {
-          timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
-          paused: false,
-        },
-      );
+  // let batch = firestore.batch();
 
-      await batch.commit();
-    }
+  // if (playing && session) {
+  //   return async () => {
+  //     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
+  //     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(userID);
+
+  //     batch.update(sessionUserRef, { paused: false, });
+  //     batch.update(
+  //       sessionRef,
+  //       {
+  //         timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
+  //         paused: false,
+  //       },
+  //     );
+
+  //     await batch.commit();
+  //   }
+  // }
+
+  if ((session && userID === session.ownerID) && (updates && parseInt(updates.progress) % 3 === 0)) {
+    const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
+    sessionRef.update({ progress: updates.progress });
   }
 
   return {

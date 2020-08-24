@@ -105,18 +105,12 @@ export function initializeSpotify(): ThunkAction {
           };
 
           if (user.currentSession) {
-            const sessionRef = await firestore.collection('sessions').doc(user.currentSession);
-            const userRef = await firestore.collection('users').doc(spotifyUser.id);
+            const sessionRef = firestore.collection('sessions').doc(user.currentSession);
+            const sessionUserRef = sessionRef.collection('users').doc(spotifyUser.id);
+            const userRef = firestore.collection('users').doc(spotifyUser.id);
 
-            const session = sessionRef.get();
-            const sessionToLeave = {
-              coords: session.data().coords,
-              total: session.data().totals.listeners,
-              chatUnsubscribe: () => console.log('chat'),
-              infoUnsubscribe: () => console.log('info'),
-              queueUnsubscribe: () => console.log('queue'),
-              id: session.data().id,
-            };
+            const session = await sessionRef.get();
+            const sessionUser = await sessionUserRef.get();
 
             const owner = {
               id: session.data().owner.id,
@@ -124,13 +118,55 @@ export function initializeSpotify(): ThunkAction {
               image: session.data().owner.image,
             };
 
-            // dispatch(leaveSession(
-            //   user.id,
-            //   sessionToLeave,
-            //   owner,
-            // ));
-            if (session.data().owner.id == user.id && session.data().total.listeners == 1) {
-              sessionRef.update({ live: false, paused: false, });
+            // if (session.data().owner.id == user.id) {
+            //   if (sessionUser.exists || session.data().totals.listeners > 1) {
+            //     if (sessionUser.data().active) {
+            //       await sessionUserRef.update({ active: false, });
+            //       const { totals: { listeners, users } } = session.data();
+
+            //       const sessionUsers = await sessionRef.collection('users').where('active', '==', true).get();
+            //       const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random() * sessionUsers.docs.length)];
+
+            //       await sessionRef.update(
+            //         {
+            //           "totals.listeners": listeners - 1,
+            //           "owner.id": newOwnerDoc.data().id,
+            //           "owner.name": newOwnerDoc.data().displayName,
+            //           "owner.image": newOwnerDoc.data().profileImage,
+            //         }
+            //       );
+            //     }
+            //   }
+
+            //   if (session.data().totals.listeners === 1) sessionRef.update({ live: false, paused: true, prevOwner: null, });
+            //   userRef.update({ currentSession: null, });
+            // }
+
+            const { totals: { listeners, users } } = session.data();
+            
+            if (sessionUser.exists && sessionUser.data().active) {
+              if (session.data().owner.id == user.id) {
+                await sessionUserRef.update({ active: false, });
+
+                if (session.data().totals.listeners > 1) {
+                  const sessionUsers = await sessionRef.collection('users').where('active', '==', true).get();
+                  const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random() * sessionUsers.docs.length)];
+
+                  await sessionRef.update(
+                    {
+                      "totals.listeners": listeners - 1,
+                      "owner.id": newOwnerDoc.data().id,
+                      "owner.name": newOwnerDoc.data().displayName,
+                      "owner.image": newOwnerDoc.data().profileImage,
+                    }
+                  );
+                } else {
+                  sessionRef.update({ live: false, paused: true, prevOwner: null, });
+                }
+
+              } else {
+                await sessionRef.update({ "totals.listeners": listeners - 1, });
+              }
               userRef.update({ currentSession: null, });
             }
           }

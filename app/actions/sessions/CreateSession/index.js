@@ -232,6 +232,7 @@ export function createSession(
           {
             currentQueueID: session.currentQueueID,
             currentTrackID: session.currentTrackID,
+            buffering: true,
           },
         ),
       );

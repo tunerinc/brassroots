@@ -24,6 +24,7 @@ import {
   type FirestoreDoc,
   type FirestoreDocs,
 } from '../../../utils/firebaseTypes';
+import MusicControl from 'react-native-music-control';
 
 type User = {
   id: string,
@@ -196,7 +197,6 @@ export function playTrack(
 
       Spotify.playURI(`spotify:track:${track.trackID}`, 0, 0)
         .then(async played => {
-          // alert("played")
           dispatch(actions.success(track.id, track.trackID, track.durationMS));
 
           if (
@@ -227,11 +227,12 @@ export function playTrack(
             });
           }
 
-          batch.update(sessionUserRef, { progress: 0 });
+          batch.update(sessionUserRef, { progress: 0, paused: false, });
           batch.update(
             sessionRef,
             {
               progress: 0,
+              paused: false,
               currentQueueID: track.id,
               currentTrackID: track.trackID,
               timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
@@ -300,9 +301,21 @@ export function playTrack(
             }
 
             batch.delete(sessionQueueRef.doc(current.id));
-          }
 
+            // batch.update(sessionUserRef, { paused: false, });
+            // batch.update(
+            //   sessionRef,
+            //   {
+            //     timeLastPlayed: moment().format('ddd, MMM D, YYYY, h:mm:ss a'),
+            //     paused: false,
+            //   },
+            // );
+
+            await batch.commit();
+          }
+            
           await batch.commit();
+          
         })
         .catch(err => {
           throw new Error('Unable to play track');

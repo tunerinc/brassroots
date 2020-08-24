@@ -40,6 +40,7 @@ type Props = {|
   currentUserID: string,
   ownerID: string,
   paused: boolean,
+  buffering: boolean,
   queueLength: number,
   sessionID: string,
   durationMS: number,
@@ -81,6 +82,7 @@ export default class SessionHeader extends React.Component<Props, State> {
       currentUserID,
       ownerID,
       paused,
+      buffering,
       queueLength,
       sessionID,
       durationMS,
@@ -103,6 +105,7 @@ export default class SessionHeader extends React.Component<Props, State> {
           isOwner={ownerID === currentUserID}
           paused={paused}
           image={image}
+          buffering={buffering}
         />
         <View style={styles.sessionLiveMode}>
           {/* <SessionModeIcon mode={mode} /> */}

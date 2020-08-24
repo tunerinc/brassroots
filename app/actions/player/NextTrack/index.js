@@ -14,10 +14,10 @@ moment.tz.setDefault("America/Chicago");
 import Spotify from 'rn-spotify-sdk';
 import updateObject from '../../../utils/updateObject';
 import * as actions from './actions';
-import {removeQueueTrack} from '../../queue/RemoveQueueTrack';
-import {updatePlayer} from '../UpdatePlayer';
-import {type TrackArtist} from '../../../reducers/tracks';
-import {type ThunkAction} from '../../../reducers/player';
+import { removeQueueTrack } from '../../queue/RemoveQueueTrack';
+import { updatePlayer } from '../UpdatePlayer';
+import { type TrackArtist } from '../../../reducers/tracks';
+import { type ThunkAction } from '../../../reducers/player';
 import {
   type FirestoreInstance,
   type FirestoreRef,
@@ -25,6 +25,9 @@ import {
   type FirestoreDocs,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
+
+import BackgroundTimer from 'react-native-background-timer';
+import MusicControl from 'react-native-music-control';
 
 type User = {
   id: string,
@@ -76,7 +79,7 @@ export function nextTrack(
   session: Session,
   nextQueueID: string,
 ): ThunkAction {
-  return async (dispatch, _, {getFirestore}) => {
+  return async (dispatch, _, { getFirestore }) => {
     dispatch(actions.request());
 
     const firestore: FirestoreInstance = getFirestore();
@@ -84,12 +87,13 @@ export function nextTrack(
     const sessionPrevRef: FirestoreDocs = sessionRef.collection('previouslyPlayed');
     const sessionQueueRef: FirestoreDocs = sessionRef.collection('queue');
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(user.id);
-    const {totalQueue, totalPlayed, totalUsers, current, coords} = session;
+    const { totalQueue, totalPlayed, totalUsers, current, coords } = session;
 
     let batch: FirestoreBatch = firestore.batch();
 
     try {
       // dispatch(addRecentTrack(user.id, current.track));
+      dispatch(updatePlayer({buffering: true}));
 
       const [currentDoc, nextDoc] = await Promise.all(
         [
@@ -115,8 +119,9 @@ export function nextTrack(
         ),
       );
 
-      batch.update(sessionQueueRef.doc(nextQueueID), {isCurrent: true});
-      batch.update(sessionUserRef, {progress: 0, paused: false});
+      batch.update(sessionQueueRef.doc(nextQueueID), { isCurrent: true });
+      batch.update(sessionUserRef, { progress: 0, paused: false });
+
       batch.set(
         sessionPrevRef.doc(current),
         {
@@ -127,7 +132,7 @@ export function nextTrack(
           prevTrackID: currentDoc.data().prevTrackID,
           nextTrackID: currentDoc.data().nextTrackID,
           nextQueueID: currentDoc.data().nextQueueID,
-          track: {...currentDoc.data().track},
+          track: { ...currentDoc.data().track },
         },
       );
 
@@ -147,6 +152,25 @@ export function nextTrack(
       );
 
       await batch.commit();
+
+      // if (nextDoc.data().track) {
+      //   const track = nextDoc.data().track;
+      //   const { album, durationMS, name, artists } = track;
+  
+      //   // MusicControl.resetNowPlaying();
+      //   MusicControl.updatePlayback({
+      //     title: name,
+      //     artwork: album.medium, // URL or RN's image require()
+      //     artist: artists.map(a => a.name).join(', '),
+      //     album: album.name,
+      //     duration: durationMS / 1000, // (Seconds),
+      //     state: MusicControl.STATE_PLAYING,
+      //   })
+  
+      //   MusicControl.enableControl('play', false)
+      //   MusicControl.enableControl('pause', true) 
+      // }
+
     } catch (err) {
       dispatch(actions.failure(err));
     }

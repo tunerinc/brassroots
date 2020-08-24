@@ -63,6 +63,7 @@ import {createSession} from '../../actions/sessions/CreateSession';
 import {getSessionInfo} from '../../actions/sessions/GetSessionInfo';
 import {leaveSession} from '../../actions/sessions/LeaveSession';
 import {stopSessionInfoListener} from '../../actions/sessions/StopSessionInfoListener';
+import MusicControl from 'react-native-music-control';
 
 const AnimatedAvoidingView = Reanimated.createAnimatedComponent(KeyboardAvoidingView);
 const AnimatedVirtualizedList = Reanimated.createAnimatedComponent(VirtualizedList);
@@ -302,27 +303,30 @@ class LiveSessionView extends React.Component {
       sessions: {currentSessionID},
       users: {currentUserID},
     } = this.props;
+
     const {displayName, profileImage} = users.byID[currentUserID];
     const {totalPlayed} = sessions.byID[currentSessionID];
-    const {userID, totalLikes} = queueTracks.byID[currentQueueID];
-    const track = tracks.byID[currentTrackID];
-    const user = {displayName, profileImage, id: currentUserID};
-    const session = {
-      totalPlayed,
-      id: currentSessionID,
-      current: {
-        userID,
-        totalLikes,
-        prevQueueID,
-        prevTrackID,
-        nextQueueID,
-        nextTrackID,
-        track,
-        id: currentQueueID,
-      },
-    };
-
-    previousTrack(user, session);
+    if (queueTracks.byID[currentQueueID]) {
+      const {userID, totalLikes} = queueTracks.byID[currentQueueID];
+      const track = tracks.byID[currentTrackID];
+      const user = {displayName, profileImage, id: currentUserID};
+      const session = {
+        totalPlayed,
+        id: currentSessionID,
+        current: {
+          userID,
+          totalLikes,
+          prevQueueID,
+          prevTrackID,
+          nextQueueID,
+          nextTrackID,
+          track,
+          id: currentQueueID,
+        },
+      };
+  
+      previousTrack(user, session); 
+    }
   }
 
   delete = queueID => () => {
@@ -496,7 +500,7 @@ class LiveSessionView extends React.Component {
     const {seekTime, editingQueue} = this.state;
     const {
       entities: {queueTracks, sessions, tracks, users},
-      player: {currentTrackID, currentQueueID, paused, prevTrackID, nextTrackID, progress},
+      player: {currentTrackID, currentQueueID, paused, prevTrackID, nextTrackID, progress,buffering},
       queue: {userQueue},
       sessions: {currentSessionID},
       tracks: {userTracks},
@@ -573,6 +577,7 @@ class LiveSessionView extends React.Component {
         sessionID={currentSessionID}
         durationMS={durationMS}
         progress={progress}
+        buffering={buffering}
         trackID={currentTrackID}
         name={name}
         saved={userTracks.includes(currentTrackID)}

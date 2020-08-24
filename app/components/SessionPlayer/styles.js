@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   type ViewStyleProp,
   type TextStyleProp,
@@ -19,7 +19,9 @@ interface Styles {
   center: ViewStyleProp,
   image: ViewStyleProp,
   playPause: ViewStyleProp,
+  bufferContainer: ViewStyleProp,
   centerIcon: TextStyleProp,
+  loaderTxt: TextStyleProp,
   right: ViewStyleProp,
   rightIcon: TextStyleProp,
 };
@@ -71,6 +73,23 @@ const styles: Styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 5,
     shadowOpacity: 0.5,
+  },
+  loaderTxt: {
+    shadowColor: '#101010',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 5,
+    shadowOpacity: 0.5,
+    fontSize: 40,
+    color: "#fff",
+  },
+  bufferContainer: {
+    height: 70,
+    width: 70,
+    borderRadius: 10,
+    opacity: 0.8,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
   },
   right: {
     flex: 1,

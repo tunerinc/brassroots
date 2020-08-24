@@ -154,6 +154,7 @@ class ExploreTabView extends React.Component {
       live: inSession ? sessions.byID[currentSessionID].live : null,
     };
 
+    // alert(currentSessionID === sessionID && session.live)
     if (currentSessionID === sessionID && session.live) {
       Actions.liveSession();
     } else {

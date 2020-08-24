@@ -57,6 +57,7 @@ type Coords = {
  */
 export function getTrendingSessions(
   userID: string,
+  refreshing?: boolean,
 ): ThunkAction {
   return async (dispatch, _, { getFirestore }) => {
     dispatch(actions.request());

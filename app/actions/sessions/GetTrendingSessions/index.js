@@ -83,6 +83,13 @@ export function getTrendingSessions(
         users = updateObject(users, { [userID]: { id: userID, coords: pos.coords } });
       }
 
+      // var unsubscribe = sessionsRef.where('live', '==', true)
+      //   .orderBy('totals.listeners', 'desc')
+      //   .limit(15)
+      //   .onSnapshot(async (snapshot) => {
+      //     alert("something changed")
+      //   })
+
       const trendingSessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
         .orderBy('totals.listeners', 'desc')
         .limit(15)
@@ -104,6 +111,7 @@ export function getTrendingSessions(
             currentQueueID,
             currentTrackID,
             owner,
+            // live,
             id,
             totals: { listeners: totalListeners, previouslyPlayed: totalPlayed },
           } = doc.data();
@@ -138,6 +146,7 @@ export function getTrendingSessions(
               currentQueueID,
               currentTrackID,
               distance,
+              // live,
               totalListeners,
               totalPlayed,
               ownerID: owner.id,

@@ -40,6 +40,7 @@ type Updates = {|
   +durationMS?: number,
   +progress?: number,
   +paused?: boolean,
+  +buffering?: boolean,
 |};
 
 type Action = {

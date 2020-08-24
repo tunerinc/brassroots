@@ -182,8 +182,8 @@ class LibrarySingleAlbumView extends React.Component {
               nextQueueID,
               track,
               id: session.currentQueueID,
-              totalLikes: currentQueue.totalLikes,
-              userID: currentQueue.userID,
+              totalLikes: queueTrack.totalLikes,
+              userID: queueTrack.userID,
             },
           },
           {

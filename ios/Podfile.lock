@@ -563,6 +563,8 @@ PODS:
     - React
   - react-native-image-picker (1.1.0):
     - React
+  - react-native-music-control (0.12.0):
+    - React
   - react-native-netinfo (4.2.1):
     - React
   - React-RCTActionSheet (0.61.2):
@@ -662,6 +664,7 @@ DEPENDENCIES:
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-music-control (from `../node_modules/react-native-music-control`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -760,6 +763,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-music-control:
+    :path: "../node_modules/react-native-music-control"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   React-RCTActionSheet:
@@ -854,6 +859,7 @@ SPEC CHECKSUMS:
   react-native-background-timer: 0d34748e53a972507c66963490c775321a88f6f2
   react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
   react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
+  react-native-music-control: 4b5b6d76ea60c12241bcfcc0d6da26b7c0f50c89
   react-native-netinfo: c49569600a0b435767cc1d97c6c4fb090a49d7de
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235

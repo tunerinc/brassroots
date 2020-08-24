@@ -7,22 +7,24 @@
 
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-import {View, TouchableOpacity} from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import styles from './styles';
 
 // Icons
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+// import { ActivityIndicator } from 'native-base';
 
 type Props = {|
   togglePause: () => void,
-  skipNext: () => void,
-  skipPrev: () => void,
-  prevTrackID: ?string,
-  nextTrackID: ?string,
-  isOwner: boolean,
-  paused: boolean,
-  image: string,
+    skipNext: () => void,
+      skipPrev: () => void,
+        prevTrackID: ?string,
+          nextTrackID: ?string,
+            isOwner: boolean,
+              paused: boolean,
+                buffering : boolean,
+                  image: string,
 |};
 
 type State = {||};
@@ -41,6 +43,7 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
       nextTrackID,
       isOwner,
       paused,
+      buffering,
       image,
     } = this.props;
     const prevExists = isOwner && typeof prevTrackID === 'string';
@@ -50,6 +53,18 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
     const nextExists = isOwner && typeof nextTrackID === 'string';
     const nextDisabled = nextExists ? false : true;
     const nextColor = nextExists ? 'rgba(254,254,254,0.9)' : 'rgba(254,254,254,0.2)';
+    // if (nextDisabled) {
+    //   MusicControl.enableControl('nextTrack', false)
+    // }
+    // if (prevDisabled) {
+    //   MusicControl.enableControl('prevTrack', false)
+    // }
+    // if (paused) {
+    //   MusicControl.enableControl('pause', false)
+    // }
+    // if (!paused) {
+    //   MusicControl.enableControl('nextTrack', false)
+    // }
 
     return (
       <View style={styles.player}>
@@ -60,10 +75,10 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
           <FastImage
             style={styles.image}
             resizeMode={FastImage.resizeMode.cover}
-            source={{uri: image}}
+            source={{ uri: image }}
           />
           <TouchableOpacity style={styles.playPause} onPress={togglePause} disabled={!isOwner}>
-            {!paused &&
+            {!paused && !buffering &&
               <FontAwesome
                 name='pause'
                 size={75}
@@ -71,13 +86,19 @@ export default class SessionPlayer extends React.PureComponent<Props, State> {
                 style={styles.centerIcon}
               />
             }
-            {paused &&
+            {paused && !buffering &&
               <Entypo
                 name='controller-play'
                 size={125}
                 color={currentColor}
                 style={styles.centerIcon}
               />
+            }
+            {buffering &&
+              <View style={styles.bufferContainer}>
+                <ActivityIndicator size={"large"} />
+                {/* <Text style={{color:"#fff", fontSize:11,marginTop:5}}>Buffering</Text> */}
+              </View>
             }
           </TouchableOpacity>
         </View>

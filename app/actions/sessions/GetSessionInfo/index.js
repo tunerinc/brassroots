@@ -48,6 +48,9 @@ export function getSessionInfo(
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(sessionID);
+
+    let shouldProgressUpdate = true;
+    let oldTime = null;
     // const sessionsRef: FirestoreDoc = firestore.collection('sessions');
 
     try {
@@ -56,74 +59,80 @@ export function getSessionInfo(
           const {
             chat: { unsubscribe: chatUnsubscribe },
             entities: { sessions, tracks, users },
-            player: { currentTrackID },
+            player: { currentTrackID, progress },
             queue: { unsubscribe: queueUnsubscribe },
             sessions: { currentSessionID, infoUnsubscribe },
             users: { currentUserID },
           } = getState();
 
-          const session = {
-            id: doc.data().id,
-            currentTrackID: doc.data().currentTrackID,
-            currentQueueID: doc.data().currentQueueID,
-            progress: doc.data().progress,
-            paused: doc.data().paused,
-            live: doc.data().live,
-            timeLastPlayed: doc.data().timeLastPlayed,
-            ownerID: doc.data().owner.id,
-            mode: doc.data().mode,
-            distance: 0,
-            totalListeners: doc.data().totals.listeners,
-            totalPlayed: doc.data().totals.previouslyPlayed,
-            prevOwner: doc.data().prevOwner,
-          };
+          const currentSession = sessions.byID[currentSessionID];
+          if (currentSession) {
+            const isListener = currentUserID !== currentSession.ownerID;
+            const isSessionOwner = currentUserID === currentSession.ownerID;
+            const { totalListeners } = currentSession;
 
-          if (doc.data().live == false || session.prevOwner === currentUserID) {
-            if (currentSessionID) {
-              const track = tracks.byID[currentTrackID];
-              const owner = users.byID[sessions.byID[currentSessionID].ownerID];
-              if (owner && track) {
-                dispatch(leaveSession(
-                  currentUserID,
-                  {
-                    chatUnsubscribe,
-                    infoUnsubscribe,
-                    queueUnsubscribe,
-                    track,
-                    id: currentSessionID,
-                    total: sessions.byID[currentSessionID].totalListeners,
-                  },
-                  {
-                    id: owner.id,
-                    name: owner.displayName,
-                    image: owner.profileImage,
-                  },
-                ));
+            if (
+              (isListener && (oldTime !== doc.data().timeLastPlayed)) ||
+              (isListener && (doc.data().totals.listeners !== totalListeners)) ||
+              (isSessionOwner)
+            ) {
+              if ((isListener)) {
+                oldTime = doc.data().timeLastPlayed;
               }
+
+              const session = {
+                id: doc.data().id,
+                currentTrackID: doc.data().currentTrackID,
+                currentQueueID: doc.data().currentQueueID,
+                progress: doc.data().progress,
+                paused: doc.data().paused,
+                live: doc.data().live,
+                timeLastPlayed: doc.data().timeLastPlayed,
+                ownerID: doc.data().owner.id,
+                mode: doc.data().mode,
+                distance: 0,
+                totalListeners: doc.data().totals.listeners,
+                totalPlayed: doc.data().totals.previouslyPlayed,
+                prevOwner: doc.data().prevOwner,
+              };
+
+              if (doc.data().live == false || session.prevOwner === currentUserID) {
+                if (currentSessionID) {
+                  const track = tracks.byID[currentTrackID];
+                  const owner = users.byID[currentSession.ownerID];
+                  if (owner && track) {
+                    dispatch(leaveSession(
+                      currentUserID,
+                      {
+                        chatUnsubscribe,
+                        infoUnsubscribe,
+                        queueUnsubscribe,
+                        track,
+                        id: currentSessionID,
+                        total: currentSession.totalListeners,
+                      },
+                      {
+                        id: owner.id,
+                        name: owner.displayName,
+                        image: owner.profileImage,
+                      },
+                    ));
+                  }
+                }
+              }
+
+              if (session.prevOwner === currentUserID) {
+                session.live = false;
+                sessionRef.update({ prevOwner: null, });
+              }
+
+              dispatch(addEntities({ sessions: { [session.id]: session } }));
+              dispatch(updatePlayer({ paused: doc.data().paused, }));
+              dispatch(actions.success(unsubscribe));
             }
-            dispatch(getTrendingSessions(currentUserID));
+          } else {
+            // alert("Unable to retrieve the session from Ultrasound")
           }
-
-          if (session.prevOwner === currentUserID) {
-            session.live = false;
-            sessionRef.update({prevOwner:null,});
-            // dispatch(updatePlayer(initialState));
-            // dispatch(updateSessions(sessionInitialState));
-            // dispatch(addEntities(entityInitialState));
-          }
-
-          // if (session.prevOwner === currentUserID) {
-          //   session.live = false;
-          //   dispatch(updateSessions({ currentSessionID: null, live: false }));
-          //   sessionRef.update({prevOwner:null,});
-          //   // unsubscribe();
-          //   // alert("dispatch")
-          //   // dispatch(updateSessions({ currentSessionID: "eeee", }));
-          // }
-
-          dispatch(addEntities({ sessions: { [session.id]: session } }));
-          dispatch(updatePlayer({ paused: doc.data().paused, }));
-          dispatch(actions.success(unsubscribe));
         },
         error => { throw error },
       );

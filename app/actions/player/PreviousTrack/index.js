@@ -26,6 +26,7 @@ import {
   type FirestoreDocs,
   type FirestoreBatch,
 } from '../../../utils/firebaseTypes';
+import MusicControl from 'react-native-music-control';
 
 type User = {
   id: string,
@@ -231,6 +232,25 @@ export function previousTrack(
       batch.delete(sessionQueueRef.doc(current.id));
 
       await batch.commit();
+
+      // const track = prevDoc.data().track;
+      // const { album, durationMS, name, artists } = track;
+
+      // // MusicControl.resetNowPlaying();
+      // if (album && durationMS && name && artists) {
+      //   MusicControl.updatePlayback({
+      //     title: name,
+      //     artwork: album.medium, // URL or RN's image require()
+      //     artist: artists.map(a => a.name).join(', '),
+      //     album: album.name,
+      //     duration: durationMS / 1000, // (Seconds)
+      //   })
+
+      //   MusicControl.enableControl('play', false)
+      //   MusicControl.enableControl('pause', true)
+      // }
+
+      
     } catch (err) {
       dispatch(actions.failure(err));
     }
