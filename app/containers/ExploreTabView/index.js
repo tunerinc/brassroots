@@ -10,6 +10,7 @@ import {
   VirtualizedList,
   ScrollView,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -279,6 +280,7 @@ class ExploreTabView extends React.Component {
       sessions: {
         fetching,
         refreshing,
+        joining,
         error: sessionError,
         explore: {trendingIDs},
       },
@@ -286,6 +288,11 @@ class ExploreTabView extends React.Component {
 
     return (
       <View style={styles.container}>
+        {joining && <View style={styles.contentLoaderOverlay}>
+          <View style={styles.contentLoader}>
+            <ActivityIndicator size="large"></ActivityIndicator>
+          </View>
+        </View>}
         <Animated.View style={[styles.shadow, {shadowOpacity}]}>
           <View style={styles.nav}>
             <View style={styles.leftIcon}></View>
@@ -309,7 +316,7 @@ class ExploreTabView extends React.Component {
             onEndReached={this._paginate}
             onEndReachedThreshold={0.7}
             onRefresh={this.refresh}
-            refreshing={refreshing}
+            refreshing={false}
           />
         }
         {notify && <Notify
@@ -350,11 +357,6 @@ class ExploreTabView extends React.Component {
                   {(userError || (sessionError && sessionError !== 'Unauthorized')) &&
                     <Text>There was an error</Text>
                   }
-                  {/* {(sessionError&&sessionError!=='Unauthorized')&&<Notify
-                    title="Welcome to Artisan App"
-                    message={`We connect customers to artisans at their convinience, in just a click!`}
-                    duration={8000}
-                />} */}
                 </View>
               }
             </View>

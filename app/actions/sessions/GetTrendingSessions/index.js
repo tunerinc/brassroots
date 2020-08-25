@@ -83,13 +83,6 @@ export function getTrendingSessions(
         users = updateObject(users, { [userID]: { id: userID, coords: pos.coords } });
       }
 
-      // var unsubscribe = sessionsRef.where('live', '==', true)
-      //   .orderBy('totals.listeners', 'desc')
-      //   .limit(15)
-      //   .onSnapshot(async (snapshot) => {
-      //     alert("something changed")
-      //   })
-
       const trendingSessions: FirestoreDocs = await sessionsRef.where('live', '==', true)
         .orderBy('totals.listeners', 'desc')
         .limit(15)

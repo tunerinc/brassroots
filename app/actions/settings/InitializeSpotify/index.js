@@ -118,33 +118,9 @@ export function initializeSpotify(): ThunkAction {
               image: session.data().owner.image,
             };
 
-            // if (session.data().owner.id == user.id) {
-            //   if (sessionUser.exists || session.data().totals.listeners > 1) {
-            //     if (sessionUser.data().active) {
-            //       await sessionUserRef.update({ active: false, });
-            //       const { totals: { listeners, users } } = session.data();
-
-            //       const sessionUsers = await sessionRef.collection('users').where('active', '==', true).get();
-            //       const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random() * sessionUsers.docs.length)];
-
-            //       await sessionRef.update(
-            //         {
-            //           "totals.listeners": listeners - 1,
-            //           "owner.id": newOwnerDoc.data().id,
-            //           "owner.name": newOwnerDoc.data().displayName,
-            //           "owner.image": newOwnerDoc.data().profileImage,
-            //         }
-            //       );
-            //     }
-            //   }
-
-            //   if (session.data().totals.listeners === 1) sessionRef.update({ live: false, paused: true, prevOwner: null, });
-            //   userRef.update({ currentSession: null, });
-            // }
-
             const { totals: { listeners, users } } = session.data();
             
-            if (sessionUser.exists && sessionUser.data().active) {
+            if (sessionUserRef.exists && sessionUser.data().active) {
               if (session.data().owner.id == user.id) {
                 await sessionUserRef.update({ active: false, });
 

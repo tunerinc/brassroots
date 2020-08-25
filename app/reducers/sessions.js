@@ -289,7 +289,8 @@ function update(
       ...(action.updates ? action.updates : {}),
       lastUpdated,
       fetching: add && type ? fetching.concat(type) : type ? fetching.filter(t => t !== type) : fetching,
-      refreshing: (add && type === 'trending' && explore.trendingIDs.length !== 0) || (action.updates && action.updates.refreshing) ? true : false,
+      // refreshing: (add && type === 'trending' && explore.trendingIDs.length !== 0) || (action.updates && action.updates.refreshing) ? true : false,
+      refreshing: (add && type === 'trending' && explore.trendingIDs.length !== 0) ? true : false,
       currentSessionID: action.type === 'LEAVE_SESSION_SUCCESS'
         ? null
         : action.updates && typeof action.updates.currentSessionID === 'string'
@@ -318,7 +319,8 @@ function update(
               trendingCanPaginate: typeof action.updates.explore.trendingCanPaginate === 'boolean'
                 ? action.updates.explore.trendingCanPaginate
                 : explore.trendingCanPaginate,
-              trendingIDs: action.updates.explore.trendingIDs && (refreshing || action.updates.refreshing)
+                // trendingIDs: action.updates.explore.trendingIDs && (refreshing || action.updates.refreshing)
+              trendingIDs: action.updates.explore.trendingIDs
                 ? [...action.updates.explore.trendingIDs]
                 : action.updates.explore.trendingIDs
                   ? [...explore.trendingIDs, ...action.updates.explore.trendingIDs]

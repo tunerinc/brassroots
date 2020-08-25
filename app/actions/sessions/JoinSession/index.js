@@ -30,6 +30,8 @@ import {
 import { getTrendingSessions } from '../GetTrendingSessions';
 import { addEntities } from '../../entities/AddEntities';
 import { removeEntities } from '../../entities/RemoveEntities';
+import Spotify from 'rn-spotify-sdk/src/Spotify';
+import addMusicItems from '../../../utils/addMusicItems';
 
 type Session = {
   +id: string,
@@ -167,51 +169,27 @@ export function joinSession(
     }
 
     dispatch(actions.request());
-    dispatch(getTrendingSessions(user.id, true));
+    // dispatch(getTrendingSessions(user.id, false));
 
     const firestore: FirestoreInstance = getFirestore();
     const sessionRef: FirestoreDoc = firestore.collection('sessions').doc(session.id);
     const sessionUserRef: FirestoreDoc = sessionRef.collection('users').doc(user.id);
     const userRef: FirestoreDoc = firestore.collection('users').doc(user.id);
+    const userRefDoc = await sessionUserRef.get();
+    const { entities: { sessions } } = getState();
+    const currentSession = sessions.byID[session.id];
 
     let batch: FirestoreBatch = firestore.batch();
 
     try {
-      //filter session info
-      const userRefDoc = await sessionUserRef.get();
-      const sessionDoc = await sessionRef.get();
-      const listeners = sessionDoc.data().totals.listeners;
-
-      if (userRefDoc.exists && userRefDoc.data().active) {
-       
-        if (session.id == user.id) {
-          await sessionUserRef.update({ active: false, });
-
-          if (listeners > 1) {
-            const sessionUsers = await sessionRef.collection('users').where('active', '==', true).get();
-            const newOwnerDoc = sessionUsers.docs[Math.floor(Math.random() * sessionUsers.docs.length)];
-
-            await sessionRef.update(
-              {
-                "totals.listeners": listeners - 1,
-                "owner.id": newOwnerDoc.data().id,
-                "owner.name": newOwnerDoc.data().displayName,
-                "owner.image": newOwnerDoc.data().profileImage,
-              }
-            );
-          } else {
-            sessionRef.update({ live: false, paused: true, prevOwner: null, });
-          }
-
-        } else {
-          await sessionRef.update({ "totals.listeners": listeners - 1, });
-        }
-        userRef.update({ currentSession: null, });
-      }
 
       const newSession: Session = await firestore.runTransaction(async transaction => {
         const doc: FirestoreDoc = await transaction.get(sessionRef);
+        const totalListeners = doc.data().totals.listeners;
 
+        const trackRes = await Spotify.getTracks([doc.data().currentTrackID], {});
+        const tracks = addMusicItems(trackRes.tracks);
+        
         if (!doc.exists) {
           throw new Error('Unable to retrieve the session from Ultrasound');
         }
@@ -235,14 +213,21 @@ export function joinSession(
             await batch.commit();
           }
           dispatch(updateSessions({ currentSessionID: null, live: false }));
-          // dispatch(getTrendingSessions(user.id, true));
+          dispatch(getTrendingSessions(user.id, true));
           throw new Error('Unable to retrieve the session from Ultrasound');
         }
 
-        transaction.update(
-          sessionRef,
-          { 'totals.listeners': listeners + 1, 'totals.users': users + 1, prevOwner:null, },
-        );
+        if (userRefDoc.exists && userRefDoc.data().active) {
+          transaction.update(
+            sessionRef,
+            { 'totals.listeners': listeners, 'totals.users': users + 1, prevOwner: null, },
+          );
+        } else {
+          transaction.update(
+            sessionRef,
+            { 'totals.listeners': listeners + 1, 'totals.users': users + 1, prevOwner: null, },
+          );
+        }
 
         return {
           coords,
@@ -269,7 +254,7 @@ export function joinSession(
       if (newSession.context) dispatch(updateQueue({ context: newSession.context }));
 
       dispatch(updatePlayer({ progress,buffering:true, }));
-      dispatch(updateSessions({ currentSessionID: session.id }));
+      dispatch(updateSessions({ currentSessionID: session.id, joining:false }));
       dispatch(actions.success());
       Actions.liveSession();
 
@@ -280,7 +265,7 @@ export function joinSession(
         {
           ...user,
           progress,
-          // timeJoined,
+          timeJoined,
           active: true,
           muted: false,
           paused: newSession.paused,

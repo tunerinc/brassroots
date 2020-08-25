@@ -26,6 +26,8 @@ interface Styles {
   modal: ViewStyleProp,
   footer: ViewStyleProp,
   loadingGif: ImageStyleProp,
+  contentLoader: ViewStyleProp,
+  contentLoaderOverlay: ViewStyleProp,
 };
 
 const styles: Styles = StyleSheet.create({
@@ -119,6 +121,24 @@ const styles: Styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 4},
     shadowRadius: 5,
     shadowOpacity: 0.7,
+  },
+  contentLoaderOverlay:{
+    position:"absolute",
+    width:"100%",
+    height:"100%",
+    backgroundColor:"transparent",
+    zIndex:1,
+    justifyContent:"center",
+    alignItems:"center",
+  },
+  contentLoader:{
+    height: 70,
+    width: 70,
+    borderRadius: 10,
+    opacity: 0.8,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

@@ -25,6 +25,8 @@ import { updateSessions } from '../UpdateSessions';
 import { initialState } from '../../../reducers/player';
 import { initialState as sessionInitialState } from '../../../reducers/sessions';
 import { initialState as entityInitialState } from '../../../reducers/entities';
+import Spotify from 'rn-spotify-sdk/src/Spotify';
+import addMusicItems from '../../../utils/addMusicItems';
 
 /**
  * Async function that gets the info for a session from Ultrasound
@@ -51,11 +53,10 @@ export function getSessionInfo(
 
     let shouldProgressUpdate = true;
     let oldTime = null;
-    // const sessionsRef: FirestoreDoc = firestore.collection('sessions');
 
     try {
       const unsubscribe = sessionRef.onSnapshot(
-        doc => {
+        async doc => {
           const {
             chat: { unsubscribe: chatUnsubscribe },
             entities: { sessions, tracks, users },
@@ -66,10 +67,13 @@ export function getSessionInfo(
           } = getState();
 
           const currentSession = sessions.byID[currentSessionID];
+
           if (currentSession) {
             const isListener = currentUserID !== currentSession.ownerID;
             const isSessionOwner = currentUserID === currentSession.ownerID;
             const { totalListeners } = currentSession;
+            const track = tracks.byID[currentTrackID];
+            const owner = users.byID[currentSession.ownerID];
 
             if (
               (isListener && (oldTime !== doc.data().timeLastPlayed)) ||
@@ -98,8 +102,6 @@ export function getSessionInfo(
 
               if (doc.data().live == false || session.prevOwner === currentUserID) {
                 if (currentSessionID) {
-                  const track = tracks.byID[currentTrackID];
-                  const owner = users.byID[currentSession.ownerID];
                   if (owner && track) {
                     dispatch(leaveSession(
                       currentUserID,
@@ -119,14 +121,17 @@ export function getSessionInfo(
                     ));
                   }
                 }
-              }
 
-              if (session.prevOwner === currentUserID) {
                 session.live = false;
                 sessionRef.update({ prevOwner: null, });
               }
 
-              dispatch(addEntities({ sessions: { [session.id]: session } }));
+              if (session.currentTrackID !== currentTrackID) {
+                const trackRes = await Spotify.getTracks([doc.data().currentTrackID], {});
+                const tracks = addMusicItems(trackRes.tracks);
+              }
+              
+              dispatch(addEntities({ sessions: { [session.id]: session }, ...tracks }));
               dispatch(updatePlayer({ paused: doc.data().paused, }));
               dispatch(actions.success(unsubscribe));
             }
